@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="sv">
-<head>
+<html lang="sv"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Skattehistoria – Vem har alltid betalat?</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <style>
 /* ══════════════════════════════════
    VARIABLES
@@ -40,6 +40,10 @@
   --forest-bg: rgba(77,201,138,.13);
   --blue-bg:   rgba(106,159,224,.13);
   --gilt-bg:   rgba(201,168,76,.12);
+
+  /* Lafferkurvan */
+  --violet:    #9B72CF;
+  --violet-bg: rgba(155,114,207,.13);
 }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
@@ -255,6 +259,7 @@ body::after {
 .tax-section.forest::before { background:var(--forest) }
 .tax-section.blue::before   { background:var(--blue)   }
 .tax-section.gilt::before   { background:var(--gilt)   }
+.tax-section.violet::before { background:var(--violet) }
 
 /* ── section header ── */
 .tax-head { margin-bottom:2.2rem }
@@ -276,6 +281,7 @@ body::after {
 .forest .tax-era-badge  { color:var(--forest); border-color:var(--forest); background:var(--forest-bg) }
 .blue   .tax-era-badge  { color:var(--blue);   border-color:var(--blue);   background:var(--blue-bg)   }
 .gilt   .tax-era-badge  { color:var(--gilt);   border-color:var(--gilt);   background:var(--gilt-bg)   }
+.violet .tax-era-badge  { color:var(--violet); border-color:var(--violet); background:var(--violet-bg) }
 
 .tax-type-label {
   font-size:.65rem; letter-spacing:.32em; text-transform:uppercase; color:var(--cream-dim);
@@ -310,6 +316,7 @@ body::after {
 .forest .pull-quote { border-color:var(--forest) }
 .blue   .pull-quote { border-color:var(--blue)   }
 .gilt   .pull-quote { border-color:var(--gilt)   }
+.violet .pull-quote { border-color:var(--violet) }
 
 .pull-quote::before {
   content:'\201C'; position:absolute; top:-.3rem; left:.6rem;
@@ -328,6 +335,7 @@ body::after {
 .forest .fact-box { border-top-color:var(--forest) }
 .blue   .fact-box { border-top-color:var(--blue)   }
 .gilt   .fact-box { border-top-color:var(--gilt)   }
+.violet .fact-box { border-top-color:var(--violet) }
 
 .fact-box-label {
   font-size:.62rem; letter-spacing:.35em; text-transform:uppercase;
@@ -335,6 +343,110 @@ body::after {
 }
 .fact-box p { font-size:.9rem; color:var(--text); margin:0; line-height:1.7 }
 .fact-box strong { color:var(--cream-dim) }
+
+/* ── Lafferkurvan gallery card ── */
+.g-violet .gal-front { border-top-color:var(--violet) }
+.violet .quiz-block   { border-left-color:var(--violet) }
+
+/* ── Laffer interactive viz ── */
+.laffer-viz {
+  background:var(--navy-card); border:1px solid var(--border);
+  border-top:3px solid var(--violet);
+  padding:1.6rem 1.8rem; margin:2rem 0;
+}
+.laffer-viz-label {
+  font-size:.62rem; letter-spacing:.35em; text-transform:uppercase;
+  color:var(--violet); margin-bottom:1.1rem; font-weight:700;
+}
+#lc-svg { width:100%; display:block; overflow:visible }
+.laffer-slider-row {
+  display:flex; align-items:center; gap:1rem; margin-top:1.1rem;
+}
+.laffer-slider-row label {
+  font-size:.7rem; letter-spacing:.15em; text-transform:uppercase;
+  color:var(--cream-dim); white-space:nowrap; flex-shrink:0;
+}
+#lc-slider {
+  flex:1; -webkit-appearance:none; appearance:none;
+  height:3px; background:rgba(201,168,76,.22); outline:none;
+  cursor:pointer; border-radius:2px;
+}
+#lc-slider::-webkit-slider-thumb {
+  -webkit-appearance:none; appearance:none;
+  width:16px; height:16px; border-radius:50%;
+  background:var(--gold); cursor:pointer;
+  border:2px solid var(--navy); box-shadow:0 0 6px rgba(201,168,76,.4);
+}
+.laffer-readout {
+  display:flex; gap:2.5rem; margin-top:1.2rem;
+  flex-wrap:wrap; align-items:flex-end;
+}
+.laffer-stat { display:flex; flex-direction:column; gap:.15rem }
+.laffer-stat-val {
+  font-family:'Playfair Display',serif;
+  font-size:2rem; font-weight:900; line-height:1; transition:color .25s;
+}
+.laffer-stat-key {
+  font-size:.6rem; letter-spacing:.28em; text-transform:uppercase; color:var(--cream-dim);
+}
+.laffer-zone {
+  flex:1; font-size:.82rem; color:var(--text); line-height:1.55;
+  padding:.55rem .9rem; border-left:3px solid var(--violet);
+  background:rgba(155,114,207,.06); transition:all .3s; min-width:200px;
+}
+.laffer-zone.warn { border-left-color:var(--terra); background:rgba(224,122,74,.07) }
+
+/* ── Historical predecessor cards ── */
+.laffer-hist-label, .laffer-cases-label {
+  font-size:.62rem; letter-spacing:.35em; text-transform:uppercase;
+  color:var(--gold); margin:2.5rem 0 .9rem; font-weight:700;
+}
+.laffer-history, .laffer-cases {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem;
+}
+@media(max-width:640px) { .laffer-history, .laffer-cases { grid-template-columns:1fr } }
+
+.lh-card {
+  background:var(--navy-card); border:1px solid var(--border);
+  padding:1.1rem 1.2rem; border-left:3px solid var(--violet);
+}
+.lh-year {
+  font-family:'Playfair Display',serif; font-size:2rem; font-weight:900;
+  color:var(--cream); opacity:.12; line-height:1; margin-bottom:.5rem;
+}
+.lh-who {
+  font-size:.6rem; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--violet); margin-bottom:.25rem;
+}
+.lh-title {
+  font-family:'Playfair Display',serif; font-size:.95rem;
+  color:var(--cream); margin-bottom:.45rem; line-height:1.3;
+}
+.lh-text { font-size:.8rem; color:var(--text); line-height:1.65 }
+
+/* ── Empirical cases ── */
+.lcase-card {
+  background:var(--navy-card); border:1px solid var(--border); padding:1.1rem 1.2rem;
+}
+.lcase-top {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:.5rem; margin-bottom:.5rem;
+}
+.lcase-name {
+  font-family:'Playfair Display',serif; font-size:.95rem;
+  color:var(--cream); line-height:1.3;
+}
+.lcase-badge {
+  font-size:.53rem; letter-spacing:.18em; text-transform:uppercase;
+  padding:.2rem .55rem; border:1px solid; flex-shrink:0; margin-top:.1rem;
+}
+.lcase-badge.miss  { color:var(--terra);  border-color:var(--terra);  background:var(--terra-bg) }
+.lcase-badge.mixed { color:var(--amber);  border-color:var(--amber);  background:var(--amber-bg) }
+.lcase-era {
+  font-size:.6rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--gold-dim); margin-bottom:.55rem;
+}
+.lcase-text { font-size:.8rem; color:var(--text); line-height:1.65 }
 
 /* ══════════════════════════════════
    QUIZ BLOCKS
@@ -378,6 +490,36 @@ body::after {
 }
 .quiz-reset.show { display:inline-block }
 .quiz-reset:hover { border-color:var(--gold); color:var(--gold) }
+
+
+/* == Laffer historical example cards == */
+.laffer-examples {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:.7rem; margin-top:.9rem;
+}
+@media(max-width:580px) { .laffer-examples { grid-template-columns:1fr } }
+.lx-card {
+  background:var(--navy); border:1px solid var(--border); padding:.75rem .9rem;
+  border-left:3px solid transparent; transition:all .3s; opacity:.35;
+}
+.lx-card.lx-active {
+  border-left-color:var(--violet); background:var(--navy-card); opacity:1;
+}
+.lx-num {
+  font-size:.58rem; letter-spacing:.25em; text-transform:uppercase;
+  color:var(--violet); margin-bottom:.15rem;
+}
+.lx-rate {
+  font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:900;
+  color:var(--cream); line-height:1;
+}
+.lx-who {
+  font-size:.58rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--cream-dim); margin:.2rem 0 .35rem;
+}
+.lx-desc { font-size:.76rem; color:var(--text); line-height:1.5 }
+/* SVG markers */
+.lc-marker { opacity:.3; transition:opacity .3s; cursor:default }
+.lc-marker.lc-m-active { opacity:1 }
 
 /* reveal on scroll */
 .r { opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease }
@@ -470,7 +612,7 @@ body::after {
 </style>
 </head>
 <body>
-<div id="prog"></div>
+<div id="prog" style="width: 27.4289%;"></div>
 
 <!-- ═══════════════════════════════
      HERO
@@ -480,15 +622,17 @@ body::after {
   <div class="hero-badge">Skattehistoria</div>
   <h1>
     Vem har alltid betalat?
-    <em>Sju skattetyper som formade världen</em>
+    <em>Åtta skattetyper som formade världen</em>
   </h1>
   <div class="hero-rule"></div>
   <p class="hero-desc">
-    Från faraos skrivare som pryglade bönder för att de sparade matolja, till multinationella bolag som gömmer vinster i skatteparadis. Skatten är statens äldsta verktyg och maktens tydligaste fingeravtryck.
+    Från faraos skrivare som pryglade bönder för att de sparade matolja,
+ till multinationella bolag som gömmer vinster i skatteparadis. Skatten 
+är statens äldsta verktyg och maktens tydligaste fingeravtryck.
   </p>
   <div class="hero-chips">
     <span class="hero-chip">ca. 2000 f.Kr. till idag</span>
-    <span class="hero-chip">7 skattetyper</span>
+    <span class="hero-chip">8 skattetyper</span>
     <span class="hero-chip">3 historiska drivkrafter</span>
   </div>
   <div class="scroll-cue">
@@ -500,7 +644,7 @@ body::after {
 <!-- NAV -->
 <nav class="nav">
   <button class="nav-btn" onclick="goTo('galleri')">Galleriet</button>
-  <button class="nav-btn" onclick="goTo('s1')">Skattetyper</button>
+  <button class="nav-btn active" onclick="goTo('s1')">Skattetyper</button>
   <button class="nav-btn" onclick="goTo('drivkrafter')">Drivkrafter</button>
   <button class="nav-btn" onclick="goTo('dataviz')">Data</button>
   <button class="nav-btn" onclick="goTo('kallor')">Källor</button>
@@ -511,27 +655,27 @@ body::after {
 ═══════════════════════════════ -->
 <section id="galleri">
   <div class="wrap">
-    <div class="sec-head r">
+    <div class="sec-head r in">
       <span class="sec-label">Översikt</span>
-      <h2 class="sec-title">Sju sätt att finansiera en stat</h2>
+      <h2 class="sec-title">Sju skattetyper och frågan om den optimala skattesatsen</h2>
       <div class="gold-rule"></div>
     </div>
-    <p class="gallery-intro r">Klicka på ett kort för att se det dramatiska historiska exemplet. Klicka igen eller använd knappen för att hoppa till avsnittet.</p>
+    <p class="gallery-intro r in">Klicka på ett kort för att se det dramatiska historiska exemplet. Klicka igen eller använd knappen för att hoppa till avsnittet.</p>
 
     <div class="gallery-grid">
 
       <!-- 1 Naturaskatt -->
-      <div class="gal-card g-terra r" onclick="flipCard(this)">
+      <div class="gal-card g-terra r in" onclick="flipCard(this)">
         <div class="gal-inner">
           <div class="gal-front">
             <svg class="gal-icon" viewBox="0 0 40 40" fill="none" stroke="var(--terra)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="20" y1="8" x2="20" y2="35"/>
-              <line x1="13" y1="11" x2="13" y2="32"/><line x1="13" y1="32" x2="20" y2="35"/>
-              <line x1="27" y1="11" x2="27" y2="32"/><line x1="27" y1="32" x2="20" y2="35"/>
-              <ellipse cx="20" cy="7" rx="2.2" ry="3" fill="var(--terra-bg)" stroke="var(--terra)"/>
-              <ellipse cx="13" cy="10" rx="2" ry="2.6" fill="var(--terra-bg)" stroke="var(--terra)"/>
-              <ellipse cx="27" cy="10" rx="2" ry="2.6" fill="var(--terra-bg)" stroke="var(--terra)"/>
-              <path d="M15 28 Q20 30.5 25 28" stroke-width="2"/>
+              <line x1="20" y1="8" x2="20" y2="35"></line>
+              <line x1="13" y1="11" x2="13" y2="32"></line><line x1="13" y1="32" x2="20" y2="35"></line>
+              <line x1="27" y1="11" x2="27" y2="32"></line><line x1="27" y1="32" x2="20" y2="35"></line>
+              <ellipse cx="20" cy="7" rx="2.2" ry="3" fill="var(--terra-bg)" stroke="var(--terra)"></ellipse>
+              <ellipse cx="13" cy="10" rx="2" ry="2.6" fill="var(--terra-bg)" stroke="var(--terra)"></ellipse>
+              <ellipse cx="27" cy="10" rx="2" ry="2.6" fill="var(--terra-bg)" stroke="var(--terra)"></ellipse>
+              <path d="M15 28 Q20 30.5 25 28" stroke-width="2"></path>
             </svg>
             <div>
               <div class="gal-type" style="color:var(--terra)">Naturaskatt<br>&amp; Tribut</div>
@@ -547,17 +691,17 @@ body::after {
       </div>
 
       <!-- 2 Tull -->
-      <div class="gal-card g-teal r" onclick="flipCard(this)">
+      <div class="gal-card g-teal r in" onclick="flipCard(this)">
         <div class="gal-inner">
           <div class="gal-front" style="border-top-color:var(--teal)">
             <svg class="gal-icon" viewBox="0 0 40 40" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="20" cy="9" r="3"/>
-              <line x1="20" y1="12" x2="20" y2="33"/>
-              <line x1="11" y1="19" x2="29" y2="19"/>
-              <path d="M11 33 Q7 33 7 27"/>
-              <path d="M29 33 Q33 33 33 27"/>
-              <line x1="7" y1="27" x2="11" y2="33"/>
-              <line x1="33" y1="27" x2="29" y2="33"/>
+              <circle cx="20" cy="9" r="3"></circle>
+              <line x1="20" y1="12" x2="20" y2="33"></line>
+              <line x1="11" y1="19" x2="29" y2="19"></line>
+              <path d="M11 33 Q7 33 7 27"></path>
+              <path d="M29 33 Q33 33 33 27"></path>
+              <line x1="7" y1="27" x2="11" y2="33"></line>
+              <line x1="33" y1="27" x2="29" y2="33"></line>
             </svg>
             <div>
               <div class="gal-type" style="color:var(--teal)">Tull &amp;<br>Handelsskatt</div>
@@ -573,14 +717,14 @@ body::after {
       </div>
 
       <!-- 3 Tionde -->
-      <div class="gal-card g-wine r" onclick="flipCard(this)">
+      <div class="gal-card g-wine r in" onclick="flipCard(this)">
         <div class="gal-inner">
           <div class="gal-front" style="border-top-color:var(--wine)">
             <svg class="gal-icon" viewBox="0 0 40 40" fill="none" stroke="var(--wine)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 5 L20 35"/>
-              <path d="M13 16 L27 16"/>
-              <path d="M10 35 L30 35"/>
-              <path d="M10 22 Q10 28 20 33 Q30 28 30 22 L30 16 Q30 12 20 12 Q10 12 10 16 Z" fill="var(--wine-bg)"/>
+              <path d="M20 5 L20 35"></path>
+              <path d="M13 16 L27 16"></path>
+              <path d="M10 35 L30 35"></path>
+              <path d="M10 22 Q10 28 20 33 Q30 28 30 22 L30 16 Q30 12 20 12 Q10 12 10 16 Z" fill="var(--wine-bg)"></path>
             </svg>
             <div>
               <div class="gal-type" style="color:var(--wine)">Tionde &amp;<br>Kyrkoskatt</div>
@@ -596,16 +740,16 @@ body::after {
       </div>
 
       <!-- 4 Konsumtion/Moms -->
-      <div class="gal-card g-amber r" onclick="flipCard(this)">
+      <div class="gal-card g-amber r in" onclick="flipCard(this)">
         <div class="gal-inner">
           <div class="gal-front" style="border-top-color:var(--amber)">
             <svg class="gal-icon" viewBox="0 0 40 40" fill="none" stroke="var(--amber)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="20" y1="6" x2="20" y2="36"/>
-              <line x1="9" y1="16" x2="31" y2="16"/>
-              <circle cx="9" cy="22" r="5" fill="var(--amber-bg)"/>
-              <circle cx="31" cy="22" r="5" fill="var(--amber-bg)"/>
-              <path d="M9 17 L9 22"/>
-              <path d="M31 17 L31 22"/>
+              <line x1="20" y1="6" x2="20" y2="36"></line>
+              <line x1="9" y1="16" x2="31" y2="16"></line>
+              <circle cx="9" cy="22" r="5" fill="var(--amber-bg)"></circle>
+              <circle cx="31" cy="22" r="5" fill="var(--amber-bg)"></circle>
+              <path d="M9 17 L9 22"></path>
+              <path d="M31 17 L31 22"></path>
             </svg>
             <div>
               <div class="gal-type" style="color:var(--amber)">Konsumtions-<br>skatt / Moms</div>
@@ -621,16 +765,16 @@ body::after {
       </div>
 
       <!-- 5 Bolagsskatt -->
-      <div class="gal-card g-forest r" onclick="flipCard(this)">
+      <div class="gal-card g-forest r in" onclick="flipCard(this)">
         <div class="gal-inner">
           <div class="gal-front" style="border-top-color:var(--forest)">
             <svg class="gal-icon" viewBox="0 0 40 40" fill="none" stroke="var(--forest)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="8" y="14" width="24" height="22" fill="var(--forest-bg)"/>
-              <path d="M8 14 L20 6 L32 14"/>
-              <rect x="14" y="22" width="5" height="6"/>
-              <rect x="21" y="22" width="5" height="6"/>
-              <rect x="14" y="30" width="5" height="6"/>
-              <rect x="21" y="30" width="5" height="6"/>
+              <rect x="8" y="14" width="24" height="22" fill="var(--forest-bg)"></rect>
+              <path d="M8 14 L20 6 L32 14"></path>
+              <rect x="14" y="22" width="5" height="6"></rect>
+              <rect x="21" y="22" width="5" height="6"></rect>
+              <rect x="14" y="30" width="5" height="6"></rect>
+              <rect x="21" y="30" width="5" height="6"></rect>
             </svg>
             <div>
               <div class="gal-type" style="color:var(--forest)">Bolags-<br>skatt</div>
@@ -646,15 +790,15 @@ body::after {
       </div>
 
       <!-- 6 Inkomstskatt -->
-      <div class="gal-card g-blue r" onclick="flipCard(this)">
+      <div class="gal-card g-blue r in" onclick="flipCard(this)">
         <div class="gal-inner">
           <div class="gal-front" style="border-top-color:var(--blue)">
             <svg class="gal-icon" viewBox="0 0 40 40" fill="none" stroke="var(--blue)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="8" y="16" width="18" height="12" rx="1" fill="var(--blue-bg)"/>
-              <line x1="11" y1="20" x2="18" y2="20"/>
-              <line x1="11" y1="23" x2="22" y2="23"/>
-              <path d="M28 8 L28 28"/>
-              <path d="M23 13 L28 8 L33 13"/>
+              <rect x="8" y="16" width="18" height="12" rx="1" fill="var(--blue-bg)"></rect>
+              <line x1="11" y1="20" x2="18" y2="20"></line>
+              <line x1="11" y1="23" x2="22" y2="23"></line>
+              <path d="M28 8 L28 28"></path>
+              <path d="M23 13 L28 8 L33 13"></path>
             </svg>
             <div>
               <div class="gal-type" style="color:var(--blue)">Inkomst-<br>skatt</div>
@@ -670,14 +814,14 @@ body::after {
       </div>
 
       <!-- 7 Förmögenhetsskatt -->
-      <div class="gal-card g-gilt r" onclick="flipCard(this)">
+      <div class="gal-card g-gilt r in" onclick="flipCard(this)">
         <div class="gal-inner">
           <div class="gal-front" style="border-top-color:var(--gilt)">
             <svg class="gal-icon" viewBox="0 0 40 40" fill="none" stroke="var(--gilt)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M8 18 L12 10 L20 14 L28 10 L32 18 Z" fill="var(--gilt-bg)"/>
-              <rect x="9" y="18" width="22" height="5" fill="var(--gilt-bg)"/>
-              <rect x="11" y="23" width="18" height="4"/>
-              <line x1="9" y1="31" x2="31" y2="31"/>
+              <path d="M8 18 L12 10 L20 14 L28 10 L32 18 Z" fill="var(--gilt-bg)"></path>
+              <rect x="9" y="18" width="22" height="5" fill="var(--gilt-bg)"></rect>
+              <rect x="11" y="23" width="18" height="4"></rect>
+              <line x1="9" y1="31" x2="31" y2="31"></line>
             </svg>
             <div>
               <div class="gal-type" style="color:var(--gilt)">Förmögenhets-<br>skatt</div>
@@ -692,6 +836,33 @@ body::after {
         </div>
       </div>
 
+
+      <!-- 8 Lafferkurvan -->
+      <div class="gal-card g-violet r in" onclick="flipCard(this)">
+        <div class="gal-inner">
+          <div class="gal-front" style="border-top-color:var(--violet)">
+            <svg class="gal-icon" viewBox="0 0 40 40" fill="none" stroke="var(--violet)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="35" x2="35" y2="35"/>
+              <line x1="5" y1="35" x2="5" y2="6"/>
+              <polyline points="33,32 35,35 33,38" stroke-width="1.3"/>
+              <polyline points="2,8 5,6 8,8" stroke-width="1.3"/>
+              <path d="M7,34 Q20,5 33,34" fill="none" stroke="var(--violet)" stroke-width="1.8"/>
+              <circle cx="20" cy="14" r="2" fill="var(--violet)" stroke="none"/>
+              <line x1="20" y1="16" x2="20" y2="35" stroke-dasharray="2,2" stroke-width="1"/>
+            </svg>
+            <div>
+              <div class="gal-type" style="color:var(--violet)">Optimal<br>skattesats</div>
+              <div class="gal-era">1974 Washington</div>
+            </div>
+            <div class="gal-flip-hint">Klicka</div>
+          </div>
+          <div class="gal-back">
+            <div class="gal-teaser">"Rolling Stones lämnade England: 'Vi hade bokstavligen inte råd med nya gitarrsträngar.'"</div>
+            <button class="gal-goto" onclick="event.stopPropagation();goTo('s8')">Gå till avsnittet</button>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /gallery-grid -->
   </div>
 </section>
@@ -701,35 +872,50 @@ body::after {
 ═══════════════════════════════ -->
 <section id="s1" class="tax-section terra">
   <div class="wrap">
-    <div class="tax-head r">
+    <div class="tax-head r in">
       <div class="tax-row">
         <div class="tax-num">01</div>
         <div class="tax-badges">
-          <span class="tax-era-badge">ca. 2000 f.Kr. &ndash; antiken</span>
+          <span class="tax-era-badge">ca. 2000 f.Kr. – antiken</span>
           <span class="tax-type-label">Naturaskatt &amp; Tribut</span>
         </div>
       </div>
       <h2 class="tax-title">Bastinado och brunn<br><em>Egyptens totala kontroll</em></h2>
     </div>
-    <div class="tax-body r">
-      <p>I en tid innan pengar existerade betalades skatt med det man hade: säd, olja, djur och arbetstid. I det gamla Egypten kontrollerade faraons skrivare varje korn av landets resurser. Systemet var brutalt effektivt. Varje hushåll var skattskyldigt, och indrivarna besökte regelbundet gårdar och hem för att kontrollera att deklarationerna stämde.</p>
-      <p>Det som gör det egyptiska systemet unikt är detaljnivån i kontrollen. Skrivarna inspekterade till och med kök och förråd för att se till att hemmafruar inte använde skattefri stekflott i stället för den beskattade matoljan. En vanlig bild på bevarade papyrusrullar är <em>bastinado</em>, scenen där skattebetalare som inte kunnat leverera sin kvot binds och pryglas av faraos indrivare.</p>
-      <p>Den som inte kunde betala hade inga alternativ. Skulden betalades med kroppen: prygel, frihetsberövande, eller att se sin familj tas som pant. Det var inte undantagstillstånd utan rutinmässigt administrativt förfarande.</p>
+    <div class="tax-body r in">
+      <p>I en tid innan pengar existerade betalades skatt med det man 
+hade: säd, olja, djur och arbetstid. I det gamla Egypten kontrollerade 
+faraons skrivare varje korn av landets resurser. Systemet var brutalt 
+effektivt. Varje hushåll var skattskyldigt, och indrivarna besökte 
+regelbundet gårdar och hem för att kontrollera att deklarationerna 
+stämde.</p>
+      <p>Det som gör det egyptiska systemet unikt är detaljnivån i 
+kontrollen. Skrivarna inspekterade till och med kök och förråd för att 
+se till att hemmafruar inte använde skattefri stekflott i stället för 
+den beskattade matoljan. En vanlig bild på bevarade papyrusrullar är <em>bastinado</em>, scenen där skattebetalare som inte kunnat leverera sin kvot binds och pryglas av faraos indrivare.</p>
+      <p>Den som inte kunde betala hade inga alternativ. Skulden 
+betalades med kroppen: prygel, frihetsberövande, eller att se sin familj
+ tas som pant. Det var inte undantagstillstånd utan rutinmässigt 
+administrativt förfarande.</p>
     </div>
-    <blockquote class="pull-quote r">"Den som inte kunde betala riskerade att kastas i en brunn eller se sin familj fängslas. Det var inte straff för brott. Det var skatteförvaltning."</blockquote>
-    <div class="fact-box r">
+    <blockquote class="pull-quote r in">"Den som inte kunde betala 
+riskerade att kastas i en brunn eller se sin familj fängslas. Det var 
+inte straff för brott. Det var skatteförvaltning."</blockquote>
+    <div class="fact-box r in">
       <div class="fact-box-label">Nutida Sverige</div>
-      <p>Principen om statens totala insyn lever kvar. Skatteverket har rätt att granska digitala konton, transaktioner och deklarationsunderlag med en noggrannhet som faraons skrivare skulle ha uppskattat. <strong>Formen är annorlunda. Logiken är densamma.</strong></p>
+      <p>Principen om statens totala insyn lever kvar. Skatteverket har 
+rätt att granska digitala konton, transaktioner och deklarationsunderlag
+ med en noggrannhet som faraons skrivare skulle ha uppskattat. <strong>Formen är annorlunda. Logiken är densamma.</strong></p>
     </div>
-    <div class="quiz-block r">
-      <div class="quiz-label">Kontrollera förståelsen &middot; Naturaskatt</div>
+    <div class="quiz-block r in">
+      <div class="quiz-label">Kontrollera förståelsen · Naturaskatt</div>
       <div class="quiz-q">Varför inspekterade faraons skrivare vanliga hem i det gamla Egypten?</div>
       <div class="quiz-opts">
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Guld och silver var inte det vanliga betalningsmedlet i det tidiga Egypten och det var inte heller föremål för dessa heminspektioner. Systemet byggde på naturaprodukter som spannmål och olja.')"><span class="quiz-letter">A.</span> De sökte efter odeklarerade guld- och silvermynt, som var det vanligaste betalningsmedlet</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Slaveri förekom i Egypten men var inte föremål för denna typ av skatteinspektion. Det du beskriver blandar ihop kontrollmekanismernas syfte.')"><span class="quiz-letter">B.</span> De kontrollerade att inga slavar hölls olagligt, något som var förbjudet för gemene man</button>
-        <button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Skatteindrivarna kontrollerade matoljanivåerna för att se till att ingen använde skattefri stekflott i stället för den beskattade matoljan. Det visar hur detaljerad och total den egyptiska skattekontrollen faktiskt var.')"><span class="quiz-letter">C.</span> De kontrollerade matoljanivåerna för att se till att ingen använde skattefri olja i stället för den beskattade</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Barnantal som skattegrund är ett modernt begrepp (kopfskatt). Det egyptiska systemet baserades på produktivitet och naturaprodukter, inte hushållets storlek.')"><span class="quiz-letter">D.</span> De räknade familjens barnantal, som låg till grund för den personliga tributen</button>
-      </div>
+        
+        
+        
+        
+      <button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Skatteindrivarna kontrollerade matoljanivåerna för att se till att ingen använde skattefri stekflott i stället för den beskattade matoljan. Det visar hur detaljerad och total den egyptiska skattekontrollen faktiskt var.')"><span class="quiz-letter">A.</span> De kontrollerade matoljanivåerna i hemmen för att avslöja om man bytt ut den beskattade oljan mot skattefri</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Slaveri förekom i Egypten men var inte föremål för denna typ av skatteinspektion. Det du beskriver blandar ihop kontrollmekanismernas syfte.')"><span class="quiz-letter">B.</span> De kontrollerade att inga slavar hölls olagligt hemma, vilket var strängt förbjudet för vanliga medborgare</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Barnantal som skattegrund är ett modernt begrepp (kopfskatt). Det egyptiska systemet baserades på produktivitet och naturaprodukter, inte hushållets storlek.')"><span class="quiz-letter">C.</span> De räknade antalet familjemedlemmar, eftersom hushållets storlek bestämde hur stor tributen skulle vara</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Guld och silver var inte det vanliga betalningsmedlet i det tidiga Egypten och det var inte heller föremål för dessa heminspektioner. Systemet byggde på naturaprodukter som spannmål och olja.')"><span class="quiz-letter">D.</span> De sökte efter odeklarerade guld- och silvermynt, vilka utgjorde det vanligaste betalningsmedlet i Egypten</button></div>
       <div class="quiz-feedback"></div>
       <button class="quiz-reset" onclick="resetQuiz(this)">Försök igen</button>
     </div>
@@ -741,35 +927,49 @@ body::after {
 ═══════════════════════════════ -->
 <section id="s2" class="tax-section teal">
   <div class="wrap">
-    <div class="tax-head r">
+    <div class="tax-head r in">
       <div class="tax-row">
         <div class="tax-num">02</div>
         <div class="tax-badges">
-          <span class="tax-era-badge">100-t. f.Kr. &ndash; idag</span>
+          <span class="tax-era-badge">100-t. f.Kr. – idag</span>
           <span class="tax-type-label">Tull &amp; Handelsskatt</span>
         </div>
       </div>
       <h2 class="tax-title">Vapenets tystaste form<br><em>Rhodos fall och Roms list</em></h2>
     </div>
-    <div class="tax-body r">
-      <p>Under antiken var tull och hamnavgifter på handelsgods ett av de viktigaste statliga inkomstslagen. Den som kontrollerade handelsvägar kontrollerade rikedomen. Ön Rhodos hade under flera hundra år finansierat sin välstånd och flotta genom en hamnavgift på 2 procent av alla varor som passerade. I en tid utan inkomstskatt eller moms var det en stabil och effektiv modell.</p>
-      <p>Men på 100-talet f.Kr. ville Romarriket krossa Rhodos kommersiella dominans. De förklarade inte krig. De skapade i stället en helt skattefri frihamn på den rivaliserande ön Delos. Resultatet var omedelbart och förödande. På bara ett år förlorade Rhodos uppskattningsvis 85 procent av sin handel. Intäkterna kollapsade. Flottan kunde inte längre underhållas.</p>
+    <div class="tax-body r in">
+      <p>Under antiken var tull och hamnavgifter på handelsgods ett av 
+de viktigaste statliga inkomstslagen. Den som kontrollerade handelsvägar
+ kontrollerade rikedomen. Ön Rhodos hade under flera hundra år 
+finansierat sin välstånd och flotta genom en hamnavgift på 2 procent av 
+alla varor som passerade. I en tid utan inkomstskatt eller moms var det 
+en stabil och effektiv modell.</p>
+      <p>Men på 100-talet f.Kr. ville Romarriket krossa Rhodos 
+kommersiella dominans. De förklarade inte krig. De skapade i stället en 
+helt skattefri frihamn på den rivaliserande ön Delos. Resultatet var 
+omedelbart och förödande. På bara ett år förlorade Rhodos 
+uppskattningsvis 85 procent av sin handel. Intäkterna kollapsade. 
+Flottan kunde inte längre underhållas.</p>
       <p>Romarriket hade vunnit ett handelskrig utan att lossa ett enda skott. Det enda vapnet var en skattesänkning hos grannen.</p>
     </div>
-    <blockquote class="pull-quote r">"Romarriket skapade en skattefri frihamn. På ett år förlorade Rhodos 85 procent av sin handel. Vapnet var en skattesänkning."</blockquote>
-    <div class="fact-box r">
+    <blockquote class="pull-quote r in">"Romarriket skapade en skattefri frihamn. På ett år förlorade Rhodos 85 procent av sin handel. Vapnet var en skattesänkning."</blockquote>
+    <div class="fact-box r in">
       <div class="fact-box-label">Nutida Sverige</div>
-      <p>Som EU-medlem deltar Sverige i världens största tullfria inre marknad. För ett exportberoende land är frånvaron av tullar mot grannländerna livsviktig. <strong>Irlands bolagsskatt på 12,5 procent</strong> är ett modernt exempel på samma strategi som Rom använde mot Rhodos: locka handel med lägre skatt och låt konkurrenten förtvina.</p>
+      <p>Som EU-medlem deltar Sverige i världens största tullfria inre 
+marknad. För ett exportberoende land är frånvaron av tullar mot 
+grannländerna livsviktig. <strong>Irlands bolagsskatt på 12,5 procent</strong>
+ är ett modernt exempel på samma strategi som Rom använde mot Rhodos: 
+locka handel med lägre skatt och låt konkurrenten förtvina.</p>
     </div>
-    <div class="quiz-block r">
-      <div class="quiz-label">Kontrollera förståelsen &middot; Tull &amp; Handelsskatt</div>
+    <div class="quiz-block r in">
+      <div class="quiz-label">Kontrollera förståelsen · Tull &amp; Handelsskatt</div>
       <div class="quiz-q">Hur lyckades Romarriket krossa Rhodos handelsdominans utan att förklara krig?</div>
       <div class="quiz-opts">
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> En blockad är ett militärt angrepp och hade inneburit ett öppet krig. Romarrikets metod var subtilare och mer effektiv just för att den undvek direkt konfrontation.')"><span class="quiz-letter">A.</span> De blockerade Rhodos hamn med sin flotta och hindrade handelsfartyg från att lägga till</button>
-        <button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Romarriket skapade en skattefri frihamn på ön Delos, vilket omedelbart vände handelsströmmarna. Rhodos förlorade uppemot 85 procent av sin handel på ett år. Det är ett tidigt exempel på vad vi idag kallar skattekonkurrens.')"><span class="quiz-letter">B.</span> De skapade en skattefri frihamn på den rivaliserande ön Delos, vilket vände handelsströmmarna</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</span> Det du beskriver bygger på ett frivilligt ekonomiskt lockbete snarare än strukturell skattekonkurrens. Romarrikets metod förändrade hela handelsmönstret, inte bara enskilda köpmäns val.')"><span class="quiz-letter">C.</span> De erbjöd Rhodos handlare dubbelt så höga priser i Rom, vilket lockade dem att flytta sin verksamhet</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> En sådan åtgärd hade drabbbat alla handelsnationer, inte specifikt Rhodos. Romarrikets strategi var mer kirurgisk och riktad.')"><span class="quiz-letter">D.</span> De förklarade Rhodos exportvaror för piratskörd och konfiskerade all handel i Medelhavet</button>
-      </div>
+        
+        
+        
+        
+      <button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Romarriket skapade en skattefri frihamn på ön Delos, vilket omedelbart vände handelsströmmarna. Rhodos förlorade uppemot 85 procent av sin handel på ett år. Det är ett tidigt exempel på vad vi idag kallar skattekonkurrens.')"><span class="quiz-letter">A.</span> De skapade en skattefri frihamn på den rivaliserande ön Delos, vilket vände handelsströmmarna</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</span> Det du beskriver bygger på ett frivilligt ekonomiskt lockbete snarare än strukturell skattekonkurrens. Romarrikets metod förändrade hela handelsmönstret, inte bara enskilda köpmäns val.')"><span class="quiz-letter">B.</span> De erbjöd Rhodos handlare dubbelt så höga priser i Rom, vilket lockade dem att flytta sin verksamhet</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> En blockad är ett militärt angrepp och hade inneburit ett öppet krig. Romarrikets metod var subtilare och mer effektiv just för att den undvek direkt konfrontation.')"><span class="quiz-letter">C.</span> De blockerade Rhodos hamn med sin flotta och hindrade handelsfartyg från att lägga till</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> En sådan åtgärd hade drabbbat alla handelsnationer, inte specifikt Rhodos. Romarrikets strategi var mer kirurgisk och riktad.')"><span class="quiz-letter">D.</span> De förklarade Rhodos exportvaror för piratskörd och konfiskerade all handel i Medelhavet</button></div>
       <div class="quiz-feedback"></div>
       <button class="quiz-reset" onclick="resetQuiz(this)">Försök igen</button>
     </div>
@@ -781,35 +981,51 @@ body::after {
 ═══════════════════════════════ -->
 <section id="s3" class="tax-section wine">
   <div class="wrap">
-    <div class="tax-head r">
+    <div class="tax-head r in">
       <div class="tax-row">
         <div class="tax-num">03</div>
         <div class="tax-badges">
-          <span class="tax-era-badge">Medeltid &ndash; tidigt 1900-t.</span>
+          <span class="tax-era-badge">Medeltid – tidigt 1900-t.</span>
           <span class="tax-type-label">Tionde &amp; Kyrkoskatt</span>
         </div>
       </div>
       <h2 class="tax-title">Saladin-tiondet<br><em>När Gud var indrivaren</em></h2>
     </div>
     <div class="tax-body r">
-      <p>Tiondet var en obligatorisk avgift till kyrkan, ursprungligen tio procent av jordbrukets avkastning. Det finns belägg för liknande system i det antika Israel och Babylonien, men i det medeltida Europa var det framför allt den katolska kyrkan som institutionaliserade systemet och gav det religiös legitimitet. Att inte betala var inte bara skattebrott. Det var synd.</p>
-      <p>År 1188 tog detta ett nytt steg. Kung Henrik II av England ville finansiera ett korståg för att befria Jerusalem från Saladins styre. Lösningen var <em>Saladin-tiondet</em>, en extraskatt på tio procent av all inkomst och all lös egendom. Den som vägrade betala drabbades av exkommunikation, uteslutning ur kyrkan, vilket på den tiden innebar social och andlig undergång. Man kunde inte gifta sig, begravas i vigda kyrkogårdar eller ta del av sakramenten.</p>
-      <p>Staten och kyrkan hade skapat ett instrument utan motstycke. Gud stod som kravmaskinen och helvetet som sista utväg för den som inte betalade.</p>
+      <p>Tiondet var en obligatorisk avgift till kyrkan, ursprungligen 
+tio procent av jordbrukets avkastning. Det finns belägg för liknande 
+system i det antika Israel och Babylonien, men i det medeltida Europa 
+var det framför allt den katolska kyrkan som institutionaliserade 
+systemet och gav det religiös legitimitet. Att inte betala var inte bara
+ skattebrott. Det var synd.</p>
+      <p>År 1188 tog detta ett nytt steg. Kung Henrik II av England 
+ville finansiera ett korståg för att befria Jerusalem från Saladins 
+styre. Lösningen var <em>Saladin-tiondet</em>, en extraskatt på tio 
+procent av all inkomst och all lös egendom. Den som vägrade betala 
+drabbades av exkommunikation, uteslutning ur kyrkan, vilket på den tiden
+ innebar social och andlig undergång. Man kunde inte gifta sig, begravas
+ i vigda kyrkogårdar eller ta del av sakramenten.</p>
+      <p>Staten och kyrkan hade skapat ett instrument utan motstycke. 
+Gud stod som kravmaskinen och helvetet som sista utväg för den som inte 
+betalade.</p>
     </div>
     <blockquote class="pull-quote r">"Staten och Gud samarbetade för att tömma folkets fickor. Exkommunikation var skattemyndighetens yttersta sanktion."</blockquote>
     <div class="fact-box r">
       <div class="fact-box-label">Nutida Sverige</div>
-      <p>Sverige hade ett obligatoriskt kyrkotionde ända in på 1900-talet. Det är i dag ersatt av den frivilliga kyrkoavgiften, <strong>men staten hjälper fortfarande till med administrationen</strong> via skattsedeln. Alla som är folkbokförda kan välja att betala via Skatteverket, en ovanlig sammanvävning av kyrka och stat som finns kvar lång tid efter att de formellt separerades.</p>
+      <p>Sverige hade ett obligatoriskt kyrkotionde ända in på 1900-talet. Det är i dag ersatt av den frivilliga kyrkoavgiften, <strong>men staten hjälper fortfarande till med administrationen</strong>
+ via skattsedeln. Alla som är folkbokförda kan välja att betala via 
+Skatteverket, en ovanlig sammanvävning av kyrka och stat som finns kvar 
+lång tid efter att de formellt separerades.</p>
     </div>
     <div class="quiz-block r">
-      <div class="quiz-label">Kontrollera förståelsen &middot; Tionde</div>
+      <div class="quiz-label">Kontrollera förståelsen · Tionde</div>
       <div class="quiz-q">Vad var den yttersta sanktionen mot den som vägrade betala Saladin-tiondet 1188?</div>
       <div class="quiz-opts">
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Ekonomiska böter förekom i medeltidens rättssystem men var inte det primära hotet i detta sammanhang. Medeltida skatteindrivning använde sig av institutionell makt snarare än enbart ekonomiska sanktioner.')"><span class="quiz-letter">A.</span> Böter som ökade för varje år man inte betalade, tills skulden konfiskerades från arvingarna</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Fängelse i kloster förekom som straff för klosterbrott, men inte generellt som skatteindrivningsmetod. Du blandar ihop kyrklig disciplin med skatteförvaltning.')"><span class="quiz-letter">B.</span> Fängelsestraff i ett av kyrkans kloster, ofta på livstid</button>
-        <button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Exkommunikation innebar uteslutning ur kyrkan och därmed social och andlig död: inga sakrament, ingen kristen begravning, ingen plats i det religiösa samhällets gemenskap. På 1100-talet var det det mest fruktade straffet som existerade.')"><span class="quiz-letter">C.</span> Exkommunikation, uteslutning ur kyrkan, som innebar social och andlig undergång</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Tvångsarbete som skuldavbetalning förekom i vissa feodala sammanhang men var inte knutet till Saladin-tiondet. Det var kyrkan och dess andliga sanktioner som gav skatten sin styrka.')"><span class="quiz-letter">D.</span> Tvångsarbete på kronans marker, där man fick arbeta av skulden direkt</button>
-      </div>
+        
+        
+        
+        
+      <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Fängelse i kloster förekom som straff för klosterbrott, men inte generellt som skatteindrivningsmetod. Du blandar ihop kyrklig disciplin med skatteförvaltning.')"><span class="quiz-letter">A.</span> Fängelsestraff i ett av kyrkans kloster, vilket i praktiken ofta innebar ett liv i inspärrning</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Ekonomiska böter förekom i medeltidens rättssystem men var inte det primära hotet i detta sammanhang. Medeltida skatteindrivning använde sig av institutionell makt snarare än enbart ekonomiska sanktioner.')"><span class="quiz-letter">B.</span> Böter som ökade för varje år man inte betalade, tills skulden konfiskerades från arvingarna</button><button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Exkommunikation innebar uteslutning ur kyrkan och därmed social och andlig död: inga sakrament, ingen kristen begravning, ingen plats i det religiösa samhällets gemenskap. På 1100-talet var det det mest fruktade straffet som existerade.')"><span class="quiz-letter">C.</span> Exkommunikation – fullständig uteslutning ur kyrkan, som innebar social och andlig undergång</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Tvångsarbete som skuldavbetalning förekom i vissa feodala sammanhang men var inte knutet till Saladin-tiondet. Det var kyrkan och dess andliga sanktioner som gav skatten sin styrka.')"><span class="quiz-letter">D.</span> Tvångsarbete på kronans ägor, där skulden fick avarbetas under direktövervakning av kronans fogdar</button></div>
       <div class="quiz-feedback"></div>
       <button class="quiz-reset" onclick="resetQuiz(this)">Försök igen</button>
     </div>
@@ -825,31 +1041,49 @@ body::after {
       <div class="tax-row">
         <div class="tax-num">04</div>
         <div class="tax-badges">
-          <span class="tax-era-badge">1600-t. Frankrike &ndash; idag</span>
+          <span class="tax-era-badge">1600-t. Frankrike – idag</span>
           <span class="tax-type-label">Konsumtionsskatt &amp; Moms</span>
         </div>
       </div>
       <h2 class="tax-title">Gabelle och revolt<br><em>Saltskatten som drog blod</em></h2>
     </div>
     <div class="tax-body r">
-      <p>Konsumtionsskatter, avgifter på varor som folk köper, är en av historiens äldsta och mest impopulära skatteformer. Till skillnad från inkomstskatten drabbar de alla som konsumerar, oavsett inkomst. I Frankrike var den hatade <em>gabellen</em>, saltskatten, ett exempel på hur djupt orättvis en sådan konstruktion kan bli.</p>
-      <p>Salt var inte en lyxvara. Det var nödvändigt för att bevara mat, gärva skinn och hålla boskap vid liv. Ändå varierade gabellen enormt beroende på var i Frankrike man bodde; vissa regioner betalade tio gånger mer än andra. Dessutom var det <em>obligatoriskt</em> att köpa en minimikvot salt per person varje år, oavsett om man behövde det eller ej.</p>
-      <p>Skatteindrivarna, de ökända <em>gabeleurs</em>, var föremål för ett glödande folkhat. I Blansac 1636 gick en ilsken folkskara till attack mot en grupp misstänkta skatteindrivare. En kirurg som av misstag förväxlades med en skatteindrivare slogs ihjäl. Bönderna satte upp delar av de dödas kroppar på sina dörrar som varning. Revolten slogs ned, gabellen levde kvar i ytterligare 150 år.</p>
+      <p>Konsumtionsskatter, avgifter på varor som folk köper, är en av 
+historiens äldsta och mest impopulära skatteformer. Till skillnad från 
+inkomstskatten drabbar de alla som konsumerar, oavsett inkomst. I 
+Frankrike var den hatade <em>gabellen</em>, saltskatten, ett exempel på hur djupt orättvis en sådan konstruktion kan bli.</p>
+      <p>Salt var inte en lyxvara. Det var nödvändigt för att bevara 
+mat, gärva skinn och hålla boskap vid liv. Ändå varierade gabellen 
+enormt beroende på var i Frankrike man bodde; vissa regioner betalade 
+tio gånger mer än andra. Dessutom var det <em>obligatoriskt</em> att köpa en minimikvot salt per person varje år, oavsett om man behövde det eller ej.</p>
+      <p>Skatteindrivarna, de ökända <em>gabeleurs</em>, var föremål för
+ ett glödande folkhat. I Blansac 1636 gick en ilsken folkskara till 
+attack mot en grupp misstänkta skatteindrivare. En kirurg som av misstag
+ förväxlades med en skatteindrivare slogs ihjäl. Bönderna satte upp 
+delar av de dödas kroppar på sina dörrar som varning. Revolten slogs 
+ned, gabellen levde kvar i ytterligare 150 år.</p>
     </div>
-    <blockquote class="pull-quote r">"Bönderna spikade upp bitar av mördade skattetjänstemän på sina dörrar som en varning. Gabellen levde kvar i ytterligare 150 år."</blockquote>
+    <blockquote class="pull-quote r">"Bönderna spikade upp bitar av 
+mördade skattetjänstemän på sina dörrar som en varning. Gabellen levde 
+kvar i ytterligare 150 år."</blockquote>
     <div class="fact-box r">
       <div class="fact-box-label">Nutida Sverige</div>
-      <p>Idag är <strong>momsen</strong> vår viktigaste konsumtionsskatt, 25 procent på de flesta varor, 12 procent på mat och 6 procent på böcker. Till skillnad från gabellen accepteras den i stor utsträckning eftersom den är "osynlig": inbakad i priset och aldrig en separat rad på räkningen. Ingen skriver ut hur mycket av priset på din mjölk som är skatt.</p>
+      <p>Idag är <strong>momsen</strong> vår viktigaste 
+konsumtionsskatt, 25 procent på de flesta varor, 12 procent på mat och 6
+ procent på böcker. Till skillnad från gabellen accepteras den i stor 
+utsträckning eftersom den är "osynlig": inbakad i priset och aldrig en 
+separat rad på räkningen. Ingen skriver ut hur mycket av priset på din 
+mjölk som är skatt.</p>
     </div>
     <div class="quiz-block r">
-      <div class="quiz-label">Kontrollera förståelsen &middot; Konsumtionsskatt</div>
+      <div class="quiz-label">Kontrollera förståelsen · Konsumtionsskatt</div>
       <div class="quiz-q">Vad utlöste revolten mot den franska saltskatten i Blansac 1636?</div>
       <div class="quiz-opts">
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Parlamentariska petitioner var ett sätt de rikare klasserna hanterade politiska klagomål. Blansac-revolten var ett uttryck för direkt folkligt hat mot skatteindrivarna, inte ett organiserat politiskt framträdande.')"><span class="quiz-letter">A.</span> Parlamentet avskaffade saltskatten efter att bönderna lagt fram en formell petition till kungen</button>
-        <button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Skatteindrivare (gabeleurs) misshandlades och dödades av folkmassan, vars våldsamma reaktion visade hur djupt orättvis och hatad saltskatten upplevdes. Revolten slogs ned men systemet förblev oförändrat ändå.')"><span class="quiz-letter">B.</span> Skatteindrivare lynchades av folkmassan, vars reaktion visade hur djupt orättvis skatten upplevdes</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Historien om Blansac handlar inte om att kungen skärpte skatten som straff. Mönstret var snarare att revolter slogs ned utan att systemet förändrades, vilket ledde till att hatet mot gabellen ackumulerades under generationer.')"><span class="quiz-letter">C.</span> Kungen höjde skatten som straff för revolten, vilket ledde till ännu mer utbredd fattigdom</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Kyrkan spelade ingen roll i den franska saltskattens administration. Gabellen var en statlig civil skatt, inte en kyrklig avgift.')"><span class="quiz-letter">D.</span> Kyrkan tog över skatteuppbörden för att lugna befolkningen och stoppade tillfälligt oroligheterna</button>
-      </div>
+        
+        
+        
+        
+      <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Kyrkan spelade ingen roll i den franska saltskattens administration. Gabellen var en statlig civil skatt, inte en kyrklig avgift.')"><span class="quiz-letter">A.</span> Kyrkan tog över skatteuppbörden för att lugna befolkningen och stoppade tillfälligt oroligheterna</button><button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Skatteindrivare (gabeleurs) misshandlades och dödades av folkmassan, vars våldsamma reaktion visade hur djupt orättvis och hatad saltskatten upplevdes. Revolten slogs ned men systemet förblev oförändrat ändå.')"><span class="quiz-letter">B.</span> Skatteindrivare lynchades av folkmassan, vars reaktion visade hur djupt orättvis skatten upplevdes</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Parlamentariska petitioner var ett sätt de rikare klasserna hanterade politiska klagomål. Blansac-revolten var ett uttryck för direkt folkligt hat mot skatteindrivarna, inte ett organiserat politiskt framträdande.')"><span class="quiz-letter">C.</span> Parlamentet avskaffade saltskatten efter att bönderna lagt fram en formell petition till kungen</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Historien om Blansac handlar inte om att kungen skärpte skatten som straff. Mönstret var snarare att revolter slogs ned utan att systemet förändrades, vilket ledde till att hatet mot gabellen ackumulerades under generationer.')"><span class="quiz-letter">D.</span> Kungen höjde skatten som straff för revolten, vilket ledde till ännu mer utbredd fattigdom</button></div>
       <div class="quiz-feedback"></div>
       <button class="quiz-reset" onclick="resetQuiz(this)">Försök igen</button>
     </div>
@@ -865,31 +1099,48 @@ body::after {
       <div class="tax-row">
         <div class="tax-num">05</div>
         <div class="tax-badges">
-          <span class="tax-era-badge">1770-t. Bengalen &ndash; idag</span>
+          <span class="tax-era-badge">1770-t. Bengalen – idag</span>
           <span class="tax-type-label">Bolagsskatt</span>
         </div>
       </div>
       <h2 class="tax-title">Ostindiska kompaniet<br><em>När aktieägare kom före befolkning</em></h2>
     </div>
     <div class="tax-body r">
-      <p>Bolagsskatten är en skatt på företagets vinst. I dag betalar svenska företag 20,6 procent av sin vinst i bolagsskatt. Men bolagsbeskattningens historia börjar inte med moderna skattelagar. Den börjar med vad som händer när ett privat företag ges rätten att driva in skatt.</p>
-      <p>Det brittiska Ostindiska kompaniet var det närmaste man kan komma en modern multinationell jätte under 1700-talet. Det hade egna arméer, egna domstolar och, från och med 1765, rätten att driva in skatt i den indiska provinsen Bengalen. Det var ett företag med statsmakt.</p>
-      <p>Under den katastrofala hungersnöden 1769 till 1773, som dödade uppskattningsvis en tredjedel av Bengalens befolkning, fortsatte kompaniet att driva in skatt med full kraft. Prioriteringen var tydlig: aktieägarnas utdelning i London var inte förhandlingsbar. Parlamentet i London tvingades så småningom ingripa och börja reglera kompaniets makt, ett av historiens tidigaste exempel på att en stat måste kontrollera ett multinationellt företags skatteuttag.</p>
+      <p>Bolagsskatten är en skatt på företagets vinst. I dag betalar 
+svenska företag 20,6 procent av sin vinst i bolagsskatt. Men 
+bolagsbeskattningens historia börjar inte med moderna skattelagar. Den 
+börjar med vad som händer när ett privat företag ges rätten att driva in
+ skatt.</p>
+      <p>Det brittiska Ostindiska kompaniet var det närmaste man kan 
+komma en modern multinationell jätte under 1700-talet. Det hade egna 
+arméer, egna domstolar och, från och med 1765, rätten att driva in skatt
+ i den indiska provinsen Bengalen. Det var ett företag med statsmakt.</p>
+      <p>Under den katastrofala hungersnöden 1769 till 1773, som dödade 
+uppskattningsvis en tredjedel av Bengalens befolkning, fortsatte 
+kompaniet att driva in skatt med full kraft. Prioriteringen var tydlig: 
+aktieägarnas utdelning i London var inte förhandlingsbar. Parlamentet i 
+London tvingades så småningom ingripa och börja reglera kompaniets makt,
+ ett av historiens tidigaste exempel på att en stat måste kontrollera 
+ett multinationellt företags skatteuttag.</p>
     </div>
     <blockquote class="pull-quote r">"En tredjedel av Bengalens befolkning dog. Aktieägarna i London fick sin utdelning. Parlamentet ingrep först efteråt."</blockquote>
     <div class="fact-box r">
       <div class="fact-box-label">Nutida Sverige</div>
-      <p>Idag debatterar vi hur multinationella jättar använder <strong>internprissättning</strong>, hur de sätter priser på transaktioner inom samma koncern, för att flytta vinster till länder med låg eller ingen bolagsskatt. Logiken är densamma som Ostindiska kompaniets: maximera avkastningen, minimera skatten, och låt andra bära samhällets kostnader.</p>
+      <p>Idag debatterar vi hur multinationella jättar använder <strong>internprissättning</strong>,
+ hur de sätter priser på transaktioner inom samma koncern, för att 
+flytta vinster till länder med låg eller ingen bolagsskatt. Logiken är 
+densamma som Ostindiska kompaniets: maximera avkastningen, minimera 
+skatten, och låt andra bära samhällets kostnader.</p>
     </div>
     <div class="quiz-block r">
-      <div class="quiz-label">Kontrollera förståelsen &middot; Bolagsskatt</div>
+      <div class="quiz-label">Kontrollera förståelsen · Bolagsskatt</div>
       <div class="quiz-q">Vad utlöste skandalen med brittiska Ostindiska kompaniet i Bengalen under 1770-talets hungersnöd?</div>
       <div class="quiz-opts">
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Det var inte kompaniets förhållande till kronan som utlöste skandalen, utan dess behandling av Bengalens befolkning. Kompaniet betalade faktiskt skatter och avgifter till den brittiska staten.')"><span class="quiz-letter">A.</span> Kompaniet vägrade betala skatt till den brittiska kronan och använde vinsten för att köpa politisk immunitet</button>
-        <button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Kompaniet fortsatte att driva in skatt under hungersnöden för att kunna betala utdelningar till aktieägarna i London. Den humanitära katastrofen och det uppenbara prioriterandet av vinst framför befolkningens överlevnad tvingade det brittiska parlamentet att börja reglera kompaniets makt.')"><span class="quiz-letter">B.</span> Kompaniet drev in skatt under hungersnöden för att kunna betala utdelningar till aktieägarna i London</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Indiska handlare fick inte stämma i brittisk domstol vid denna tid och det finns inga belägg för ett sådant rättsfall. Skandalen var politisk och humanitär, inte juridisk.')"><span class="quiz-letter">C.</span> Indiska handlare stämde kompaniet för stulna handelsrutter och vann i brittisk domstol</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Att förklara krig var en av kompaniets befogenheter men inte orsaken till parlamentets ingripande. Det var den humanitära katastrofen i kombination med uppenbar vinstmaximering som väckte opinion.')"><span class="quiz-letter">D.</span> Kompaniet försökte förklara krig mot Frankrike på egen hand, utan parlamentets godkännande</button>
-      </div>
+        
+        
+        
+        
+      <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Indiska handlare fick inte stämma i brittisk domstol vid denna tid och det finns inga belägg för ett sådant rättsfall. Skandalen var politisk och humanitär, inte juridisk.')"><span class="quiz-letter">A.</span> Indiska handlare väckte åtal mot kompaniet för stulna handelsrutter och vann målet i brittisk domstol</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Att förklara krig var en av kompaniets befogenheter men inte orsaken till parlamentets ingripande. Det var den humanitära katastrofen i kombination med uppenbar vinstmaximering som väckte opinion.')"><span class="quiz-letter">B.</span> Kompaniet försökte förklara krig mot Frankrike på egen hand, utan parlamentets godkännande</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Det var inte kompaniets förhållande till kronan som utlöste skandalen, utan dess behandling av Bengalens befolkning. Kompaniet betalade faktiskt skatter och avgifter till den brittiska staten.')"><span class="quiz-letter">C.</span> Kompaniet vägrade betala skatt till kronan och använde överskottet för att köpa sig politisk immunitet</button><button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Kompaniet fortsatte att driva in skatt under hungersnöden för att kunna betala utdelningar till aktieägarna i London. Den humanitära katastrofen och det uppenbara prioriterandet av vinst framför befolkningens överlevnad tvingade det brittiska parlamentet att börja reglera kompaniets makt.')"><span class="quiz-letter">D.</span> Kompaniet drev in skatt under hungersnöden för att kunna betala utdelningar till aktieägarna i London</button></div>
       <div class="quiz-feedback"></div>
       <button class="quiz-reset" onclick="resetQuiz(this)">Försök igen</button>
     </div>
@@ -905,33 +1156,54 @@ body::after {
       <div class="tax-row">
         <div class="tax-num">06</div>
         <div class="tax-badges">
-          <span class="tax-era-badge">1799 &ndash; idag</span>
+          <span class="tax-era-badge">1799 – idag</span>
           <span class="tax-type-label">Inkomstskatt</span>
         </div>
       </div>
       <h2 class="tax-title">Vidrigt monster<br><em>Från krigsverktyg till välfärdens grund</em></h2>
     </div>
     <div class="tax-body r">
-      <p>Inkomstskatten, skatten på det man tjänar, är i dag det enskilt viktigaste finansieringsverktyget för den svenska välfärdsstaten. Men dess historia börjar med ett dokument man ville bränna.</p>
-      <p>År 1404 föreslog det engelska parlamentet en tidig form av inkomstskatt. Den ansågs så "ondskefull" och ett sådant tyranniskt intrång i den personliga integriteten att parlamentet beordrade alla handlingar rörande förslaget att förstöras, så att eftervärlden aldrig skulle få kännedom om det. Skatten avskaffades. Dokumenten brändes.</p>
-      <p>Det dröjde ytterligare fyra hundra år innan premier William Pitt den yngre 1799 återinförde inkomstskatten som en desperat åtgärd för att finansiera kriget mot Napoleon. Han kallade den ett tillfälligt instrument för en exceptionell kris. Skatten kallades av motståndarna för ett "vidrigt monster". Den avskaffades 1816, återinfördes 1842 och är sedan dess permanent. Det tillfälliga krigsverktyget blev en bestående institution.</p>
+      <p>Inkomstskatten, skatten på det man tjänar, är i dag det enskilt
+ viktigaste finansieringsverktyget för den svenska välfärdsstaten. Men 
+dess historia börjar med ett dokument man ville bränna.</p>
+      <p>År 1404 föreslog det engelska parlamentet en tidig form av 
+inkomstskatt. Den ansågs så "ondskefull" och ett sådant tyranniskt 
+intrång i den personliga integriteten att parlamentet beordrade alla 
+handlingar rörande förslaget att förstöras, så att eftervärlden aldrig 
+skulle få kännedom om det. Skatten avskaffades. Dokumenten brändes.</p>
+      <p>Det dröjde ytterligare fyra hundra år innan premier William 
+Pitt den yngre 1799 återinförde inkomstskatten som en desperat åtgärd 
+för att finansiera kriget mot Napoleon. Han kallade den ett tillfälligt 
+instrument för en exceptionell kris. Skatten kallades av motståndarna 
+för ett "vidrigt monster". Den avskaffades 1816, återinfördes 1842 och 
+är sedan dess permanent. Det tillfälliga krigsverktyget blev en 
+bestående institution.</p>
       <h4>Ratchet-effekten</h4>
-      <p>Det är ett mönster som upprepas genom historien: skatter som införs i kris tenderar att stanna kvar. Byråkratin är redan på plats. Staten har vant sig vid intäkterna. Och medborgarna har vant sig vid det systemet finansierar.</p>
+      <p>Det är ett mönster som upprepas genom historien: skatter som 
+införs i kris tenderar att stanna kvar. Byråkratin är redan på plats. 
+Staten har vant sig vid intäkterna. Och medborgarna har vant sig vid det
+ systemet finansierar.</p>
     </div>
-    <blockquote class="pull-quote r">"Parlamentet beordrade 1404 att alla dokument om inkomstskatten skulle brännas. Skatten som ingen fick känna till är i dag välfärdsstatens ryggrad."</blockquote>
+    <blockquote class="pull-quote r">"Parlamentet beordrade 1404 att 
+alla dokument om inkomstskatten skulle brännas. Skatten som ingen fick 
+känna till är i dag välfärdsstatens ryggrad."</blockquote>
     <div class="fact-box r">
       <div class="fact-box-label">Nutida Sverige</div>
-      <p>Under andra världskriget höjdes den amerikanska marginalskatten för de allra rikaste till 94 procent. Det var ett krigsverktyg, men <strong>skattens logik</strong> stannade kvar länge efter kriget. I Sverige finansierar inkomstskatten i dag sjukvård, skola, pension och trygghetssystem. Det vidrigt monster som brändes på bål 1404 är i dag nästan okontroversiellt.</p>
+      <p>Under andra världskriget höjdes den amerikanska marginalskatten
+ för de allra rikaste till 94 procent. Det var ett krigsverktyg, men <strong>skattens logik</strong>
+ stannade kvar länge efter kriget. I Sverige finansierar inkomstskatten i
+ dag sjukvård, skola, pension och trygghetssystem. Det vidrigt monster 
+som brändes på bål 1404 är i dag nästan okontroversiellt.</p>
     </div>
     <div class="quiz-block r">
-      <div class="quiz-label">Kontrollera förståelsen &middot; Inkomstskatt</div>
+      <div class="quiz-label">Kontrollera förståelsen · Inkomstskatt</div>
       <div class="quiz-q">Varför ville det engelska parlamentet 1404 att alla dokument om inkomstskatten skulle förstöras?</div>
       <div class="quiz-opts">
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Frankrike spelade ingen roll i utformningen av det engelska skatteförslaget 1404. Motivet handlade om skatten i sig, inte om nationellt ursprung.')"><span class="quiz-letter">A.</span> Skatten hade utformats av fransmän och parlamentet ville radera alla spår av utländskt inflytande</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Skatten var ännu inte ens infört när det beslutades att bränna handlingarna. Inga pengar hade ännu samlats in, och det fanns inga bevis för korruption att dölja.')"><span class="quiz-letter">B.</span> Handlingarna avslöjade hur stor del av pengarna som hamnade i parlamentsledamöternas fickor</button>
-        <button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Inkomstskatten ansågs vara ett sådant tyranniskt intrång i den personliga integriteten att man ville hindra eftervärlden från att överhuvudtaget känna till idén. Det visar hur radikalt och provocerande tanken på inkomstskatt upplevdes på 1400-talet.')"><span class="quiz-letter">C.</span> Skatten ansågs så "ondskefull" att man ville hindra eftervärlden från att känna till att idén överhuvudtaget funnits</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Integritetsfrågan i 1404 handlade om skatten som princip, inte om en lista med skattebetalares namn. Du blandar ihop det moderna integritetsbegreppet med medeltidens politiska filosofi.')"><span class="quiz-letter">D.</span> Dokumenten innehöll en lista på alla skattebetalare, vilket upplevdes som ett hot mot privatpersoners säkerhet</button>
-      </div>
+        
+        
+        
+        
+      <button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Inkomstskatten ansågs vara ett sådant tyranniskt intrång i den personliga integriteten att man ville hindra eftervärlden från att överhuvudtaget känna till idén. Det visar hur radikalt och provocerande tanken på inkomstskatt upplevdes på 1400-talet.')"><span class="quiz-letter">A.</span> Skatten ansågs så ondskefull att man ville hindra eftervärlden från att överhuvudtaget veta att idén funnits</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Frankrike spelade ingen roll i utformningen av det engelska skatteförslaget 1404. Motivet handlade om skatten i sig, inte om nationellt ursprung.')"><span class="quiz-letter">B.</span> Skatten hade utformats av fransmän och parlamentet ville radera alla spår av utländskt inflytande</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Skatten var ännu inte ens infört när det beslutades att bränna handlingarna. Inga pengar hade ännu samlats in, och det fanns inga bevis för korruption att dölja.')"><span class="quiz-letter">C.</span> Handlingarna visade hur stor del av skatteintäkterna som hamnade direkt i parlamentsledamöternas egna fickor</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Integritetsfrågan i 1404 handlade om skatten som princip, inte om en lista med skattebetalares namn. Du blandar ihop det moderna integritetsbegreppet med medeltidens politiska filosofi.')"><span class="quiz-letter">D.</span> Dokumenten innehöll en lista på alla skattebetalare, vilket upplevdes som ett hot mot privatpersoners säkerhet</button></div>
       <div class="quiz-feedback"></div>
       <button class="quiz-reset" onclick="resetQuiz(this)">Försök igen</button>
     </div>
@@ -947,35 +1219,306 @@ body::after {
       <div class="tax-row">
         <div class="tax-num">07</div>
         <div class="tax-badges">
-          <span class="tax-era-badge">1712 &ndash; 2007</span>
+          <span class="tax-era-badge">1712 – 2007</span>
           <span class="tax-type-label">Förmögenhetsskatt</span>
         </div>
       </div>
       <h2 class="tax-title">102 procent<br><em>Bergman, Lindgren och skatteflykten</em></h2>
     </div>
     <div class="tax-body r">
-      <p>Förmögenhetsskatten är en skatt på det man äger snarare än det man tjänar: fastigheter, aktier, bankkonton och andra tillgångar. Historiskt har den använts som en krispolitisk åtgärd, ett sätt att dra in resurser från dem som har mest när statens kassor är tomma. Karl XII använde en variant av den för att finansiera krigen i början av 1700-talet. Under mellankrigstiden och efterkrigstiden blev den i Norden ett centralt instrument för omfördelning.</p>
-      <p>Men under 1970-talets Sverige hade systemet nått en gräns. Marginalskatter och förmögenhetsskatt kombinerades till effektiva skattesatser som för höginkomsttagare med tillgångar kunde överstiga 100 procent av inkomsten.</p>
-      <p>Det blev tydligt för allmänheten när Astrid Lindgren 1976 publicerade sin saga om <em>Pomperipossa i Monisamien</em>, en berättelse som visade att hennes marginalskatt uppgick till 102 procent. Samma år arresterades den världsberömde regissören Ingmar Bergman mitt under en repetition på Dramaten, misstänkt för skattebrott rörande sina bolag. Bergman drabbades av nervsammanbrott och gick i frivillig landsflykt i nio år.</p>
-      <p>Debatten förändrade Sverige. Förmögenhetsskatten avskaffades slutligen 2007, bland annat för att hindra det kapitalutflöde som Bergmans landsflykt symboliserade.</p>
+      <p>Förmögenhetsskatten är en skatt på det man äger snarare än det 
+man tjänar: fastigheter, aktier, bankkonton och andra tillgångar. 
+Historiskt har den använts som en krispolitisk åtgärd, ett sätt att dra 
+in resurser från dem som har mest när statens kassor är tomma. Karl XII 
+använde en variant av den för att finansiera krigen i början av 
+1700-talet. Under mellankrigstiden och efterkrigstiden blev den i Norden
+ ett centralt instrument för omfördelning.</p>
+      <p>Men under 1970-talets Sverige hade systemet nått en gräns. 
+Marginalskatter och förmögenhetsskatt kombinerades till effektiva 
+skattesatser som för höginkomsttagare med tillgångar kunde överstiga 100
+ procent av inkomsten.</p>
+      <p>Det blev tydligt för allmänheten när Astrid Lindgren 1976 publicerade sin saga om <em>Pomperipossa i Monisamien</em>,
+ en berättelse som visade att hennes marginalskatt uppgick till 102 
+procent. Samma år arresterades den världsberömde regissören Ingmar 
+Bergman mitt under en repetition på Dramaten, misstänkt för skattebrott 
+rörande sina bolag. Bergman drabbades av nervsammanbrott och gick i 
+frivillig landsflykt i nio år.</p>
+      <p>Debatten förändrade Sverige. Förmögenhetsskatten avskaffades 
+slutligen 2007, bland annat för att hindra det kapitalutflöde som 
+Bergmans landsflykt symboliserade.</p>
     </div>
-    <blockquote class="pull-quote r">"Astrid Lindgren visade att hon betalade 102 procent i skatt. Ingmar Bergman arresterades mitt under en repetition. Sverige började lyssna."</blockquote>
+    <blockquote class="pull-quote r">"Astrid Lindgren visade att hon 
+betalade 102 procent i skatt. Ingmar Bergman arresterades mitt under en 
+repetition. Sverige började lyssna."</blockquote>
     <div class="fact-box r">
       <div class="fact-box-label">Nutida Sverige</div>
-      <p>Sverige avskaffade förmögenhetsskatten 2007. Internationellt är diskussionen inte avslutad. Ekonomen Thomas Piketty förespråkar en global förmögenhetsskatt för att minska de växande klyftorna. Frågan om <strong>hur man ska beskatta ackumulerat kapital</strong>, snarare än löpande inkomst, är en av de centrala ekonomisk-politiska frågorna i 2020-talets Europa.</p>
+      <p>Sverige avskaffade förmögenhetsskatten 2007. Internationellt är
+ diskussionen inte avslutad. Ekonomen Thomas Piketty förespråkar en 
+global förmögenhetsskatt för att minska de växande klyftorna. Frågan om <strong>hur man ska beskatta ackumulerat kapital</strong>, snarare än löpande inkomst, är en av de centrala ekonomisk-politiska frågorna i 2020-talets Europa.</p>
     </div>
     <div class="quiz-block r">
-      <div class="quiz-label">Kontrollera förståelsen &middot; Förmögenhetsskatt</div>
+      <div class="quiz-label">Kontrollera förståelsen · Förmögenhetsskatt</div>
       <div class="quiz-q">Vad visade Astrid Lindgrens saga om Pomperipossa från 1976?</div>
       <div class="quiz-opts">
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Lindgren var en av Sveriges mest framgångsrika och välbetalda författare. Hennes poäng var inte att hon inte tjänade tillräckligt, utan att skattekonstruktionen skapade absurda marginaleffekter.')"><span class="quiz-letter">A.</span> Att barnboksförfattare trots höga bokförsäljningssiffror inte tjänade tillräckligt för att betala sin skatt</button>
-        <button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Kombinationen av inkomstskatt, arbetsgivaravgifter och förmögenhetsskatt skapade en effektiv marginalskatt på över 100 procent för Lindgrens inkomst under ett visst tröskelbelopp. Sagan om Pomperipossa illustrerade ett systemfel som ledde till en bred politisk debatt.')"><span class="quiz-letter">B.</span> Att kombinationen av inkomstskatt och avgifter kunde ge en effektiv marginalskatt på över 100 procent</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Pomperipossa handlar om Lindgrens egna skattekonstruktion och den konkreta matematik som gav 102 procent, inte om en jämförelse mellan yrkesgrupper. Det du beskriver är ett annat, om än besläktat, argument.')"><span class="quiz-letter">C.</span> Att förmögenhetsskatten drabbade vanliga löntagare hårdare än de förmögna, som hade råd med skatteplanerare</button>
-        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Sagans poäng var inte att konstnärer behandlades annorlunda utan att skatteuttaget i sig var absurt, matematiskt omöjligt att hantera för den som nådde en viss inkomstnivå. Argumentet gällde principen, inte gruppen.')"><span class="quiz-letter">D.</span> Att det svenska skattesystemet behandlade konstnärer orättvist jämfört med affärsmän</button>
+        
+        
+        
+        
+      <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Sagans poäng var inte att konstnärer behandlades annorlunda utan att skatteuttaget i sig var absurt, matematiskt omöjligt att hantera för den som nådde en viss inkomstnivå. Argumentet gällde principen, inte gruppen.')"><span class="quiz-letter">A.</span> Att det svenska skattesystemet behandlade konstnärer och fria yrkesutövare mer orättvist än vanliga affärsmän</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Pomperipossa handlar om Lindgrens egna skattekonstruktion och den konkreta matematik som gav 102 procent, inte om en jämförelse mellan yrkesgrupper. Det du beskriver är ett annat, om än besläktat, argument.')"><span class="quiz-letter">B.</span> Att förmögenhetsskatten drabbade vanliga löntagare hårdare än de förmögna, som hade råd med skatteplanerare</button><button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Kombinationen av inkomstskatt, arbetsgivaravgifter och förmögenhetsskatt skapade en effektiv marginalskatt på över 100 procent för Lindgrens inkomst under ett visst tröskelbelopp. Sagan om Pomperipossa illustrerade ett systemfel som ledde till en bred politisk debatt.')"><span class="quiz-letter">C.</span> Att kombinationen av inkomstskatt och avgifter kunde ge en effektiv marginalskatt på över 100 procent</button><button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Lindgren var en av Sveriges mest framgångsrika och välbetalda författare. Hennes poäng var inte att hon inte tjänade tillräckligt, utan att skattekonstruktionen skapade absurda marginaleffekter.')"><span class="quiz-letter">D.</span> Att barnboksförfattare trots höga bokförsäljningssiffror inte tjänade tillräckligt för att betala sin skatt</button></div>
+      <div class="quiz-feedback"></div>
+      <button class="quiz-reset" onclick="resetQuiz(this)">Försök igen</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════
+     S8: LAFFERKURVAN
+═══════════════════════════════ -->
+<section id="s8" class="tax-section violet">
+  <div class="wrap">
+
+    <div class="tax-head r">
+      <div class="tax-row">
+        <div class="tax-num">08</div>
+        <div class="tax-badges">
+          <span class="tax-era-badge">1377 – idag</span>
+          <span class="tax-type-label">Optimal skatteteori</span>
+        </div>
+      </div>
+      <h2 class="tax-title">Servettens kurva<br><em>Finns det en optimal skattesats?</em></h2>
+    </div>
+
+    <div class="tax-body r">
+      <p>I föregående avsnitt såg vi vad som hände när Sverige testade gränsen: Astrid Lindgrens marginalskatt nådde 102 procent, Ingmar Bergman flydde landet. Men var går gränsen egentligen – när övergår en höjd skatt från att öka statens intäkter till att minska dem? Det är exakt den fråga som Lafferkurvan försöker besvara.</p>
+      <p>Kurvan bygger på en enkel tanke: om skatten är 0 procent får staten noll kronor, för inget tas ut. Om skatten är 100 procent får staten återigen noll kronor, för ingen arbetar och redovisar inkomster frivilligt när hela lönen konfiskeras. Däremellan finns en punkt som maximerar intäkterna. Problemet är att ingen vet exakt var den punkten är – och svaret skiljer sig åt beroende på land, kultur och ekonomins struktur.</p>
+      <h4>Idén är gammal. Kurvan är ny.</h4>
+      <p>Trots att kurvan bär ekonomen Arthur Laffers namn efter att han ritade den på en servett i Washington 1974, är principen bakom den flera hundra år gammal. Upplysningstidens tänkare, muslimska filosofer och brittiska premiärministrar formulerade alla varianter av samma insikt – länge innan kurvan hade ett namn.</p>
+    </div>
+
+    <!-- Interactive Laffer curve -->
+    <div class="laffer-viz r">
+      <div class="laffer-viz-label">Interaktiv illustration · Dra reglaget för att utforska kurvan</div>
+      <svg id="lc-svg" viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lc-pos-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#9B72CF" stop-opacity="0.18"/>
+            <stop offset="100%" stop-color="#9B72CF" stop-opacity="0.03"/>
+          </linearGradient>
+          <linearGradient id="lc-neg-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#E07A4A" stop-opacity="0.16"/>
+            <stop offset="100%" stop-color="#E07A4A" stop-opacity="0.03"/>
+          </linearGradient>
+          <clipPath id="lc-clip-pos"><rect x="40" y="0" width="215" height="200"/></clipPath>
+          <clipPath id="lc-clip-neg"><rect x="255" y="0" width="215" height="200"/></clipPath>
+        </defs>
+        <!-- zone fills -->
+        <path d="M40,165 Q255,-125 470,165 L255,165 Z" fill="url(#lc-pos-grad)" clip-path="url(#lc-clip-pos)"/>
+        <path d="M40,165 Q255,-125 470,165 L470,165 Z" fill="url(#lc-neg-grad)" clip-path="url(#lc-clip-neg)"/>
+        <!-- grid -->
+        <line x1="40" y1="50"  x2="470" y2="50"  stroke="rgba(201,168,76,.07)" stroke-width="1"/>
+        <line x1="40" y1="100" x2="470" y2="100" stroke="rgba(201,168,76,.07)" stroke-width="1"/>
+        <line x1="40" y1="150" x2="470" y2="150" stroke="rgba(201,168,76,.07)" stroke-width="1"/>
+        <line x1="255" y1="0"  x2="255" y2="175" stroke="rgba(155,114,207,.15)" stroke-width="1" stroke-dasharray="4,3"/>
+        <!-- axes -->
+        <line x1="40" y1="165" x2="475" y2="165" stroke="rgba(201,168,76,.45)" stroke-width="1.5"/>
+        <line x1="40" y1="165" x2="40"  y2="8"   stroke="rgba(201,168,76,.45)" stroke-width="1.5"/>
+        <polyline points="470,162 475,165 470,168" fill="none" stroke="rgba(201,168,76,.45)" stroke-width="1.5"/>
+        <polyline points="37,13 40,8 43,13"         fill="none" stroke="rgba(201,168,76,.45)" stroke-width="1.5"/>
+        <!-- axis labels -->
+        <text x="478" y="169" font-size="9" fill="#7a6228" font-family="Lora,serif">Skatt %</text>
+        <text x="6"   y="12"  font-size="9" fill="#7a6228" font-family="Lora,serif">Intäkter</text>
+        <!-- x-axis ticks -->
+        <line x1="40"  y1="165" x2="40"  y2="170" stroke="rgba(201,168,76,.35)" stroke-width="1"/>
+        <text x="36"   y="180" font-size="9" fill="#7a6228" font-family="Lora,serif" text-anchor="middle">0%</text>
+        <line x1="255" y1="165" x2="255" y2="170" stroke="rgba(201,168,76,.35)" stroke-width="1"/>
+        <text x="255"  y="180" font-size="9" fill="#7a6228" font-family="Lora,serif" text-anchor="middle">50%</text>
+        <line x1="470" y1="165" x2="470" y2="170" stroke="rgba(201,168,76,.35)" stroke-width="1"/>
+        <text x="470"  y="180" font-size="9" fill="#7a6228" font-family="Lora,serif" text-anchor="middle">100%</text>
+        <!-- zone labels -->
+        <text x="110" y="155" font-size="8.5" fill="rgba(155,114,207,.7)" font-family="Lora,serif" font-style="italic">Positiva sidan</text>
+        <text x="310" y="155" font-size="8.5" fill="rgba(224,122,74,.7)"  font-family="Lora,serif" font-style="italic">Negativa sidan</text>
+        <!-- Uncertainty zone: 40-80% (no single optimal point) -->
+        <rect x="212" y="0" width="172" height="165" fill="rgba(232,160,32,0.06)"/>
+        <line x1="212" y1="0" x2="212" y2="165" stroke="rgba(232,160,32,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="384" y1="0" x2="384" y2="165" stroke="rgba(232,160,32,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="298" y="9" text-anchor="middle" font-size="7.5" fill="rgba(232,160,32,0.9)" font-family="Lora,serif" font-weight="bold">? Optimal zon: 40–80%</text>
+        <text x="298" y="17" text-anchor="middle" font-size="6.5" fill="rgba(232,160,32,0.7)" font-family="Lora,serif" font-style="italic">varierar per land och era</text>
+        <!-- the curve -->
+        <path d="M40,165 Q255,-125 470,165" fill="none" stroke="#9B72CF" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- moving indicator line -->
+        <line id="lc-vline" x1="149" y1="20" x2="149" y2="165" stroke="rgba(201,168,76,.5)" stroke-width="1" stroke-dasharray="4,3"/>
+        <!-- moving dot -->
+        <circle id="lc-dot" cx="149" cy="72" r="6" fill="#9B72CF" stroke="var(--navy)" stroke-width="2"/>
+
+        <!-- Historical markers -->
+        <g class="lc-marker" id="lc-m0">
+          <line x1="96" y1="99" x2="96" y2="165" stroke="rgba(155,114,207,.4)" stroke-width="1" stroke-dasharray="2,2"/>
+          <circle cx="96" cy="99" r="7" fill="var(--navy-card)" stroke="#9B72CF" stroke-width="2"/>
+          <text x="96" y="103" text-anchor="middle" font-size="8" fill="#9B72CF" font-family="Lora,serif" font-weight="bold">1</text>
+        </g>
+        <g class="lc-marker" id="lc-m1">
+          <line x1="160" y1="48" x2="160" y2="165" stroke="rgba(155,114,207,.4)" stroke-width="1" stroke-dasharray="2,2"/>
+          <circle cx="160" cy="48" r="7" fill="var(--navy-card)" stroke="#9B72CF" stroke-width="2"/>
+          <text x="160" y="52" text-anchor="middle" font-size="8" fill="#9B72CF" font-family="Lora,serif" font-weight="bold">2</text>
+        </g>
+        <g class="lc-marker" id="lc-m2">
+          <line x1="255" y1="20" x2="255" y2="165" stroke="rgba(155,114,207,.4)" stroke-width="1" stroke-dasharray="2,2"/>
+          <circle cx="255" cy="20" r="7" fill="var(--navy-card)" stroke="#9B72CF" stroke-width="2"/>
+          <text x="255" y="24" text-anchor="middle" font-size="8" fill="#9B72CF" font-family="Lora,serif" font-weight="bold">3</text>
+        </g>
+        <g class="lc-marker" id="lc-m3">
+          <line x1="341" y1="43" x2="341" y2="165" stroke="rgba(155,114,207,.4)" stroke-width="1" stroke-dasharray="2,2"/>
+          <circle cx="341" cy="43" r="7" fill="var(--navy-card)" stroke="#9B72CF" stroke-width="2"/>
+          <text x="341" y="47" text-anchor="middle" font-size="8" fill="#9B72CF" font-family="Lora,serif" font-weight="bold">4</text>
+        </g>
+        <g class="lc-marker" id="lc-m4">
+          <line x1="397" y1="83" x2="397" y2="165" stroke="rgba(155,114,207,.4)" stroke-width="1" stroke-dasharray="2,2"/>
+          <circle cx="397" cy="83" r="7" fill="var(--navy-card)" stroke="#9B72CF" stroke-width="2"/>
+          <text x="397" y="87" text-anchor="middle" font-size="8" fill="#9B72CF" font-family="Lora,serif" font-weight="bold">5</text>
+        </g>
+        <g class="lc-marker" id="lc-m5">
+          <line x1="444" y1="133" x2="444" y2="165" stroke="rgba(155,114,207,.4)" stroke-width="1" stroke-dasharray="2,2"/>
+          <circle cx="444" cy="133" r="7" fill="var(--navy-card)" stroke="#9B72CF" stroke-width="2"/>
+          <text x="444" y="137" text-anchor="middle" font-size="8" fill="#9B72CF" font-family="Lora,serif" font-weight="bold">6</text>
+        </g>
+        <!-- origin labels -->
+        <text x="42"  y="163" font-size="8" fill="rgba(201,168,76,.5)" font-family="Lora,serif">0 kr</text>
+        <text x="455" y="163" font-size="8" fill="rgba(201,168,76,.5)" font-family="Lora,serif" text-anchor="end">0 kr</text>
+      </svg>
+      <div class="laffer-slider-row">
+        <label for="lc-slider">Skattesats:</label>
+        <input type="range" id="lc-slider" min="0" max="100" value="25"/>
+      </div>
+      <p style="font-size:.72rem;color:rgba(232,160,32,.75);margin:.5rem 0 0;font-style:italic;line-height:1.5">
+        Det gula fältet markerar den <strong style="color:rgba(232,160,32,.9);font-style:normal">osäkra optimala zonen (40–80 %)</strong> – forskning pekar på olika värden beroende på landets institutioner, förtroende och ekonomins struktur. Det finns inget exakt svar.
+      </p>
+      <div class="laffer-readout">
+        <div class="laffer-stat">
+          <span class="laffer-stat-val" id="lc-rate-val" style="color:var(--gold)">25%</span>
+          <span class="laffer-stat-key">Skattesats</span>
+        </div>
+        <div class="laffer-stat">
+          <span class="laffer-stat-val" id="lc-rev-val" style="color:var(--violet)">71%</span>
+          <span class="laffer-stat-key">Intäkter (rel. max)</span>
+        </div>
+        <div class="laffer-zone" id="lc-zone">
+          På den positiva sidan – staten kan höja skatten och få mer intäkter
+        </div>
+      </div>
+
+      <!-- Historical examples grid -->
+      <div class="laffer-examples" id="lc-examples">
+        <div class="lx-card lx-active" id="lx-0">
+          <div class="lx-num">Exempel 1 · 13%</div>
+          <div class="lx-rate">13%</div>
+          <div class="lx-who">Ryssland · 2001</div>
+          <div class="lx-desc">Platt inkomstskatt på 13 % infördes. Intäkterna steg med 23 % – men experter menar att det berodde på hårdare kontroller, inte lägre skatt.</div>
+        </div>
+        <div class="lx-card" id="lx-1">
+          <div class="lx-num">Exempel 2 · 28%</div>
+          <div class="lx-rate">28%</div>
+          <div class="lx-who">USA · 1988 (efter Reagan)</div>
+          <div class="lx-desc">Toppskatten sänktes från 70 % till 28 %. Budgetunderskottet exploderade istället för att minska – ett av Lafferkurvans mest omdiskuterade test.</div>
+        </div>
+        <div class="lx-card" id="lx-2">
+          <div class="lx-num">Exempel 3 · 50%</div>
+          <div class="lx-rate">50%</div>
+          <div class="lx-who">OECD-genomsnitt · idag</div>
+          <div class="lx-desc">De flesta rika demokratier samlar in 35–50 % av BNP i skatt. På den positiva sidan av kurvan, men nära toppen.</div>
+        </div>
+        <div class="lx-card" id="lx-3">
+          <div class="lx-num">Exempel 4 · 70%</div>
+          <div class="lx-rate">70%</div>
+          <div class="lx-who">USA · 1960–70-tal</div>
+          <div class="lx-desc">Toppskatten låg länge vid 70–91 %. Ekonomin växte starkt. Moderna studier pekar på ~70 % som den teoretiska optimalpunkten för höginkomstländer.</div>
+        </div>
+        <div class="lx-card" id="lx-4">
+          <div class="lx-num">Exempel 5 · 83%</div>
+          <div class="lx-rate">83%</div>
+          <div class="lx-who">Storbritannien · 1971</div>
+          <div class="lx-desc">Marginalskatt 83 % på löneinkomster, 98 % på kapital. Rolling Stones och hundratals förmögna lämnade landet. Tydligt på den negativa sidan.</div>
+        </div>
+        <div class="lx-card" id="lx-5">
+          <div class="lx-num">Exempel 6 · 94%</div>
+          <div class="lx-rate">94%</div>
+          <div class="lx-who">USA · 1944 (krigsår)</div>
+          <div class="lx-desc">Krigstidens toppskatt på inkomster över 200 000 dollar – principen om "lika uppoffring". De rika hittade ändå kryphål via avdrag och förlustbolag.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historical forerunners -->
+    <div class="laffer-hist-label r">Tre historiska föregångare</div>
+    <div class="laffer-history r">
+      <div class="lh-card">
+        <div class="lh-year">1377</div>
+        <div class="lh-who">Ibn Khaldun · Nordafrika</div>
+        <div class="lh-title">Dynastins skattelogik</div>
+        <div class="lh-text">Den muslimske historikern Ibn Khaldun observerade att skattesystem i <em>början</em> av en dynasti genererar stora intäkter från låga uttag. I <em>slutet</em> ger höga uttag bara magra intäkter – folk arbetar och handlar allt less. Han formulerade principen mer än 600 år före Laffer.</div>
+      </div>
+      <div class="lh-card">
+        <div class="lh-year">1745</div>
+        <div class="lh-who">Premiärminister Pelham · England</div>
+        <div class="lh-title">Teskatten och smugglarna</div>
+        <div class="lh-text">Den brittiske premiärministern Henry Pelham sänkte kraftigt skatten på te. Resultatet: de lagliga inköpen ökade så dramatiskt att statens totala intäkter steg – trots den lägre skattesatsen. Incitamentet att smuggla försvann. Kurvan i praktiken, ett sekel före Adam Smith.</div>
+      </div>
+      <div class="lh-card">
+        <div class="lh-year">1974</div>
+        <div class="lh-who">Arthur Laffer · Washington DC</div>
+        <div class="lh-title">Servettens skiss</div>
+        <div class="lh-text">Ekonomen Arthur Laffer skissade sin kurva på en servett under en middag i Washington. Det var en tid av ekonomisk stagnation och höga marginalskatter. Kurvan blev hörnstenen i <em>supply-side economics</em> – teorin att sänkta skatter för de rika skulle "betala för sig själva" genom ökad ekonomisk aktivitet.</div>
+      </div>
+    </div>
+
+    <blockquote class="pull-quote r">"Vi lämnade England av skattemässiga skäl. Marginalerna var 83 procent på normala inkomster och 98 procent på kapital. Vi hade bokstavligen inte råd med nya gitarrsträngar."<br><small style="font-size:.65em;font-style:normal;color:var(--cream-dim);letter-spacing:.03em">— Keith Richards, Rolling Stones · England, 1971</small></blockquote>
+
+    <!-- Empirical cases -->
+    <div class="laffer-cases-label r">Tre empiriska fall – teorin möter verkligheten</div>
+    <div class="laffer-cases r">
+      <div class="lcase-card">
+        <div class="lcase-top">
+          <div class="lcase-name">Reagan-eran</div>
+          <span class="lcase-badge miss">Misslyckades</span>
+        </div>
+        <div class="lcase-era">USA · 1981–1989</div>
+        <div class="lcase-text">President Reagan genomförde kraftiga skattesänkningar med hänvisning till Lafferkurvan. Kritikerna pekar på att dessa ledde till exploderande budgetunderskott snarare än ökade intäkter. Förespråkarna menar att de lade grund för framtida tillväxt. Historiker är fortfarande oeniga.</div>
+      </div>
+      <div class="lcase-card">
+        <div class="lcase-top">
+          <div class="lcase-name">Rysslands platta skatt</div>
+          <span class="lcase-badge mixed">Blandat</span>
+        </div>
+        <div class="lcase-era">Ryssland · 2001</div>
+        <div class="lcase-text">Ryssland bytte till en enhetlig inkomstskatt på 13 procent. Intäkterna steg med 23 procent året efter. Men de flesta ekonomer bedömer att ökningen berodde på hårdare kontroller och bättre regelefterlevnad – inte på skattesänkningen i sig. Lafferkurvan användes politiskt, inte ekonomiskt.</div>
+      </div>
+      <div class="lcase-card">
+        <div class="lcase-top">
+          <div class="lcase-name">Kansas-experimentet</div>
+          <span class="lcase-badge miss">Misslyckades</span>
+        </div>
+        <div class="lcase-era">Kansas, USA · 2012</div>
+        <div class="lcase-text">Guvernören sänkte skatterna drastiskt i förväntan om en ekonomisk boom. Resultatet: delstatens ekonomi underpresterade jämfört med grannstaterna och tvingade fram smärtsamma nedskärningar i skolor och infrastruktur. Räknas i dag som ett av de tydligaste motexemplen mot okritisk tillämpning av Lafferkurvan.</div>
+      </div>
+    </div>
+
+    <div class="fact-box r">
+      <div class="fact-box-label">Nutida Sverige</div>
+      <p>Moderna studier tyder på att den <strong>optimala toppskatten i utvecklade länder kan ligga runt 70 procent</strong> – men det varierar kraftigt beroende på landets storlek, kultur och institutionellt förtroende. Sverige har en marginalskatt på drygt 55 procent för de högsta inkomsterna. Astrid Lindgrens 102 procent var uppenbart på fel sida av kurvan. Frågan om exakt var toppen är förblir en av de mest omtvistade frågorna i modern skattepolitik.</p>
+    </div>
+
+    <div class="quiz-block r">
+      <div class="quiz-label">Kontrollera förståelsen · Lafferkurvan</div>
+      <div class="quiz-q">Vad visade Kansas-experimentet 2012 om Lafferkurvans praktiska tillämpning?</div>
+      <div class="quiz-opts">
+        <button class="quiz-btn" data-correct="true" onclick="answerQuiz(this,true,'<strong>Rätt!</strong> Drastiska skattesänkningar ledde inte till den ekonomiska boom som utlovades. Delstaten underpresterade jämfört med grannstaterna och tvingades till nedskärningar i offentlig service. Experimentet räknas i dag som ett av de tydligaste motexemplen mot okritisk tillämpning av Lafferkurvan.')"><span class="quiz-letter">A.</span> Att skattesänkningarna misslyckades – delstaten underpresterade ekonomiskt och tvingades skära ned på välfärden</button>
+        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Lafferkurvan gäller i teorin oberoende av om landet är rikt eller fattigt, även om det optimala skatteuttaget varierar. Kansas-experimentet misslyckades inte för att teorin är geografiskt begränsad, utan för att den tillämpades utan hänsyn till var delstaten faktiskt befann sig på kurvan.')"><span class="quiz-letter">B.</span> Att Lafferkurvan är teoretiskt korrekt men i praktiken bara tillämpbar i länder med mycket hög BNP per capita</button>
+        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Skattesänkningarna i Kansas ledde faktiskt inte till att intäkterna ökade – tvärtom. Experimentet förvärrades av att den ekonomiska tillväxten uteblev och att budgetunderskottet tvingade fram nedskärningar.')"><span class="quiz-letter">C.</span> Att skattesänkningarna tredubblade statens skatteintäkter och på så vis bekräftade Laffers teori i praktiken</button>
+        <button class="quiz-btn" onclick="answerQuiz(this,false,'<strong>Inte riktigt.</strong> Kansas upplevde inget tydligt inflöde av företag. Utan konkurrenskraftiga skolor och infrastruktur, finansierade av tillräckliga skatteintäkter, förlorar ett område sin attraktionskraft.')"><span class="quiz-letter">D.</span> Att inflyttningen av företag från grannstater ökade markant, vilket tydde på att skattebasen breddes ut</button>
       </div>
       <div class="quiz-feedback"></div>
       <button class="quiz-reset" onclick="resetQuiz(this)">Försök igen</button>
     </div>
+
   </div>
 </section>
 
@@ -997,11 +1540,11 @@ body::after {
       <div class="driv-card">
         <div class="driv-head" onclick="toggleDriv(this)">
           <svg class="driv-icon" viewBox="0 0 36 36" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="6" y1="30" x2="28" y2="8"/>
-            <line x1="22" y1="6" x2="30" y2="14"/>
-            <path d="M6 30 L4 32"/>
-            <path d="M16 8 L20 6 L30 8 L28 14"/>
-            <line x1="9" y1="27" x2="13" y2="23"/>
+            <line x1="6" y1="30" x2="28" y2="8"></line>
+            <line x1="22" y1="6" x2="30" y2="14"></line>
+            <path d="M6 30 L4 32"></path>
+            <path d="M16 8 L20 6 L30 8 L28 14"></path>
+            <line x1="9" y1="27" x2="13" y2="23"></line>
           </svg>
           <div class="driv-meta">
             <div class="driv-sub">Drivkraft 1</div>
@@ -1011,14 +1554,25 @@ body::after {
         </div>
         <div class="driv-body">
           <div class="driv-inner">
-            <p>Krig är historiens kraftfullaste motor för skatteförändringar. Statens behov av resurser blir omedelbart och enormt. Det skapar en <em>ratchet-effekt</em>: skatter som införs som tillfälliga nödlösningar under krig tenderar att stanna kvar permanent. Byråkratin är redan på plats. Staten har vant sig vid intäkterna.</p>
+            <p>Krig är historiens kraftfullaste motor för 
+skatteförändringar. Statens behov av resurser blir omedelbart och 
+enormt. Det skapar en <em>ratchet-effekt</em>: skatter som införs som 
+tillfälliga nödlösningar under krig tenderar att stanna kvar permanent. 
+Byråkratin är redan på plats. Staten har vant sig vid intäkterna.</p>
             <div class="driv-case">
               <div class="driv-case-label">Historiskt fall</div>
-              <strong>Pitt den yngre, 1799.</strong> Storbritanniens inkomstskatt infördes som ett desperat krigsverktyg mot Napoleon. Den kallades ett "vidrigt monster" och avskaffades formellt 1816 efter Napoleons fall. Sedan återinfördes den 1842 och är permanent sedan dess.
+              <strong>Pitt den yngre, 1799.</strong> Storbritanniens 
+inkomstskatt infördes som ett desperat krigsverktyg mot Napoleon. Den 
+kallades ett "vidrigt monster" och avskaffades formellt 1816 efter 
+Napoleons fall. Sedan återinfördes den 1842 och är permanent sedan dess.
             </div>
             <div class="driv-case">
               <div class="driv-case-label">Nutida parallell</div>
-              <strong>Finanskrisen 2008.</strong> Akuta budgetunderskott tvingade fram nya internationella samarbeten mot skatteflykt. OECD:s BEPS-projekt, som ledde till det globala minimiskatteaccordet 2021, startade i krisens spår på samma sätt som inkomstskatten startade i krigets.
+              <strong>Finanskrisen 2008.</strong> Akuta budgetunderskott
+ tvingade fram nya internationella samarbeten mot skatteflykt. OECD:s 
+BEPS-projekt, som ledde till det globala minimiskatteaccordet 2021, 
+startade i krisens spår på samma sätt som inkomstskatten startade i 
+krigets.
             </div>
           </div>
         </div>
@@ -1028,15 +1582,15 @@ body::after {
       <div class="driv-card">
         <div class="driv-head" onclick="toggleDriv(this)">
           <svg class="driv-icon" viewBox="0 0 36 36" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="18" cy="18" r="5"/>
-            <line x1="18" y1="4" x2="18" y2="11"/>
-            <line x1="18" y1="25" x2="18" y2="32"/>
-            <line x1="4" y1="18" x2="11" y2="18"/>
-            <line x1="25" y1="18" x2="32" y2="18"/>
-            <line x1="8.5" y1="8.5" x2="13.5" y2="13.5"/>
-            <line x1="22.5" y1="22.5" x2="27.5" y2="27.5"/>
-            <line x1="27.5" y1="8.5" x2="22.5" y2="13.5"/>
-            <line x1="13.5" y1="22.5" x2="8.5" y2="27.5"/>
+            <circle cx="18" cy="18" r="5"></circle>
+            <line x1="18" y1="4" x2="18" y2="11"></line>
+            <line x1="18" y1="25" x2="18" y2="32"></line>
+            <line x1="4" y1="18" x2="11" y2="18"></line>
+            <line x1="25" y1="18" x2="32" y2="18"></line>
+            <line x1="8.5" y1="8.5" x2="13.5" y2="13.5"></line>
+            <line x1="22.5" y1="22.5" x2="27.5" y2="27.5"></line>
+            <line x1="27.5" y1="8.5" x2="22.5" y2="13.5"></line>
+            <line x1="13.5" y1="22.5" x2="8.5" y2="27.5"></line>
           </svg>
           <div class="driv-meta">
             <div class="driv-sub">Drivkraft 2</div>
@@ -1046,14 +1600,24 @@ body::after {
         </div>
         <div class="driv-body">
           <div class="driv-inner">
-            <p>Skatten följer alltid pengakedjan. Systemet förändras när ekonomins struktur skiftar: från att ha beskattat synlig jordbruksmark och fysiskt arbete har man tvingats anpassa sig till penningekonomi, industriella vinster och nu digitala flöden.</p>
+            <p>Skatten följer alltid pengakedjan. Systemet förändras när
+ ekonomins struktur skiftar: från att ha beskattat synlig jordbruksmark 
+och fysiskt arbete har man tvingats anpassa sig till penningekonomi, 
+industriella vinster och nu digitala flöden.</p>
             <div class="driv-case">
               <div class="driv-case-label">Historiskt fall</div>
-              <strong>Industrialiseringen, 1800-t.</strong> Storskaliga fabriker och lönearbete gjorde det möjligt att spåra inkomster centralt. Källskatt vid löneuttag och bokföringstvång skapade ett system som var omöjligt att bygga utan industrins centralisering.
+              <strong>Industrialiseringen, 1800-t.</strong> Storskaliga 
+fabriker och lönearbete gjorde det möjligt att spåra inkomster centralt.
+ Källskatt vid löneuttag och bokföringstvång skapade ett system som var 
+omöjligt att bygga utan industrins centralisering.
             </div>
             <div class="driv-case">
               <div class="driv-case-label">Nutida parallell</div>
-              <strong>Digitaliseringen.</strong> Google och Amazon kan göra enorma vinster i ett land utan en enda fysisk byggnad där. Det gamla skattesystemet byggde på fysisk närvaro. Nu debatteras "digitalskatter" och vinstbeskattning baserad på var kunden befinner sig, inte var servern står.
+              <strong>Digitaliseringen.</strong> Google och Amazon kan 
+göra enorma vinster i ett land utan en enda fysisk byggnad där. Det 
+gamla skattesystemet byggde på fysisk närvaro. Nu debatteras 
+"digitalskatter" och vinstbeskattning baserad på var kunden befinner 
+sig, inte var servern står.
             </div>
           </div>
         </div>
@@ -1063,12 +1627,12 @@ body::after {
       <div class="driv-card">
         <div class="driv-head" onclick="toggleDriv(this)">
           <svg class="driv-icon" viewBox="0 0 36 36" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="8" x2="18" y2="28"/>
-            <line x1="7" y1="18" x2="29" y2="18"/>
-            <circle cx="10" cy="24" r="4" fill="var(--gold-faint)"/>
-            <circle cx="26" cy="24" r="4" fill="var(--gold-faint)"/>
-            <path d="M7 18 L10 24"/>
-            <path d="M29 18 L26 24"/>
+            <line x1="18" y1="8" x2="18" y2="28"></line>
+            <line x1="7" y1="18" x2="29" y2="18"></line>
+            <circle cx="10" cy="24" r="4" fill="var(--gold-faint)"></circle>
+            <circle cx="26" cy="24" r="4" fill="var(--gold-faint)"></circle>
+            <path d="M7 18 L10 24"></path>
+            <path d="M29 18 L26 24"></path>
           </svg>
           <div class="driv-meta">
             <div class="driv-sub">Drivkraft 3</div>
@@ -1078,14 +1642,25 @@ body::after {
         </div>
         <div class="driv-body">
           <div class="driv-inner">
-            <p>När makten förskjuts i samhället, förskjuts skattebördan. Demokratisering och massrörelser skapar krav på "lika uppoffring". Globaliseringen skapar motkraften: internationell skattekonkurrens där länder sänker skatter för att locka företag.</p>
+            <p>När makten förskjuts i samhället, förskjuts skattebördan.
+ Demokratisering och massrörelser skapar krav på "lika uppoffring". 
+Globaliseringen skapar motkraften: internationell skattekonkurrens där 
+länder sänker skatter för att locka företag.</p>
             <div class="driv-case">
               <div class="driv-case-label">Historiskt fall</div>
-              <strong>USA 1944.</strong> Under andra världskriget höjdes marginalskatten för de allra rikaste till 94 procent. Det var ett utryck för den politiska principen att ingen skulle tjäna stort på ett krig som andra offrade sina liv för. Skattenivån är ett politiskt dokument.
+              <strong>USA 1944.</strong> Under andra världskriget höjdes
+ marginalskatten för de allra rikaste till 94 procent. Det var ett 
+utryck för den politiska principen att ingen skulle tjäna stort på ett 
+krig som andra offrade sina liv för. Skattenivån är ett politiskt 
+dokument.
             </div>
             <div class="driv-case">
               <div class="driv-case-label">Nutida parallell</div>
-              <strong>OECD:s minimiskatt.</strong> 130 länder ställde sig 2021 bakom ett avtal om 15 procents global minimiskatt på multinationella bolag, ett historiskt skifte mot att motverka skattekonkurrensen. Från 2024 har systemet börjat träda i kraft, om än med komplikationer kring USA:s deltagande.
+              <strong>OECD:s minimiskatt.</strong> 130 länder ställde 
+sig 2021 bakom ett avtal om 15 procents global minimiskatt på 
+multinationella bolag, ett historiskt skifte mot att motverka 
+skattekonkurrensen. Från 2024 har systemet börjat träda i kraft, om än 
+med komplikationer kring USA:s deltagande.
             </div>
           </div>
         </div>
@@ -1110,23 +1685,29 @@ body::after {
     <div class="bc-concepts r">
       <div class="bc-concept">
         <div class="bc-term">Skattetryck</div>
-        <div class="bc-def">Hur stor andel av BNP som betalas in i skatter och avgifter. 43 % innebär att 43 kronor av varje 100 kronor som skapas i ekonomin går till staten.</div>
+        <div class="bc-def">Hur stor andel av BNP som betalas in i 
+skatter och avgifter. 43 % innebär att 43 kronor av varje 100 kronor som
+ skapas i ekonomin går till staten.</div>
       </div>
       <div class="bc-concept">
         <div class="bc-term">BNP</div>
-        <div class="bc-def">Bruttonationalprodukt. Det totala värdet av alla varor och tjänster ett land producerar under ett år. Det vanligaste måttet på ett lands ekonomiska storlek.</div>
+        <div class="bc-def">Bruttonationalprodukt. Det totala värdet av 
+alla varor och tjänster ett land producerar under ett år. Det vanligaste
+ måttet på ett lands ekonomiska storlek.</div>
       </div>
       <div class="bc-concept">
         <div class="bc-term">Sociala avgifter</div>
-        <div class="bc-def">Inkluderas i skattetrycket. Det är avgifter arbetsgivare och anställda betalar för pension, sjukförsäkring och liknande trygghetssystem.</div>
+        <div class="bc-def">Inkluderas i skattetrycket. Det är avgifter 
+arbetsgivare och anställda betalar för pension, sjukförsäkring och 
+liknande trygghetssystem.</div>
       </div>
     </div>
 
     <div class="viz-card r" style="max-width:820px;margin:0 auto">
       <div class="viz-title">Skattetryck: internationell jämförelse</div>
-      <div class="viz-sub">Total skatt inklusive sociala avgifter (% av BNP) &middot; Senaste tillgängliga år &middot; Källa: OECD Revenue Statistics 2023</div>
-      <div class="chart-wrap"><canvas id="barChart"></canvas></div>
-      <p class="chart-note">Guldstaplar = nordiska länder (43 %+) &nbsp;&middot;&nbsp; Blå = nära OECD-snittet &nbsp;&middot;&nbsp; Grå = under snittet</p>
+      <div class="viz-sub">Total skatt inklusive sociala avgifter (% av BNP) · Senaste tillgängliga år · Källa: OECD Revenue Statistics 2023</div>
+      <div class="chart-wrap"><canvas id="barChart" style="display: block; box-sizing: border-box; height: 300px; width: 760px;" width="951" height="375"></canvas></div>
+      <p class="chart-note">Guldstaplar = nordiska länder (43 %+) &nbsp;·&nbsp; Blå = nära OECD-snittet &nbsp;·&nbsp; Grå = under snittet</p>
     </div>
 
   </div>
@@ -1147,17 +1728,28 @@ body::after {
       <div class="src-card">
         <div class="src-author">Michael Keen &amp; Joel Slemrod</div>
         <div class="src-title" style="font-style:normal"><em>Rebellion, Rascals, and Revenue</em></div>
-        <div class="src-note">Central källa för "spärrhakseffekten" (ratchet effect) – hur tillfälliga krigsskatter blir permanenta. Exemplet med Pitt den yngre och inkomstskatten 1799, samt resonemangen kring internationell skattekonkurrens och global minimiskatt, är hämtade härifrån.</div>
+        <div class="src-note">Central källa för "spärrhakseffekten" 
+(ratchet effect) – hur tillfälliga krigsskatter blir permanenta. 
+Exemplet med Pitt den yngre och inkomstskatten 1799, samt resonemangen 
+kring internationell skattekonkurrens och global minimiskatt, är hämtade
+ härifrån.</div>
       </div>
       <div class="src-card">
         <div class="src-author">Walter Scheidel</div>
         <div class="src-title" style="font-style:normal"><em>The Great Leveler</em></div>
-        <div class="src-note">Underlag för hur totala krig fungerar som en utjämnande kraft i samhället. Exemplet om USA:s marginalskatt på 94&nbsp;% under andra världskriget och principen om "lika uppoffring" är hämtat härifrån.</div>
+        <div class="src-note">Underlag för hur totala krig fungerar som 
+en utjämnande kraft i samhället. Exemplet om USA:s marginalskatt på 
+94&nbsp;% under andra världskriget och principen om "lika uppoffring" är
+ hämtat härifrån.</div>
       </div>
       <div class="src-card">
         <div class="src-author">Yanis Varoufakis</div>
         <div class="src-title" style="font-style:normal"><em>Technofeudalism</em></div>
-        <div class="src-note">Underlag för det nutida parallellfallet om teknologisk förändring. Begreppet "molnkapital" och hur digitaliseringen gör att teknikjättar genererar vinster utan fysisk närvaro i ett land – vilket tvingar fram debatter om digitalskatter – är hämtat från Varoufakis analys.</div>
+        <div class="src-note">Underlag för det nutida parallellfallet om
+ teknologisk förändring. Begreppet "molnkapital" och hur 
+digitaliseringen gör att teknikjättar genererar vinster utan fysisk 
+närvaro i ett land – vilket tvingar fram debatter om digitalskatter – är
+ hämtat från Varoufakis analys.</div>
       </div>
       <div class="src-card">
         <div class="src-author">OECD Revenue Statistics 2023</div>
@@ -1166,13 +1758,15 @@ body::after {
       </div>
       <div class="src-card">
         <div class="src-author">Wolters Kluwer / Wikipedia</div>
-        <div class="src-title">Historical U.S. Top Marginal Tax Rates 1913&ndash;2024</div>
-        <div class="src-note">94-procentssatsen gällde för inkomster över 200 000 dollar (ca 3,4 miljoner dollar i 2024 års penningvärde) under 1944&ndash;1945.</div>
+        <div class="src-title">Historical U.S. Top Marginal Tax Rates 1913–2024</div>
+        <div class="src-note">94-procentssatsen gällde för inkomster över 200 000 dollar (ca 3,4 miljoner dollar i 2024 års penningvärde) under 1944–1945.</div>
       </div>
       <div class="src-card">
         <div class="src-author">OECD / Wikipedia</div>
         <div class="src-title">Global minimum corporate tax rate (Pillar Two)</div>
-        <div class="src-note">130 länder ställde sig bakom OECD:s plan 1 juli 2021. Per januari 2026 är 147 länder del av ramverket, med ett separat arrangemang för USA.</div>
+        <div class="src-note">130 länder ställde sig bakom OECD:s plan 1
+ juli 2021. Per januari 2026 är 147 länder del av ramverket, med ett 
+separat arrangemang för USA.</div>
       </div>
     </div>
 
@@ -1184,16 +1778,16 @@ body::after {
 </section>
 
 <script>
-/* ══════════════════════════════════
+/* ==================================
    FLIP CARD
-══════════════════════════════════ */
+================================== */
 function flipCard(card) {
   card.classList.toggle('flipped');
 }
 
-/* ══════════════════════════════════
+/* ==================================
    DRIVKRAFTER ACCORDION
-══════════════════════════════════ */
+================================== */
 function toggleDriv(head) {
   const card = head.closest('.driv-card');
   const body = card.querySelector('.driv-body');
@@ -1210,9 +1804,9 @@ function toggleDriv(head) {
   }
 }
 
-/* ══════════════════════════════════
+/* ==================================
    QUIZ SHUFFLE (Fisher-Yates)
-══════════════════════════════════ */
+================================== */
 (function shuffleAllQuizzes() {
   const letters = ['A','B','C','D'];
   document.querySelectorAll('.quiz-opts').forEach(opts => {
@@ -1228,9 +1822,9 @@ function toggleDriv(head) {
   });
 })();
 
-/* ══════════════════════════════════
+/* ==================================
    QUIZ ENGINE (Craig Barton)
-══════════════════════════════════ */
+================================== */
 function answerQuiz(btn, isCorrect, feedback) {
   const block = btn.closest('.quiz-block');
   block.querySelectorAll('.quiz-btn').forEach(b => {
@@ -1255,16 +1849,16 @@ function resetQuiz(resetBtn) {
   resetBtn.classList.remove('show');
 }
 
-/* ══════════════════════════════════
+/* ==================================
    NAV
-══════════════════════════════════ */
+================================== */
 function goTo(id) {
   document.getElementById(id).scrollIntoView({ behavior:'smooth' });
 }
 
-/* ══════════════════════════════════
+/* ==================================
    PROGRESS + ACTIVE NAV
-══════════════════════════════════ */
+================================== */
 const navBtns = document.querySelectorAll('.nav-btn');
 const navIds  = ['galleri','s1','drivkrafter','dataviz','kallor'];
 
@@ -1278,15 +1872,15 @@ window.addEventListener('scroll', () => {
       const r = el.getBoundingClientRect();
       if (r.top <= 90 && r.bottom > 90) {
         navBtns.forEach(b => b.classList.remove('active'));
-        navBtns[i].classList.add('active');
+        if (navBtns[i]) navBtns[i].classList.add('active');
       }
     }
   });
 }, { passive:true });
 
-/* ══════════════════════════════════
+/* ==================================
    REVEAL ON SCROLL
-══════════════════════════════════ */
+================================== */
 const revealObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -1298,9 +1892,62 @@ const revealObs = new IntersectionObserver(entries => {
 
 document.querySelectorAll('.r').forEach(el => revealObs.observe(el));
 
-/* ══════════════════════════════════
+/* ==================================
+   LAFFER KURVA
+================================== */
+(function initLaffer() {
+  const sl      = document.getElementById('lc-slider');
+  const dot     = document.getElementById('lc-dot');
+  const vline   = document.getElementById('lc-vline');
+  const rateEl  = document.getElementById('lc-rate-val');
+  const revEl   = document.getElementById('lc-rev-val');
+  const zoneEl  = document.getElementById('lc-zone');
+  if (!sl) return;
+
+  const histPoints = [13, 28, 50, 70, 83, 94];
+  const exCards    = document.querySelectorAll('.lx-card');
+  const svgMarkers = document.querySelectorAll('.lc-marker');
+
+  function update() {
+    const s = +sl.value;
+    const t = s / 100;
+    const svgX = 40  + 430 * t;
+    const svgY = 165 - 580 * t + 580 * t * t;
+    const rev  = Math.round(Math.sin(Math.PI * t) * 100);
+    const past = s > 50;
+
+    dot.setAttribute('cx', svgX);
+    dot.setAttribute('cy', svgY);
+    dot.setAttribute('fill', past ? '#E07A4A' : '#9B72CF');
+    vline.setAttribute('x1', svgX);
+    vline.setAttribute('x2', svgX);
+    rateEl.textContent = s + '%';
+    revEl.textContent  = rev + '%';
+    revEl.style.color  = past ? '#E07A4A' : '#9B72CF';
+    zoneEl.textContent = past
+      ? '! Pa den negativa sidan - ytterligare skattehojningar minskar intakterna'
+      : 'Pa den positiva sidan - staten kan hoja skatten och fa mer intakter';
+    zoneEl.className = 'laffer-zone' + (past ? ' warn' : '');
+
+    // Find closest historical point
+    let closest = 0, minDist = 999;
+    histPoints.forEach((p, i) => {
+      const d = Math.abs(s - p);
+      if (d < minDist) { minDist = d; closest = i; }
+    });
+
+    exCards.forEach((c, i) => c.classList.toggle('lx-active', i === closest));
+    svgMarkers.forEach((m, i) => m.classList.toggle('lc-m-active', i === closest));
+  }
+
+  sl.addEventListener('input', update);
+  update();
+})();
+
+
+/* ==================================
    BAR CHART
-══════════════════════════════════ */
+================================== */
 Chart.defaults.color = '#a99c7e';
 Chart.defaults.font.family = "'Lora', serif";
 
@@ -1358,5 +2005,6 @@ new Chart(barCtx, {
   }
 });
 </script>
-</body>
-</html>
+
+
+</body></html>
