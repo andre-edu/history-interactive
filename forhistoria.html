@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Förhistoria: Historia 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #131009;
+    --stone:     #1e1a12;
+    --stone2:    #2a2418;
+    --stone3:    #362e1e;
+    --ochre:     #c4893a;
+    --ochre-dim: #8a5e22;
+    --sienna:    #9b4a1f;
+    --bone:      #e8dcc8;
+    --bone-dim:  #a89880;
+    --cream:     #f2ead8;
+    --accent:    #e0a94a;
+    --red:       #b03a2e;
+    --green:     #4a7c59;
+    --blue-dim:  #3a5a7c;
+    --tab-h:     52px;
+    --radius:    6px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--bone);
+    font-family: 'Lora', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.75;
+    min-height: 100vh;
+    /* subtle noise texture */
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% 0%, #2a1f0a44 0%, transparent 70%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 56px 24px 40px;
+    position: relative;
+  }
+  header::after {
+    content: '';
+    display: block;
+    width: 120px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--ochre), transparent);
+    margin: 24px auto 0;
+  }
+  .header-label {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--ochre-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+  }
+  h1 span {
+    color: var(--ochre);
+  }
+  .header-sub {
+    margin-top: 12px;
+    font-size: 15px;
+    color: var(--bone-dim);
+    font-style: italic;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 16px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--stone3);
+    box-shadow: 0 4px 20px #00000060;
+  }
+  .tab-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--stone2);
+    border: 1px solid var(--stone3);
+    color: var(--bone-dim);
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover {
+    background: var(--stone3);
+    color: var(--bone);
+    border-color: var(--ochre-dim);
+  }
+  .tab-btn.active {
+    background: var(--ochre);
+    color: var(--bg);
+    border-color: var(--ochre);
+    font-weight: 600;
+  }
+  .tab-number {
+    opacity: 0.6;
+    margin-right: 6px;
+    font-size: 10px;
+  }
+
+  /* ── PANELS ── */
+  .tab-panel {
+    display: none;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+    animation: fadeUp 0.35s ease both;
+  }
+  .tab-panel.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ochre);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--stone3);
+  }
+  h2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    font-weight: 600;
+    color: var(--cream);
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+  }
+  h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 10px;
+    letter-spacing: 0.08em;
+  }
+  p { margin-bottom: 16px; color: var(--bone); }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── DEFINITION BLOCK ── */
+  .definition-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 32px 0 40px;
+  }
+  @media (max-width: 640px) {
+    .definition-grid { grid-template-columns: 1fr; }
+  }
+  .def-card {
+    background: var(--stone);
+    border: 1px solid var(--stone3);
+    border-radius: var(--radius);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .def-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .def-card.f::before { background: var(--ochre); }
+  .def-card.h::before { background: var(--sienna); }
+  .def-card-icon {
+    font-size: 28px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .def-card p { font-size: 15px; }
+
+  /* pull-quote */
+  .pull-quote {
+    border-left: 3px solid var(--ochre);
+    padding: 16px 24px;
+    margin: 32px 0;
+    background: var(--stone);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--cream);
+  }
+  .pull-quote cite {
+    display: block;
+    margin-top: 10px;
+    font-size: 12px;
+    font-style: normal;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.1em;
+    color: var(--ochre-dim);
+  }
+
+  /* ── DUBBEL TIDSLINJE ── */
+  .timeline-container {
+    background: var(--stone);
+    border: 1px solid var(--stone3);
+    border-radius: var(--radius);
+    padding: 32px 24px 28px;
+    margin: 32px 0;
+    overflow-x: auto;
+  }
+  .timeline-intro {
+    font-size: 14px;
+    color: var(--bone-dim);
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  /* axis */
+  .tl-axis-wrap {
+    min-width: 600px;
+  }
+  .tl-axis {
+    position: relative;
+    height: 24px;
+    margin-bottom: 8px;
+  }
+  .tl-axis-line {
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 1px;
+    background: var(--stone3);
+  }
+  .tl-tick {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .tl-tick-line {
+    width: 1px;
+    height: 10px;
+    background: var(--stone3);
+  }
+  .tl-tick-label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    color: var(--bone-dim);
+    white-space: nowrap;
+  }
+
+  /* rows */
+  .tl-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 600px;
+    margin-top: 4px;
+  }
+  .tl-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .tl-row-label {
+    width: 130px;
+    flex-shrink: 0;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--bone-dim);
+    text-align: right;
+  }
+  .tl-row-track {
+    flex: 1;
+    height: 28px;
+    background: var(--stone2);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .tl-bar {
+    position: absolute;
+    top: 0; bottom: 0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    font-size: 11px;
+    font-family: 'Cinzel', serif;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: opacity 0.2s;
+  }
+  .tl-bar.prehistory {
+    background: linear-gradient(90deg, #5a3e1b, #7a5520);
+    color: var(--bone-dim);
+  }
+  .tl-bar.history {
+    background: linear-gradient(90deg, #3d6b4a, #2f5038);
+    color: #a8d4b4;
+  }
+  .tl-bar-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+  /* transition marker */
+  .tl-marker {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+  }
+  .tl-marker-tip {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    white-space: nowrap;
+    background: var(--stone);
+    padding: 1px 4px;
+    border-radius: 2px;
+  }
+
+  /* legend */
+  .tl-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .tl-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--bone-dim);
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.06em;
+  }
+  .tl-legend-swatch {
+    width: 24px; height: 12px;
+    border-radius: 2px;
+  }
+  .swatch-pre { background: #7a5520; }
+  .swatch-hist { background: #3d6b4a; }
+
+  /* note box */
+  .note-box {
+    background: #1e1810;
+    border: 1px solid var(--ochre-dim);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--bone-dim);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .note-icon { font-size: 18px; flex-shrink: 0; padding-top: 2px; }
+
+  /* ── SKANDINAVISK TIDSLINJE ── */
+  .scan-timeline {
+    margin: 32px 0;
+  }
+  .scan-periods {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .scan-period {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 0;
+    border-left: 3px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .scan-period:hover { border-left-color: var(--ochre-dim); }
+
+  .scan-period-meta {
+    padding: 18px 16px 18px 20px;
+    border-bottom: 1px solid var(--stone2);
+  }
+  .scan-period-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .scan-period-date {
+    font-size: 12px;
+    color: var(--bone-dim);
+    font-style: italic;
+  }
+  .scan-period-body {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--stone2);
+    font-size: 14px;
+    color: var(--bone-dim);
+  }
+  .scan-period-body strong {
+    color: var(--bone);
+    font-weight: 500;
+  }
+
+  /* color coding */
+  .period-stenalder .scan-period-name { color: #c4a97a; }
+  .period-bronsalder .scan-period-name { color: #c49a3a; }
+  .period-jarnalder .scan-period-name { color: #a0a0b0; }
+  .period-stenalder { background: #1a1710; }
+  .period-bronsalder { background: #1c1a0e; }
+  .period-jarnalder { background: #151518; }
+
+  /* ── EMPTY PANEL PLACEHOLDER ── */
+  .empty-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    text-align: center;
+    gap: 16px;
+  }
+  .empty-icon { font-size: 48px; opacity: 0.3; }
+  .empty-title {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ochre-dim);
+  }
+  .empty-sub {
+    font-size: 14px;
+    color: var(--bone-dim);
+    font-style: italic;
+    max-width: 340px;
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 500px) {
+    .tab-btn { font-size: 10px; padding: 8px 12px; }
+    .scan-period { grid-template-columns: 1fr; }
+    .scan-period-meta { border-bottom: none; padding-bottom: 4px; }
+  }
+
+  /* ── PERIOD INTRO ── */
+  .period-intro {
+    font-size: 15px;
+    color: var(--bone-dim);
+    margin-bottom: 36px;
+    max-width: 680px;
+  }
+  .flip-hint-global {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--ochre-dim);
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .flip-hint-global::before {
+    content: '';
+    flex: none;
+    width: 20px; height: 1px;
+    background: var(--ochre-dim);
+  }
+
+  /* ── CARD GRID ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  /* ── FLIP CARD ── */
+  .flip-card {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--stone);
+    border: 1px solid var(--stone3);
+    transition: box-shadow 0.25s, border-color 0.25s;
+  }
+  .flip-card:hover {
+    box-shadow: 0 8px 32px #0008;
+    border-color: var(--ochre-dim);
+  }
+
+  /* accent stripe top */
+  .flip-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--card-accent, var(--ochre));
+    z-index: 2;
+  }
+
+  /* ── FACES ── */
+  .card-face {
+    position: absolute;
+    inset: 0;
+    padding: 28px 24px 44px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transform: rotateY(90deg);
+    transition: none;
+    backface-visibility: hidden;
+    overflow-y: auto;
+  }
+  .card-face.face-active {
+    position: relative;
+    inset: auto;
+    opacity: 1;
+    pointer-events: auto;
+    transform: rotateY(0deg);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .card-face.face-exit {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: rotateY(-90deg);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+  .card-face.face-enter {
+    opacity: 0;
+    transform: rotateY(90deg);
+    transition: none;
+  }
+
+  /* face 1: front */
+  .face-front {
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .card-period-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .card-period-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .card-period-sub {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--card-accent, var(--ochre));
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .card-period-dates {
+    font-size: 13px;
+    color: var(--bone-dim);
+    font-style: italic;
+    margin-bottom: 0;
+  }
+  .card-tap-cue {
+    margin-top: auto;
+    padding-top: 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bone-dim);
+    opacity: 0.55;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-tap-cue svg {
+    width: 14px; height: 14px;
+    fill: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* face 2: info */
+  .face-info { justify-content: flex-start; gap: 0; }
+  .face-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--card-accent, var(--ochre));
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+  .info-row {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--stone2);
+  }
+  .info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .info-row-title {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bone-dim);
+    margin-bottom: 4px;
+  }
+  .info-row-text {
+    font-size: 13.5px;
+    color: var(--bone);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* face 3: source */
+  .face-source { justify-content: flex-start; }
+  .source-find {
+    background: var(--stone2);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    flex-shrink: 0;
+  }
+  .source-find-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--card-accent, var(--ochre));
+    margin-bottom: 6px;
+    opacity: 0.8;
+  }
+  .source-find-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 4px;
+  }
+  .source-find-desc {
+    font-size: 12.5px;
+    color: var(--bone-dim);
+    font-style: italic;
+    margin: 0;
+  }
+  .source-question-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bone-dim);
+    margin-bottom: 8px;
+  }
+  .source-question {
+    font-size: 14px;
+    color: var(--bone);
+    line-height: 1.65;
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* ── DOT INDICATOR ── */
+  .card-dots {
+    position: absolute;
+    bottom: 14px;
+    right: 18px;
+    display: flex;
+    gap: 8px;
+    z-index: 3;
+  }
+  .card-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--stone3);
+    border: 1px solid #ffffff18;
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+  }
+  .card-dot.active {
+    background: var(--card-accent, var(--ochre));
+    transform: scale(1.25);
+    box-shadow: 0 0 6px 2px var(--card-accent, var(--ochre)),
+                0 0 14px 4px color-mix(in srgb, var(--card-accent, var(--ochre)) 40%, transparent);
+  }
+
+  @media (max-width: 600px) {
+    .cards-grid { grid-template-columns: 1fr; }
+  }
+  /* ── NEOLITHIC FLOW ── */
+  @keyframes nodeSlide {
+    from { opacity: 0; transform: translateY(34px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes zonePop {
+    0%   { opacity: 0; transform: scale(0.7) translateX(-20px); }
+    55%  { opacity: 1; transform: scale(1.08) translateX(3px); }
+    78%  { transform: scale(0.97) translateX(0); }
+    100% { opacity: 1; transform: scale(1) translateX(0); }
+  }
+  @keyframes zoneGlow {
+    0%   { filter: brightness(2.2); }
+    100% { filter: brightness(1); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .neo-intro {
+    font-size: 15px;
+    color: var(--bone-dim);
+    margin-bottom: 40px;
+    max-width: 680px;
+  }
+
+  /* sticky next button */
+  .neo-next-wrap {
+    position: sticky;
+    bottom: 24px;
+    display: flex;
+    justify-content: center;
+    padding: 12px 0 2px;
+    z-index: 50;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    margin-top: 32px;
+  }
+  .neo-next-btn {
+    pointer-events: auto;
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: var(--ochre);
+    color: var(--bg);
+    border: none;
+    padding: 14px 34px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    box-shadow: 0 6px 28px #00000070;
+    transition: background 0.2s, transform 0.15s, opacity 0.2s;
+  }
+  .neo-next-btn:hover:not(:disabled) { background: var(--accent); transform: translateY(-2px); }
+  .neo-next-btn:active:not(:disabled) { transform: translateY(0); }
+  .neo-next-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
+
+  .neo-flow { max-width: 700px; }
+
+  /* zone label */
+  .neo-zone-label {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+  }
+  .neo-zone-label.vis {
+    animation: zonePop 0.52s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+               zoneGlow 1s ease forwards;
+  }
+  .neo-zone-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.22;
+  }
+
+  /* node */
+  .neo-node {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    background: var(--stone);
+    border: 1px solid var(--stone3);
+    border-left: 5px solid var(--nc, var(--ochre));
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    opacity: 0;
+    transition: box-shadow 0.25s;
+  }
+  .neo-node.vis {
+    animation: nodeSlide 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+  .neo-node:hover { box-shadow: 0 6px 24px #00000055; }
+  .node-icon { font-size: 26px; flex-shrink: 0; padding-top: 2px; line-height: 1; }
+  .node-body { flex: 1; }
+  .node-title {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 0.05em;
+    margin-bottom: 7px;
+  }
+  .node-text { font-size: 14px; color: var(--bone-dim); line-height: 1.72; margin: 0; }
+  .node-text strong { color: var(--bone); font-weight: 500; }
+
+  /* connector */
+  .neo-connector {
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 34px;
+    opacity: 0;
+  }
+  .neo-connector.vis { animation: fadeIn 0.35s ease forwards; }
+  .neo-connector-inner { display: flex; flex-direction: column; align-items: center; }
+  .neo-connector-line { width: 2px; height: 22px; background: var(--nc, var(--ochre)); opacity: 0.35; }
+  .neo-connector-tip {
+    width: 0; height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 9px solid var(--nc, var(--ochre));
+    opacity: 0.35;
+  }
+
+  /* zone gap */
+  .neo-zone-gap {
+    padding-left: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    opacity: 0;
+    margin: 6px 0;
+  }
+  .neo-zone-gap.vis { animation: fadeIn 0.35s ease forwards; }
+  .neo-zone-gap-line {
+    width: 2px;
+    height: 36px;
+    background: linear-gradient(to bottom, var(--nc-from, var(--ochre)), var(--nc-to, #4a8858));
+    opacity: 0.4;
+  }
+  .neo-zone-gap-tip {
+    width: 0; height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 11px solid var(--nc-to, #4a8858);
+    opacity: 0.4;
+    margin-left: -3px;
+  }
+
+  /* problematisering */
+  .neo-problematize {
+    margin-top: 40px;
+    background: #1c1008;
+    border: 1px solid var(--sienna);
+    border-radius: var(--radius);
+    padding: 28px 28px 24px;
+    opacity: 0;
+  }
+  .neo-problematize.vis {
+    animation: nodeSlide 0.85s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  }
+  .neo-prob-label {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sienna);
+    margin-bottom: 10px;
+    opacity: 0.8;
+  }
+  .neo-prob-title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    color: var(--cream);
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+  }
+  .neo-prob-text { font-size: 14px; color: var(--bone-dim); line-height: 1.75; margin-bottom: 12px; }
+  .neo-prob-text:last-child { margin-bottom: 0; }
+  .neo-prob-text em { color: var(--bone); font-style: italic; }
+
+  /* ── QUIZ ── */
+  .quiz-intro { font-size: 15px; color: var(--bone-dim); margin-bottom: 32px; max-width: 680px; }
+
+  .quiz-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; max-width: 680px; }
+  .quiz-q-count {
+    font-family: 'Cinzel', serif; font-size: 11px;
+    letter-spacing: 0.12em; color: var(--ochre-dim); white-space: nowrap;
+  }
+  .quiz-prog-bar { flex: 1; height: 3px; background: var(--stone3); border-radius: 2px; overflow: hidden; }
+  .quiz-prog-fill { height: 100%; background: var(--ochre); border-radius: 2px; transition: width 0.45s ease; width: 0%; }
+
+  .quiz-card {
+    background: var(--stone); border: 1px solid var(--stone3);
+    border-radius: var(--radius); padding: 28px 24px; max-width: 680px; margin-bottom: 32px;
+  }
+  .quiz-question {
+    font-size: 17px; color: var(--cream); line-height: 1.55;
+    margin-bottom: 24px; font-family: 'Lora', serif;
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--stone2); border: 1px solid var(--stone3);
+    border-radius: var(--radius); padding: 13px 16px;
+    text-align: left; font-family: 'Lora', serif; font-size: 14px;
+    color: var(--bone-dim); cursor: pointer; line-height: 1.55;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .quiz-opt:hover:not(:disabled) { background: var(--stone3); border-color: var(--ochre-dim); color: var(--bone); }
+  .opt-letter {
+    font-family: 'Cinzel', serif; font-size: 10px; font-weight: 600;
+    background: var(--stone3); color: var(--bone-dim);
+    width: 22px; height: 22px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .quiz-opt.correct            { background: #0f2019; border-color: #3a7a52; color: #8ecba8; }
+  .quiz-opt.correct .opt-letter { background: #3a7a52; color: #d0efe0; }
+  .quiz-opt.incorrect            { background: #20100e; border-color: #7a3a38; color: #c88a88; }
+  .quiz-opt.incorrect .opt-letter { background: #7a3a38; color: #eed8d8; }
+  .quiz-opt:disabled { cursor: default; opacity: 0.5; }
+  .quiz-opt.correct:disabled,
+  .quiz-opt.incorrect:disabled { opacity: 1; }
+
+  .quiz-feedback {
+    margin-top: 18px; padding: 16px 18px; border-radius: var(--radius);
+    font-size: 14px; line-height: 1.7; display: none; border-left: 4px solid transparent;
+  }
+  .quiz-feedback.show { display: block; animation: fadeUp 0.3s ease both; }
+  .quiz-feedback.fb-correct  { background: #0a1812; border-color: #3a7a52; }
+  .quiz-feedback.fb-incorrect { background: #180a0a; border-color: #7a3a38; }
+  .quiz-fb-title { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .fb-correct  .quiz-fb-title { color: #6ab88a; }
+  .fb-incorrect .quiz-fb-title { color: #c87878; }
+  .quiz-feedback p { color: var(--bone-dim); margin-bottom: 8px; }
+  .quiz-feedback p:last-child { margin-bottom: 0; }
+  .quiz-fb-misc { font-style: italic; opacity: 0.8; }
+
+  .quiz-nav { margin-top: 20px; }
+  .quiz-next-btn {
+    font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; background: var(--ochre); color: var(--bg);
+    border: none; padding: 12px 26px; border-radius: var(--radius);
+    cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .quiz-next-btn:hover { background: var(--accent); transform: translateY(-1px); }
+
+  .quiz-score {
+    text-align: center; padding: 52px 16px;
+    background: var(--stone); border: 1px solid var(--stone3);
+    border-radius: var(--radius); margin-bottom: 32px; max-width: 680px;
+    animation: fadeUp 0.4s ease both;
+  }
+  .score-label {
+    font-family: 'Cinzel', serif; font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--ochre-dim); margin-bottom: 12px;
+  }
+  .score-number {
+    font-family: 'Cinzel', serif; font-size: 4.5rem; font-weight: 700;
+    color: var(--ochre); line-height: 1; margin-bottom: 16px;
+  }
+  .score-text { font-size: 15px; color: var(--bone-dim); margin-bottom: 28px; font-style: italic; }
+
+  /* ── MATCHING ── */
+  .match-section { max-width: 680px; margin-top: 56px; }
+  .match-intro { font-size: 15px; color: var(--bone-dim); margin-bottom: 20px; }
+  .match-status {
+    font-family: 'Cinzel', serif; font-size: 12px;
+    letter-spacing: 0.1em; color: #6ab88a; min-height: 22px; margin-bottom: 10px;
+  }
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .match-item {
+    background: var(--stone); border: 1px solid var(--stone3);
+    border-radius: var(--radius); padding: 12px 14px;
+    font-size: 13px; color: var(--bone-dim); cursor: pointer;
+    text-align: left; line-height: 1.55;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+  }
+  .match-term {
+    font-family: 'Cinzel', serif; font-weight: 600;
+    color: var(--cream); background: var(--stone2); letter-spacing: 0.04em;
+    display: flex; align-items: center;
+  }
+  .match-item:hover:not(:disabled):not(.matched) { border-color: var(--ochre-dim); color: var(--bone); }
+  .match-item.selected { border-color: var(--ochre); box-shadow: 0 0 0 2px #c4893a44; background: #2a2010; }
+  .match-item.matched  { background: #0a1812; border-color: #3a7a52; color: #8ecba8; cursor: default; }
+  .match-item.error    { border-color: #7a3a38 !important; animation: matchShake 0.35s ease; }
+
+  @keyframes matchShake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-5px); }
+    75%       { transform: translateX(5px); }
+  }
+
+  @media (max-width: 520px) {
+    .match-grid { grid-template-columns: 1fr; }
+    .score-number { font-size: 3rem; }
+  }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">Historia 1, Gymnasiet</div>
+  <h1>För<span>historia</span></h1>
+  <p class="header-sub">Mänsklighetens längsta kapitel, berättat utan ord</p>
+</header>
+
+<!-- TAB BAR -->
+<nav class="tab-bar" role="tablist">
+  <button class="tab-btn active" onclick="switchTab(0)" role="tab">
+    <span class="tab-number">I</span> Vad är förhistoria?
+  </button>
+  <button class="tab-btn" onclick="switchTab(1)" role="tab">
+    <span class="tab-number">II</span> Perioderna
+  </button>
+  <button class="tab-btn" onclick="switchTab(2)" role="tab">
+    <span class="tab-number">III</span> Neolitiska revolutionen
+  </button>
+  <button class="tab-btn" onclick="switchTab(3)" role="tab">
+    <span class="tab-number">IV</span> Testa dig
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLIK 1: VAD ÄR FÖRHISTORIA?           -->
+<!-- ═══════════════════════════════════════ -->
+<section class="tab-panel active" id="panel-0">
+
+  <div class="section-title">Definition</div>
+  <h2>Vad menas med förhistoria?</h2>
+
+  <p>Förhistoria betecknar den period av mänsklighetens förflutna som <strong>saknar skriftliga källor</strong>. Det är den tid vi känner till enbart genom arkeologiska fynd: verktyg, skelett, gravar, boplatser och konst. Inte genom nedtecknade berättelser eller dokument.</p>
+
+  <div class="definition-grid">
+    <div class="def-card f">
+      <span class="def-card-icon">🪨</span>
+      <h3>Förhistoria</h3>
+      <p>Kunskap bygger uteslutande på <em>kvarlevor</em>: fysiska föremål, mänskliga rester och miljöarkeologiska data. Inga vittnesbörd, inga namn, inga egna berättelser.</p>
+    </div>
+    <div class="def-card h">
+      <span class="def-card-icon">📜</span>
+      <h3>Historia</h3>
+      <p>Kunskap vilar på <em>berättande källor</em>: texter, dokument och inskriptioner skapade av samtida människor. Skriften är gränsen.</p>
+    </div>
+  </div>
+
+  <div class="pull-quote">
+    En kvarleva som en yxa ljuger inte om sin existens, men historikern måste värdera dess betydelse: var den ett praktiskt verktyg eller ett rituellt offerfynd?
+    <cite>Källkritik och förhistoriskt material</cite>
+  </div>
+
+  <p>Gränsen mellan förhistoria och historia är <strong>inte ett globalt datum</strong> utan ett lokalt sådant. Den infaller när en specifik kultur börjar producera, eller omnämnas i, skriftliga källor. Det innebär att en och samma händelse kan vara "historisk" i en del av världen och "förhistorisk" i en annan.</p>
+
+  <!-- ── DUBBEL TIDSLINJE ── -->
+  <div class="section-title" style="margin-top:48px">Jämförande tidslinje</div>
+  <h2>Förhistoriens slut: en relativ gräns</h2>
+
+  <div class="timeline-container">
+    <p class="timeline-intro">
+      De gröna fälten visar när respektive region träder in i <em>historisk</em> tid. Resten är förhistoria.
+      Den gula markören anger ungefärlig övergångspunkt.
+    </p>
+
+    <div class="tl-axis-wrap">
+      <!-- Axis ticks -->
+      <div class="tl-axis" id="tl-axis"></div>
+
+      <!-- Rows -->
+      <div class="tl-rows" id="tl-rows"></div>
+
+      <div class="tl-legend">
+        <div class="tl-legend-item">
+          <div class="tl-legend-swatch swatch-pre"></div>
+          Förhistorisk tid
+        </div>
+        <div class="tl-legend-item">
+          <div class="tl-legend-swatch swatch-hist"></div>
+          Historisk tid (skriftliga källor finns)
+        </div>
+      </div>
+
+      <div class="note-box">
+        <span class="note-icon">💡</span>
+        <span>
+          Observera att <strong>Skandinavien</strong> befann sig i förhistorien ännu när
+          det västra romarriket föll (476 e.Kr.) och när islam grundades (622 e.Kr.).
+          Förhistoria är alltså <em>inte</em> synonymt med "primitiv" eller "avlägsen tid".
+          Det är ett källkritiskt begrepp.
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SKANDINAVISK PERIODINDELNING ── -->
+  <div class="section-title" style="margin-top: 48px">Kronologi</div>
+  <h2>Förhistoriens perioder i Skandinavien</h2>
+
+  <p>Förhistorien delas in efter det material som dominerade teknologin, det så kallade <strong>treperiodsystemet</strong>, formulerat av dansken Christian Jürgensen Thomsen på 1800-talet.</p>
+
+  <div class="scan-timeline">
+    <div class="scan-periods">
+
+      <div class="scan-period period-stenalder">
+        <div class="scan-period-meta">
+          <div class="scan-period-name">Stenåldern</div>
+          <div class="scan-period-date">ca 12 000 – 1800 f.Kr.</div>
+        </div>
+        <div class="scan-period-body">
+          <strong>Paleolitikum &amp; mesolitikum:</strong> Jägare och samlare följer djur norrut efter istidens slut.
+          <br><strong>Neolitikum (ca 4000 f.Kr.):</strong> Jordbruk och boskapsskötsel introduceras söderifrån. Megalitgravar som <em>Gillhög</em> i Skåne uppförs.
+        </div>
+      </div>
+
+      <div class="scan-period period-bronsalder">
+        <div class="scan-period-meta">
+          <div class="scan-period-name">Bronsåldern</div>
+          <div class="scan-period-date">ca 1800 – 500 f.Kr.</div>
+        </div>
+        <div class="scan-period-body">
+          Koppar och tenn importeras via långdistanshandel. Stark social skiktning uppstår, synlig i monumentala gravhögar som <em>Kungagraven i Kivik</em>.
+          Hällristningar med skepp och vagnar vittnar om en rik symbolkultur.
+        </div>
+      </div>
+
+      <div class="scan-period period-jarnalder">
+        <div class="scan-period-meta">
+          <div class="scan-period-name">Järnåldern</div>
+          <div class="scan-period-date">ca 500 f.Kr. – 1050 e.Kr.</div>
+        </div>
+        <div class="scan-period-body">
+          Järn utvinns ur lättillgänglig myrmalm. Småriken och centralplatser som <em>Uppåkra</em> växer fram.
+          Perioden avslutas med <strong>vikingatiden (ca 800–1050 e.Kr.)</strong>, övergången till historisk tid i Norden.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="note-box">
+    <span class="note-icon">📍</span>
+    <span>
+      <strong>Varför slutar förhistorien i Norden så sent?</strong>
+      Runstenar och utländska krönikor blir vanliga först under vikingatid. Det är inte förrän kristnandet och statens konsolidering ca år 1000 e.Kr. som skriftliga källor produceras regelbundet i Skandinavien.
+    </span>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════ -->
+<!-- FLIK 2: PERIODERNA            -->
+<!-- ═══════════════════════════════ -->
+<section class="tab-panel" id="panel-1">
+
+  <div class="section-title">Kronologi</div>
+  <h2>Förhistoriens fem perioder</h2>
+
+  <p class="period-intro">Varje kort har tre sidor. Första sidan ger en översikt, andra sidan fördjupar levnadssätt och teknologi, tredje sidan presenterar ett representativt fynd och en källkritisk fråga.</p>
+
+  <div class="flip-hint-global">Klicka på korten för att vända</div>
+
+  <div class="cards-grid" id="cards-grid">
+
+    <!-- KORT 1: PALEOLITIKUM -->
+    <div class="flip-card" style="--card-accent: #9a8060" onclick="flipCard(this)" data-state="0">
+
+      <div class="card-face face-front face-active">
+        <div>
+          <span class="card-period-icon">🔥</span>
+          <div class="card-period-name">Paleolitikum</div>
+          <div class="card-period-sub">Äldre stenålder</div>
+          <p class="card-period-dates">ca 12 000–9 000 f.Kr. i Skandinavien</p>
+        </div>
+        <div class="card-tap-cue">
+          <svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z" transform="rotate(90,12,12)"/></svg>
+          Klicka för att vända
+        </div>
+      </div>
+
+      <div class="card-face face-info">
+        <div class="face-label">Levnadssätt och teknologi</div>
+        <div class="info-row">
+          <div class="info-row-title">Försörjning</div>
+          <p class="info-row-text">Nomadiska jägare och samlare, det vill säga grupper som ständigt rör sig efter byten och bär med sig allt de äger. De följde renhjordar norrut när isen drog sig tillbaka efter istiden.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Samhälle</div>
+          <p class="info-row-text">Små, egalitära (jämlika, utan fast rangordning) släktskapsgrupper. Ingen ägde mer än andra, och ingen bestämde permanent över gruppen.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Teknologi</div>
+          <p class="info-row-text">Redskap av flinta, ben och horn. Elden behärskades. Symbolisk kultur syns i grottmålningar och utsmyckningar.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Kronologisk konsekvens</div>
+          <p class="info-row-text">Det nomadiska levnadssättet dominerar under nästan 90% av mänsklighetens historia. Det är först när klimatet stabiliseras och befolkningen växer som förutsättningarna för jordbruk uppstår, och allt förändras.</p>
+        </div>
+      </div>
+
+      <div class="card-face face-source">
+        <div class="face-label">Representativt fynd</div>
+        <div class="source-find">
+          <div class="source-find-label">Fynd</div>
+          <div class="source-find-name">Mölleröd, Finjasjön</div>
+          <p class="source-find-desc">Sveriges äldsta kända boplats, daterad till ca 11 500 f.Kr. i norra Skåne.</p>
+        </div>
+        <div class="source-question-label">Källkritisk fråga</div>
+        <p class="source-question">Mölleröd är en boplats. Vad kan vi faktiskt veta om de människor som levde här, och vad är det vi aldrig kan få svar på?</p>
+      </div>
+
+      <div class="card-dots">
+        <div class="card-dot active"></div>
+        <div class="card-dot"></div>
+        <div class="card-dot"></div>
+      </div>
+    </div>
+
+    <!-- KORT 2: MESOLITIKUM -->
+    <div class="flip-card" style="--card-accent: #4a8878" onclick="flipCard(this)" data-state="0">
+
+      <div class="card-face face-front face-active">
+        <div>
+          <span class="card-period-icon">🐟</span>
+          <div class="card-period-name">Mesolitikum</div>
+          <div class="card-period-sub">Mellanstenålder</div>
+          <p class="card-period-dates">ca 9 000–4 000 f.Kr. i Skandinavien</p>
+        </div>
+        <div class="card-tap-cue">
+          <svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z" transform="rotate(90,12,12)"/></svg>
+          Klicka för att vända
+        </div>
+      </div>
+
+      <div class="card-face face-info">
+        <div class="face-label">Levnadssätt och teknologi</div>
+        <div class="info-row">
+          <div class="info-row-title">Försörjning</div>
+          <p class="info-row-text">Jakt, fiske och insamling av växter. Fiske via nät och mjärdar (korgformade fällor av trä eller vide, som sänks ner i vatten för att fånga fisk passivt) blev allt viktigare.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Bosättning</div>
+          <p class="info-row-text">Gradvis mer bofasta mönster, särskilt vid kuster, sjöar och vattendrag med goda fiskeförhållanden. Grupper börjar återvända till samma platser årstid efter årstid.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Teknologi</div>
+          <p class="info-row-text">Mikroliter (mycket små, precisionsslipade flintspetsar som sattes samman till pilar och harpuner), pilbågar och enkla kanoter av urholkade trädstammar.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Kronologisk konsekvens</div>
+          <p class="info-row-text">Den gradvisa bofastheten lägger grunden för det som ska komma. När jordbruk sprids norrifrån ca 4 000 f.Kr. finns redan en kultur van vid att stanna kvar och bruka en plats, vilket gör övergången möjlig.</p>
+        </div>
+      </div>
+
+      <div class="card-face face-source">
+        <div class="face-label">Representativt fynd</div>
+        <div class="source-find">
+          <div class="source-find-label">Fynd</div>
+          <div class="source-find-name">Barumkvinnan, norra Skåne</div>
+          <p class="source-find-desc">En av Sveriges äldsta gravar, daterad till ca 7 000 f.Kr.</p>
+        </div>
+        <div class="source-question-label">Källkritisk fråga</div>
+        <p class="source-question">Vi hittar en grav med en kvinna. Vad berättar begravningssättet om hennes ställning i gruppen? Vad berättar det inte?</p>
+      </div>
+
+      <div class="card-dots">
+        <div class="card-dot active"></div>
+        <div class="card-dot"></div>
+        <div class="card-dot"></div>
+      </div>
+    </div>
+
+    <!-- KORT 3: NEOLITIKUM -->
+    <div class="flip-card" style="--card-accent: #5a8848" onclick="flipCard(this)" data-state="0">
+
+      <div class="card-face face-front face-active">
+        <div>
+          <span class="card-period-icon">🌾</span>
+          <div class="card-period-name">Neolitikum</div>
+          <div class="card-period-sub">Yngre stenålder</div>
+          <p class="card-period-dates">ca 4 000–1 800 f.Kr. i Skandinavien</p>
+        </div>
+        <div class="card-tap-cue">
+          <svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z" transform="rotate(90,12,12)"/></svg>
+          Klicka för att vända
+        </div>
+      </div>
+
+      <div class="card-face face-info">
+        <div class="face-label">Levnadssätt och teknologi</div>
+        <div class="info-row">
+          <div class="info-row-title">Försörjning</div>
+          <p class="info-row-text">Den neolitiska revolutionen når södra Skandinavien ca 4 000 f.Kr. Jordbruk och boskapsskötsel (kor, får, getter, svin) ersätter gradvis jakt och samling.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Bosättning</div>
+          <p class="info-row-text">Permanenta byar med långhus, där både människor och djur bodde under samma tak. Skogsröjning skapar åkermark.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Teknologi</div>
+          <p class="info-row-text">Keramik för förvaring, slipade stenyxor och vävning. Kollektiva monumentalbyggen, som megalitgravar, kräver samordning av hundratals människor under lång tid.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Kronologisk konsekvens</div>
+          <p class="info-row-text">Bofastheten skapar överskott av mat, vilket ger utrymme för specialisering. Vissa kan bli hantverkare, ledare eller präster i stället för att jaga. Grunden för social ojämlikhet och bronsålderns hierarkier är lagd.</p>
+        </div>
+      </div>
+
+      <div class="card-face face-source">
+        <div class="face-label">Representativt fynd</div>
+        <div class="source-find">
+          <div class="source-find-label">Fynd</div>
+          <div class="source-find-name">Gillhög, Skåne</div>
+          <p class="source-find-desc">En gånggrift (kollektivgrav av resta stenblock med ett lång korridor som leder in till gravkammaren) från trattbägarkulturen (Nordens första bondekultur, namngiven efter keramikens trattformade mynning), daterad till ca 3 500 f.Kr. Tusentals arbetstimmar lades på att flytta stenblock på flera ton.</p>
+        </div>
+        <div class="source-question-label">Källkritisk fråga</div>
+        <p class="source-question">Vem organiserade bygget av megalitgravarna, och vad säger det om makt, religion och samhällsstruktur under neolitikum?</p>
+      </div>
+
+      <div class="card-dots">
+        <div class="card-dot active"></div>
+        <div class="card-dot"></div>
+        <div class="card-dot"></div>
+      </div>
+    </div>
+
+    <!-- KORT 4: BRONSÅLDERN -->
+    <div class="flip-card" style="--card-accent: #b07828" onclick="flipCard(this)" data-state="0">
+
+      <div class="card-face face-front face-active">
+        <div>
+          <span class="card-period-icon">🗡️</span>
+          <div class="card-period-name">Bronsåldern</div>
+          <div class="card-period-sub">Bronsålder</div>
+          <p class="card-period-dates">ca 1 800–500 f.Kr. i Skandinavien</p>
+        </div>
+        <div class="card-tap-cue">
+          <svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z" transform="rotate(90,12,12)"/></svg>
+          Klicka för att vända
+        </div>
+      </div>
+
+      <div class="card-face face-info">
+        <div class="face-label">Levnadssätt och teknologi</div>
+        <div class="info-row">
+          <div class="info-row-title">Handel</div>
+          <p class="info-row-text">Brons är en legering (en blandning av två metaller) av koppar och tenn. Varken råvara finns i Norden, vilket driver långdistanshandel med hela Europa och Medelhavsvärlden.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Samhälle</div>
+          <p class="info-row-text">Stark social skiktning. En krigaradel och hövdingar kontrollerar handelsvägar och resurser. Makten syns tydligt i gravmaterialet.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Teknologi</div>
+          <p class="info-row-text">Bronsgjutning av svärd, yxor, smycken och lurar. Vagnar och hästar förändrar kommunikation och krigsföring.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Kronologisk konsekvens</div>
+          <p class="info-row-text">Beroendet av importerade råvaror gör samhället sårbart. När handelsvägarnas nätverk störs ca 1 200 f.Kr. kollapsar bronsålderskulturer över hela Europa. Det skapar ett vakuum som järnet snabbt fyller.</p>
+        </div>
+      </div>
+
+      <div class="card-face face-source">
+        <div class="face-label">Representativt fynd</div>
+        <div class="source-find">
+          <div class="source-find-label">Fynd</div>
+          <div class="source-find-name">Kungagraven i Kivik</div>
+          <p class="source-find-desc">Sveriges märkligaste bronsåldersgrav, daterad till ca 1 400–1 300 f.Kr. Inne i den stora stensättningen finns gravkammarblock utsmyckade med hällristningar av processioner, vagnar och rituella figurer.</p>
+        </div>
+        <div class="source-question-label">Källkritisk fråga</div>
+        <p class="source-question">Hällristningarna visar skepp och vagnar men inga ord. Hur tolkar vi bildsymboler utan text, och vem riskerar att styra tolkningen?</p>
+      </div>
+
+      <div class="card-dots">
+        <div class="card-dot active"></div>
+        <div class="card-dot"></div>
+        <div class="card-dot"></div>
+      </div>
+    </div>
+
+    <!-- KORT 5: JÄRNÅLDERN -->
+    <div class="flip-card" style="--card-accent: #7878a8" onclick="flipCard(this)" data-state="0">
+
+      <div class="card-face face-front face-active">
+        <div>
+          <span class="card-period-icon">⚔️</span>
+          <div class="card-period-name">Järnåldern</div>
+          <div class="card-period-sub">Järnålder</div>
+          <p class="card-period-dates">ca 500 f.Kr.–1 050 e.Kr. i Skandinavien</p>
+        </div>
+        <div class="card-tap-cue">
+          <svg viewBox="0 0 24 24"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z" transform="rotate(90,12,12)"/></svg>
+          Klicka för att vända
+        </div>
+      </div>
+
+      <div class="card-face face-info">
+        <div class="face-label">Levnadssätt och teknologi</div>
+        <div class="info-row">
+          <div class="info-row-title">Järnet</div>
+          <p class="info-row-text">Järn utvinns ur myrmalm (järnhaltig malm som bildas naturligt i mossar och sjöbottnar i hela Norden). Till skillnad från bronsets importerade råvaror finns myrmalmen lokalt, vilket gör metall tillgänglig för alla, inte bara eliten.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Samhälle</div>
+          <p class="info-row-text">Småriken och centralplatser växer fram. Kontakten med romarriket ökar och romerska mynt, glas och viner når Norden via handel. Vikingatiden (ca 800–1050 e.Kr.) avslutar perioden.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Teknologi</div>
+          <p class="info-row-text">Järnplog och gödsling effektiviserar jordbruket. Avancerad skeppsbyggnad med klinkade bordläggningar (plankor som överlappas som fjäll) möjliggör långfärder på öppet hav.</p>
+        </div>
+        <div class="info-row">
+          <div class="info-row-title">Kronologisk konsekvens</div>
+          <p class="info-row-text">Vikingatiden är övergångspunkten: runstenar, utländska krönikor och kristendomens latinska skriftkultur för Skandinavien in i historien. Förhistorien tar slut, inte med ett slag utan gradvis, ca år 1050 e.Kr.</p>
+        </div>
+      </div>
+
+      <div class="card-face face-source">
+        <div class="face-label">Representativt fynd</div>
+        <div class="source-find">
+          <div class="source-find-label">Fynd</div>
+          <div class="source-find-name">Uppåkra, Skåne</div>
+          <p class="source-find-desc">En centralplats aktiv i över 1 000 år, med kultbyggnad, hantverksproduktion och handel. Inga egna skriftliga källor.</p>
+        </div>
+        <div class="source-question-label">Källkritisk fråga</div>
+        <p class="source-question">Uppåkra var en av Nordens viktigaste platser i tusen år men lämnade inga texter. Hur skriver man en plats historia utan ord?</p>
+      </div>
+
+      <div class="card-dots">
+        <div class="card-dot active"></div>
+        <div class="card-dot"></div>
+        <div class="card-dot"></div>
+      </div>
+    </div>
+
+  </div><!-- /cards-grid -->
+
+</section>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- FLIK 3: NEOLITISKA REVOLUTIONEN         -->
+<!-- ══════════════════════════════════════════ -->
+<section class="tab-panel" id="panel-2">
+
+  <div class="section-title">Förändringens motor</div>
+  <h2>Den neolitiska revolutionen</h2>
+
+  <p class="neo-intro">Övergången från jägare och samlare till bofasta bönder är den enskilt största förändringen i mänsklighetens historia. Klicka dig igenom flödet nedan för att följa orsaker, övergång och konsekvenser steg för steg.</p>
+
+  <div class="neo-flow" id="neo-flow">
+
+    <!-- ── ORSAKER ── -->
+    <div id="nz0" class="neo-zone-label" style="color:#c4893a">Orsaker</div>
+
+    <div id="nn0" class="neo-node" style="--nc:#c4893a">
+      <div class="node-icon">☀️</div>
+      <div class="node-body">
+        <div class="node-title">Stabilt klimat</div>
+        <p class="node-text">Efter den senaste istiden, ca 10 000 f.Kr., stabiliseras medeltemperaturen globalt. Längre växtsäsonger och mildare vintrar skapar för första gången förutsättningar för att odla grödor systematiskt och förutsägbart år efter år.</p>
+      </div>
+    </div>
+
+    <div id="nc0" class="neo-connector" style="--nc:#c4893a"><div class="neo-connector-inner"><div class="neo-connector-line"></div><div class="neo-connector-tip"></div></div></div>
+
+    <div id="nn1" class="neo-node" style="--nc:#c4893a">
+      <div class="node-icon">👥</div>
+      <div class="node-body">
+        <div class="node-title">Befolkningstillväxt</div>
+        <p class="node-text">Fler människor på samma yta ökar konkurrensen om bytesdjur och bärmarker. De nomadiska strategierna räcker inte längre för att försörja gruppen. Trycket att hitta nya lösningar ökar.</p>
+      </div>
+    </div>
+
+    <div id="nc1" class="neo-connector" style="--nc:#c4893a"><div class="neo-connector-inner"><div class="neo-connector-line"></div><div class="neo-connector-tip"></div></div></div>
+
+    <div id="nn2" class="neo-node" style="--nc:#c4893a">
+      <div class="node-icon">🦣</div>
+      <div class="node-body">
+        <div class="node-title">Minskat storvilt</div>
+        <p class="node-text">Mammut, ullhårig noshörning och jättehjort är utrotade, sannolikt genom en kombination av klimatförändringar och intensiv jakt. De stora, lättfångade bytesdjuren försvinner och alternativen krymper.</p>
+      </div>
+    </div>
+
+    <div id="nc2" class="neo-connector" style="--nc:#c4893a"><div class="neo-connector-inner"><div class="neo-connector-line"></div><div class="neo-connector-tip"></div></div></div>
+
+    <div id="nn3" class="neo-node" style="--nc:#c4893a">
+      <div class="node-icon">🌍</div>
+      <div class="node-body">
+        <div class="node-title">Kunskap sprids norrifrån</div>
+        <p class="node-text">Jordbrukstekniken uppfinns i <strong>den bördiga halvmånen</strong> (Mesopotamien och Levanten) ca 10 000 f.Kr. Under tusentals år sprids den via folkvandringar och kulturkontakt nordväst mot Europa, och når södra Skandinavien ca 4 000 f.Kr.</p>
+      </div>
+    </div>
+
+    <div id="ng0" class="neo-zone-gap" style="--nc-from:#c4893a;--nc-to:#4a8858"><div class="neo-zone-gap-line"></div><div class="neo-zone-gap-tip"></div></div>
+
+    <!-- ── ÖVERGÅNGEN ── -->
+    <div id="nz1" class="neo-zone-label" style="color:#4a8858">Övergången</div>
+
+    <div id="nn4" class="neo-node" style="--nc:#4a8858">
+      <div class="node-icon">🌾</div>
+      <div class="node-body">
+        <div class="node-title">Jordbruk introduceras</div>
+        <p class="node-text">Vete, korn och baljväxter odlas systematiskt. Marken röjs med eldning och stenyxor, plöjs och besås. För första gången <strong>producerar</strong> människan mat aktivt i stället för att samla in det naturen råkar erbjuda.</p>
+      </div>
+    </div>
+
+    <div id="nc3" class="neo-connector" style="--nc:#4a8858"><div class="neo-connector-inner"><div class="neo-connector-line"></div><div class="neo-connector-tip"></div></div></div>
+
+    <div id="nn5" class="neo-node" style="--nc:#4a8858">
+      <div class="node-icon">🐄</div>
+      <div class="node-body">
+        <div class="node-title">Boskapsskötsel</div>
+        <p class="node-text">Kor, får, getter och svin <strong>domesticeras</strong> (tämjs och avlas i fångenskap under generationer tills de skiljer sig från sina vilda förfäder). Djuren ger kött, mjölk, ull och dragkraft. Det är en helt ny relation mellan människa och djur.</p>
+      </div>
+    </div>
+
+    <div id="ng1" class="neo-zone-gap" style="--nc-from:#4a8858;--nc-to:#6878a8"><div class="neo-zone-gap-line"></div><div class="neo-zone-gap-tip"></div></div>
+
+    <!-- ── OMEDELBARA KONSEKVENSER ── -->
+    <div id="nz2" class="neo-zone-label" style="color:#6878a8">Omedelbara konsekvenser</div>
+
+    <div id="nn6" class="neo-node" style="--nc:#6878a8">
+      <div class="node-icon">🏘️</div>
+      <div class="node-body">
+        <div class="node-title">Bofasthet</div>
+        <p class="node-text">Permanenta byar med långhus ersätter nomadismen. Man kan nu investera i byggnader, lager och trädgårdar. Identiteten knyts för första gången till en specifik plats snarare än till en vandrande grupp.</p>
+      </div>
+    </div>
+
+    <div id="nc4" class="neo-connector" style="--nc:#6878a8"><div class="neo-connector-inner"><div class="neo-connector-line"></div><div class="neo-connector-tip"></div></div></div>
+
+    <div id="nn7" class="neo-node" style="--nc:#6878a8">
+      <div class="node-icon">📦</div>
+      <div class="node-body">
+        <div class="node-title">Matöverskott</div>
+        <p class="node-text">Mer mat än gruppen behöver direkt kan nu lagras i keramikkärl och gropar. Överskott ger trygghet, men skapar också något nytt: möjligheten att handla, och möjligheten att leva utan att själv producera mat.</p>
+      </div>
+    </div>
+
+    <div id="nc5" class="neo-connector" style="--nc:#6878a8"><div class="neo-connector-inner"><div class="neo-connector-line"></div><div class="neo-connector-tip"></div></div></div>
+
+    <div id="nn8" class="neo-node" style="--nc:#6878a8">
+      <div class="node-icon">🤒</div>
+      <div class="node-body">
+        <div class="node-title">Nya sjukdomar</div>
+        <p class="node-text">Tätt boende med domesticerade djur skapar perfekta förhållanden för <strong>zoonoser</strong> (sjukdomar som smittar från djur till människa). Mässling, smittkoppor och influensa har sitt ursprung här. Skelettfynd visar att medellivslängden faktiskt <em>sjunker</em> under tidig neolitikum.</p>
+      </div>
+    </div>
+
+    <div id="ng2" class="neo-zone-gap" style="--nc-from:#6878a8;--nc-to:#9b4a1f"><div class="neo-zone-gap-line"></div><div class="neo-zone-gap-tip"></div></div>
+
+    <!-- ── LÅNGSIKTIGA KONSEKVENSER ── -->
+    <div id="nz3" class="neo-zone-label" style="color:#9b4a1f">Långsiktiga konsekvenser</div>
+
+    <div id="nn9" class="neo-node" style="--nc:#9b4a1f">
+      <div class="node-icon">⚒️</div>
+      <div class="node-body">
+        <div class="node-title">Arbetsspecialisering</div>
+        <p class="node-text">Matöverskottet frigör tid. Inte alla behöver längre jaga eller odla. För första gången uppstår <strong>yrken</strong>: hantverkare, handelsmän, religiösa ledare, soldater och administratörer. Samhället börjar dela upp sig i roller.</p>
+      </div>
+    </div>
+
+    <div id="nc6" class="neo-connector" style="--nc:#9b4a1f"><div class="neo-connector-inner"><div class="neo-connector-line"></div><div class="neo-connector-tip"></div></div></div>
+
+    <div id="nn10" class="neo-node" style="--nc:#9b4a1f">
+      <div class="node-icon">⚖️</div>
+      <div class="node-body">
+        <div class="node-title">Social ojämlikhet</div>
+        <p class="node-text">Den som kontrollerar marken kontrollerar maten. Den som kontrollerar maten kontrollerar människorna. <strong>Äganderätt</strong> och arv uppstår som begrepp. Bronsålderns hövdingadömen och järnålderns kungariken är direkta följder av denna logik.</p>
+      </div>
+    </div>
+
+    <div id="nc7" class="neo-connector" style="--nc:#9b4a1f"><div class="neo-connector-inner"><div class="neo-connector-line"></div><div class="neo-connector-tip"></div></div></div>
+
+    <div id="nn11" class="neo-node" style="--nc:#9b4a1f">
+      <div class="node-icon">🌲</div>
+      <div class="node-body">
+        <div class="node-title">Miljöpåverkan</div>
+        <p class="node-text">Storskalig skogsröjning, bete och plöjning förändrar landskapet permanent. Erosion och utarmning av jordmån följer. Det är mänsklighetens första stora och varaktiga miljöpåverkan på det europeiska landskapet.</p>
+      </div>
+    </div>
+
+    <!-- ── PROBLEMATISERING ── -->
+    <div id="np0" class="neo-problematize">
+      <div class="neo-prob-label">Problematisering</div>
+      <div class="neo-prob-title">Var jordbruket verkligen ett framsteg?</div>
+      <p class="neo-prob-text">Det är lätt att se jordbruket som en självklar förbättring: mer mat, tryggare tillvaro, civilisationens grund. Men skelettfynd berättar en annan historia. Bondens skelett visar mer förslitningsskador, kortare kroppslängd och sämre tandhälsa än jägarens. Arbetstiden ökade, inte minskade. En central orsak är kosten: spannmålsdominerad kost saknar den variation jägaren hade, och kolhydratrik mat från säd och rotfrukter försämrar tandhälsan markant jämfört med en diet baserad på kött, bär och nötter.</p>
+      <p class="neo-prob-text">Historikern Yuval Noah Harari kallar jordbruksrevolutionen <em>"historiens största bedrägeri"</em>, inte för att den var dålig, utan för att det är oklart vem som egentligen vann på den. Arten homo sapiens ökade dramatiskt i antal. Men levde den enskilda människan ett bättre liv? Det är en genuint öppen fråga.</p>
+    </div>
+
+  </div><!-- /neo-flow -->
+
+  <!-- sticky nästa-knapp -->
+  <div class="neo-next-wrap" id="neo-next-wrap">
+    <button class="neo-next-btn" id="neo-next-btn" onclick="neoAdvance()">▶ Starta flödet</button>
+  </div>
+
+</section>
+
+<!-- ════════════════════════════ -->
+<!-- FLIK 4: TESTA DIG (tom)   -->
+<!-- ════════════════════════════ -->
+<section class="tab-panel" id="panel-3">
+
+  <div class="section-title">Repetition och kontroll</div>
+  <h2>Testa dig</h2>
+  <p class="quiz-intro">Åtta diagnostiska frågor om förhistorien. Läs varje alternativ noggrant innan du svarar.</p>
+
+  <!-- QUIZ -->
+  <div id="quiz-wrap">
+    <div class="quiz-meta">
+      <span class="quiz-q-count" id="quiz-q-count">Fråga 1 av 8</span>
+      <div class="quiz-prog-bar"><div class="quiz-prog-fill" id="quiz-prog-fill"></div></div>
+    </div>
+    <div class="quiz-card">
+      <p class="quiz-question" id="quiz-question"></p>
+      <div class="quiz-options" id="quiz-options"></div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+      <div class="quiz-nav">
+        <button class="quiz-next-btn" id="quiz-next-btn" onclick="quizNext()" style="display:none">
+          Nästa fråga <span>→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCORE SCREEN -->
+  <div class="quiz-score" id="quiz-score" style="display:none">
+    <div class="score-label">Ditt resultat</div>
+    <div class="score-number" id="score-number"></div>
+    <p class="score-text" id="score-text"></p>
+    <button class="quiz-next-btn" onclick="quizReset()">↺ Försök igen</button>
+  </div>
+
+  <!-- CONCEPT MATCHING -->
+  <div class="match-section">
+    <div class="section-title">Begrepp</div>
+    <h2>Para ihop begrepp och förklaring</h2>
+    <p class="match-intro">Klicka på ett begrepp och sedan på rätt förklaring. Sex par att hitta.</p>
+    <div class="match-status" id="match-status"></div>
+    <div class="match-grid" id="match-grid"></div>
+    <div style="margin-top:16px">
+      <button class="quiz-next-btn" id="match-reset-btn" onclick="matchReset()" style="display:none">↺ Börja om</button>
+    </div>
+  </div>
+
+</section>
+
+<script>
+/* ── TAB SWITCHING ── */
+function switchTab(index) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === index);
+  });
+  document.querySelectorAll('.tab-panel').forEach((p, i) => {
+    p.classList.toggle('active', i === index);
+  });
+}
+
+/* ── JÄMFÖRANDE TIDSLINJE ── */
+(function buildTimeline() {
+  // Timeline spans 3500 BCE to 1200 CE
+  // We map to 0–100% where 0 = 3500 BCE, 100 = 1200 CE
+  const START = -3500; // BCE as negative
+  const END   =  1200; // CE
+  const SPAN  = END - START; // 4700 years
+
+  function pct(year) {
+    return ((year - START) / SPAN * 100).toFixed(2) + '%';
+  }
+  function pctNum(year) {
+    return (year - START) / SPAN * 100;
+  }
+
+  const regions = [
+    { name: 'Mesopotamien',  transitionYear: -3200, label: 'ca 3200 f.Kr.' },
+    { name: 'Egypten',       transitionYear: -3100, label: 'ca 3100 f.Kr.' },
+    { name: 'Kina',          transitionYear: -1250, label: 'ca 1250 f.Kr.' },
+    { name: 'Grekland',      transitionYear:  -800, label: 'ca 800 f.Kr.'  },
+    { name: 'Rom',           transitionYear:  -700, label: 'ca 700 f.Kr.'  },
+    { name: 'Skandinavien',  transitionYear:  1000, label: 'ca 1000 e.Kr.' },
+  ];
+
+  // Axis ticks
+  const ticks = [-3000, -2000, -1000, 0, 500, 1000];
+  const axisEl = document.getElementById('tl-axis');
+  axisEl.innerHTML = '<div class="tl-axis-line"></div>';
+  ticks.forEach(y => {
+    const div = document.createElement('div');
+    div.className = 'tl-tick';
+    div.style.left = pct(y);
+    const lbl = y === 0 ? 'Kr.f.' : (y < 0 ? Math.abs(y) + ' f.Kr.' : y + ' e.Kr.');
+    div.innerHTML = `<div class="tl-tick-line"></div><div class="tl-tick-label">${lbl}</div>`;
+    axisEl.appendChild(div);
+  });
+
+  // Rows
+  const rowsEl = document.getElementById('tl-rows');
+  regions.forEach(r => {
+    const row = document.createElement('div');
+    row.className = 'tl-row';
+
+    const label = document.createElement('div');
+    label.className = 'tl-row-label';
+    label.textContent = r.name;
+
+    const track = document.createElement('div');
+    track.className = 'tl-row-track';
+
+    // Prehistory bar: START → transitionYear
+    const preW = pctNum(r.transitionYear);
+    const preBar = document.createElement('div');
+    preBar.className = 'tl-bar prehistory';
+    preBar.style.left = '0%';
+    preBar.style.width = preW + '%';
+    if (preW > 8) {
+      preBar.innerHTML = `<span class="tl-bar-label">Förhistoria</span>`;
+    }
+
+    // History bar: transitionYear → END
+    const histLeft = pctNum(r.transitionYear);
+    const histW = 100 - histLeft;
+    const histBar = document.createElement('div');
+    histBar.className = 'tl-bar history';
+    histBar.style.left = histLeft + '%';
+    histBar.style.width = histW + '%';
+    if (histW > 6) {
+      histBar.innerHTML = `<span class="tl-bar-label">Historisk tid</span>`;
+    }
+
+    // Marker
+    const marker = document.createElement('div');
+    marker.className = 'tl-marker';
+    marker.style.left = histLeft + '%';
+    const tip = document.createElement('div');
+    tip.className = 'tl-marker-tip';
+    tip.textContent = r.label;
+    marker.appendChild(tip);
+
+    track.appendChild(preBar);
+    track.appendChild(histBar);
+    track.appendChild(marker);
+
+    row.appendChild(label);
+    row.appendChild(track);
+    rowsEl.appendChild(row);
+  });
+})();
+
+/* ── NEOLITHIC REVOLUTION: STEP-BY-STEP ── */
+let neoStep = 0;
+const NEO_STEPS = [
+  ['nz0'],              // Orsaker (pop)
+  ['nn0'],              // Stabilt klimat
+  ['nc0', 'nn1'],       // connector + Befolkningstillväxt
+  ['nc1', 'nn2'],       // connector + Minskat storvilt
+  ['nc2', 'nn3'],       // connector + Kunskap sprids
+  ['ng0', 'nz1'],       // zone gap + Övergången (pop)
+  ['nn4'],              // Jordbruk
+  ['nc3', 'nn5'],       // connector + Boskapsskötsel
+  ['ng1', 'nz2'],       // zone gap + Omedelbara (pop)
+  ['nn6'],              // Bofasthet
+  ['nc4', 'nn7'],       // connector + Matöverskott
+  ['nc5', 'nn8'],       // connector + Nya sjukdomar
+  ['ng2', 'nz3'],       // zone gap + Långsiktiga (pop)
+  ['nn9'],              // Arbetsspecialisering
+  ['nc6', 'nn10'],      // connector + Social ojämlikhet
+  ['nc7', 'nn11'],      // connector + Miljöpåverkan
+  ['np0'],              // Problematisering
+];
+
+function neoAdvance() {
+  const btn  = document.getElementById('neo-next-btn');
+  const wrap = document.getElementById('neo-next-wrap');
+
+  // Reset mode: clicking after done restarts
+  if (neoStep >= NEO_STEPS.length) {
+    neoStep = 0;
+    document.querySelectorAll('#panel-2 .vis').forEach(el => el.classList.remove('vis'));
+    btn.innerHTML  = '▶ Starta flödet';
+    wrap.style.opacity = '1';
+    wrap.style.pointerEvents = 'auto';
+    return;
+  }
+
+  btn.disabled = true;
+  const isFirst = neoStep === 0;
+  const ids = NEO_STEPS[neoStep];
+
+  // Show first element immediately, subsequent with small delay
+  ids.forEach((id, i) => {
+    setTimeout(() => {
+      document.getElementById(id)?.classList.add('vis');
+    }, i === 0 ? 0 : 320);
+  });
+
+  // Scroll last element into view gently
+  const lastId = ids[ids.length - 1];
+  setTimeout(() => {
+    document.getElementById(lastId)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, ids.length > 1 ? 420 : 80);
+
+  neoStep++;
+
+  // Re-enable button after animation completes
+  const wait = ids.length > 1 ? 1100 : 850;
+  setTimeout(() => {
+    if (neoStep >= NEO_STEPS.length) {
+      btn.disabled  = false;
+      btn.innerHTML = '↺ Börja om';
+    } else {
+      btn.disabled = false;
+      if (isFirst) btn.innerHTML = 'Nästa <span style="margin-left:5px">→</span>';
+    }
+  }, wait);
+}
+
+function flipCard(card) {
+  const faces   = card.querySelectorAll('.card-face');
+  const dots    = card.querySelectorAll('.card-dot');
+  const total   = faces.length;
+  const current = parseInt(card.dataset.state, 10);
+  const next    = (current + 1) % total;
+
+  const currentFace = faces[current];
+  const nextFace    = faces[next];
+
+  // Lock card height so it doesn't collapse while active face is absent
+  card.style.minHeight = card.offsetHeight + 'px';
+
+  // Exit current face (goes back to position:absolute via face-exit)
+  currentFace.classList.remove('face-active');
+  currentFace.classList.add('face-exit');
+
+  // Prep next face off-screen right
+  nextFace.style.transition = 'none';
+  nextFace.style.transform  = 'rotateY(90deg)';
+  nextFace.style.opacity    = '0';
+
+  setTimeout(() => {
+    currentFace.classList.remove('face-exit');
+
+    // Bring in next face as relative (drives height)
+    nextFace.style.transition = '';
+    nextFace.style.transform  = '';
+    nextFace.style.opacity    = '';
+    nextFace.classList.add('face-active');
+
+    // Release height lock now that new face is in flow
+    card.style.minHeight = '';
+
+    dots.forEach((d, i) => d.classList.toggle('active', i === next));
+    card.dataset.state = next;
+  }, 210);
+}
+
+/* ── QUIZ DATA ── */
+const QUESTIONS = [
+  {
+    q: "Vad avgör om en tidsperiod räknas som 'förhistorisk'?",
+    opts: [
+      "Att det saknas skriftliga källor som belyser periodens egna händelser",
+      "Att inga metallföremål eller monumentala byggnadsverk har påträffats",
+      "Att perioden inträffade för mer än 5 000 år sedan, räknat från idag",
+      "Att befolkningen saknade permanent bosättning och levde som nomader"
+    ],
+    correct: 0,
+    exp: "Förhistoria är ett källkritiskt begrepp, inte ett kronologiskt eller kulturellt. Det är avsaknaden av skriftliga källor som avgör gränsen, oavsett tidens längd eller levnadssätt.",
+    misc: "Skandinavien var förhistoriskt in på år 1000 e.Kr. trots rika samhällen, medan Egypten var historiskt för 5 000 år sedan. Tidsavståndet är alltså inte avgörande."
+  },
+  {
+    q: "Sverige räknas som förhistoriskt ända till ca år 1000 e.Kr. Vad är den avgörande orsaken?",
+    opts: [
+      "Skriftliga källor som regelbundet dokumenterar Norden saknas dessförinnan",
+      "Nordiska stammar hade inte bildat de stabila riken som brukar producera skrift",
+      "Handelskontakten med skriftburande kulturer i söder bröts under folkvandringstiden",
+      "Det ekonomiska överskott som vanligen föregår skriftspråkets uppkomst saknades"
+    ],
+    correct: 0,
+    exp: "Gränsen är källkritisk och lokal: Norden träder in i historien när skriftliga källor börjar dokumentera regionen regelbundet, vilket sker under vikingatiden.",
+    misc: "Det är inte samhällets komplexitet, ekonomi eller handel som avgör, utan just de skriftliga källornas uppkomst. Komplexa samhällen kan existera utan skrift."
+  },
+  {
+    q: "Barumkvinnan i norra Skåne, daterad till ca 7 000 f.Kr., tillhör vilken period?",
+    opts: [
+      "Mesolitikum, mellanstenåldern, präglad av jakt och fiske vid kuster och sjöar",
+      "Paleolitikum, äldre stenåldern, då de allra första jägarna anlände till Skandinavien",
+      "Neolitikum, yngre stenåldern, då jordbruk och boskapsskötsel introducerades i Norden",
+      "Sen äldre stenålder, en övergångsfas utan tydlig plats i treperiodsystemets indelning"
+    ],
+    correct: 0,
+    exp: "Mesolitikum i Skandinavien sträcker sig ca 9 000–4 000 f.Kr. och präglas av jakt, fiske och gradvis bofasthet. Barumkvinnan vid 7 000 f.Kr. faller mitt i denna period.",
+    misc: "Mesolitikum förväxlas ofta med paleolitikum, eller behandlas som en otydlig mellanperiod. Det är en väldefinierad period med egna karaktärsdrag."
+  },
+  {
+    q: "Skelettfynd visar att tandhälsan och kroppslängden försämrades under neolitikum. Vad beror det på?",
+    opts: [
+      "Spannmålsdiet och hårt jordbruksarbete försämrade hälsan jämfört med jägarlivet",
+      "Befolkningstillväxten under neolitikum skapade trängsel och ökad smittspridning",
+      "Klimatförsämringen under neolitikum orsakade periodvis svält och kronisk undernäring",
+      "Ökade konflikter om mark och boskap ledde till fler våldsrelaterade skelettskador"
+    ],
+    correct: 0,
+    exp: "Jordbrukets spannmålskost saknade jägarens variation, och det tunga manuella arbetet orsakade förslitningsskador. Det är en känd paradox att jordbruket försämrade individuell hälsa trots att befolkningstalet ökade.",
+    misc: "Befolkningstillväxt och smittspridning är verkliga konsekvenser av neolitikum, men de förklarar inte de specifika fynd av tandproblem och minskad kroppslängd som skeletten visar."
+  },
+  {
+    q: "Vad karaktäriserar bronsålderns samhälle jämfört med det neolitiska?",
+    opts: [
+      "Tydlig social skiktning med en krigaradel och hövdingar som kontrollerar handel",
+      "Uppkomsten av permanenta bosättningar och systematiskt jordbruk som livsform",
+      "Framväxten av en specialiserad prästklass med kontroll över religiösa ceremonier",
+      "Bildandet av centraliserade stater med skrivna lagar och administrativa system"
+    ],
+    correct: 0,
+    exp: "Bronsålderns tydligaste drag är den sociala hierarkin, synlig i rika gravfynd som Kungagraven i Kivik. Jordbruk och bofasthet är neolitiska fenomen, och skrivna lagar hör till järnåldern.",
+    misc: "Jordbruk och bosättning uppfattas gärna som bronsålderns bidrag, men de uppstod redan under neolitikum. Bronsåldern innebär specialisering och handel ovanpå det neolitiska fundamentet."
+  },
+  {
+    q: "Varför kallas järnet ibland 'det demokratiska järnet' i historisk forskning?",
+    opts: [
+      "Råvaran myrmalm fanns lokalt i hela Norden och var inte förbehållen eliten",
+      "Järnsmidesteknikerna spreds fritt och ägdes gemensamt av byns alla hushåll",
+      "Järnvapen tillverkades för vanliga fotsoldat-arméer, inte bara hövdingarnas garde",
+      "Järnets spridning bröt ner bronsåldershierarkierna och skapade ny social rörlighet"
+    ],
+    correct: 0,
+    exp: "Myrmalm bildas i mossar och sjöbottnar i hela Norden. Till skillnad från bronsets importerade råvaror behövde ingen kontrollera handelsvägar för att få järn, så metallen blev tillgänglig för alla.",
+    misc: "Demokratisk syftar på råvarans geografiska tillgänglighet, inte på politisk demokrati, gemensamt ägande av hantverkstekniken eller militär organisation."
+  },
+  {
+    q: "Vilken kombination av faktorer skapade förutsättningarna för den neolitiska revolutionen?",
+    opts: [
+      "Stabilt klimat, växande befolkning och minskat storvilt krävde nya försörjningsstrategier",
+      "Teknologiska framsteg i verktygsframställning möjliggjorde en effektivare matproduktion",
+      "Kulturell påverkan från Egypten och Levanten spred religiösa jordbruksritualer norrut",
+      "Naturkatastrofer och klimatchocker tvingade nomadgrupper att stanna och odla marken"
+    ],
+    correct: 0,
+    exp: "Tre samverkande faktorer: klimatstabilisering möjliggjorde odling, befolkningstryck skapade behovet, och bristen på storvilt undanröjde alternativet. Teknologi och kulturspridning var verktyg, inte orsaker.",
+    misc: "Teknologiska förklaringar är intuitiva men svarar inte på varför förändringen skedde just då. Jordbruket uppfanns oberoende på flera platser, vilket pekar på strukturella tryck snarare än enskilda uppfinningar."
+  },
+  {
+    q: "Vilken av neolitiska revolutionens konsekvenser dröjde längst innan den slog igenom fullt ut?",
+    opts: [
+      "Att äganderätt till mark skapade bestående social ojämlikhet och maktskillnader",
+      "Att grupper bosatte sig permanent och knöt sin identitet till en geografisk plats",
+      "Att zoonotiska sjukdomar spreds från domesticerade djur till den bofasta befolkningen",
+      "Att matöverskott från odlingen möjliggjorde byteshandel och lagring av resurser"
+    ],
+    correct: 0,
+    exp: "Bofasthet, sjukdomar och matöverskott slog igenom relativt snabbt. Den sociala ojämlikheten tog generationer att befästa, då mark och resurser ärvdes och maktskillnaderna successivt cementerades.",
+    misc: "Social ojämlikhet uppfattas ofta som omedelbar, men är i grunden en gradvis ackumuleringsprocess. Det är skillnaden mellan en konsekvens som syns direkt och en som bygger upp sig under generationer."
+  }
+];
+
+const MATCH_PAIRS = [
+  { term: "Nomadism",      def: "Levnadssätt där gruppen förflyttar sig efter bytesdjur och bär, utan fast boplats" },
+  { term: "Domesticering", def: "Processen att tämja och avla vilda djur i fångenskap under många generationer" },
+  { term: "Myrmalm",       def: "Järnhaltig malm som bildas naturligt i mossar och sjöbottnar, Nordens järnkälla" },
+  { term: "Megalitgrav",   def: "Kollektivgrav av resta stenblock med gravkammare, vanlig under neolitikum i Norden" },
+  { term: "Zoonos",        def: "Sjukdom som ursprungligen smittar från djur till människa, som mässling och influensa" },
+  { term: "Legering",      def: "En blandning av två eller flera metaller, exempelvis koppar och tenn som bildar brons" },
+];
+
+/* ── QUIZ LOGIC ── */
+let qIdx = 0, qScore = 0, qCurrent = null;
+
+function quizShuffle(q) {
+  const opts = q.opts.map((text, i) => ({ text, isCorrect: i === q.correct }));
+  for (let i = opts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [opts[i], opts[j]] = [opts[j], opts[i]];
+  }
+  return { ...q, sOpts: opts.map(o => o.text), sCorrect: opts.findIndex(o => o.isCorrect) };
+}
+
+function quizRender() {
+  qCurrent = quizShuffle(QUESTIONS[qIdx]);
+  const total = QUESTIONS.length;
+  document.getElementById('quiz-q-count').textContent = `Fråga ${qIdx + 1} av ${total}`;
+  document.getElementById('quiz-prog-fill').style.width = `${(qIdx / total) * 100}%`;
+  document.getElementById('quiz-question').textContent = qCurrent.q;
+  const fb = document.getElementById('quiz-feedback');
+  fb.className = 'quiz-feedback';
+  fb.innerHTML = '';
+  const nb = document.getElementById('quiz-next-btn');
+  nb.style.display = 'none';
+  nb.textContent = qIdx === total - 1 ? 'Se resultat →' : 'Nästa fråga →';
+  const optsEl = document.getElementById('quiz-options');
+  optsEl.innerHTML = '';
+  qCurrent.sOpts.forEach((text, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.innerHTML = `<span class="opt-letter">${'ABCD'[i]}</span>${text}`;
+    btn.onclick = () => quizAnswer(i, btn);
+    optsEl.appendChild(btn);
+  });
+}
+
+function quizAnswer(chosen, chosenBtn) {
+  document.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+  const correct = chosen === qCurrent.sCorrect;
+  if (correct) qScore++;
+  document.querySelectorAll('.quiz-opt')[qCurrent.sCorrect].classList.add('correct');
+  if (!correct) chosenBtn.classList.add('incorrect');
+  const fb = document.getElementById('quiz-feedback');
+  fb.innerHTML = `
+    <div class="quiz-fb-title">${correct ? '✓ Rätt!' : '✗ Fel'}</div>
+    <p>${qCurrent.exp}</p>
+    <p class="quiz-fb-misc"><em>Vanlig missuppfattning:</em> ${qCurrent.misc}</p>
+  `;
+  fb.className = `quiz-feedback show ${correct ? 'fb-correct' : 'fb-incorrect'}`;
+  document.getElementById('quiz-next-btn').style.display = 'inline-flex';
+}
+
+function quizNext() {
+  qIdx++;
+  if (qIdx >= QUESTIONS.length) quizShowScore();
+  else quizRender();
+}
+
+function quizShowScore() {
+  document.getElementById('quiz-wrap').style.display = 'none';
+  const scoreEl = document.getElementById('quiz-score');
+  scoreEl.style.display = 'block';
+  document.getElementById('score-number').textContent = `${qScore}/${QUESTIONS.length}`;
+  document.getElementById('quiz-prog-fill').style.width = '100%';
+  const msgs = [
+    [0, 3, "Gå tillbaka och läs igenom materialet en gång till."],
+    [4, 5, "Bra försök. Några begrepp kan du repetera ytterligare."],
+    [6, 7, "Bra jobbat! Du har goda kunskaper om förhistorien."],
+    [8, 8, "Utmärkt! Du behärskar förhistoriens centrala begrepp."]
+  ];
+  const msg = msgs.find(([lo, hi]) => qScore >= lo && qScore <= hi);
+  document.getElementById('score-text').textContent = msg[2];
+}
+
+function quizReset() {
+  qIdx = 0; qScore = 0;
+  document.getElementById('quiz-score').style.display = 'none';
+  document.getElementById('quiz-wrap').style.display = 'block';
+  quizRender();
+}
+
+/* ── MATCHING LOGIC ── */
+let matchSelected = null, matchedCount = 0;
+
+function matchInit() {
+  const items = [];
+  MATCH_PAIRS.forEach((pair, i) => {
+    items.push({ id: i, type: 'term', text: pair.term });
+    items.push({ id: i, type: 'def',  text: pair.def  });
+  });
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [items[i], items[j]] = [items[j], items[i]];
+  }
+  const grid = document.getElementById('match-grid');
+  grid.innerHTML = '';
+  items.forEach(item => {
+    const btn = document.createElement('button');
+    btn.className = `match-item match-${item.type}`;
+    btn.dataset.id   = item.id;
+    btn.dataset.type = item.type;
+    btn.textContent  = item.text;
+    btn.onclick = () => matchClick(btn);
+    grid.appendChild(btn);
+  });
+  matchSelected = null;
+  matchedCount  = 0;
+  document.getElementById('match-status').textContent = '';
+  document.getElementById('match-reset-btn').style.display = 'none';
+}
+
+function matchClick(btn) {
+  if (btn.classList.contains('matched') || btn.disabled) return;
+  if (!matchSelected) {
+    document.querySelectorAll('.match-item.selected').forEach(el => el.classList.remove('selected'));
+    btn.classList.add('selected');
+    matchSelected = btn;
+    return;
+  }
+  if (btn === matchSelected) {
+    btn.classList.remove('selected');
+    matchSelected = null;
+    return;
+  }
+  const sameId   = btn.dataset.id   === matchSelected.dataset.id;
+  const diffType = btn.dataset.type !== matchSelected.dataset.type;
+  if (sameId && diffType) {
+    [btn, matchSelected].forEach(el => {
+      el.classList.remove('selected');
+      el.classList.add('matched');
+      el.disabled = true;
+    });
+    matchSelected = null;
+    matchedCount++;
+    if (matchedCount === MATCH_PAIRS.length) {
+      document.getElementById('match-status').textContent = '✓ Alla sex par matchade!';
+      document.getElementById('match-reset-btn').style.display = 'inline-flex';
+    }
+  } else {
+    const prev = matchSelected;
+    matchSelected = null;
+    [btn, prev].forEach(el => {
+      el.classList.remove('selected');
+      el.classList.add('error');
+      setTimeout(() => el.classList.remove('error'), 400);
+    });
+  }
+}
+function matchReset() { matchInit(); }
+
+/* Init */
+quizRender();
+matchInit();
+</script>
+</body>
+</html>
