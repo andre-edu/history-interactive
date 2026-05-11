@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Urvattnet – Advaita Vedanta som Vattensystem</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:         #07111f;
+  --navy:       #0d1b2a;
+  --brahman:    #00e5ff;
+  --water-lt:   #4dd0e1;
+  --water-md:   #1565c0;
+  --water-dk:   #0d47a1;
+  --moksha:     #00bfa5;
+  --karma:      #795548;
+  --amber:      #ffa726;
+  --amber-lt:   #ffd740;
+  --maya:       rgba(144,224,255,.22);
+  --steel:      #37474f;
+  --text:       #e1f5fe;
+  --sub:        #90caf9;
+  --card:       rgba(8,20,36,.97);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Nunito Sans',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ─── HEADER ─── */
+header{
+  text-align:center;
+  padding:3.5rem 1.5rem 1.2rem;
+  animation:fadeUp .7s ease both;
+}
+
+.badge{
+  display:inline-block;
+  border:1px solid rgba(0,229,255,.25);
+  color:var(--brahman);
+  background:rgba(0,229,255,.07);
+  font-family:'Nunito',sans-serif;
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:.3rem 1rem;
+  border-radius:100px;
+  margin-bottom:1.1rem;
+}
+
+h1{
+  font-family:'Nunito',sans-serif;
+  font-size:clamp(2.8rem,7vw,5.2rem);
+  font-weight:900;
+  line-height:1;
+  margin-bottom:.65rem;
+  text-shadow:0 0 80px rgba(0,229,255,.4);
+}
+
+h1 .a{color:var(--brahman)}
+
+.tagline{
+  font-size:1rem;
+  color:var(--sub);
+  font-weight:300;
+  max-width:460px;
+  margin:0 auto .9rem;
+  line-height:1.65;
+}
+
+.hint{
+  font-size:.78rem;
+  color:rgba(144,202,249,.48);
+  display:flex;align-items:center;justify-content:center;gap:.4rem;
+}
+.hint::before{content:"◈";color:var(--amber);font-size:.9rem}
+
+/* ─── PILL NAV ─── */
+.pills{
+  display:flex;flex-wrap:wrap;gap:.5rem;
+  justify-content:center;
+  max-width:900px;margin:1.5rem auto;
+  padding:0 1.5rem;
+  animation:fadeUp .7s .15s ease both;
+}
+
+.pill{
+  display:flex;align-items:center;gap:.45rem;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:100px;
+  padding:.35rem .85rem .35rem .45rem;
+  cursor:pointer;
+  font-family:'Nunito',sans-serif;
+  font-size:.78rem;font-weight:700;
+  transition:background .2s,transform .15s,border-color .2s;
+  user-select:none;
+}
+.pill:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
+.pill-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* ─── DIAGRAM ─── */
+.diagram-outer{
+  max-width:960px;
+  margin:0 auto 1.5rem;
+  padding:0 1.5rem;
+  animation:fadeUp .7s .25s ease both;
+}
+
+.diagram-frame{
+  position:relative;
+  border-radius:20px;
+  border:1px solid rgba(0,229,255,.08);
+  overflow:hidden;
+  box-shadow:0 0 100px rgba(0,150,200,.14),0 40px 80px rgba(0,0,0,.55);
+  background:#07111f;
+}
+
+#diagram{width:100%;height:auto;display:block}
+
+/* Clickable zone hover */
+.zone{
+  cursor:pointer;
+  transition:opacity .15s;
+}
+.zone:hover{opacity:.0}  /* hover rect is invisible, handled by JS highlight */
+
+/* ─── LAYOUT (diagram + sidopanel) ─── */
+.page-layout{
+  display:flex;
+  gap:1.5rem;
+  align-items:flex-start;
+  max-width:1400px;
+  margin:0 auto;
+  padding:0 1.5rem;
+}
+.page-layout .diagram-outer{
+  flex:1;min-width:0;
+  max-width:none;
+  margin:0 0 1.5rem;
+  padding:0;
+}
+
+/* ─── SIDOPANEL ─── */
+.info-panel{
+  width:0;
+  flex-shrink:0;
+  overflow:hidden;
+  transition:width .38s cubic-bezier(.4,0,.2,1);
+  position:sticky;
+  top:1.5rem;
+  align-self:flex-start;
+}
+.info-panel.open{ width:390px; }
+
+.panel-inner{
+  width:390px;
+  background:var(--card);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:18px;
+  overflow:hidden;
+  overflow-y:auto;
+  max-height:calc(100vh - 3rem);
+  position:relative;
+  box-shadow:0 40px 100px rgba(0,0,0,.7);
+}
+
+/* ─── MOBIL: panel blir fullskärmsoverlay under 768px ─── */
+@media(max-width:767px){
+  .page-layout{ display:block; padding:0 1rem; }
+  .page-layout .diagram-outer{ margin:0 0 1.5rem; }
+  .info-panel{
+    position:fixed;inset:0;
+    width:auto !important;
+    background:rgba(5,14,28,.82);
+    backdrop-filter:blur(8px);
+    z-index:300;
+    display:flex;align-items:center;justify-content:center;
+    opacity:0;pointer-events:none;
+    transition:opacity .25s ease;
+  }
+  .info-panel.open{ opacity:1;pointer-events:all; }
+  .panel-inner{
+    width:92%;max-width:500px;
+    transform:translateY(16px) scale(.97);
+    transition:transform .32s cubic-bezier(.34,1.56,.64,1);
+    max-height:88vh;
+  }
+  .info-panel.open .panel-inner{ transform:none; }
+}
+
+/* Colored header strip */
+.m-header{
+  padding:1.6rem 2.2rem 1.2rem;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  position:relative;
+}
+.m-header::before{
+  content:'';
+  position:absolute;inset:0;
+  opacity:.12;
+  pointer-events:none;
+}
+
+.m-num{
+  font-family:'Nunito',sans-serif;
+  font-size:.62rem;font-weight:800;
+  letter-spacing:.22em;text-transform:uppercase;
+  margin-bottom:.4rem;opacity:.7;
+}
+.m-sanskrit{
+  font-family:'Nunito',sans-serif;
+  font-weight:900;font-size:2rem;line-height:1;
+  margin-bottom:.25rem;
+}
+.m-se{font-size:.88rem;font-weight:600;opacity:.6}
+
+/* Body */
+.m-body-wrap{padding:1.4rem 2.2rem 1.8rem}
+
+.m-body{
+  font-size:.92rem;line-height:1.78;
+  color:#b8d5ea;
+  margin-bottom:1.1rem;
+}
+.m-body p, .m-body br + br { margin-top:.8rem; }
+.m-body strong { color:#e1f5fe; }
+.m-body em { color:#90caf9; font-style:italic; }
+
+.m-callout{
+  background:rgba(255,160,0,.07);
+  border-left:3px solid var(--amber);
+  border-radius:0 8px 8px 0;
+  padding:.75rem 1rem;
+  font-size:.84rem;line-height:1.65;
+  color:#ffd090;font-style:italic;
+}
+.m-callout strong{color:var(--amber-lt);font-style:normal}
+
+.x-btn{
+  position:absolute;top:.9rem;right:.9rem;
+  background:rgba(255,255,255,.08);
+  border:none;color:var(--text);
+  width:30px;height:30px;border-radius:50%;
+  font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+  z-index:10;
+}
+.x-btn:hover{background:rgba(255,255,255,.18)}
+
+/* ─── SUMMARY ─── */
+.summary{
+  max-width:680px;margin:0 auto 4rem;
+  padding:2rem 2rem;
+  text-align:center;
+  animation:fadeUp .7s .4s ease both;
+}
+.s-label{
+  font-size:.63rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--sub);margin-bottom:.8rem;
+  font-family:'Nunito',sans-serif;font-weight:700;
+}
+.s-border{
+  display:inline-block;
+  border:1px solid rgba(0,229,255,.1);
+  border-radius:12px;
+  padding:1.4rem 1.8rem;
+  background:rgba(0,229,255,.03);
+}
+.s-text{
+  font-size:1rem;line-height:1.9;
+  color:#c8e6f7;font-style:italic;
+}
+.s-text em{color:var(--brahman);font-style:normal;font-weight:700}
+
+/* Aktiv-markering: mjuk övergång på SVG highlight-rektanglar */
+[id^="h"]{ transition: fill .3s ease; }
+
+/* Relationslinjer: transition på opacity */
+#relLines path, #relLines text { transition: opacity .4s ease; }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:none}
+}
+
+/* Hover highlight overlay in SVG (JS-managed) */
+.hover-flash{
+  animation:hoverFlash .3s ease forwards;
+  pointer-events:none;
+}
+@keyframes hoverFlash{
+  0%{opacity:.18}
+  100%{opacity:0}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Advaita Vedanta · Vattensystemet</div>
+  <h1>Ur<span class="a">vattnet</span></h1>
+  <p class="tagline">Sju begrepp. Ett vatten. Den filosofi som lär att du aldrig lämnade havet.</p>
+  <p class="hint">Klicka på vilken sektion som helst i diagrammet för att utforska</p>
+</header>
+
+<nav class="pills" id="pills"></nav>
+
+<div class="page-layout">
+<div class="diagram-outer">
+  <div class="diagram-frame">
+    <svg id="diagram" viewBox="0 0 900 830" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- GRADIENTS -->
+        <radialGradient id="gBrahmanAura" cx="50%" cy="92%" r="80%" fx="50%" fy="92%">
+          <stop offset="0%"   stop-color="#00e5ff" stop-opacity=".22"/>
+          <stop offset="35%"  stop-color="#00b4d8" stop-opacity=".09"/>
+          <stop offset="72%"  stop-color="#0288d1" stop-opacity=".03"/>
+          <stop offset="100%" stop-color="#07111f" stop-opacity="0"/>
+        </radialGradient>
+        <!-- Boundless pool fill – full width, fades to nothing at top and sides -->
+        <radialGradient id="gBrahmanBoundless" cx="50%" cy="95%" r="75%" fx="50%" fy="95%">
+          <stop offset="0%"   stop-color="#0d3358" stop-opacity="1"/>
+          <stop offset="26%"  stop-color="#0a2a4a" stop-opacity=".88"/>
+          <stop offset="55%"  stop-color="#071c32" stop-opacity=".55"/>
+          <stop offset="80%"  stop-color="#07111f" stop-opacity=".18"/>
+          <stop offset="100%" stop-color="#07111f" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="gPool" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#062540"/>
+          <stop offset="100%" stop-color="#0a2e52"/>
+        </linearGradient>
+        <linearGradient id="gRiver" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#0f3462"/>
+          <stop offset="100%" stop-color="#081e3c"/>
+        </linearGradient>
+        <linearGradient id="gMayaShimmer" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="rgba(0,229,255,0)"/>
+          <stop offset="38%"  stop-color="rgba(100,220,255,.16)"/>
+          <stop offset="50%"  stop-color="rgba(200,248,255,.4)"/>
+          <stop offset="62%"  stop-color="rgba(100,220,255,.16)"/>
+          <stop offset="100%" stop-color="rgba(0,229,255,0)"/>
+        </linearGradient>
+        <linearGradient id="gMoksha" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#00695c"/>
+          <stop offset="100%" stop-color="#002d26"/>
+        </linearGradient>
+        <radialGradient id="gMokshaAura" cx="50%" cy="25%" r="60%">
+          <stop offset="0%"   stop-color="#00bfa5" stop-opacity=".5"/>
+          <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="gDropLight">
+          <stop offset="0%"   stop-color="#b3e5fc"/>
+          <stop offset="60%"  stop-color="#29b6f6"/>
+          <stop offset="100%" stop-color="#0288d1"/>
+        </radialGradient>
+        <radialGradient id="gDropMed">
+          <stop offset="0%"   stop-color="#90caf9"/>
+          <stop offset="60%"  stop-color="#1565c0"/>
+          <stop offset="100%" stop-color="#0d47a1"/>
+        </radialGradient>
+        <radialGradient id="gDropHeavy">
+          <stop offset="0%"   stop-color="#78909c"/>
+          <stop offset="60%"  stop-color="#0d47a1"/>
+          <stop offset="100%" stop-color="#062149"/>
+        </radialGradient>
+
+        <!-- FILTERS -->
+        <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="bigGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="10" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="6" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+
+        <!-- PATTERNS -->
+        <pattern id="waves" x="0" y="0" width="60" height="14" patternUnits="userSpaceOnUse">
+          <path d="M0 7 Q15 2 30 7 Q45 12 60 7" fill="none" stroke="rgba(255,255,255,.055)" stroke-width="1.5"/>
+        </pattern>
+        <pattern id="deepWaves" x="0" y="0" width="80" height="18" patternUnits="userSpaceOnUse">
+          <path d="M0 9 Q20 3 40 9 Q60 15 80 9" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="1.5"/>
+        </pattern>
+
+        <!-- MARKER -->
+        <marker id="arr" markerWidth="10" markerHeight="10" refX="6" refY="4" orient="auto">
+          <path d="M0 0 L8 4 L0 8 Z" fill="rgba(41,182,246,.85)"/>
+        </marker>
+
+        <!-- CLIP for Brahman zone hover -->
+        <clipPath id="clipBrahman">
+          <rect x="90" y="18" width="720" height="155" rx="16"/>
+        </clipPath>
+      </defs>
+
+      <!-- ═══════════════════════════════════════
+           MASTER BACKGROUND
+      ═══════════════════════════════════════ -->
+      <rect width="900" height="830" fill="#07111f"/>
+
+      <!-- ═══════════════════════════════════════
+           BRAHMAN – Den Gränslösa Reservoaren
+           Inga hårda kanter – blöder ut i oändligheten
+      ═══════════════════════════════════════ -->
+      <!-- Pool fill – full SVG-bredd, tonar bort uppåt och åt sidorna -->
+      <rect x="0" y="0" width="900" height="185" fill="url(#gBrahmanBoundless)"/>
+      <!-- Cyan luminositetslager -->
+      <rect x="0" y="-10" width="900" height="210" fill="url(#gBrahmanAura)"/>
+      <!-- Vågstruktur över hela bredden -->
+      <rect x="0" y="18" width="900" height="167" fill="url(#waves)" opacity=".5"/>
+
+      <!-- Ripples – expanderar långt utanför SVG-kanten, klipps naturligt = oändlighetseffekt -->
+      <ellipse cx="450" cy="158" rx="20" ry="4" fill="none"
+               stroke="rgba(0,229,255,.18)" stroke-width="1.8">
+        <animate attributeName="rx" values="20;730;20" dur="6s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="4;64;4" dur="6s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values=".22;0;.22" dur="6s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="450" cy="158" rx="8" ry="2" fill="none"
+               stroke="rgba(0,229,255,.16)" stroke-width="1.5">
+        <animate attributeName="rx" values="8;560;8" dur="4.5s" begin="1.8s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="2;50;2" dur="4.5s" begin="1.8s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values=".22;0;.22" dur="4.5s" begin="1.8s" repeatCount="indefinite"/>
+      </ellipse>
+      <!-- Långsam, massiv ripple -->
+      <ellipse cx="450" cy="158" rx="5" ry="2" fill="none"
+               stroke="rgba(0,229,255,.09)" stroke-width="1">
+        <animate attributeName="rx" values="5;920;5" dur="8.5s" begin=".7s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="2;78;2" dur="8.5s" begin=".7s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values=".16;0;.16" dur="8.5s" begin=".7s" repeatCount="indefinite"/>
+      </ellipse>
+      <!-- Fjärde ripple – asymmetrisk tajming -->
+      <ellipse cx="450" cy="158" rx="14" ry="3" fill="none"
+               stroke="rgba(0,200,255,.11)" stroke-width="1.2">
+        <animate attributeName="rx" values="14;650;14" dur="5.5s" begin="3.3s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="3;54;3" dur="5.5s" begin="3.3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values=".18;0;.18" dur="5.5s" begin="3.3s" repeatCount="indefinite"/>
+      </ellipse>
+
+      <!-- Labels -->
+      <text x="450" y="90" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="34"
+            fill="#00e5ff" filter="url(#glow)">BRAHMAN</text>
+      <text x="450" y="117" text-anchor="middle"
+            font-family="Nunito Sans" font-weight="300" font-size="12"
+            fill="rgba(200,242,255,.58)" letter-spacing="2.8">Den Gränslösa Reservoaren</text>
+      <text x="450" y="156" text-anchor="middle"
+            font-family="Nunito Sans" font-weight="300" font-size="9.5"
+            fill="rgba(0,229,255,.28)" font-style="italic">
+        Det enda som verkligen existerar  ·  H₂O i sin renaste form
+      </text>
+
+      <!-- Hover highlight (full bredd) -->
+      <rect id="hBrahman" x="0" y="0" width="900" height="185"
+            fill="rgba(0,229,255,0)" style="pointer-events:none"/>
+      <!-- Clickzone (full bredd) -->
+      <rect x="0" y="0" width="900" height="185"
+            fill="transparent" pointer-events="all"
+            data-c="brahman" class="zone"/>
+
+      <!-- ═══════════════════════════════════════
+           ATMAN – Essenspartikeln
+           (y: 173–292)
+      ═══════════════════════════════════════ -->
+      <!-- Section label -->
+      <text x="450" y="198" text-anchor="middle"
+            font-family="Nunito" font-weight="800" font-size="10.5"
+            fill="rgba(144,202,249,.5)" letter-spacing="2.2">ATMAN  ·  Essenspartikeln</text>
+
+      <!-- Stream tubes from pool bottom -->
+      <line x1="272" y1="173" x2="248" y2="248"
+            stroke="rgba(41,182,246,.32)" stroke-width="10" stroke-linecap="round"/>
+      <line x1="450" y1="173" x2="450" y2="250"
+            stroke="rgba(21,101,192,.36)" stroke-width="11" stroke-linecap="round"/>
+      <line x1="628" y1="173" x2="652" y2="246"
+            stroke="rgba(13,71,161,.3)" stroke-width="10" stroke-linecap="round"/>
+
+      <!-- ── Tube 1 particles – lätt (rör sig snabbast) ── -->
+      <circle r="3.5" fill="rgba(77,208,225,.9)" pointer-events="none">
+        <animate attributeName="cx" values="272;248" dur="1.1s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="cy" values="173;248" dur="1.1s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="opacity" values="0;.95;.9;0" dur="1.1s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3.5" fill="rgba(77,208,225,.9)" pointer-events="none">
+        <animate attributeName="cx" values="272;248" dur="1.1s" begin="0.37s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="cy" values="173;248" dur="1.1s" begin="0.37s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="opacity" values="0;.95;.9;0" dur="1.1s" begin="0.37s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3.5" fill="rgba(77,208,225,.9)" pointer-events="none">
+        <animate attributeName="cx" values="272;248" dur="1.1s" begin="0.74s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="cy" values="173;248" dur="1.1s" begin="0.74s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="opacity" values="0;.95;.9;0" dur="1.1s" begin="0.74s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- ── Tube 2 particles – medel ── -->
+      <circle cx="450" r="3.5" fill="rgba(41,182,246,.8)" pointer-events="none">
+        <animate attributeName="cy" values="173;250" dur="1.3s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="opacity" values="0;.9;.85;0" dur="1.3s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="450" r="3.5" fill="rgba(41,182,246,.8)" pointer-events="none">
+        <animate attributeName="cy" values="173;250" dur="1.3s" begin="0.43s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="opacity" values="0;.9;.85;0" dur="1.3s" begin="0.43s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="450" r="3.5" fill="rgba(41,182,246,.8)" pointer-events="none">
+        <animate attributeName="cy" values="173;250" dur="1.3s" begin="0.87s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="opacity" values="0;.9;.85;0" dur="1.3s" begin="0.87s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- ── Tube 3 particles – tung (rör sig långsammast) ── -->
+      <circle r="3.5" fill="rgba(30,80,160,.9)" pointer-events="none">
+        <animate attributeName="cx" values="628;652" dur="1.6s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="cy" values="173;246" dur="1.6s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="opacity" values="0;.8;.75;0" dur="1.6s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3.5" fill="rgba(30,80,160,.9)" pointer-events="none">
+        <animate attributeName="cx" values="628;652" dur="1.6s" begin="0.53s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="cy" values="173;246" dur="1.6s" begin="0.53s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="opacity" values="0;.8;.75;0" dur="1.6s" begin="0.53s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3.5" fill="rgba(30,80,160,.9)" pointer-events="none">
+        <animate attributeName="cx" values="628;652" dur="1.6s" begin="1.07s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="cy" values="173;246" dur="1.6s" begin="1.07s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="opacity" values="0;.8;.75;0" dur="1.6s" begin="1.07s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- DROP 1 – Lätt sediment -->
+      <g pointer-events="none">
+        <circle cx="248" cy="255" r="19" fill="url(#gDropLight)" filter="url(#glow)" opacity=".92">
+          <animate attributeName="cy" values="255;260;255" dur="2.7s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="241" cy="249" r="6" fill="rgba(255,255,255,.45)" pointer-events="none">
+          <animate attributeName="cy" values="249;254;249" dur="2.7s" repeatCount="indefinite"/>
+        </circle>
+        <text x="248" y="283" text-anchor="middle"
+              font-family="Nunito" font-size="9" font-weight="800"
+              fill="rgba(135,210,240,.8)">Lätt sediment</text>
+      </g>
+
+      <!-- DROP 2 – Medel sediment -->
+      <g pointer-events="none">
+        <circle cx="450" cy="258" r="22" fill="url(#gDropMed)" filter="url(#glow)" opacity=".9">
+          <animate attributeName="cy" values="258;264;258" dur="3.1s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Sediment layer -->
+        <ellipse cx="450" cy="268" rx="13" ry="8" fill="#795548" opacity=".55">
+          <animate attributeName="cy" values="268;274;268" dur="3.1s" repeatCount="indefinite"/>
+        </ellipse>
+        <circle cx="443" cy="252" r="6" fill="rgba(255,255,255,.3)"/>
+        <text x="450" y="289" text-anchor="middle"
+              font-family="Nunito" font-size="9" font-weight="800"
+              fill="rgba(200,200,200,.75)">Medel sediment</text>
+      </g>
+
+      <!-- DROP 3 – Tung sediment -->
+      <g pointer-events="none">
+        <circle cx="652" cy="260" r="25" fill="url(#gDropHeavy)" filter="url(#glow)" opacity=".9">
+          <animate attributeName="cy" values="260;267;260" dur="2.4s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Heavy sediment mass -->
+        <ellipse cx="652" cy="273" rx="18" ry="12" fill="#5d4037" opacity=".7">
+          <animate attributeName="cy" values="273;280;273" dur="2.4s" repeatCount="indefinite"/>
+        </ellipse>
+        <circle cx="644" cy="253" r="5" fill="rgba(255,255,255,.18)"/>
+        <text x="652" y="294" text-anchor="middle"
+              font-family="Nunito" font-size="9" font-weight="800"
+              fill="rgba(180,120,80,.9)">Tung sediment</text>
+      </g>
+
+      <!-- Karma arrows on drops -->
+      <text x="193" y="265" text-anchor="middle" font-size="20"
+            fill="rgba(135,210,240,.6)" pointer-events="none">↑</text>
+      <text x="395" y="265" text-anchor="middle" font-size="20"
+            fill="rgba(200,180,150,.5)" pointer-events="none">↕</text>
+      <text x="710" y="268" text-anchor="middle" font-size="20"
+            fill="rgba(180,100,70,.65)" pointer-events="none">↓</text>
+
+      <!-- Hover + Clickzone Atman -->
+      <rect id="hAtman" x="90" y="175" width="720" height="124"
+            fill="rgba(77,208,225,0)" style="pointer-events:none"/>
+      <rect x="90" y="175" width="720" height="124"
+            fill="transparent" pointer-events="all"
+            data-c="atman" class="zone"/>
+
+      <!-- ═══════════════════════════════════════
+           SAMSARA RIVER (y: 300–482)
+           + MAYA surface (y: 300–326)
+           + KARMA legend box
+      ═══════════════════════════════════════ -->
+      <!-- River body -->
+      <rect x="50" y="300" width="800" height="182" fill="url(#gRiver)"/>
+      <rect x="50" y="300" width="800" height="182" fill="url(#deepWaves)"/>
+
+      <!-- Animated horizontal flow currents -->
+      <path d="M50 330 Q220 318 440 333 Q640 348 850 330" fill="none"
+            stroke="rgba(41,182,246,.13)" stroke-width="2.5" stroke-dasharray="26 14">
+        <animate attributeName="stroke-dashoffset" from="0" to="-80" dur="3.2s" repeatCount="indefinite"/>
+      </path>
+      <path d="M50 378 Q220 392 440 375 Q640 360 850 378" fill="none"
+            stroke="rgba(41,182,246,.09)" stroke-width="2" stroke-dasharray="26 14">
+        <animate attributeName="stroke-dashoffset" from="0" to="-80" dur="4.4s" repeatCount="indefinite"/>
+      </path>
+      <path d="M50 445 Q220 433 440 450 Q640 464 850 445" fill="none"
+            stroke="rgba(41,182,246,.07)" stroke-width="1.5" stroke-dasharray="26 14">
+        <animate attributeName="stroke-dashoffset" from="0" to="-80" dur="5.2s" repeatCount="indefinite"/>
+      </path>
+
+      <!-- ── MAYA SURFACE LAYER (y:300-326) ── -->
+      <rect x="50" y="300" width="800" height="26" fill="rgba(80,210,255,.1)"/>
+      <!-- Animated shimmer sweep -->
+      <rect x="50" y="300" width="800" height="26" fill="url(#gMayaShimmer)">
+        <animateTransform attributeName="transform" type="translate"
+          from="-900 0" to="900 0" dur="2.6s" repeatCount="indefinite"/>
+      </rect>
+      <!-- Surface line -->
+      <line x1="50" y1="326" x2="850" y2="326"
+            stroke="rgba(144,224,255,.38)" stroke-width="1.5"/>
+      <!-- Maya label -->
+      <text x="450" y="317" text-anchor="middle"
+            font-family="Nunito" font-weight="800" font-size="10.5"
+            fill="rgba(205,240,255,.85)" letter-spacing="2.2">MAYA  ·  Formbländverket</text>
+      <!-- Maya clickzone (top strip) -->
+      <rect id="hMaya" x="50" y="300" width="800" height="26"
+            fill="rgba(200,240,255,0)" style="pointer-events:none"/>
+      <rect x="50" y="300" width="800" height="26"
+            fill="transparent" pointer-events="all"
+            data-c="maya" class="zone"/>
+
+      <!-- ── SAMSARA label ── -->
+      <text x="68" y="365" font-family="Nunito" font-weight="900" font-size="14"
+            fill="rgba(41,182,246,.6)" letter-spacing=".5" pointer-events="none">SAMSARA</text>
+      <text x="68" y="380" font-family="Nunito Sans" font-weight="300" font-size="9.5"
+            fill="rgba(41,182,246,.36)" letter-spacing="1.2" pointer-events="none">Kretsloppets Strömfåra</text>
+
+      <!-- ── Animated drops in river – korrigerade hastigheter, sömlösa loopar, vertikal sedimentation ── -->
+
+      <!-- LÄTT DROPPE – flödar snabbast (11s), flyter upp till ytan vid inträde -->
+      <circle cx="-12" cy="343" r="10" fill="url(#gDropLight)" opacity=".87" pointer-events="none">
+        <animate attributeName="cx" from="-12" to="872" dur="11s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="cy"
+          values="362;333;337;340;338;341;339;340"
+          keyTimes="0;0.06;0.18;0.32;0.5;0.66;0.84;1"
+          dur="11s" repeatCount="indefinite" calcMode="spline"
+          keySplines="0.4 0 0.2 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      </circle>
+
+      <!-- MEDEL DROPPE – medelhastighet (17s), sjunker lite vid inträde -->
+      <circle cx="-12" cy="390" r="13" fill="url(#gDropMed)" opacity=".82" pointer-events="none">
+        <animate attributeName="cx" from="-12" to="872" dur="17s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="cy"
+          values="372;394;390;392;389;391;390;391"
+          keyTimes="0;0.06;0.18;0.32;0.5;0.66;0.84;1"
+          dur="17s" repeatCount="indefinite" calcMode="spline"
+          keySplines="0.4 0 0.2 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      </circle>
+      <ellipse cx="-12" cy="399" rx="8" ry="5" fill="#795548" opacity=".65" pointer-events="none">
+        <animate attributeName="cx" from="-12" to="872" dur="17s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="cy"
+          values="381;403;399;401;398;400;399;400"
+          keyTimes="0;0.06;0.18;0.32;0.5;0.66;0.84;1"
+          dur="17s" repeatCount="indefinite" calcMode="spline"
+          keySplines="0.4 0 0.2 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      </ellipse>
+
+      <!-- TUNG DROPPE – flödar långsammast (24s), sjunker markant vid inträde -->
+      <circle cx="-12" cy="453" r="15" fill="url(#gDropHeavy)" opacity=".82" pointer-events="none">
+        <animate attributeName="cx" from="-12" to="872" dur="24s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="cy"
+          values="424;458;454;456;452;455;453;454"
+          keyTimes="0;0.07;0.18;0.32;0.5;0.66;0.84;1"
+          dur="24s" repeatCount="indefinite" calcMode="spline"
+          keySplines="0.4 0 0.2 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      </circle>
+      <ellipse cx="-12" cy="463" rx="11" ry="7" fill="#5d4037" opacity=".72" pointer-events="none">
+        <animate attributeName="cx" from="-12" to="872" dur="24s" repeatCount="indefinite" calcMode="linear"/>
+        <animate attributeName="cy"
+          values="434;468;464;466;462;465;463;464"
+          keyTimes="0;0.07;0.18;0.32;0.5;0.66;0.84;1"
+          dur="24s" repeatCount="indefinite" calcMode="spline"
+          keySplines="0.4 0 0.2 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1;0.4 0 0.6 1"/>
+      </ellipse>
+
+      <!-- ── KARMA legend box ── -->
+      <rect x="685" y="338" width="160" height="108" rx="9"
+            fill="rgba(7,17,31,.72)" stroke="rgba(255,167,38,.18)" stroke-width="1"
+            pointer-events="none"/>
+      <text x="765" y="358" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="12.5"
+            fill="rgba(255,167,38,.9)" pointer-events="none">KARMA</text>
+      <text x="765" y="370" text-anchor="middle"
+            font-family="Nunito Sans" font-size="8.5"
+            fill="rgba(255,167,38,.48)" letter-spacing="1" pointer-events="none">Sedimentlasten</text>
+      <!-- Legend rows -->
+      <circle cx="699" cy="387" r="6" fill="#29b6f6" pointer-events="none"/>
+      <text x="710" y="391" font-family="Nunito Sans" font-size="8"
+            fill="rgba(200,230,255,.7)" pointer-events="none">Lätt  →  stiger uppåt</text>
+      <circle cx="699" cy="407" r="7.5" fill="#1565c0" pointer-events="none"/>
+      <ellipse cx="699" cy="411" rx="4" ry="2.5" fill="#795548" opacity=".65" pointer-events="none"/>
+      <text x="710" y="411" font-family="Nunito Sans" font-size="8"
+            fill="rgba(200,230,255,.7)" pointer-events="none">Medel →  stannar kvar</text>
+      <circle cx="699" cy="428" r="9" fill="#0d47a1" pointer-events="none"/>
+      <ellipse cx="699" cy="434" rx="5.5" ry="3.5" fill="#5d4037" opacity=".72" pointer-events="none"/>
+      <text x="710" y="432" font-family="Nunito Sans" font-size="8"
+            fill="rgba(200,230,255,.7)" pointer-events="none">Tung  →  sjunker ned</text>
+      <!-- Karma clickzone (legend box) -->
+      <rect id="hKarma" x="685" y="338" width="160" height="108" rx="9"
+            fill="rgba(255,167,38,0)" style="pointer-events:none"/>
+      <rect x="685" y="338" width="160" height="108" rx="9"
+            fill="transparent" pointer-events="all"
+            data-c="karma" class="zone"/>
+
+      <!-- Samsara main clickzone (river body below Maya) -->
+      <rect id="hSamsara" x="50" y="326" width="635" height="156"
+            fill="rgba(41,182,246,0)" style="pointer-events:none"/>
+      <rect x="50" y="326" width="635" height="156"
+            fill="transparent" pointer-events="all"
+            data-c="samsara" class="zone"/>
+
+      <!-- ═══════════════════════════════════════
+           FILTER / KARMISKA SLUSSAR (y: 482–628)
+           Three distinct gate structures
+      ═══════════════════════════════════════ -->
+
+      <!-- Section background strip -->
+      <rect x="50" y="482" width="800" height="146" fill="#08121e"/>
+
+      <!-- Section label above gates -->
+      <text x="450" y="474" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="12"
+            fill="rgba(176,190,197,.55)" letter-spacing="1" pointer-events="none">
+        FILTREN  ·  Världarnas Sorteringsverk  ·  Karmiska Slussar
+      </text>
+
+      <!-- ── GATE 1 – LÄTT KARMA – Himmelska världar ── -->
+      <!-- Frame -->
+      <rect x="55" y="484" width="244" height="144" rx="9"
+            fill="#0d2035" stroke="#4dd0e1" stroke-width="2"/>
+      <!-- Cyan accent strip (left edge) -->
+      <rect x="55" y="484" width="7" height="144" rx="5"
+            fill="#4dd0e1" opacity=".75"/>
+      <!-- TOP OPENING (32px) – light karma floats up through this aperture -->
+      <rect x="62" y="484" width="237" height="36" fill="#07111f"/>
+      <!-- Opening bottom edge (glowing lip) -->
+      <rect x="62" y="518" width="237" height="2" fill="#4dd0e1" opacity=".5"/>
+      <!-- GRATING body (below opening) -->
+      <rect x="62" y="520" width="237" height="108" fill="#0a1e30"/>
+      <!-- Horizontal filter bars -->
+      <rect x="62" y="534" width="237" height="5" rx="1" fill="#152d44" opacity=".9"/>
+      <rect x="62" y="548" width="237" height="5" rx="1" fill="#152d44" opacity=".9"/>
+      <rect x="62" y="562" width="237" height="5" rx="1" fill="#152d44" opacity=".9"/>
+      <rect x="62" y="576" width="237" height="5" rx="1" fill="#152d44" opacity=".9"/>
+      <rect x="62" y="590" width="237" height="5" rx="1" fill="#152d44" opacity=".9"/>
+      <rect x="62" y="604" width="237" height="5" rx="1" fill="#152d44" opacity=".9"/>
+      <!-- Labels in opening area -->
+      <text x="177" y="502" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="13"
+            fill="#4dd0e1" pointer-events="none">↑ LÄTT SEDIMENT</text>
+      <text x="177" y="516" text-anchor="middle"
+            font-family="Nunito Sans" font-size="9"
+            fill="rgba(77,208,225,.55)" pointer-events="none">passerar högt – öppning vid toppen</text>
+      <!-- Labels in grating area -->
+      <text x="177" y="548" text-anchor="middle"
+            font-family="Nunito" font-weight="800" font-size="13"
+            fill="rgba(77,208,225,.7)" pointer-events="none">Himmelska</text>
+      <text x="177" y="564" text-anchor="middle"
+            font-family="Nunito" font-weight="800" font-size="13"
+            fill="rgba(77,208,225,.7)" pointer-events="none">världar</text>
+      <text x="177" y="590" text-anchor="middle"
+            font-family="Nunito Sans" font-size="8.5"
+            fill="rgba(77,208,225,.35)" font-style="italic" pointer-events="none">Lätt droppe stiger</text>
+      <text x="177" y="603" text-anchor="middle"
+            font-family="Nunito Sans" font-size="8.5"
+            fill="rgba(77,208,225,.35)" font-style="italic" pointer-events="none">till högre sfärer</text>
+      <!-- Animated light drop falling into top opening -->
+      <circle cx="177" cy="484" r="9" fill="#29b6f6" opacity="0" pointer-events="none">
+        <animate attributeName="cy" values="470;490;502;525;560" dur="3.6s" begin="0.1s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0;.9;.85;.2;0" dur="3.6s" begin="0.1s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- ── GATE 2 – MEDEL KARMA – Mänskliga världar ── -->
+      <!-- Frame -->
+      <rect x="323" y="484" width="244" height="144" rx="9"
+            fill="#131820" stroke="#90a4ae" stroke-width="2"/>
+      <!-- Grey accent strip (left edge) -->
+      <rect x="323" y="484" width="7" height="144" rx="5"
+            fill="#90a4ae" opacity=".75"/>
+      <!-- TOP GRATING (50px) -->
+      <rect x="330" y="484" width="237" height="50" fill="#0d1520"/>
+      <rect x="330" y="498" width="237" height="5" rx="1" fill="#1e2a38" opacity=".9"/>
+      <rect x="330" y="512" width="237" height="5" rx="1" fill="#1e2a38" opacity=".9"/>
+      <!-- MIDDLE OPENING (40px) – medium karma passes here -->
+      <rect x="330" y="534" width="237" height="40" fill="#07111f"/>
+      <!-- Opening top edge -->
+      <rect x="330" y="534" width="237" height="2" fill="#90a4ae" opacity=".5"/>
+      <!-- Opening bottom edge -->
+      <rect x="330" y="572" width="237" height="2" fill="#90a4ae" opacity=".5"/>
+      <!-- BOTTOM GRATING (56px) -->
+      <rect x="330" y="574" width="237" height="54" fill="#0d1520"/>
+      <rect x="330" y="586" width="237" height="5" rx="1" fill="#1e2a38" opacity=".9"/>
+      <rect x="330" y="600" width="237" height="5" rx="1" fill="#1e2a38" opacity=".9"/>
+      <rect x="330" y="614" width="237" height="5" rx="1" fill="#1e2a38" opacity=".9"/>
+      <!-- Labels in top grating -->
+      <text x="445" y="502" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="13"
+            fill="#90a4ae" pointer-events="none">↕ MEDEL SEDIMENT</text>
+      <text x="445" y="516" text-anchor="middle"
+            font-family="Nunito Sans" font-size="9"
+            fill="rgba(144,164,174,.5)" pointer-events="none">passerar mitt – öppning i mitten</text>
+      <!-- Label in opening slot -->
+      <text x="445" y="558" text-anchor="middle"
+            font-family="Nunito" font-weight="800" font-size="13"
+            fill="rgba(144,164,174,.8)" pointer-events="none">Mänskliga världar</text>
+      <!-- Label in bottom grating -->
+      <text x="445" y="596" text-anchor="middle"
+            font-family="Nunito Sans" font-size="8.5"
+            fill="rgba(144,164,174,.35)" font-style="italic" pointer-events="none">Återföds i Samsara –</text>
+      <text x="445" y="609" text-anchor="middle"
+            font-family="Nunito Sans" font-size="8.5"
+            fill="rgba(144,164,174,.35)" font-style="italic" pointer-events="none">ny chans att lätta lasten</text>
+      <!-- Animated medium drop through middle opening -->
+      <circle cx="445" cy="484" r="11" fill="#1565c0" opacity="0" pointer-events="none">
+        <animate attributeName="cy" values="470;510;540;553;585;620" dur="4.8s" begin="1.4s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0;0;.8;.9;.3;0" dur="4.8s" begin="1.4s" repeatCount="indefinite"/>
+      </circle>
+      <ellipse cx="445" cy="490" rx="6" ry="4" fill="#795548" opacity="0" pointer-events="none">
+        <animate attributeName="cy" values="478;518;550;562;594;628" dur="4.8s" begin="1.4s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0;0;.6;.7;.2;0" dur="4.8s" begin="1.4s" repeatCount="indefinite"/>
+      </ellipse>
+
+      <!-- ── GATE 3 – TUNG KARMA – Lägre världar ── -->
+      <!-- Frame -->
+      <rect x="591" y="484" width="244" height="144" rx="9"
+            fill="#1a1208" stroke="#8d6e63" stroke-width="2"/>
+      <!-- Brown accent strip (left edge) -->
+      <rect x="591" y="484" width="7" height="144" rx="5"
+            fill="#8d6e63" opacity=".75"/>
+      <!-- TOP GRATING (84px) – heavy drops can't float up through here -->
+      <rect x="598" y="484" width="237" height="84" fill="#130e08"/>
+      <rect x="598" y="498" width="237" height="5" rx="1" fill="#2a1e12" opacity=".9"/>
+      <rect x="598" y="512" width="237" height="5" rx="1" fill="#2a1e12" opacity=".9"/>
+      <rect x="598" y="526" width="237" height="5" rx="1" fill="#2a1e12" opacity=".9"/>
+      <rect x="598" y="540" width="237" height="5" rx="1" fill="#2a1e12" opacity=".9"/>
+      <rect x="598" y="554" width="237" height="5" rx="1" fill="#2a1e12" opacity=".9"/>
+      <!-- BOTTOM OPENING (60px) – heavy karma sinks through -->
+      <rect x="598" y="568" width="237" height="60" fill="#07111f"/>
+      <!-- Opening top edge (glowing lip) -->
+      <rect x="598" y="568" width="237" height="2" fill="#8d6e63" opacity=".55"/>
+      <!-- Labels in top grating -->
+      <text x="713" y="502" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="13"
+            fill="#a1887f" pointer-events="none">↓ TUNG SEDIMENT</text>
+      <text x="713" y="516" text-anchor="middle"
+            font-family="Nunito Sans" font-size="9"
+            fill="rgba(141,110,99,.5)" pointer-events="none">sjunker ned – öppning vid botten</text>
+      <text x="713" y="540" text-anchor="middle"
+            font-family="Nunito" font-weight="800" font-size="13"
+            fill="rgba(141,110,99,.6)" pointer-events="none">Lägre världar</text>
+      <text x="713" y="558" text-anchor="middle"
+            font-family="Nunito Sans" font-size="8.5"
+            fill="rgba(141,110,99,.35)" font-style="italic" pointer-events="none">Tyngst sediment blockeras</text>
+      <!-- Label in opening area -->
+      <text x="713" y="592" text-anchor="middle"
+            font-family="Nunito Sans" font-size="8.5"
+            fill="rgba(141,110,99,.4)" font-style="italic" pointer-events="none">Tung droppe sjunker till</text>
+      <text x="713" y="605" text-anchor="middle"
+            font-family="Nunito Sans" font-size="8.5"
+            fill="rgba(141,110,99,.4)" font-style="italic" pointer-events="none">lägre existensformer</text>
+      <!-- Animated heavy drop sinking through bottom opening -->
+      <circle cx="713" cy="484" r="13" fill="#0d47a1" opacity="0" pointer-events="none">
+        <animate attributeName="cy" values="470;520;555;578;610;640" dur="5.5s" begin="2.6s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0;0;.6;.85;.7;0" dur="5.5s" begin="2.6s" repeatCount="indefinite"/>
+      </circle>
+      <ellipse cx="713" cy="495" rx="8" ry="5.5" fill="#5d4037" opacity="0" pointer-events="none">
+        <animate attributeName="cy" values="483;533;568;591;623;652" dur="5.5s" begin="2.6s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0;0;.5;.72;.55;0" dur="5.5s" begin="2.6s" repeatCount="indefinite"/>
+      </ellipse>
+
+      <!-- Filter – header-strip öppnar mekanikkortet -->
+      <rect id="hFilter" x="50" y="462" width="800" height="22"
+            fill="rgba(176,190,197,0)" style="pointer-events:none"/>
+      <rect x="50" y="462" width="800" height="22"
+            fill="transparent" pointer-events="all"
+            data-c="filter" class="zone"/>
+
+      <!-- Gate 1 – Svarga-loka (lätt karma) -->
+      <rect id="hSvarga" x="55" y="484" width="244" height="144"
+            fill="rgba(79,195,247,0)" style="pointer-events:none"/>
+      <rect x="55" y="484" width="244" height="144"
+            fill="transparent" pointer-events="all"
+            data-c="svarga" class="zone"/>
+
+      <!-- Gate 2 – Manushya-loka (medel karma) -->
+      <rect id="hManushya" x="323" y="484" width="244" height="144"
+            fill="rgba(144,164,174,0)" style="pointer-events:none"/>
+      <rect x="323" y="484" width="244" height="144"
+            fill="transparent" pointer-events="all"
+            data-c="manushya" class="zone"/>
+
+      <!-- Gate 3 – Naraka & Tiryag-loka (tung karma) -->
+      <rect id="hNaraka" x="591" y="484" width="244" height="144"
+            fill="rgba(141,110,99,0)" style="pointer-events:none"/>
+      <rect x="591" y="484" width="244" height="144"
+            fill="transparent" pointer-events="all"
+            data-c="naraka" class="zone"/>
+
+      <!-- ═══════════════════════════════════════
+           RETURN / ÅTERFÖDELSE ARROW – dramatisk
+      ═══════════════════════════════════════ -->
+      <!-- Glow-halo bakom pilen -->
+      <path d="M853 600 Q892 600 892 456 Q892 312 853 312"
+            fill="none" stroke="rgba(41,182,246,.18)" stroke-width="14"
+            stroke-linecap="round" filter="url(#softGlow)" pointer-events="none"/>
+      <!-- Huvud-pil med flödande streck -->
+      <path d="M853 600 Q892 600 892 456 Q892 312 853 312"
+            fill="none" stroke="rgba(41,182,246,.75)" stroke-width="3"
+            stroke-dasharray="9 5" marker-end="url(#arr)" pointer-events="none">
+        <animate attributeName="stroke-dashoffset" from="0" to="-56" dur="2.6s" repeatCount="indefinite"/>
+        <animate attributeName="stroke-opacity" values=".75;.95;.75" dur="3s" repeatCount="indefinite"/>
+      </path>
+      <!-- Pulserande startpunkt -->
+      <circle cx="853" cy="600" r="5" fill="rgba(41,182,246,.55)" pointer-events="none">
+        <animate attributeName="r"       values="5;9;5"      dur="2.4s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values=".55;.1;.55" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+      <!-- Etikett-pill mitt på båglinjen -->
+      <rect x="862" y="418" width="58" height="80" rx="8"
+            fill="rgba(7,20,38,.9)" stroke="rgba(41,182,246,.4)" stroke-width="1"
+            pointer-events="none"/>
+      <text x="891" y="455" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="9.5"
+            fill="rgba(41,182,246,.95)" letter-spacing=".5" pointer-events="none"
+            transform="rotate(90 891 455)">ÅTERFÖDS I SAMSARA</text>
+
+      <!-- ═══════════════════════════════════════
+           MOKSHA – Mynningen (y: 645–820)
+      ═══════════════════════════════════════ -->
+      <!-- Aura -->
+      <ellipse cx="450" cy="720" rx="390" ry="110" fill="url(#gMokshaAura)"/>
+      <!-- Ocean body -->
+      <path d="M50 648 Q220 634 450 629 Q680 634 850 648 L850 825 L50 825 Z"
+            fill="url(#gMoksha)"/>
+      <!-- Animated wave 1 -->
+      <path d="M50 646 Q220 632 450 627 Q680 632 850 646"
+            fill="none" stroke="rgba(0,191,165,.38)" stroke-width="2.2">
+        <animate attributeName="d"
+          values="M50 646 Q220 632 450 627 Q680 632 850 646;M50 650 Q220 637 450 632 Q680 637 850 650;M50 646 Q220 632 450 627 Q680 632 850 646"
+          dur="4s" repeatCount="indefinite"/>
+      </path>
+      <!-- Wave 2 -->
+      <path d="M100 661 Q300 651 500 656 Q700 662 810 651"
+            fill="none" stroke="rgba(0,191,165,.2)" stroke-width="1.5">
+        <animate attributeName="d"
+          values="M100 661 Q300 651 500 656 Q700 662 810 651;M100 666 Q300 656 500 661 Q700 666 810 656;M100 661 Q300 651 500 656 Q700 662 810 651"
+          dur="5.5s" repeatCount="indefinite"/>
+      </path>
+      <!-- Moksha labels -->
+      <text x="450" y="716" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="30"
+            fill="rgba(0,191,165,.92)" filter="url(#bigGlow)">MOKSHA</text>
+      <text x="450" y="746" text-anchor="middle"
+            font-family="Nunito Sans" font-weight="300" font-size="13.5"
+            fill="rgba(128,229,229,.58)" letter-spacing="2.8">Mynningen</text>
+      <text x="450" y="778" text-anchor="middle"
+            font-family="Nunito Sans" font-weight="300" font-size="10"
+            fill="rgba(0,191,165,.34)" font-style="italic">
+        Du var aldrig droppen  ·  Du var alltid havet
+      </text>
+      <!-- Sparkle particles on surface -->
+      <circle cx="198" cy="650" r="2.2" fill="rgba(0,229,255,.72)" pointer-events="none">
+        <animate attributeName="opacity" values=".72;0;.72" dur="2.3s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="342" cy="640" r="1.6" fill="rgba(0,229,255,.5)" pointer-events="none">
+        <animate attributeName="opacity" values="0;.5;0" dur="3.1s" begin=".9s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="580" cy="643" r="2.2" fill="rgba(0,229,255,.6)" pointer-events="none">
+        <animate attributeName="opacity" values=".6;0;.6" dur="2.7s" begin="1.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="725" cy="637" r="1.6" fill="rgba(0,229,255,.42)" pointer-events="none">
+        <animate attributeName="opacity" values="0;.42;0" dur="4s" begin=".4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="462" cy="657" r="1.8" fill="rgba(0,229,255,.55)" pointer-events="none">
+        <animate attributeName="opacity" values=".55;0;.55" dur="2.1s" begin="1.1s" repeatCount="indefinite"/>
+      </circle>
+      <!-- Moksha clickzone -->
+      <rect id="hMoksha" x="50" y="628" width="800" height="197"
+            fill="rgba(0,191,165,0)" style="pointer-events:none"/>
+
+      <!-- ── Moksha-droppe – en upplyst droppe når havet ── -->
+      <!-- Faller periodiskt från filtren, representerar Atman som återförenas med Brahman -->
+      <circle cx="310" cy="628" r="9" fill="#4dd0e1" opacity="0" filter="url(#glow)" pointer-events="none">
+        <animate attributeName="cy" values="628;642;658;676;705;750" dur="5s" begin="3s" repeatCount="indefinite" calcMode="spline"
+          keySplines="0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1;0.3 0 0.7 1"/>
+        <animate attributeName="opacity" values="0;.85;.95;.9;.5;0" dur="5s" begin="3s" repeatCount="indefinite"/>
+        <animate attributeName="r" values="9;10;11;10;8;6" dur="5s" begin="3s" repeatCount="indefinite"/>
+      </circle>
+      <!-- Ripple vid landning i havet -->
+      <ellipse cx="310" cy="658" rx="0" ry="0" fill="none"
+               stroke="rgba(0,229,255,.6)" stroke-width="2" pointer-events="none">
+        <animate attributeName="rx" values="0;50;90;0" dur="5s" begin="4.8s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="0;11;18;0" dur="5s" begin="4.8s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0;.6;.15;0" dur="5s" begin="4.8s" repeatCount="indefinite"/>
+      </ellipse>
+      <!-- Andra, bredare ripple -->
+      <ellipse cx="310" cy="658" rx="0" ry="0" fill="none"
+               stroke="rgba(0,191,165,.3)" stroke-width="1.5" pointer-events="none">
+        <animate attributeName="rx" values="0;80;130;0" dur="5s" begin="5.1s" repeatCount="indefinite"/>
+        <animate attributeName="ry" values="0;16;24;0" dur="5s" begin="5.1s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0;.4;.05;0" dur="5s" begin="5.1s" repeatCount="indefinite"/>
+      </ellipse>
+
+      <rect x="50" y="628" width="800" height="197"
+            fill="transparent" pointer-events="all"
+            data-c="moksha" class="zone"/>
+
+      <!-- ═══════════════════════════════════════
+           OUTER DIAGRAM FRAME
+      ═══════════════════════════════════════ -->
+      <rect x="50" y="18" width="800" height="807" rx="14"
+            fill="none" stroke="rgba(0,100,150,.15)" stroke-width="1" pointer-events="none"/>
+
+      <!-- ═══════════════════════════════════════
+           RELATIONSLINJER (G)
+           Tre fördefinierade kopplingar, visas
+           per aktivt begrepp. Opacity styrs av JS.
+      ═══════════════════════════════════════ -->
+      <g id="relLines" pointer-events="none">
+
+        <!-- 1. brahman ↔ moksha
+             Rutt: längs vänsterkanten utanför ramens x=50
+             Visar att Atman och Brahman är identiska — Moksha är återföreningen -->
+        <path id="rel-brahman-moksha"
+              d="M 86 670 C 16 500 16 300 86 148"
+              fill="none" stroke="#00e5ff" stroke-width="2.2"
+              stroke-dasharray="8 5" opacity="0">
+          <animate attributeName="stroke-dashoffset"
+                   from="0" to="-52" dur="2.5s" repeatCount="indefinite"/>
+        </path>
+        <text id="lbl-brahman-moksha"
+              x="24" y="415" text-anchor="middle"
+              font-family="Nunito" font-weight="800" font-size="8"
+              opacity="0" transform="rotate(-90 24 415)">Atman = Brahman</text>
+
+        <!-- 2. karma → filter
+             Rutt: kort diagonal från karma-legendens nederkant till Dvāra
+             Visar att sedimentlasten styr sorteringen -->
+        <path id="rel-karma-filter"
+              d="M 762 448 Q 738 470 696 488"
+              fill="none" stroke="#ffa726" stroke-width="2.2"
+              stroke-dasharray="7 4" opacity="0" marker-end="url(#arr)">
+          <animate attributeName="stroke-dashoffset"
+                   from="0" to="-44" dur="1.8s" repeatCount="indefinite"/>
+        </path>
+        <text id="lbl-karma-filter"
+              x="710" y="461" text-anchor="middle"
+              font-family="Nunito" font-weight="800" font-size="8"
+              opacity="0">Styr sorteringen</text>
+
+        <!-- 3. maya → brahman
+             Rutt: arc längs högerkanten utanför ramens x=850
+             Visar att Maya döljer Brahman -->
+        <path id="rel-maya-brahman"
+              d="M 842 308 Q 882 212 842 114"
+              fill="none" stroke="#ce93d8" stroke-width="2.2"
+              stroke-dasharray="7 4" opacity="0" marker-end="url(#arr)">
+          <animate attributeName="stroke-dashoffset"
+                   from="0" to="-44" dur="2s" repeatCount="indefinite"/>
+        </path>
+        <text id="lbl-maya-brahman"
+              x="876" y="214" text-anchor="middle"
+              font-family="Nunito" font-weight="800" font-size="8"
+              opacity="0" transform="rotate(90 876 214)">Döljer Brahman</text>
+
+      </g>
+
+      <!-- ═══════════════════════════════════════
+           NUMRERADE ANKARE 01–07 (A)
+           Matchar pillsen, renderas överst
+      ═══════════════════════════════════════ -->
+      <!-- 01 · BRAHMAN -->
+      <rect x="57" y="27" width="28" height="18" rx="9"
+            fill="rgba(0,229,255,.14)" stroke="rgba(0,229,255,.55)" stroke-width="1" pointer-events="none"/>
+      <text x="71" y="40" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="9.5"
+            fill="#00e5ff" pointer-events="none">01</text>
+
+      <!-- 02 · ATMAN -->
+      <rect x="57" y="207" width="28" height="18" rx="9"
+            fill="rgba(77,208,225,.14)" stroke="rgba(77,208,225,.55)" stroke-width="1" pointer-events="none"/>
+      <text x="71" y="220" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="9.5"
+            fill="#4dd0e1" pointer-events="none">02</text>
+
+      <!-- 03 · SAMSARA (river body, nedanför etiketten) -->
+      <rect x="57" y="388" width="28" height="18" rx="9"
+            fill="rgba(41,182,246,.14)" stroke="rgba(41,182,246,.55)" stroke-width="1" pointer-events="none"/>
+      <text x="71" y="401" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="9.5"
+            fill="#29b6f6" pointer-events="none">03</text>
+
+      <!-- 04 · KARMA (hörnet av legend-rutan) -->
+      <rect x="692" y="343" width="28" height="18" rx="9"
+            fill="rgba(255,167,38,.14)" stroke="rgba(255,167,38,.55)" stroke-width="1" pointer-events="none"/>
+      <text x="706" y="356" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="9.5"
+            fill="#ffa726" pointer-events="none">04</text>
+
+      <!-- 05 · DVĀRA (header-strip) -->
+      <rect x="57" y="459" width="28" height="18" rx="9"
+            fill="rgba(144,164,174,.14)" stroke="rgba(144,164,174,.55)" stroke-width="1" pointer-events="none"/>
+      <text x="71" y="472" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="9.5"
+            fill="#90a4ae" pointer-events="none">05</text>
+
+      <!-- 06 · MAYA (centrerat i ytstrimlan y=300–326) -->
+      <rect x="817" y="304" width="28" height="18" rx="9"
+            fill="rgba(206,147,216,.14)" stroke="rgba(206,147,216,.55)" stroke-width="1" pointer-events="none"/>
+      <text x="831" y="317" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="9.5"
+            fill="#ce93d8" pointer-events="none">06</text>
+
+      <!-- 07 · MOKSHA -->
+      <rect x="57" y="663" width="28" height="18" rx="9"
+            fill="rgba(0,191,165,.14)" stroke="rgba(0,191,165,.55)" stroke-width="1" pointer-events="none"/>
+      <text x="71" y="676" text-anchor="middle"
+            font-family="Nunito" font-weight="900" font-size="9.5"
+            fill="#00bfa5" pointer-events="none">07</text>
+
+    </svg>
+  </div>
+</div>
+
+  <aside class="info-panel" id="infoPanel">
+    <div class="panel-inner" id="panelInner">
+      <button type="button" class="x-btn" id="xBtn">×</button>
+      <div class="m-header" id="mHeader">
+        <div class="m-num"    id="mNum"></div>
+        <div class="m-sanskrit" id="mSanskrit"></div>
+        <div class="m-se"     id="mSe"></div>
+      </div>
+      <div class="m-body-wrap">
+        <p class="m-body"     id="mBody"></p>
+        <div class="m-callout" id="mCallout"></div>
+      </div>
+    </div>
+  </aside>
+
+</div><!-- /page-layout -->
+
+<!-- ─── SUMMARY ─── -->
+<section class="summary">
+  <p class="s-label">Mnemonic · Minneshjälpen</p>
+  <div class="s-border">
+    <p class="s-text">
+      Vi är <em>Essenspartiklar</em> med tung <em>Sedimentlast</em>
+      som fastnar i <em>Världsslussarna</em> i <em>Kretsloppets Strömfåra</em>,
+      ända tills vi genomskådar <em>Formbländverket</em> och inser att vi är
+      <em>Urvattnet</em> på väg mot <em>Mynningen</em>.
+    </p>
+  </div>
+</section>
+
+<script>
+/* ── DATA ── */
+const DATA = {
+  brahman: {
+    num:     '01 · Ontologin',
+    sanskrit:'Brahman',
+    se:      'Den Gränslösa Reservoaren',
+    color:   '#00e5ff',
+    body:    'I Advaita Vedanta är Brahman det enda som verkligen existerar. Brahman är inte en gud bland andra gudar, utan den absoluta verkligheten ur vilken allt uppstår och till vilken allt återvänder. Brahman är odelbart, oföränderligt och gränslöst, och begränsas inte av tid, rum eller orsakssamband. Allt som existerar är Brahman i tillfälliga former.',
+    callout: '<strong>Vattenmetaforen:</strong> Reservoaren är H₂O i sin renaste form. Alla floder, droppar och hav är identiskt samma substans, det vill säga tillfälliga gestalter av ett och samma vatten. Brahman är det enda vattnet som allting är gjort av.'
+  },
+  atman: {
+    num:     '02 · Partikeln',
+    sanskrit:'Atman',
+    se:      'Essenspartikeln',
+    color:   '#4dd0e1',
+    body:    'Atman är det individuella jaget, den innersta kärnan i varje varelse. Det centrala i Advaita är att Atman och Brahman är identiska till sin natur. Din djupaste kärna är inte skild från universums djupaste grund. "Tat tvam asi" betyder: Det är du. Skillnaden mellan jag och allt annat är en illusion av form och avgränsning, inte av substans.',
+    callout: '<strong>Vattenmetaforen:</strong> Droppen är vatten hela tiden, även när den tror sig vara en unik och avgränsad enhet i floden. Formen, droppen, är tillfällig. Substansen, vattnet, är evig och identisk med hela reservoaren.'
+  },
+  samsara: {
+    num:     '03 · Cykeln',
+    sanskrit:'Samsara',
+    se:      'Kretsloppets Strömfåra',
+    color:   '#29b6f6',
+    body:    'Samsara, som etymologiskt betyder "att flyta ihop", är det ständiga kretsloppet av liv, död och återfödelse. Ingenting är beständigt, allt är i rörelse. Det upplevs som lidande, på sanskrit kallat dukkha, eftersom vi identifierar oss med den tillfälliga formen i stället för den eviga substansen. Just denna identifikation med "droppen" är roten till allt lidande.',
+    callout: '<strong>Vattenmetaforen:</strong> Flodfåran håller dropparna i rörelse och separerade från havet. Det är inte ett straff utan ren hydrodynamik. Cykeln fortsätter tills all karma är upplöst och droppen inser sin sanna natur.'
+  },
+  karma: {
+    num:     '04 · Tyngden',
+    sanskrit:'Karma',
+    se:      'Sedimentlasten',
+    color:   '#ffa726',
+    body:    'Karma är inte ett moralistiskt belönings- och bestraffningssystem. Det är ett neutralt orsak-och-verkan-samband, lika mekaniskt som tyngdkraften. Varje handling, tanke och avsikt lämnar ett "sediment" som ger droppen en specifik densitet. Tunga handlingar, som egoism, girighet och okunnighet, ökar lasten. Ljusa handlingar, som medkänsla och visdom, renar droppen.',
+    callout: '<strong>Vattenmetaforen:</strong> Sedimentets densitet avgör automatiskt vilken existensnivå droppen sorteras till. Ingen yttre domare behövs. Precis som ett vattenfilter sorterar partiklar efter täthet, inte moral.'
+  },
+  filter: {
+    num:     '05 · Sorteringsmekaniken',
+    sanskrit:'Dvāra / Karmiska Slussar',
+    se:      'Världarnas Sorteringsverk',
+    color:   '#90a4ae',
+    body:    'Dvāra är den karmiska sorteringsmekanism som vid varje dödsmoment placerar Atman i en ny existensnivå utifrån sedimentlastens tyngd. Ingen domare avgör utfallet — det är ett neutralt orsak-och-verkan-system, lika mekaniskt som tyngdkraften. Lätt sediment stiger, tung sediment sjunker, och medelviktiga droppar återföds i de mänskliga världarna med en ny möjlighet att lätta lasten.',
+    callout: '<strong>Advaitas kritiska insikt:</strong> I strikt Advaita Vedanta är även Dvāra en del av Maya. Sorteringen sker bara inom drömmen om separation. Vaknar du upp till Moksha inser du att det aldrig fanns någon droppe att sortera och aldrig någon port att passera.'
+  },
+  svarga: {
+    num:     '05a · Dvāra',
+    sanskrit:'Svarga-loka',
+    se:      'Himmelska världar',
+    color:   '#4fc3f7',
+    body:    'Karma-sorteringen förde droppen uppåt. Svarga-loka är gudars och halvgudars riken, fyllda av skönhet, glädje och frihet från grovt lidande. Lätt sediment — renhet, medkänsla och hängivenhet — gör droppen tillräckligt lätt för att stiga till dessa sfärer.\n\nDet avgörande förbehållet: Svarga är inte Moksha. Liksom en ballong som stiger tills luften tar slut återföds själen i Samsara när de himmelska förtjänsterna förbrukats. Svarga är en belöning, inte befrielse.',
+    callout: '<strong>Vattenmetaforen:</strong> Droppen är lätt nog för att ta sig igenom den högt sittande öppningen. Men den är fortfarande en droppe — fortfarande skild från havet.'
+  },
+  manushya: {
+    num:     '05b · Dvāra',
+    sanskrit:'Manushya-loka',
+    se:      'Mänskliga världar',
+    color:   '#90a4ae',
+    body:    'Karma-sorteringen förde droppen till det mänskliga tillståndet. I Advaita Vedanta anses Manushya-loka vara den mest värdefulla av alla existensformer — inte för att den är bekväm, utan för att <strong>endast människan har det förnuft och den frihet som krävs för att uppnå Moksha</strong>.\n\nDjur saknar förmågan att reflektera över sin egen natur. Gudar saknar motivationen, ty de lider inte tillräckligt. Människan befinner sig i ett unikt mellanläge: medveten om lidandet och kapabel att söka befrielse.',
+    callout: '<strong>En sällsynt möjlighet:</strong> Att födas som människa anses i hinduisk filosofi inte vara en självklarhet utan ett dyrbart tillfälle. Varje mänskligt liv är en chans att lätta sedimentlasten och röra sig mot Moksha.'
+  },
+  naraka: {
+    num:     '05c · Dvāra',
+    sanskrit:'Naraka & Tiryag-loka',
+    se:      'Lägre världar',
+    color:   '#8d6e63',
+    body:    'Karma-sorteringen förde droppen nedåt. Naraka betecknar plågsamma tillstånd och lägre existensformer. Tiryag-loka är djurrikena, där medvetandet är begränsat och karma svår att förändra. Tung sedimentlast — egoism, grymhet och okunnighet — drar droppen mot botten.\n\nViktigt att förstå: dessa är inte eviga straff i kristen mening. De är tidsbegränsade tillstånd. Ur Samsaras logik är de ett nödvändigt steg — karmans tyngsta lager arbetar av sig tills droppen är lätt nog att röra sig uppåt igen.',
+    callout: '<strong>Vattenmetaforen:</strong> Droppen är för tung för de övre öppningarna och sjunker till den nedre porten. Men vatten är alltid vatten, oavsett vilket rör det befinner sig i. Även Naraka är temporärt.'
+  },
+  maya: {
+    num:     '06 · Illusionen',
+    sanskrit:'Maya',
+    se:      'Formbländverket',
+    color:   '#ce93d8',
+    body:    'Maya är inte påståendet att världen inte existerar, utan att vi missuppfattar vad den är. Vi ser "en våg" i stället för "vatten i rörelse". Vi ser "ett avgränsat jag" i stället för "Brahman i tillfällig form". Maya är den tankegång som på sanskrit kallas Nama-Rupa, namn och form, och som lägger etiketter och gränser på en substans som saknar dem.',
+    callout: '<strong>Vattenmetaforen:</strong> Ytspänningen skapar en hinna som får vatten att bete sig som om det vore avgränsat, som om det hade kanter. Vågen och virveln ser ut som separata ting, men det är ytspänningens bedrägeri, inte en verklig gräns i substansen.'
+  },
+  moksha: {
+    num:     '07 · Befrielsen',
+    sanskrit:'Moksha',
+    se:      'Mynningen',
+    color:   '#00bfa5',
+    body:    'Moksha är inte döden utan uppvaknandet. Det är den direkta, levda insikten att du aldrig var en droppe i en flod. Du var havet som drömde om att vara en droppe. Identiteten, flod-jaget, upplöses utan att förstöras, och vattnet, det verkliga jaget, inser sin oändlighet. Det är sammanslagningen: Atman inser att det alltid var Brahman.',
+    callout: '<strong>Den avgörande insikten:</strong> "Floden" existerar bara så länge du tror att den finns. Moksha innebär inte att nå havet efter en lång resa, utan insikten att du aldrig lämnade det. Du drömde att du var en droppe i en strömfåra. Nu vaknar du upp.'
+  }
+};
+
+const PILLS_CFG = [
+  {key:'brahman',label:'Brahman'},
+  {key:'atman',  label:'Atman'},
+  {key:'samsara',label:'Samsara'},
+  {key:'karma',  label:'Karma'},
+  {key:'filter', label:'Dvāra'},
+  {key:'maya',   label:'Maya'},
+  {key:'moksha', label:'Moksha'},
+];
+
+/* ── Build pill nav ── */
+const pillsEl = document.getElementById('pills');
+PILLS_CFG.forEach(({key,label})=>{
+  const d = DATA[key];
+  const p = document.createElement('div');
+  p.className = 'pill';
+  p.innerHTML = `<span class="pill-dot" style="background:${d.color}"></span>${label}`;
+  p.addEventListener('click',()=>openPanel(key));
+  pillsEl.appendChild(p);
+});
+
+/* ── Relationslinjer (G) ── */
+const RELATIONS = {
+  brahman:  ['rel-brahman-moksha', 'rel-maya-brahman'],
+  atman:    ['rel-brahman-moksha'],
+  samsara:  ['rel-karma-filter'],
+  karma:    ['rel-karma-filter'],
+  filter:   ['rel-karma-filter'],
+  svarga:   ['rel-karma-filter'],
+  manushya: ['rel-karma-filter'],
+  naraka:   ['rel-karma-filter'],
+  maya:     ['rel-maya-brahman'],
+  moksha:   ['rel-brahman-moksha'],
+};
+const REL_LABELS = {
+  'rel-brahman-moksha': 'lbl-brahman-moksha',
+  'rel-karma-filter':   'lbl-karma-filter',
+  'rel-maya-brahman':   'lbl-maya-brahman',
+};
+
+function setRelLines(key, color){
+  /* Dölj alla linjer och etiketter */
+  document.querySelectorAll('#relLines path').forEach(el=>{ el.style.opacity='0'; });
+  document.querySelectorAll('#relLines text').forEach(el=>{ el.style.opacity='0'; });
+  if(!key) return;
+  (RELATIONS[key]||[]).forEach(id=>{
+    const el = document.getElementById(id);
+    if(el){ el.setAttribute('stroke', color); el.style.opacity='1'; }
+    const lbl = document.getElementById(REL_LABELS[id]);
+    if(lbl){ lbl.setAttribute('fill', color); lbl.style.opacity='.85'; }
+  });
+}
+
+/* ── Sidopanel ── */
+const infoPanel  = document.getElementById('infoPanel');
+const panelInner = document.getElementById('panelInner');
+const xBtn       = document.getElementById('xBtn');
+let   activeKey  = null;
+
+function openPanel(key){
+  /* Rensa föregående aktiv-markering */
+  if(activeKey){
+    const prev = document.getElementById(HOVER_MAP[activeKey]);
+    if(prev) prev.style.fill = 'rgba(0,0,0,0)';
+  }
+
+  const d = DATA[key];
+  if(!d) return;
+  activeKey = key;
+
+  document.getElementById('mNum').textContent      = d.num;
+  document.getElementById('mNum').style.color      = d.color;
+  document.getElementById('mSanskrit').textContent = d.sanskrit;
+  document.getElementById('mSanskrit').style.color = d.color;
+  document.getElementById('mSe').textContent       = d.se;
+  document.getElementById('mBody').innerHTML       = d.body;
+  document.getElementById('mCallout').innerHTML    = d.callout;
+
+  const hdr = document.getElementById('mHeader');
+  hdr.style.background       = `linear-gradient(135deg,${d.color}12 0%,rgba(8,20,36,0) 70%)`;
+  hdr.style.borderBottomColor= `${d.color}22`;
+  panelInner.style.borderColor = `${d.color}28`;
+  panelInner.style.boxShadow   = `0 40px 100px rgba(0,0,0,.7),0 0 50px ${d.color}18`;
+  panelInner.scrollTop = 0;
+
+  /* Sätt aktiv-markering i diagrammet */
+  const hEl = document.getElementById(HOVER_MAP[key]);
+  if(hEl) hEl.style.fill = ACTIVE_COLOR[key] || 'rgba(255,255,255,.15)';
+
+  /* Visa relationslinjer */
+  setRelLines(key, d.color);
+
+  infoPanel.classList.add('open');
+}
+
+function closePanel(){
+  if(activeKey){
+    const hEl = document.getElementById(HOVER_MAP[activeKey]);
+    if(hEl) hEl.style.fill = 'rgba(0,0,0,0)';
+  }
+  setRelLines(null, null);
+  infoPanel.classList.remove('open');
+  activeKey = null;
+}
+
+xBtn.addEventListener('click',(e)=>{ e.stopPropagation(); closePanel(); });
+/* Mobil: klick på bakgrunden stänger panelen */
+infoPanel.addEventListener('click', e=>{ if(e.target===infoPanel) closePanel(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePanel(); });
+
+/* ── SVG zone clicks + hover highlights ── */
+const HOVER_MAP = {
+  brahman:  'hBrahman',
+  atman:    'hAtman',
+  samsara:  'hSamsara',
+  karma:    'hKarma',
+  filter:   'hFilter',
+  svarga:   'hSvarga',
+  manushya: 'hManushya',
+  naraka:   'hNaraka',
+  maya:     'hMaya',
+  moksha:   'hMoksha',
+};
+const HOVER_COLOR = {
+  brahman:  'rgba(0,229,255,0.09)',
+  atman:    'rgba(77,208,225,0.09)',
+  samsara:  'rgba(41,182,246,0.09)',
+  karma:    'rgba(255,167,38,0.12)',
+  filter:   'rgba(176,190,197,0.1)',
+  svarga:   'rgba(79,195,247,0.1)',
+  manushya: 'rgba(144,164,174,0.1)',
+  naraka:   'rgba(141,110,99,0.1)',
+  maya:     'rgba(206,147,216,0.1)',
+  moksha:   'rgba(0,191,165,0.1)',
+};
+const ACTIVE_COLOR = {
+  brahman:  'rgba(0,229,255,0.2)',
+  atman:    'rgba(77,208,225,0.2)',
+  samsara:  'rgba(41,182,246,0.18)',
+  karma:    'rgba(255,167,38,0.22)',
+  filter:   'rgba(176,190,197,0.18)',
+  svarga:   'rgba(79,195,247,0.2)',
+  manushya: 'rgba(144,164,174,0.18)',
+  naraka:   'rgba(141,110,99,0.2)',
+  maya:     'rgba(206,147,216,0.2)',
+  moksha:   'rgba(0,191,165,0.2)',
+};
+
+document.querySelectorAll('.zone').forEach(el=>{
+  const key = el.dataset.c;
+  const hEl = document.getElementById(HOVER_MAP[key]);
+  el.addEventListener('mouseenter',()=>{
+    if(hEl) hEl.style.fill = HOVER_COLOR[key]||'rgba(255,255,255,0.07)';
+  });
+  el.addEventListener('mouseleave',()=>{
+    if(hEl) hEl.style.fill = (key === activeKey)
+      ? (ACTIVE_COLOR[key] || 'rgba(0,0,0,0)')
+      : 'rgba(0,0,0,0)';
+  });
+  el.addEventListener('click',()=> openPanel(key));
+});
+</script>
+</body>
+</html>
