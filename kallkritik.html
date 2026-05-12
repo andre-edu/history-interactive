@@ -8,8 +8,18 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0f1117;--card:#181b24;--card2:#1e2230;--hover:#252a3a;--acc:#f0c040;--accd:#c49a20;--accg:rgba(240,192,64,.15);--red:#e85454;--grn:#4ecb71;--blu:#5b9cf5;--pur:#a78bfa;--tx:#e8e6e1;--txd:#9a97a0;--txk:#6b6775;--brd:rgba(255,255,255,.07);--r:16px;--rs:10px}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:52px}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);line-height:1.7;overflow-x:hidden}
+.snav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(15,17,23,.93);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--brd);transform:translateY(-100%);transition:transform .3s ease}
+.snav.show{transform:translateY(0)}
+.snav-inner{max-width:820px;margin:0 auto;padding:.55rem 1.5rem;display:flex;align-items:center;gap:1.4rem;overflow-x:auto;scrollbar-width:none}
+.snav-inner::-webkit-scrollbar{display:none}
+.snav-link{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--txk);text-decoration:none;letter-spacing:.08em;white-space:nowrap;transition:color .2s;padding:.2rem 0}
+.snav-link:hover,.snav-link.active{color:var(--tx)}
+.snav-quiz{color:var(--acc)!important;border:1px solid rgba(240,192,64,.28);padding:.25rem .85rem;border-radius:50px;margin-left:auto;transition:background .2s}
+.snav-quiz:hover{background:var(--accg)}
+.fb-link{display:inline-block;margin-top:.5rem;font-size:.8rem;color:var(--acc);text-decoration:none;opacity:.75;transition:opacity .2s}
+.fb-link:hover{opacity:1;text-decoration:underline}
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;position:relative}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 40%,rgba(240,192,64,.08),transparent 70%);pointer-events:none}
 .badge{display:inline-flex;gap:.5rem;background:var(--accg);border:1px solid rgba(240,192,64,.25);color:var(--acc);font-size:.8rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;padding:.5rem 1.2rem;border-radius:50px;margin-bottom:2rem}
@@ -52,6 +62,7 @@ section{padding:4.5rem 0}
 .cl{font-family:'DM Serif Display',serif;font-size:2.2rem;line-height:1}
 .cc:nth-child(1) .cl{color:var(--acc)}.cc:nth-child(2) .cl{color:var(--blu)}.cc:nth-child(3) .cl{color:var(--grn)}.cc:nth-child(4) .cl{color:var(--red)}
 .cc:nth-child(1):hover{border-color:rgba(240,192,64,.3)}.cc:nth-child(2):hover{border-color:rgba(91,156,245,.3)}.cc:nth-child(3):hover{border-color:rgba(78,203,113,.3)}.cc:nth-child(4):hover{border-color:rgba(232,84,84,.3)}
+.cc:nth-child(1) .ebox{border-left-color:var(--acc)}.cc:nth-child(2) .ebox{border-left-color:var(--blu)}.cc:nth-child(3) .ebox{border-left-color:var(--grn)}.cc:nth-child(4) .ebox{border-left-color:var(--red)}
 .cc h4{font-size:1.05rem;font-weight:600;margin:.3rem 0}
 .cc .sub{font-size:.83rem;color:var(--txk);font-style:italic;margin-bottom:.6rem}
 .cc p{color:var(--txd);font-weight:300;font-size:.9rem}
@@ -110,18 +121,133 @@ section{padding:4.5rem 0}
 .qbtn{margin-top:1.2rem;display:none;justify-content:flex-end}.qbtn.show{display:flex}
 .btn{background:var(--acc);color:var(--bg);border:none;font-family:'Outfit',sans-serif;font-weight:600;font-size:.88rem;padding:.7rem 1.6rem;border-radius:50px;cursor:pointer;transition:all .25s}
 .btn:hover{background:#f7d060;transform:translateY(-1px);box-shadow:0 4px 16px rgba(240,192,64,.3)}
-.qres{display:none;text-align:center;max-width:480px;margin:0 auto}
+.qres{display:none;max-width:660px;margin:0 auto}
 .qres.on{display:block;animation:fi .5s ease-out}
-.rscore{font-family:'DM Serif Display',serif;font-size:3.5rem;color:var(--acc);margin-bottom:.4rem}
-.rtxt{font-size:1.1rem;color:var(--txd);margin-bottom:1.8rem}
+.res-head{text-align:center;padding-bottom:1.5rem;border-bottom:1px solid var(--brd);margin-bottom:1.5rem}
+.rscore{font-family:'DM Serif Display',serif;font-size:4rem;color:var(--acc);line-height:1;margin-bottom:.2rem}
+.res-score-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--txk);letter-spacing:.14em;text-transform:uppercase;margin-bottom:.9rem}
+.res-bar-wrap{background:var(--card2);border-radius:50px;height:7px;width:220px;margin:0 auto .9rem;overflow:hidden}
+.res-bar-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--acc),var(--grn));width:0;transition:width .9s ease}
+.rtxt{font-size:.95rem;color:var(--txd)}
+.res-bl{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--txk);letter-spacing:.14em;text-transform:uppercase;margin-bottom:.7rem}
+.res-row{display:flex;align-items:center;gap:.75rem;padding:.6rem .85rem;border-radius:var(--rs);margin-bottom:.4rem;background:var(--card);border-left:3px solid var(--brd)}
+.res-row.ok{border-left-color:var(--grn)}
+.res-row.no{border-left-color:var(--red)}
+.res-icon{font-size:.9rem;flex-shrink:0;width:18px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700}
+.res-row.ok .res-icon{color:var(--grn)}.res-row.no .res-icon{color:var(--red)}
+.res-info{flex:1;min-width:0}
+.res-info-topic{font-size:.85rem;font-weight:500;color:var(--tx)}
+.res-info-sub{font-size:.75rem;color:var(--txk);margin-top:.05rem}
+.res-link{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--acc);text-decoration:none;white-space:nowrap;opacity:.8;flex-shrink:0}
+.res-link:hover{opacity:1;text-decoration:underline}
+.res-focus{background:var(--accg);border:1px solid rgba(240,192,64,.2);border-radius:var(--rs);padding:.85rem 1.1rem;margin:1.2rem 0 1.5rem;font-size:.85rem}
+.res-focus-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--acc);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem}
+.res-focus-links{display:flex;flex-wrap:wrap;gap:.5rem}
+.res-focus-pill{background:var(--card);border:1px solid rgba(240,192,64,.25);border-radius:50px;padding:.25rem .85rem;font-size:.8rem;color:var(--acc);text-decoration:none;transition:background .2s}
+.res-focus-pill:hover{background:rgba(240,192,64,.15)}
+.res-all-ok{background:rgba(78,203,113,.07);border:1px solid rgba(78,203,113,.2);border-radius:var(--rs);padding:.85rem 1.1rem;margin:1.2rem 0 1.5rem;font-size:.88rem;color:var(--grn);text-align:center}
+.res-actions{text-align:center;padding-top:.5rem}
 .brst{background:transparent;border:2px solid var(--acc);color:var(--acc)}.brst:hover{background:var(--accg)}
 .rv{opacity:0;transform:translateY(25px);transition:opacity .6s ease-out,transform .6s ease-out}.rv.vis{opacity:1;transform:translateY(0)}
 @keyframes fi{from{opacity:0}to{opacity:1}}
 footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
 @media(max-width:600px){.cg{grid-template-columns:1fr}.qb{grid-template-columns:1fr}.ma{grid-template-columns:1fr;gap:.3rem}.ml{text-align:left}.marr{display:none}.ug{grid-template-columns:1fr}section{padding:3rem 0}}
+.akot{text-align:center;margin-bottom:1.8rem}
+.akot-pills{display:flex;align-items:center;justify-content:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem}
+.akot-pill{display:flex;flex-direction:column;align-items:center;background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);padding:.55rem 1rem;min-width:72px}
+.akot-pill span{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1}
+.akot-pill small{font-size:.65rem;color:var(--txk);margin-top:.15rem;letter-spacing:.04em}
+.akot-sep{color:var(--txk);font-size:1.3rem;line-height:1;padding-bottom:.5rem}
+.akot-note{font-size:.85rem;color:var(--txd)}
+.akot-note strong{color:var(--tx)}
+.lm{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid rgba(78,203,113,.18);border-radius:var(--r);padding:1.8rem;margin-bottom:2rem}
+.lm-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--grn);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.9rem}
+.lm-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+.lm-item{display:flex;align-items:flex-start;gap:.6rem;font-size:.88rem;color:var(--txd);line-height:1.5}
+.lm-ic{color:var(--grn);flex-shrink:0;margin-top:.15rem;font-size:.85rem}
+.cs{margin-top:1.8rem;background:var(--card2);border:1px solid var(--brd);border-radius:var(--r);padding:1.3rem 1.5rem;overflow:hidden}
+.cs-hed{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--acc);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.9rem}
+.cs-row{display:grid;grid-template-columns:130px 1fr 1fr;gap:.6rem;padding:.55rem 0;border-bottom:1px solid var(--brd);align-items:center}
+.cs-row:last-child{border-bottom:none;padding-bottom:0}
+.cs-hdr span{font-size:.68rem;color:var(--txk);text-transform:uppercase;letter-spacing:.1em;font-family:'JetBrains Mono',monospace}
+.cs-hdr{padding-top:0;padding-bottom:.5rem}
+.cs-tag{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.82rem;flex-shrink:0}
+.cs-name{font-size:.9rem;font-weight:600;color:var(--tx)}
+.cs-q{font-size:.83rem;color:var(--txd);font-style:italic;line-height:1.4}
+.cs-ex{font-size:.8rem;color:var(--txk);line-height:1.4}
+@media(max-width:600px){.lm-grid{grid-template-columns:1fr}.cs-row{grid-template-columns:1fr;gap:.2rem;padding:.7rem 0}.cs-hdr{display:none}.hb-row{grid-template-columns:1fr;gap:.2rem}.hb-row-label{font-size:.6rem}}
+.hb-def{background:linear-gradient(135deg,var(--card),var(--card2));border:1px solid rgba(167,139,250,.2);border-radius:var(--r);padding:1.6rem;margin-bottom:1.8rem;position:relative;overflow:hidden}
+.hb-def::after{content:'📖';font-size:4.5rem;position:absolute;right:-4px;bottom:-8px;opacity:.07}
+.hb-def-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--pur);letter-spacing:.16em;text-transform:uppercase;margin-bottom:.6rem}
+.hb-def p{font-size:.95rem;color:var(--txd);line-height:1.7}
+.hb-def strong{color:var(--tx)}
+.hb-cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.9rem;margin-bottom:1.8rem}
+.hb-cat{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);padding:1.2rem;transition:transform .2s,border-color .25s}
+.hb-cat:hover{transform:translateY(-2px)}
+.hb-cat-top{display:flex;align-items:center;gap:.6rem;margin-bottom:.25rem}
+.hb-cat-ic{font-size:1.2rem}
+.hb-cat-title{font-size:.93rem;font-weight:600;color:var(--tx)}
+.hb-cat-type{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--txk);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem}
+.hb-cat p{font-size:.83rem;color:var(--txd);line-height:1.5}
+.hb-cat-ex{margin-top:.55rem;font-size:.78rem;color:var(--txk);border-left:2px solid var(--brd);padding-left:.6rem;font-style:italic}
+.hb-cat:nth-child(1){border-top:2px solid var(--acc)}.hb-cat:nth-child(2){border-top:2px solid var(--blu)}.hb-cat:nth-child(3){border-top:2px solid var(--grn)}.hb-cat:nth-child(4){border-top:2px solid var(--red)}.hb-cat:nth-child(5){border-top:2px solid var(--pur)}.hb-cat:nth-child(6){border-top:2px solid #5bc4b8}.hb-cat:nth-child(7){border-top:2px solid #e8854a}
+.hb-case{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;margin-bottom:1.8rem}
+.hb-case-head{background:linear-gradient(135deg,rgba(232,84,84,.07),rgba(167,139,250,.04));border-bottom:1px solid var(--brd);padding:1.2rem 1.5rem}
+.hb-case-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--red);letter-spacing:.14em;text-transform:uppercase;margin-bottom:.3rem}
+.hb-case-head h4{font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:.2rem}
+.hb-case-head p{font-size:.85rem;color:var(--txd)}
+.hb-case-body{padding:1.2rem 1.5rem;display:flex;flex-direction:column}
+.hb-row{display:grid;grid-template-columns:110px 1fr;gap:.6rem;align-items:start;padding:.55rem 0;border-bottom:1px solid var(--brd)}
+.hb-row:last-child{border-bottom:none}
+.hb-row-label{font-family:'JetBrains Mono',monospace;font-size:.63rem;color:var(--txk);letter-spacing:.1em;text-transform:uppercase;padding-top:.15rem}
+.hb-row-val{font-size:.88rem;color:var(--txd);line-height:1.55}
+.hb-row-val strong{color:var(--tx)}
+.hb-q{background:var(--accg);border:1px solid rgba(240,192,64,.2);border-radius:var(--rs);padding:.9rem 1.2rem;font-size:.88rem;color:var(--tx);margin-bottom:1.8rem}
+.hb-q strong{color:var(--acc)}
+.sq{background:var(--card2);border:1px solid var(--brd);border-left:3px solid var(--acc);border-radius:var(--rs);padding:1.1rem 1.3rem;margin-top:1.8rem}
+.sq-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--acc);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.65rem}
+.sq-q{font-size:.93rem;font-weight:500;color:var(--tx);margin-bottom:.75rem;line-height:1.5}
+.sq-opts{display:flex;flex-direction:column;gap:.35rem}
+.sq-opt{background:var(--card);border:1px solid var(--brd);border-radius:6px;padding:.55rem .9rem;cursor:pointer;font-size:.85rem;color:var(--txd);transition:all .2s;user-select:none;text-align:left;width:100%;font-family:'Outfit',sans-serif}
+.sq-opt:hover:not([disabled]){border-color:rgba(240,192,64,.35);color:var(--tx);background:var(--hover)}
+.sq-opt.sq-ok{border-color:var(--grn)!important;background:rgba(78,203,113,.08)!important;color:var(--grn)!important}
+.sq-opt.sq-no{border-color:var(--red)!important;background:rgba(232,84,84,.06)!important;color:var(--txk)!important}
+.sq-fb{margin-top:.65rem;font-size:.82rem;line-height:1.55;display:none;padding:.5rem .7rem;border-radius:6px}
+.sq-fb.show{display:block;animation:fi .25s ease-out}
+.sq-fb.ok{background:rgba(78,203,113,.07);color:var(--grn)}
+.sq-fb.no{background:rgba(232,84,84,.07);color:var(--txd)}
+.dnd-wrap{display:flex;flex-direction:column;gap:1rem;margin-top:1.2rem}
+.dnd-rows{display:flex;flex-direction:column;gap:.55rem}
+.dnd-row{display:grid;grid-template-columns:110px 1fr;gap:.7rem;align-items:center}
+.dnd-term{background:var(--card2);border:1px solid var(--brd);border-radius:var(--rs);padding:.6rem .8rem;font-size:.88rem;font-weight:600;text-align:center;border-top-width:2px}
+.dnd-slot{background:var(--card2);border:2px dashed var(--txk);border-radius:var(--rs);padding:.6rem .9rem;min-height:40px;font-size:.85rem;color:var(--txk);transition:border-color .2s,background .2s,color .2s;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center}
+.dnd-slot.drag-over{border-color:var(--acc)!important;background:var(--accg)!important}
+.dnd-slot.filled{border-style:solid;border-color:var(--brd);color:var(--tx);background:var(--card)}
+.dnd-slot.sel-target{border-color:var(--acc);background:var(--accg)}
+.dnd-pool{display:flex;flex-wrap:wrap;gap:.5rem;padding:.8rem;background:var(--card2);border:1px solid var(--brd);border-radius:var(--rs);min-height:52px}
+.dnd-pool-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--txk);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.1rem}
+.dnd-chip{background:var(--card);border:2px solid var(--brd);border-radius:50px;padding:.4rem 1rem;font-size:.85rem;cursor:grab;transition:all .2s;user-select:none;white-space:nowrap;color:var(--tx)}
+.dnd-chip:active{cursor:grabbing;transform:scale(.97)}
+.dnd-chip:hover:not(.dnd-placed):not(.dnd-locked){border-color:rgba(240,192,64,.4);background:var(--hover)}
+.dnd-chip.dnd-sel{border-color:var(--acc);background:var(--accg);color:var(--acc)}
+.dnd-chip.dnd-placed{opacity:.3;cursor:default;pointer-events:none}
+.dnd-chip.dnd-locked{cursor:default}
+@media(max-width:600px){.dnd-row{grid-template-columns:90px 1fr;gap:.4rem}}
 </style>
 </head>
 <body>
+
+<nav class="snav" id="snav">
+  <div class="snav-inner">
+    <a href="#s1" class="snav-link">Intro</a>
+    <a href="#s2" class="snav-link">Metoden</a>
+    <a href="#s3" class="snav-link">Källtyper</a>
+    <a href="#s4" class="snav-link">ÄKOT</a>
+    <a href="#s5" class="snav-link">Fördjupning</a>
+    <a href="#s6" class="snav-link">Historiebruk</a>
+    <a href="#quiz" class="snav-link snav-quiz">Quiz →</a>
+  </div>
+</nav>
 
 <header class="hero" id="hero">
   <span class="badge">🔍 Gymnasiekurs</span>
@@ -132,6 +258,15 @@ footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
 
 <section id="s1">
 <div class="ct">
+  <div class="lm rv">
+    <div class="lm-label">📋 Det här ska du kunna efter genomgången</div>
+    <div class="lm-grid">
+      <div class="lm-item"><span class="lm-ic">✓</span><span>Förklara vad källkritik är och varför det behövs</span></div>
+      <div class="lm-item"><span class="lm-ic">✓</span><span>Använda de fyra kriterierna Äkthet, Tid, Oberoende och Tendens</span></div>
+      <div class="lm-item"><span class="lm-ic">✓</span><span>Skilja på primär-, sekundär- och tertiärkällor</span></div>
+      <div class="lm-item"><span class="lm-ic">✓</span><span>Ge exempel på hur historia används som verktyg (historiebruk)</span></div>
+    </div>
+  </div>
   <div class="rv">
     <div class="sn">01 — Introduktion</div>
     <h2 class="st">Vad är källkritik?</h2>
@@ -146,6 +281,16 @@ footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
       <li><span class="x">✕</span> Någon har blandat i bitar från ett helt annat pussel</li>
     </ul>
     <p style="margin-top:1rem;font-weight:500">Din uppgift? <span style="color:var(--acc)">Försök bygga bilden ändå.</span></p>
+  </div>
+  <div class="sq rv">
+    <div class="sq-label">⚡ Snabbkoll</div>
+    <div class="sq-q">Vilket av dessa stämmer bäst med vad källkritik handlar om?</div>
+    <div class="sq-opts">
+      <button class="sq-opt" data-v="a" onclick="sqPick(this,'b','Exakt! Källkritik är en metod för att bedöma hur tillförlitlig information är – inte att förkasta allt.','Tänk igen. Att förkasta allt vore att ge upp. Källkritik handlar om att <em>bedöma</em>, inte avfärda.')">Att alltid förkasta information man inte kan bevisa 100%</button>
+      <button class="sq-opt" data-v="b" onclick="sqPick(this,'b','Exakt! Källkritik är en metod för att bedöma hur tillförlitlig information är – inte att förkasta allt.','Tänk igen. Att förkasta allt vore att ge upp. Källkritik handlar om att <em>bedöma</em>, inte avfärda.')">En metod för att bedöma om information är tillförlitlig</button>
+      <button class="sq-opt" data-v="c" onclick="sqPick(this,'b','Exakt! Källkritik är en metod för att bedöma hur tillförlitlig information är – inte att förkasta allt.','Tänk igen. Att förkasta allt vore att ge upp. Källkritik handlar om att <em>bedöma</em>, inte avfärda.')">Att bevisa att historia alltid är falsk</button>
+    </div>
+    <div class="sq-fb"></div>
   </div>
 </div>
 </section>
@@ -164,6 +309,16 @@ footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
     <div class="step"><div class="snum">4</div><div><h4>Granskningen</h4><p>Ställ källorna mot väggen med de fyra superfrågorna.</p></div></div>
     <div class="step"><div class="snum">5</div><div><h4>Storyn</h4><p>Berätta vad du kommit fram till – och visa varifrån du fick infon.</p></div></div>
   </div>
+  <div class="sq rv">
+    <div class="sq-label">⚡ Snabbkoll</div>
+    <div class="sq-q">Steg 4 kallas "Granskningen". Vad gör du där?</div>
+    <div class="sq-opts">
+      <button class="sq-opt" data-v="a" onclick="sqPick(this,'b','Rätt! Granskningen är steget där ÄKOT-kriterierna används – du ställer källorna mot väggen.','Det är steg 3 – Jakten. Granskningen handlar om att värdera källorna du redan hittat.')">Söker efter nya källor på nätet och i arkiv</button>
+      <button class="sq-opt" data-v="b" onclick="sqPick(this,'b','Rätt! Granskningen är steget där ÄKOT-kriterierna används – du ställer källorna mot väggen.','Det är steg 3 – Jakten. Granskningen handlar om att värdera källorna du redan hittat.')">Ställer källorna mot väggen med ÄKOT-kriterierna</button>
+      <button class="sq-opt" data-v="c" onclick="sqPick(this,'b','Rätt! Granskningen är steget där ÄKOT-kriterierna används – du ställer källorna mot väggen.','Det är steg 3 – Jakten. Granskningen handlar om att värdera källorna du redan hittat.')">Presenterar slutsatserna för klassen</button>
+    </div>
+    <div class="sq-fb"></div>
+  </div>
 </div>
 </section>
 
@@ -179,6 +334,16 @@ footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
     <div class="src s"><div class="src-em">📰</div><div><span class="src-badge">Andrahand</span><h4>Sekundärkälla</h4><p>Någon som <strong>pratat med</strong> den som var där. En historiebok eller tidningsartikel som sammanfattar.</p><div class="src-ex">💬 "Enligt vittnet körde bilen mot rött."</div></div></div>
     <div class="src t"><div class="src-em">📚</div><div><span class="src-badge">Tredjehand</span><h4>Tertiärkälla</h4><p>En <strong>sammanställning av sammanställningar</strong>. Wikipedia eller din lärobok. Bra för överblick, men detaljerna kan ha suddats ut.</p><div class="src-ex">💬 "Enligt diverse rapporter förekom trafikincidenter."</div></div></div>
   </div>
+  <div class="sq rv">
+    <div class="sq-label">⚡ Snabbkoll</div>
+    <div class="sq-q">En journalist skriver en artikel baserad på intervjuer med ögonvittnen till en brand. Vilken källtyp är artikeln?</div>
+    <div class="sq-opts">
+      <button class="sq-opt" data-v="a" onclick="sqPick(this,'b','Rätt! Journalisten har pratat <em>med</em> de som var där – det är andrahand, alltså sekundärkälla.','Primärkälla vore om journalisten själv var på plats och såg det. Ögonvittnena är primärkällor – artikeln är sekundär.')">Primärkälla – ögonvittnena finns med direkt</button>
+      <button class="sq-opt" data-v="b" onclick="sqPick(this,'b','Rätt! Journalisten har pratat <em>med</em> de som var där – det är andrahand, alltså sekundärkälla.','Primärkälla vore om journalisten själv var på plats och såg det. Ögonvittnena är primärkällor – artikeln är sekundär.')">Sekundärkälla – journalisten tolkar och sammanfattar andras upplevelser</button>
+      <button class="sq-opt" data-v="c" onclick="sqPick(this,'b','Rätt! Journalisten har pratat <em>med</em> de som var där – det är andrahand, alltså sekundärkälla.','Primärkälla vore om journalisten själv var på plats och såg det. Ögonvittnena är primärkällor – artikeln är sekundär.')">Tertiärkälla – artiklar är alltid sammanfattningar</button>
+    </div>
+    <div class="sq-fb"></div>
+  </div>
 </div>
 </section>
 
@@ -189,11 +354,57 @@ footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
     <h2 class="st">De fyra superfrågorna</h2>
     <p class="sl">För att få bra betyg räcker det inte att säga att en källa är "bra". Du måste använda dessa verktyg:</p>
   </div>
+  <div class="akot rv">
+    <div class="akot-pills">
+      <div class="akot-pill"><span style="color:var(--acc)">Ä</span><small>kthet</small></div>
+      <div class="akot-sep">·</div>
+      <div class="akot-pill"><span style="color:var(--blu)">T</span><small>id</small></div>
+      <div class="akot-sep">·</div>
+      <div class="akot-pill"><span style="color:var(--grn)">O</span><small>beroende</small></div>
+      <div class="akot-sep">·</div>
+      <div class="akot-pill"><span style="color:var(--red)">T</span><small>endens</small></div>
+    </div>
+    <p class="akot-note">I skolan kallas dessa fyra kriterier ofta <strong>ÄKOT</strong> — en enkel minnesregel för att granska varje källa.</p>
+  </div>
   <div class="cg rv">
-    <div class="cc"><div class="cl">A</div><h4>Äkthet</h4><div class="sub">"Är det the real deal?"</div><p>Är brevet verkligen skrivet av kungen, eller är det en fejk? Idag handlar det om deepfakes och fejkade konton.</p><div class="ebox">🔎 Falska Twitter-konton som sprider "nyheter" – samma princip som förfalskade kungliga brev.</div></div>
-    <div class="cc"><div class="cl">B</div><h4>Tid</h4><div class="sub">"Hur snabbt glömmer vi?"</div><p>Ju längre tid det går, desto sämre minns vi. Du minns ett bråk bäst direkt efteråt.</p><div class="ebox">🕐 Frågar någon dig tre år senare har du glömt vem som bar vilken tröja.</div></div>
-    <div class="cc"><div class="cl">C</div><h4>Oberoende</h4><div class="sub">"Är källan en copy-cat?"</div><p>Om tre hemsidor säger samma sak – sant? Inte om alla kopierat från samma felaktiga tweet.</p><div class="ebox">🔗 Tre artiklar = tre bevis? Bara om de faktiskt är oberoende av varandra.</div></div>
-    <div class="cc"><div class="cl">D</div><h4>Tendens</h4><div class="sub">"Finns det en dold agenda?"</div><p>Alla har ett perspektiv. Varför vill källan berätta det här? Vill de sälja något?</p><div class="ebox">🕶️ "Patriotiska glasögon" – om källan bär rosa glasögon ser allt rosa ut.</div></div>
+    <div class="cc"><div class="cl">Ä</div><h4>Äkthet</h4><div class="sub">"Är det the real deal?"</div><p>Är brevet verkligen skrivet av kungen, eller är det en fejk? Idag handlar det om deepfakes och fejkade konton.</p><div class="ebox">🔎 Falska Twitter-konton som sprider "nyheter" – samma princip som förfalskade kungliga brev.</div></div>
+    <div class="cc"><div class="cl">T</div><h4>Tid</h4><div class="sub">"Hur snabbt glömmer vi?"</div><p>Ju längre tid det går, desto sämre minns vi. Du minns ett bråk bäst direkt efteråt.</p><div class="ebox">🕐 Frågar någon dig tre år senare har du glömt vem som bar vilken tröja.</div></div>
+    <div class="cc"><div class="cl">O</div><h4>Oberoende</h4><div class="sub">"Är källan en copy-cat?"</div><p>Om tre hemsidor säger samma sak – sant? Inte om alla kopierat från samma felaktiga tweet.</p><div class="ebox">🔗 Tre artiklar = tre bevis? Bara om de faktiskt är oberoende av varandra.</div></div>
+    <div class="cc"><div class="cl">T</div><h4>Tendens</h4><div class="sub">"Finns det en dold agenda?"</div><p>Alla har ett perspektiv. Varför vill källan berätta det här? Vill de sälja något?</p><div class="ebox">🕶️ "Patriotiska glasögon" – om källan bär rosa glasögon ser allt rosa ut.</div></div>
+  </div>
+  <div class="cs rv">
+    <div class="cs-hed">⚡ Snabbguide — ÄKOT</div>
+    <div class="cs-row cs-hdr"><span>Kriterium</span><span>Ställ frågan</span><span>Minns det som…</span></div>
+    <div class="cs-row">
+      <div style="display:flex;align-items:center;gap:.55rem"><span class="cs-tag" style="background:rgba(240,192,64,.15);color:var(--acc)">Ä</span><span class="cs-name">Äkthet</span></div>
+      <div class="cs-q">"Är källan äkta eller förfalskad?"</div>
+      <div class="cs-ex">Fejkade konton, deepfakes, förfalskade dokument</div>
+    </div>
+    <div class="cs-row">
+      <div style="display:flex;align-items:center;gap:.55rem"><span class="cs-tag" style="background:rgba(91,156,245,.15);color:var(--blu)">T</span><span class="cs-name">Tid</span></div>
+      <div class="cs-q">"Hur nära i tid skrevs källan?"</div>
+      <div class="cs-ex">Dagbok från kriget &gt; minnen skrivna 30 år senare</div>
+    </div>
+    <div class="cs-row">
+      <div style="display:flex;align-items:center;gap:.55rem"><span class="cs-tag" style="background:rgba(78,203,113,.15);color:var(--grn)">O</span><span class="cs-name">Oberoende</span></div>
+      <div class="cs-q">"Är källorna verkligen oberoende?"</div>
+      <div class="cs-ex">Tre artiklar från samma tweet = en källa i praktiken</div>
+    </div>
+    <div class="cs-row">
+      <div style="display:flex;align-items:center;gap:.55rem"><span class="cs-tag" style="background:rgba(232,84,84,.15);color:var(--red)">T</span><span class="cs-name">Tendens</span></div>
+      <div class="cs-q">"Har avsändaren ett eget syfte?"</div>
+      <div class="cs-ex">Propaganda, reklam, politiska tal</div>
+    </div>
+  </div>
+  <div class="sq rv">
+    <div class="sq-label">⚡ Snabbkoll</div>
+    <div class="sq-q">En propagandaaffisch från andra världskriget är tydligt tendensiös. Vad gör du med den som källa?</div>
+    <div class="sq-opts">
+      <button class="sq-opt" data-v="a" onclick="sqPick(this,'b','Precis! En vinklad källa är inte värdelös – den berättar om avsändarens syfte, rädsla och världsbild. Det är historiskt värdefull information.','Det är ett vanligt missförstånd. En källa behöver inte vara neutral för att vara användbar. Fråga istället: vad avslöjar avsändarens val om deras motiv?')">Ignorerar den – en vinklad källa ger falsk bild av historien</button>
+      <button class="sq-opt" data-v="b" onclick="sqPick(this,'b','Precis! En vinklad källa är inte värdelös – den berättar om avsändarens syfte, rädsla och världsbild. Det är historiskt värdefull information.','Det är ett vanligt missförstånd. En källa behöver inte vara neutral för att vara användbar. Fråga istället: vad avslöjar avsändarens val om deras motiv?')">Använder den för att förstå avsändarnas syfte och världsbild</button>
+      <button class="sq-opt" data-v="c" onclick="sqPick(this,'b','Precis! En vinklad källa är inte värdelös – den berättar om avsändarens syfte, rädsla och världsbild. Det är historiskt värdefull information.','Det är ett vanligt missförstånd. En källa behöver inte vara neutral för att vara användbar. Fråga istället: vad avslöjar avsändarens val om deras motiv?')">Accepterar den som fakta om den kommer från staten</button>
+    </div>
+    <div class="sq-fb"></div>
   </div>
 </div>
 </section>
@@ -203,12 +414,27 @@ footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
   <div class="rv">
     <div class="sn">05 — Fördjupning</div>
     <h2 class="st">Gräv ännu djupare</h2>
-    <p class="sl">Vill du glänsa? Då behöver du göra det här:</p>
+    <p class="sl">Det här är verktygen som skiljer ett godkänt svar från ett väl genomfört — tre extra lager av analys.</p>
   </div>
-  <div class="alv rv">
-    <div class="ai"><div class="ai-ic">⚖️</div><div><h4>Jämför källor</h4><p>Om en häxjägare säger att en kvinna är ond, men hennes grannar säger att hon är snäll – vad säger det om krocken mellan religion och vardag?</p></div></div>
-    <div class="ai"><div class="ai-ic">🧮</div><div><h4>Sak-kritik (Logik-testet)</h4><p>Om en 1700-talskälla påstår att en armé marscherade 20 mil på en timme vet du att det är fysiskt omöjligt.</p></div></div>
-    <div class="ai"><div class="ai-ic">👑</div><div><h4>Se maktstrukturerna</h4><p>Vem fick skriva historia förr? Oftast rika män. Vad säger det om grupper som inte fick skriva?</p></div></div>
+  <div class="hb-cats rv">
+    <div class="hb-cat">
+      <div class="hb-cat-top"><span class="hb-cat-ic">⚖️</span><span class="hb-cat-title">Jämför källor</span></div>
+      <div class="hb-cat-type">Kontrastera perspektiv</div>
+      <p>Ställ källor mot varandra och analysera vad skillnaderna avslöjar. En häxjägares anklagelse och grannars vittnesmål om samma kvinna ger inte ett sant svar — de ger en konflikt att analysera.</p>
+      <div class="hb-cat-ex">Fråga att ställa: Vad säger <em>krocken</em> mellan källorna om dåtidens samhälle, maktförhållanden eller världsbild?</div>
+    </div>
+    <div class="hb-cat">
+      <div class="hb-cat-top"><span class="hb-cat-ic">🧮</span><span class="hb-cat-title">Sakkritik</span></div>
+      <div class="hb-cat-type">Logik-testet</div>
+      <p>Kontrollera om påståendet är rimligt givet tidens förutsättningar. En 1700-talskälla som hävdar att en armé marscherade 20 mil på en timme strider mot fysikens lagar — oavsett vem som skrev det.</p>
+      <div class="hb-cat-ex">Fråga att ställa: Är det logiskt möjligt? Stämmer det med vad vi vet om perioden från andra källor?</div>
+    </div>
+    <div class="hb-cat">
+      <div class="hb-cat-top"><span class="hb-cat-ic">👑</span><span class="hb-cat-title">Maktstrukturer</span></div>
+      <div class="hb-cat-type">Vem fick skriva?</div>
+      <p>Historiska skriftliga källor domineras av rika, läskunniga män. Kvinnor, slavar, bönder och koloniserade folk syns sällan i egna ord — deras perspektiv är en tystnad som också berättar något.</p>
+      <div class="hb-cat-ex">Fråga att ställa: Vems röst saknas i det här materialet — och vad kan det berätta om maktförhållandena?</div>
+    </div>
   </div>
 </div>
 </section>
@@ -218,15 +444,110 @@ footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
   <div class="rv">
     <div class="sn">06 — Historiebruk</div>
     <h2 class="st">Historia som verktyg</h2>
-    <p class="sl">Historia handlar inte bara om gamla grejer – det handlar om hur vi använder dem idag.</p>
+    <p class="sl">Historia handlar inte bara om vad som hände – utan om vem som väljer vilken historia, och varför.</p>
   </div>
-  <div class="ug rv">
-    <div class="uc"><div class="em">🏛️</div><h4>Politiker</h4><p>Använder gamla segrar för att väcka stolthet.</p></div>
-    <div class="uc"><div class="em">🏢</div><h4>Företag</h4><p>Använder sin historia för att bygga förtroende.</p></div>
-    <div class="uc"><div class="em">📺</div><h4>Media</h4><p>Väljer vilka historiska jämförelser som berättas.</p></div>
-    <div class="uc"><div class="em">✊</div><h4>Rörelser</h4><p>Använder historiska orättvisor för förändring idag.</p></div>
+
+  <div class="hb-def rv">
+    <div class="hb-def-label">Definition</div>
+    <p><strong>Historiebruk</strong> innebär att aktivt använda historia för att uppnå ett syfte i nutid. Det är inte detsamma som att studera historia objektivt – det handlar om att historia <strong>väljs ut, formas och används</strong> av någon, med ett mål. Frågan du alltid ska ställa är: <em>Vem berättar den här historien, för vem, och varför just nu?</em></p>
   </div>
+
+  <div class="rv">
+    <div class="sn" style="margin-bottom:1rem">Sju typer av historiebruk</div>
+  </div>
+  <div class="hb-cats rv">
+    <div class="hb-cat">
+      <div class="hb-cat-top"><span class="hb-cat-ic">🏛️</span><span class="hb-cat-title">Politiskt-ideologiskt</span></div>
+      <div class="hb-cat-type">Makt &amp; identitet</div>
+      <p>Stater, partier och rörelser hänvisar till historia för att legitimera sin makt eller mobilisera folket.</p>
+      <div class="hb-cat-ex">Rysslands firande av segern 1945 som argument för nutida politik.</div>
+    </div>
+    <div class="hb-cat">
+      <div class="hb-cat-top"><span class="hb-cat-ic">⚖️</span><span class="hb-cat-title">Moraliskt</span></div>
+      <div class="hb-cat-type">Lära &amp; försoning</div>
+      <p>Historia används för att ta ansvar, be om ursäkt eller uppmärksamma orättvisor – "detta får inte hända igen".</p>
+      <div class="hb-cat-ex">Förintelsedagen den 27 januari och statliga minnesceremonier.</div>
+    </div>
+    <div class="hb-cat">
+      <div class="hb-cat-top"><span class="hb-cat-ic">🧬</span><span class="hb-cat-title">Existentiellt</span></div>
+      <div class="hb-cat-type">Identitet &amp; tillhörighet</div>
+      <p>Individer och grupper söker rötter och svar på frågan "vem är jag?" via historia.</p>
+      <div class="hb-cat-ex">Att spåra sin släkt, diaspora-gruppers historieberättande, nationella myter.</div>
+    </div>
+    <div class="hb-cat">
+      <div class="hb-cat-top"><span class="hb-cat-ic">💰</span><span class="hb-cat-title">Kommersiellt</span></div>
+      <div class="hb-cat-type">Varumärke &amp; underhållning</div>
+      <p>Företag och mediebranschen säljer historia som produkt – för trovärdighet, nostalgi eller underhållning.</p>
+      <div class="hb-cat-ex">"Sedan 1889" på en logotyp. Vikingtema i turistbranschen. Historiska TV-serier.</div>
+    </div>
+    <div class="hb-cat">
+      <div class="hb-cat-top"><span class="hb-cat-ic">🔬</span><span class="hb-cat-title">Vetenskapligt</span></div>
+      <div class="hb-cat-type">Forskning &amp; metod</div>
+      <p>Historiker strävar efter att rekonstruera dåtiden så objektivt som möjligt – med källkritik som verktyg.</p>
+      <div class="hb-cat-ex">Akademiska avhandlingar, peer review-granskad forskning, arkivstudier.</div>
+    </div>
+    <div class="hb-cat">
+      <div class="hb-cat-top"><span class="hb-cat-ic">🤫</span><span class="hb-cat-title">Icke-bruk</span></div>
+      <div class="hb-cat-type">Tystnad &amp; bortval</div>
+      <p>Historia som medvetet ignoreras, tystas ned eller undviks — ofta för att den är politiskt obekväm eller utmanar den rådande självbilden.</p>
+      <div class="hb-cat-ex">Länders ovilja att erkänna kolonialtidens brott. Regimer som stryker obekväma händelser ur läroböckerna.</div>
+    </div>
+    <div class="hb-cat">
+      <div class="hb-cat-top"><span class="hb-cat-ic">⚠️</span><span class="hb-cat-title">Missbruk</span></div>
+      <div class="hb-cat-type">Förvrängning &amp; manipulation</div>
+      <p>Historia som aktivt förvrängs, tas ur sitt sammanhang eller manipuleras för att legitimera skadliga syften — inte bara vinkling, utan medveten lögn om dåtiden.</p>
+      <div class="hb-cat-ex">Selektivt klippta historiska citat för att rättfärdiga hat. Förnekande av väldokumenterade folkmord.</div>
+    </div>
+  </div>
+
+  <div class="rv">
+    <div class="sn" style="margin-bottom:1rem">🔍 Case: Segerdagen i Ryssland</div>
+  </div>
+  <div class="hb-case rv">
+    <div class="hb-case-head">
+      <div class="hb-case-tag">Politiskt-ideologiskt historiebruk</div>
+      <h4>9 maj — en dag som bär mer än ett datum</h4>
+      <p>Varje år firas Segerdagen i Ryssland med militärparader, tal och nationell sorg över de över 20 miljoner sovjetmedborgare som dog under andra världskriget. Men hur används den historien?</p>
+    </div>
+    <div class="hb-case-body">
+      <div class="hb-row">
+        <div class="hb-row-label">Aktör</div>
+        <div class="hb-row-val">Den ryska staten och politiskt ledarskap</div>
+      </div>
+      <div class="hb-row">
+        <div class="hb-row-label">Vilken historia</div>
+        <div class="hb-row-val">Sovjetunionens seger över nazityskland 1945 — en historia om <strong>uppoffring, hjältemod och hotat fosterland</strong></div>
+      </div>
+      <div class="hb-row">
+        <div class="hb-row-label">Syfte</div>
+        <div class="hb-row-val">Skapa nationell sammanhållning, legitimera ledarskapet och <strong>rama in nutida konflikter</strong> som en fortsättning på kampen mot fascism</div>
+      </div>
+      <div class="hb-row">
+        <div class="hb-row-label">Effekt</div>
+        <div class="hb-row-val">Historisk stolthet kanaliseras till politiskt stöd. Kritiker mot staten kan stämplas som förrädare mot de som offrade sina liv.</div>
+      </div>
+      <div class="hb-row">
+        <div class="hb-row-label">Notera</div>
+        <div class="hb-row-val">Det faktum att lidandet under kriget var <strong>verkligt och enormt</strong> gör inte historiebruket mindre politiskt. Äkta historia kan fortfarande användas selektivt.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hb-q rv">
+    <strong>Kopplingen till källkritik:</strong> Historiebruk är tendens i stor skala. När du stöter på historia i ett tal, en reklam eller en nyhet – ställ ÄKOT-frågorna: Vem är avsändaren? Vilken historia väljer de att lyfta fram, och vad utelämnar de? Vilket syfte tjänar berättelsen?
+  </div>
+
   <div class="callout rv"><strong>Kom ihåg:</strong> Den som kontrollerar berättelsen om dåtiden har ofta stor makt över hur vi tänker om framtiden.</div>
+  <div class="sq rv">
+    <div class="sq-label">⚡ Snabbkoll</div>
+    <div class="sq-q">En hotellkedja marknadsför sig med "Sedan 1887 – Sveriges äldsta lyxhotell." Vilket begrepp stämmer bäst?</div>
+    <div class="sq-opts">
+      <button class="sq-opt" data-v="a" onclick="sqPick(this,'c','Rätt! Hotellet säljer sin historia som produkt för att bygga förtroende och trovärdighet – typiskt kommersiellt historiebruk.','Moraliskt historiebruk handlar om att lära av misstag eller ta ansvar för orättvisor. Det här är tydligare kopplat till försäljning.')">Moraliskt historiebruk – de vill visa att de lärt sig av historien</button>
+      <button class="sq-opt" data-v="b" onclick="sqPick(this,'c','Rätt! Hotellet säljer sin historia som produkt för att bygga förtroende och trovärdighet – typiskt kommersiellt historiebruk.','Existentiellt historiebruk handlar om identitet och rötter på individ- eller gruppnivå. Här är motivet tydligt kommersiellt.')">Existentiellt historiebruk – hotellet söker sin identitet</button>
+      <button class="sq-opt" data-v="c" onclick="sqPick(this,'c','Rätt! Hotellet säljer sin historia som produkt för att bygga förtroende och trovärdighet – typiskt kommersiellt historiebruk.','Existentiellt historiebruk handlar om identitet och rötter på individ- eller gruppnivå. Här är motivet tydligt kommersiellt.')">Kommersiellt historiebruk – historia används för att sälja och bygga varumärke</button>
+    </div>
+    <div class="sq-fb"></div>
+  </div>
 </div>
 </section>
 
@@ -243,10 +564,10 @@ footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
     <div class="ql">Fråga 1 av 6</div>
     <div class="qq">Vad menas med att en källa är tendensiös <em>tendens</em>?</div>
     <div class="qo">
-      <div class="opt" data-q="1" data-v="a" onclick="pick(this)"><span class="lt">A</span><span>Att källan är gammal och skriven långt efter händelsen</span></div>
-      <div class="opt" data-q="1" data-v="b" onclick="pick(this)"><span class="lt">B</span><span>Att källan har ett eget syfte eller perspektiv som färgar innehållet</span></div>
-      <div class="opt" data-q="1" data-v="c" onclick="pick(this)"><span class="lt">C</span><span>Att källan har kopierats av många andra utan att kontrolleras</span></div>
-      <div class="opt" data-q="1" data-v="d" onclick="pick(this)"><span class="lt">D</span><span>Att källan troligtvis är förfalskad</span></div>
+      <div class="opt" data-q="1" data-v="a" onclick="pick(this)"><span class="lt">A</span><span>Att källan är skriven lång tid efter händelsen</span></div>
+      <div class="opt" data-q="1" data-v="b" onclick="pick(this)"><span class="lt">B</span><span>Att källan har ett eget syfte som färgar innehållet</span></div>
+      <div class="opt" data-q="1" data-v="c" onclick="pick(this)"><span class="lt">C</span><span>Att källan har kopierats från en gemensam ursprungskälla</span></div>
+      <div class="opt" data-q="1" data-v="d" onclick="pick(this)"><span class="lt">D</span><span>Att källan troligen är fejkad eller förfalskad</span></div>
     </div>
     <div class="fb" id="fb1"></div>
     <div class="qbtn" id="bn1"><button class="btn" onclick="go(2)">Nästa →</button></div>
@@ -281,10 +602,10 @@ footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
     <div class="ql">Fråga 4 av 6</div>
     <div class="qq">En källa från 1600-talet beskriver en häxrättegång. Byborna kallar kvinnan "djävulens tjänare". Vilken slutsats bör historikern dra <em>först</em>?</div>
     <div class="qo">
-      <div class="opt" data-q="4" data-v="a" onclick="pick(this)"><span class="lt">A</span><span>Kvinnan var troligen skyldig till trolldom</span></div>
-      <div class="opt" data-q="4" data-v="b" onclick="pick(this)"><span class="lt">B</span><span>Källan avslöjar de anklagandes religiösa världsbild och motiv</span></div>
-      <div class="opt" data-q="4" data-v="c" onclick="pick(this)"><span class="lt">C</span><span>Källan är opålitlig och bör kasseras</span></div>
-      <div class="opt" data-q="4" data-v="d" onclick="pick(this)"><span class="lt">D</span><span>Fler personer vittnade, alltså stärks beviset</span></div>
+      <div class="opt" data-q="4" data-v="a" onclick="pick(this)"><span class="lt">A</span><span>Kvinnan var sannolikt skyldig – byborna vittnade enhälligt</span></div>
+      <div class="opt" data-q="4" data-v="b" onclick="pick(this)"><span class="lt">B</span><span>Källan avslöjar de anklagandes världsbild och motiv</span></div>
+      <div class="opt" data-q="4" data-v="c" onclick="pick(this)"><span class="lt">C</span><span>Källan är alltför vinklad för att kunna användas alls</span></div>
+      <div class="opt" data-q="4" data-v="d" onclick="pick(this)"><span class="lt">D</span><span>Fler vittnen från byn stärker bevisläget i fallet</span></div>
     </div>
     <div class="fb" id="fb4"></div>
     <div class="qbtn" id="bn4"><button class="btn" onclick="go(5)">Nästa →</button></div>
@@ -292,35 +613,67 @@ footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
 
   <div class="qc" id="q5">
     <div class="ql">Fråga 5 av 6</div>
-    <div class="qq">Matcha varje källkritiskt kriterium med rätt beskrivning:</div>
-    <div class="ma" style="margin-top:1.3rem">
-      <div class="ml">Äkthet</div><div class="marr">→</div><div><select class="msel" id="ma" onchange="mRdy()"><option value="">Välj…</option><option value="x">Skriven nära i tid</option><option value="y">Avsändaren har eget syfte</option><option value="z">Inte förfalskat</option><option value="w">Oberoende av andra</option></select></div>
-      <div class="ml">Tid</div><div class="marr">→</div><div><select class="msel" id="mb" onchange="mRdy()"><option value="">Välj…</option><option value="x">Skriven nära i tid</option><option value="y">Avsändaren har eget syfte</option><option value="z">Inte förfalskat</option><option value="w">Oberoende av andra</option></select></div>
-      <div class="ml">Oberoende</div><div class="marr">→</div><div><select class="msel" id="mc" onchange="mRdy()"><option value="">Välj…</option><option value="x">Skriven nära i tid</option><option value="y">Avsändaren har eget syfte</option><option value="z">Inte förfalskat</option><option value="w">Oberoende av andra</option></select></div>
-      <div class="ml">Tendens</div><div class="marr">→</div><div><select class="msel" id="md" onchange="mRdy()"><option value="">Välj…</option><option value="x">Skriven nära i tid</option><option value="y">Avsändaren har eget syfte</option><option value="z">Inte förfalskat</option><option value="w">Oberoende av andra</option></select></div>
+    <div class="qq">Dra — eller klicka — rätt beskrivning till varje källkritiskt kriterium:</div>
+    <div class="dnd-wrap">
+      <div class="dnd-rows">
+        <div class="dnd-row">
+          <div class="dnd-term" style="border-top-color:var(--acc)">Äkthet</div>
+          <div class="dnd-slot" id="slot-a" onclick="dndClickSlot('a')" ondragover="dndOver(event)" ondrop="dndDrop(event,'a')">Dra hit…</div>
+        </div>
+        <div class="dnd-row">
+          <div class="dnd-term" style="border-top-color:var(--blu)">Tid</div>
+          <div class="dnd-slot" id="slot-b" onclick="dndClickSlot('b')" ondragover="dndOver(event)" ondrop="dndDrop(event,'b')">Dra hit…</div>
+        </div>
+        <div class="dnd-row">
+          <div class="dnd-term" style="border-top-color:var(--grn)">Oberoende</div>
+          <div class="dnd-slot" id="slot-c" onclick="dndClickSlot('c')" ondragover="dndOver(event)" ondrop="dndDrop(event,'c')">Dra hit…</div>
+        </div>
+        <div class="dnd-row">
+          <div class="dnd-term" style="border-top-color:var(--red)">Tendens</div>
+          <div class="dnd-slot" id="slot-d" onclick="dndClickSlot('d')" ondragover="dndOver(event)" ondrop="dndDrop(event,'d')">Dra hit…</div>
+        </div>
+      </div>
+      <div>
+        <div class="dnd-pool-label">Beskrivningar — klicka eller dra</div>
+        <div class="dnd-pool" id="dnd-pool">
+          <div class="dnd-chip" id="chip-z" draggable="true" ondragstart="dndStart(event,'z')" onclick="dndClickChip('z')">Inte förfalskat</div>
+          <div class="dnd-chip" id="chip-x" draggable="true" ondragstart="dndStart(event,'x')" onclick="dndClickChip('x')">Skriven nära i tid</div>
+          <div class="dnd-chip" id="chip-w" draggable="true" ondragstart="dndStart(event,'w')" onclick="dndClickChip('w')">Oberoende av andra</div>
+          <div class="dnd-chip" id="chip-y" draggable="true" ondragstart="dndStart(event,'y')" onclick="dndClickChip('y')">Avsändaren har eget syfte</div>
+        </div>
+      </div>
     </div>
-    <div style="text-align:center;margin-top:1rem"><button class="btn" id="mchk" onclick="mCheck()" style="opacity:.4;pointer-events:none">Kontrollera</button></div>
+    <div style="text-align:center;margin-top:1rem"><button class="btn" id="mchk" onclick="dndCheck()" style="opacity:.4;pointer-events:none">Kontrollera</button></div>
     <div class="fb" id="fb5"></div>
     <div class="qbtn" id="bn5"><button class="btn" onclick="go(6)">Nästa →</button></div>
   </div>
 
   <div class="qc" id="q6">
     <div class="ql">Fråga 6 av 6</div>
-    <div class="qq">Ett företag marknadsför sig: <em>"Sedan 1867 har vi försett Sverige med kvalitétshantverk."</em> Vilket begrepp passar bäst?</div>
+    <div class="qq">Ett företag marknadsför sig: <em>"Sedan 1867 – svensk kvalitet i mer än 150 år."</em> Vilket begrepp är analytiskt mest precist?</div>
     <div class="qo">
-      <div class="opt" data-q="6" data-v="a" onclick="pick(this)"><span class="lt">A</span><span>Sakkritik – man måste kolla om årtalet stämmer</span></div>
-      <div class="opt" data-q="6" data-v="b" onclick="pick(this)"><span class="lt">B</span><span>Tendens – företaget vill alltid framstå positivt</span></div>
-      <div class="opt" data-q="6" data-v="c" onclick="pick(this)"><span class="lt">C</span><span>Historiebruk – historia används för att skapa trovärdighet</span></div>
-      <div class="opt" data-q="6" data-v="d" onclick="pick(this)"><span class="lt">D</span><span>Äkthet – vi måste kontrollera om företaget verkligen grundades då</span></div>
+      <div class="opt" data-q="6" data-v="a" onclick="pick(this)"><span class="lt">A</span><span>Sakkritik – årtalet 1867 bör granskas mot fakta</span></div>
+      <div class="opt" data-q="6" data-v="b" onclick="pick(this)"><span class="lt">B</span><span>Tendens – företaget vill framstå positivt och trovärdigt</span></div>
+      <div class="opt" data-q="6" data-v="c" onclick="pick(this)"><span class="lt">C</span><span>Historiebruk – historia används aktivt som säljargument</span></div>
+      <div class="opt" data-q="6" data-v="d" onclick="pick(this)"><span class="lt">D</span><span>Äkthet – man bör kontrollera om företaget är legitimt</span></div>
     </div>
     <div class="fb" id="fb6"></div>
     <div class="qbtn" id="bn6"><button class="btn" onclick="showRes()">Se resultat →</button></div>
   </div>
 
   <div class="qres" id="qr">
-    <div class="rscore" id="rs"></div>
-    <div class="rtxt" id="rt"></div>
-    <button class="btn brst" onclick="restart()">Gör om quizet ↻</button>
+    <div class="res-head">
+      <div class="rscore" id="rs"></div>
+      <div class="res-score-label">poäng av 6</div>
+      <div class="res-bar-wrap"><div class="res-bar-fill" id="res-bar"></div></div>
+      <div class="rtxt" id="rt"></div>
+    </div>
+    <div class="res-bl">Dina svar</div>
+    <div id="res-breakdown"></div>
+    <div id="res-focus"></div>
+    <div class="res-actions">
+      <button class="btn brst" onclick="restart()">Gör om quizet ↻</button>
+    </div>
   </div>
 </div>
 </section>
@@ -328,17 +681,115 @@ footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
 <footer>Källkritik — Interaktiv genomgång · Gymnasiet</footer>
 
 <script>
-var A={1:{c:'b',f:{ok:'✅ Rätt! Tendens handlar om att källan har ett eget syfte eller perspektiv som färgar innehållet.',no:{a:'❌ Det du beskriver handlar om kriteriet <strong>Tid</strong> – hur nära i tid källan är. Tendens = avsändarens syfte.',c:'❌ Det liknar snarare <strong>Oberoende</strong> – om källor kopierat varandra. Tendens = avsändarens egna motiv.',d:'❌ Det handlar om <strong>Äkthet</strong> – om källan är förfalskad. Tendens = vilken vinkel avsändaren har.'}}},2:{c:'b',f:{ok:'✅ Rätt! Tre källor som alla kopierat samma felaktiga ursprung är egentligen bara <em>en</em> uppgift. Man måste kolla att de är oberoende.',no:{a:'❌ Om alla tre artiklarna kopierat samma felaktiga tweet har du egentligen bara en källa. Antal ≠ oberoende.'}}},3:{c:'b',f:{ok:'✅ Rätt! En dagbok skriven av personen som upplevde händelserna är en primärkälla.',no:{a:'❌ En sekundärkälla tolkar andras upplevelser. Soldaten som skriver sin egen dagbok <em>är</em> vittnet – primärkälla.',c:'❌ En tertiärkälla är en sammanställning av sammanställningar. Dagboken, skriven av den som var där, är en primärkälla.',d:'❌ "Sakkritiksbevis" är inte en källtyp. Man pratar om primär-, sekundär- och tertiärkällor.'}}},4:{c:'b',f:{ok:'✅ Rätt! Historikern bör först analysera vad källan avslöjar om avsändarnas världsbild och motiv (tendens).',no:{a:'❌ Att ta källan bokstavligt ignorerar dess tendens. Analysera <em>varför</em> anklagarna använde det språket.',c:'❌ Att kassera en källa helt missar poängen. Även en vinklad källa berättar om avsändarnas perspektiv.',d:'❌ Fler vittnesmål stärker inte beviset om de delar samma religiösa övertygelse (oberoende-kriteriet).'}}},5:{c:{a:'z',b:'x',c:'w',d:'y'},f:{ok:'✅ Perfekt! Äkthet = inte förfalskat, Tid = nära händelsen, Oberoende = inte kopierat, Tendens = eget syfte.',no:'❌ Inte helt rätt. Rätt: <strong>Äkthet</strong> = inte förfalskat, <strong>Tid</strong> = nära händelsen, <strong>Oberoende</strong> = oberoende av andra, <strong>Tendens</strong> = eget syfte.'}},6:{c:'c',f:{ok:'✅ Rätt! Företaget använder historia aktivt (historiebruk) som verktyg för att bygga trovärdighet.',no:{a:'❌ Sakkritik granskar om uppgifter är logiskt möjliga. Här handlar det om <em>hur</em> historia används.',b:'❌ Tendens handlar om perspektiv i en källa. Här är det specifikt <em>historiebruk</em> – historia som verktyg.',d:'❌ Äkthet handlar om förfalskning. Frågan gäller <em>varför</em> företaget lyfter sin historia.'}}}};
-var sc=0,ans={},T=6;
+var A={1:{c:'b',f:{ok:'✅ Rätt! Tendens handlar om att källan har ett eget syfte eller perspektiv som färgar innehållet.',no:{a:'❌ Det beskriver <strong>Tid</strong> – hur nära i tid källan är skriven. Tendens handlar om avsändarens syfte, inte åldern.',c:'❌ Det liknar <strong>Oberoende</strong> – om källor kopierat varandra. Tendens = att avsändaren har egna motiv.',d:'❌ Det handlar om <strong>Äkthet</strong> – om källan är förfalskad. Tendens = vilket perspektiv avsändaren har.'}}},2:{c:'b',f:{ok:'✅ Rätt! Tre källor som alla kopierat samma felaktiga ursprung är egentligen bara <em>en</em> uppgift. Man måste kolla att de är oberoende.',no:{a:'❌ Om alla tre artiklarna kopierat samma felaktiga tweet har du egentligen bara en källa. Antal ≠ oberoende.'}}},3:{c:'b',f:{ok:'✅ Rätt! En dagbok skriven av personen som upplevde händelserna är en primärkälla.',no:{a:'❌ En sekundärkälla tolkar andras upplevelser. Soldaten som skriver sin egen dagbok <em>är</em> vittnet – primärkälla.',c:'❌ En tertiärkälla är en sammanställning av sammanställningar. Dagboken, skriven av den som var där, är en primärkälla.',d:'❌ "Sakkritiksbevis" är inte en källtyp. Man pratar om primär-, sekundär- och tertiärkällor.'}}},4:{c:'b',f:{ok:'✅ Rätt! Historikern bör <em>först</em> analysera vad källan avslöjar om avsändarnas världsbild och motiv – inte ta den bokstavligt.',no:{a:'❌ Att ta källan bokstavligt ignorerar dess tendens helt. Fråga <em>varför</em> anklagarna använde just det språket.',c:'❌ En vinklad källa är inte värdelös – den avslöjar avsändarnas perspektiv. Att kassera den är att missa poängen.',d:'❌ Vittnesmål från samma by delar troligen samma världsbild – de är inte oberoende av varandra.'}}},5:{c:{a:'z',b:'x',c:'w',d:'y'},f:{ok:'✅ Perfekt! Äkthet = inte förfalskat, Tid = nära händelsen, Oberoende = inte kopierat, Tendens = eget syfte.',no:'❌ Inte helt rätt. Rätt: <strong>Äkthet</strong> = inte förfalskat, <strong>Tid</strong> = nära händelsen, <strong>Oberoende</strong> = oberoende av andra, <strong>Tendens</strong> = eget syfte.'}},6:{c:'c',f:{ok:'✅ Rätt! Att använda sin historiska ålder som säljargument är ett tydligt fall av kommersiellt historiebruk.',no:{a:'❌ Sakkritik granskar om påståenden är logiskt möjliga – inte hur historia används som verktyg.',b:'❌ Du har en poäng – företaget är tendensiöst, och alla reklampåståenden har ett syfte. Men <strong>Historiebruk</strong> är det mer precisa begreppet: det beskriver specifikt att historia används som säljargument, inte bara att det finns en agenda.',d:'❌ Äkthet handlar om förfalskning. Här granskar vi hur och varför historia lyfts fram – inte om företaget är äkta.'}}}};
+var sc=0,ans={},qres={},T=6;
+var dnd={p:{a:null,b:null,c:null,d:null},cs:{x:null,y:null,z:null,w:null},sel:null,locked:false};
+function dndStart(e,cid){if(dnd.locked)return;e.dataTransfer.setData('cid',cid)}
+function dndOver(e){e.preventDefault();e.currentTarget.classList.add('drag-over')}
+function dndDrop(e,sid){e.preventDefault();e.currentTarget.classList.remove('drag-over');if(dnd.locked)return;var cid=e.dataTransfer.getData('cid');if(cid)dndPlace(cid,sid)}
+function dndClickChip(cid){
+  if(dnd.locked)return;
+  if(dnd.cs[cid]!==null){dndUnplace(cid);return}
+  if(dnd.sel===cid){document.getElementById('chip-'+cid).classList.remove('dnd-sel');dnd.sel=null;return}
+  if(dnd.sel){document.getElementById('chip-'+dnd.sel).classList.remove('dnd-sel')}
+  document.getElementById('chip-'+cid).classList.add('dnd-sel');
+  dnd.sel=cid
+}
+function dndClickSlot(sid){
+  if(dnd.locked)return;
+  if(dnd.sel){dndPlace(dnd.sel,sid)}
+  else if(dnd.p[sid]){dndUnplace(dnd.p[sid])}
+}
+function dndPlace(cid,sid){
+  var slot=document.getElementById('slot-'+sid),chip=document.getElementById('chip-'+cid);
+  if(dnd.p[sid])dndUnplace(dnd.p[sid]);
+  var oldSlot=dnd.cs[cid];
+  if(oldSlot){dnd.p[oldSlot]=null;var os=document.getElementById('slot-'+oldSlot);os.textContent='Dra hit…';os.classList.remove('filled')}
+  dnd.p[sid]=cid;dnd.cs[cid]=sid;dnd.sel=null;
+  chip.classList.remove('dnd-sel');chip.classList.add('dnd-placed');
+  slot.textContent=chip.textContent;slot.classList.add('filled');
+  var allFilled=Object.keys(dnd.p).every(function(k){return dnd.p[k]!==null});
+  var btn=document.getElementById('mchk');btn.style.opacity=allFilled?'1':'.4';btn.style.pointerEvents=allFilled?'auto':'none'
+}
+function dndUnplace(cid){
+  var sid=dnd.cs[cid];if(!sid)return;
+  var slot=document.getElementById('slot-'+sid);
+  slot.textContent='Dra hit…';slot.classList.remove('filled');
+  dnd.p[sid]=null;dnd.cs[cid]=null;
+  document.getElementById('chip-'+cid).classList.remove('dnd-placed','dnd-sel');
+  var btn=document.getElementById('mchk');btn.style.opacity='.4';btn.style.pointerEvents='none'
+}
+function dndCheck(){
+  if(ans[5])return;ans[5]=1;dnd.locked=true;
+  var correct=A[5].c,ok=true;
+  ['a','b','c','d'].forEach(function(sid){
+    var slot=document.getElementById('slot-'+sid),isOk=dnd.p[sid]===correct[sid];
+    if(isOk){slot.style.borderColor='var(--grn)';slot.style.background='rgba(78,203,113,.1)';slot.style.color='var(--grn)'}
+    else{slot.style.borderColor='var(--red)';slot.style.background='rgba(232,84,84,.08)';ok=false}
+  });
+  qres[5]=ok;
+  if(ok){sc++;fb(5,A[5].f.ok,1)}else fb(5,A[5].f.no,0);
+  document.getElementById('mchk').style.display='none';
+  document.getElementById('d5').classList.remove('active');
+  document.getElementById('d5').classList.add(ok?'ok':'no');
+  document.getElementById('bn5').classList.add('show')
+}
 function init(){var p=document.getElementById('qp');p.innerHTML='';for(var i=1;i<=T;i++){var d=document.createElement('div');d.className='dot';d.id='d'+i;p.appendChild(d)}document.getElementById('q1').classList.add('on');document.getElementById('d1').classList.add('active')}
-function pick(el){var q=el.dataset.q;if(ans[q])return;ans[q]=1;var v=el.dataset.v,d=A[q],ok=v===d.c;el.parentElement.querySelectorAll('.opt').forEach(function(o){o.classList.add('dis');if(o.dataset.v===d.c)o.classList.add('ok')});if(ok){el.classList.add('ok');sc++;fb(q,d.f.ok,1)}else{el.classList.add('no');fb(q,d.f.no[v]||d.f.no,0)}document.getElementById('d'+q).classList.remove('active');document.getElementById('d'+q).classList.add(ok?'ok':'no');document.getElementById('bn'+q).classList.add('show')}
-function fillPick(el,bid){var q=el.dataset.q;if(ans[q])return;ans[q]=1;var v=el.dataset.v,d=A[q],ok=v===d.c,bl=document.getElementById(bid);bl.textContent=el.textContent;bl.classList.add('bfill');el.parentElement.querySelectorAll('.chip').forEach(function(c){c.classList.add('dis');if(c.dataset.v===d.c)c.classList.add('ok')});if(ok){el.classList.add('ok');bl.classList.add('bok');sc++;fb(q,d.f.ok,1)}else{el.classList.add('no');bl.classList.add('bno');fb(q,d.f.no[v]||d.f.no,0)}document.getElementById('d'+q).classList.remove('active');document.getElementById('d'+q).classList.add(ok?'ok':'no');document.getElementById('bn'+q).classList.add('show')}
+function pick(el){var q=el.dataset.q;if(ans[q])return;ans[q]=1;var v=el.dataset.v,d=A[q],ok=v===d.c;qres[q]=ok;el.parentElement.querySelectorAll('.opt').forEach(function(o){o.classList.add('dis');if(o.dataset.v===d.c)o.classList.add('ok')});if(ok){el.classList.add('ok');sc++;fb(q,d.f.ok,1)}else{el.classList.add('no');fb(q,d.f.no[v]||d.f.no,0)}document.getElementById('d'+q).classList.remove('active');document.getElementById('d'+q).classList.add(ok?'ok':'no');document.getElementById('bn'+q).classList.add('show')}
+function fillPick(el,bid){var q=el.dataset.q;if(ans[q])return;ans[q]=1;var v=el.dataset.v,d=A[q],ok=v===d.c,bl=document.getElementById(bid);qres[q]=ok;bl.textContent=el.textContent;bl.classList.add('bfill');el.parentElement.querySelectorAll('.chip').forEach(function(c){c.classList.add('dis');if(c.dataset.v===d.c)c.classList.add('ok')});if(ok){el.classList.add('ok');bl.classList.add('bok');sc++;fb(q,d.f.ok,1)}else{el.classList.add('no');bl.classList.add('bno');fb(q,d.f.no[v]||d.f.no,0)}document.getElementById('d'+q).classList.remove('active');document.getElementById('d'+q).classList.add(ok?'ok':'no');document.getElementById('bn'+q).classList.add('show')}
 function mRdy(){var a=document.getElementById('ma').value,b=document.getElementById('mb').value,c=document.getElementById('mc').value,d=document.getElementById('md').value,btn=document.getElementById('mchk');if(a&&b&&c&&d){btn.style.opacity='1';btn.style.pointerEvents='auto'}else{btn.style.opacity='.4';btn.style.pointerEvents='none'}}
-function mCheck(){if(ans[5])return;ans[5]=1;var d=A[5],v={a:document.getElementById('ma').value,b:document.getElementById('mb').value,c:document.getElementById('mc').value,d:document.getElementById('md').value};var ok=1;['a','b','c','d'].forEach(function(k){var s=document.getElementById('m'+k);s.disabled=1;if(v[k]===d.c[k])s.classList.add('mok');else{s.classList.add('mno');ok=0}});if(ok){sc++;fb(5,d.f.ok,1)}else fb(5,d.f.no,0);document.getElementById('mchk').style.display='none';document.getElementById('d5').classList.remove('active');document.getElementById('d5').classList.add(ok?'ok':'no');document.getElementById('bn5').classList.add('show')}
-function fb(q,html,ok){var f=document.getElementById('fb'+q);f.innerHTML=html;f.className='fb show '+(ok?'fbok':'fbno')}
+function mCheck(){if(ans[5])return;ans[5]=1;var d=A[5],v={a:document.getElementById('ma').value,b:document.getElementById('mb').value,c:document.getElementById('mc').value,d:document.getElementById('md').value};var ok=1;['a','b','c','d'].forEach(function(k){var s=document.getElementById('m'+k);s.disabled=1;if(v[k]===d.c[k])s.classList.add('mok');else{s.classList.add('mno');ok=0}});qres[5]=!!ok;if(ok){sc++;fb(5,d.f.ok,1)}else fb(5,d.f.no,0);document.getElementById('mchk').style.display='none';document.getElementById('d5').classList.remove('active');document.getElementById('d5').classList.add(ok?'ok':'no');document.getElementById('bn5').classList.add('show')}
+var fbLinks={1:{s:'#s4',l:'Tendens'},2:{s:'#s4',l:'Oberoende'},3:{s:'#s3',l:'Källtyper'},4:{s:'#s4',l:'Tendens & Oberoende'},5:{s:'#s4',l:'ÄKOT-kriterierna'},6:{s:'#s6',l:'Historiebruk'}};
+function fb(q,html,ok){var f=document.getElementById('fb'+q);var extra='';if(!ok&&fbLinks[q]){extra='<br><a href="'+fbLinks[q].s+'" class="fb-link">↑ Läs om '+fbLinks[q].l+'</a>'}f.innerHTML=html+extra;f.className='fb show '+(ok?'fbok':'fbno')}
+var snav=document.getElementById('snav'),heroH=window.innerHeight*.65;
+var navSections=['s1','s2','s3','s4','s5','s6','quiz'];
+window.addEventListener('scroll',function(){
+  var y=window.scrollY;
+  if(y>heroH)snav.classList.add('show');else snav.classList.remove('show');
+  var active='';
+  navSections.forEach(function(id){var el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=80)active=id;});
+  snav.querySelectorAll('.snav-link').forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+active)});
+});
 function go(n){document.querySelectorAll('.qc').forEach(function(c){c.classList.remove('on')});document.getElementById('q'+n).classList.add('on');var d=document.getElementById('d'+n);if(d&&!d.classList.contains('ok')&&!d.classList.contains('no'))d.classList.add('active');document.getElementById('quiz').scrollIntoView({behavior:'smooth',block:'start'})}
-function showRes(){document.querySelectorAll('.qc').forEach(function(c){c.classList.remove('on')});var r=document.getElementById('qr');r.classList.add('on');document.getElementById('rs').textContent=sc+' / '+T;var t='';if(sc===T)t='🏆 Perfekt! Du är en fullfjädrad källkritiker!';else if(sc>=4)t='🔥 Starkt! Bara lite finslipning kvar.';else if(sc>=2)t='💪 Bra start! Läs materialet ovan en gång till.';else t='📖 Dags att grotta ner sig i materialet!';document.getElementById('rt').textContent=t}
-function restart(){sc=0;ans={};document.querySelectorAll('.opt').forEach(function(o){o.classList.remove('dis','ok','no')});document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('dis','ok','no')});document.querySelectorAll('.blank').forEach(function(b){b.textContent='______';b.classList.remove('bfill','bok','bno')});document.querySelectorAll('.msel').forEach(function(s){s.value='';s.disabled=0;s.classList.remove('mok','mno')});document.querySelectorAll('.fb').forEach(function(f){f.className='fb';f.innerHTML=''});document.querySelectorAll('.qbtn').forEach(function(b){b.classList.remove('show')});var mc=document.getElementById('mchk');mc.style.display='';mc.style.opacity='.4';mc.style.pointerEvents='none';document.getElementById('qr').classList.remove('on');init();document.getElementById('quiz').scrollIntoView({behavior:'smooth',block:'start'})}
+var qMeta={1:{short:'Vad är tendens?',topic:'Tendens',link:'#s4'},2:{short:'Vad menas med oberoende?',topic:'Oberoende',link:'#s4'},3:{short:'Primär- eller sekundärkälla?',topic:'Källtyper',link:'#s3'},4:{short:'Häxrättegången — tendens i praktiken',topic:'Tendens',link:'#s4'},5:{short:'Matcha ÄKOT-definitionerna',topic:'ÄKOT',link:'#s4'},6:{short:'Kommersiellt historiebruk',topic:'Historiebruk',link:'#s6'}};
+function showRes(){
+  document.querySelectorAll('.qc').forEach(function(c){c.classList.remove('on')});
+  var r=document.getElementById('qr');r.classList.add('on');
+  document.getElementById('rs').textContent=sc+' / '+T;
+  setTimeout(function(){document.getElementById('res-bar').style.width=Math.round(sc/T*100)+'%'},80);
+  var msgs=['📖 Kika igenom materialet och försök igen!','📖 Kika igenom materialet och försök igen!','💪 Bra start – se vad du missat nedan.','💪 Bra start – se vad du missat nedan.','🔥 Starkt jobbat – nästan i mål!','🔥 Starkt jobbat – nästan i mål!','🏆 Perfekt! Fullfjädrad källkritiker!'];
+  document.getElementById('rt').textContent=msgs[sc]||msgs[0];
+  var bd=document.getElementById('res-breakdown');bd.innerHTML='';
+  var missed=[];
+  for(var i=1;i<=T;i++){
+    var ok=qres[i],m=qMeta[i],row=document.createElement('div');
+    row.className='res-row '+(ok?'ok':'no');
+    row.innerHTML='<span class="res-icon">'+(ok?'✓':'✗')+'</span><div class="res-info"><div class="res-info-topic">Fråga '+i+': '+m.short+'</div><div class="res-info-sub">'+m.topic+'</div></div>'+(ok?'':'<a href="'+m.link+'" class="res-link">Läs om '+m.topic+' →</a>');
+    bd.appendChild(row);
+    if(!ok)missed.push(m);
+  }
+  var fc=document.getElementById('res-focus');
+  if(missed.length===0){fc.innerHTML='<div class="res-all-ok">✓ Du klarade alla frågor — materialet sitter!</div>';}
+  else{var seen={},pills='';missed.forEach(function(m){if(!seen[m.topic]){seen[m.topic]=1;pills+='<a href="'+m.link+'" class="res-focus-pill">'+m.topic+'</a>'}});fc.innerHTML='<div class="res-focus"><div class="res-focus-label">Fokusera på</div><div class="res-focus-links">'+pills+'</div></div>';}
+  document.getElementById('quiz').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function restart(){sc=0;ans={};qres={};
+  dnd={p:{a:null,b:null,c:null,d:null},cs:{x:null,y:null,z:null,w:null},sel:null,locked:false};
+  ['a','b','c','d'].forEach(function(s){var el=document.getElementById('slot-'+s);if(el){el.textContent='Dra hit…';el.className='dnd-slot';el.style.cssText=''}});
+  ['x','y','z','w'].forEach(function(c){var el=document.getElementById('chip-'+c);if(el)el.className='dnd-chip'});
+  document.querySelectorAll('.opt').forEach(function(o){o.classList.remove('dis','ok','no')});
+  document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('dis','ok','no')});
+  document.querySelectorAll('.blank').forEach(function(b){b.textContent='______';b.classList.remove('bfill','bok','bno')});
+  document.querySelectorAll('.fb').forEach(function(f){f.className='fb';f.innerHTML=''});
+  document.querySelectorAll('.qbtn').forEach(function(b){b.classList.remove('show')});
+  var mc=document.getElementById('mchk');mc.style.display='';mc.style.opacity='.4';mc.style.pointerEvents='none';
+  document.getElementById('qr').classList.remove('on');
+  document.getElementById('res-bar').style.width='0';
+  document.getElementById('res-breakdown').innerHTML='';
+  document.getElementById('res-focus').innerHTML='';
+  init();document.getElementById('quiz').scrollIntoView({behavior:'smooth',block:'start'})
+}
+function sqPick(el,correct,okMsg,noMsg){var opts=el.parentElement;if(opts.dataset.done)return;opts.dataset.done='1';var isOk=el.dataset.v===correct;opts.querySelectorAll('.sq-opt').forEach(function(o){o.disabled=true;if(o.dataset.v===correct)o.classList.add('sq-ok');else if(!isOk&&o===el)o.classList.add('sq-no')});var fb=el.closest('.sq').querySelector('.sq-fb');fb.innerHTML=(isOk?'✓ ':'✗ ')+(isOk?okMsg:noMsg);fb.className='sq-fb show '+(isOk?'ok':'no')}
 var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('vis')})},{threshold:.12});document.querySelectorAll('.rv').forEach(function(el){obs.observe(el)});init();
 </script>
 </body>
