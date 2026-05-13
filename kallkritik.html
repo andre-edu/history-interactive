@@ -10,8 +10,9 @@
 :root{--bg:#0f1117;--card:#181b24;--card2:#1e2230;--hover:#252a3a;--acc:#f0c040;--accd:#c49a20;--accg:rgba(240,192,64,.15);--red:#e85454;--grn:#4ecb71;--blu:#5b9cf5;--pur:#a78bfa;--tx:#e8e6e1;--txd:#9a97a0;--txk:#6b6775;--brd:rgba(255,255,255,.07);--r:16px;--rs:10px}
 html{scroll-behavior:smooth;scroll-padding-top:52px}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);line-height:1.7;overflow-x:hidden}
-.snav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(15,17,23,.93);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--brd);transform:translateY(-100%);transition:transform .3s ease}
+.snav{position:fixed;top:3px;left:0;right:0;z-index:100;background:rgba(15,17,23,.93);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--brd);transform:translateY(-100%);transition:transform .3s ease}
 .snav.show{transform:translateY(0)}
+#spb{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--acc),var(--grn));z-index:101;transition:width .1s linear;pointer-events:none}
 .snav-inner{max-width:820px;margin:0 auto;padding:.55rem 1.5rem;display:flex;align-items:center;gap:1.4rem;overflow-x:auto;scrollbar-width:none}
 .snav-inner::-webkit-scrollbar{display:none}
 .snav-link{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--txk);text-decoration:none;letter-spacing:.08em;white-space:nowrap;transition:color .2s;padding:.2rem 0}
@@ -243,6 +244,7 @@ footer{text-align:center;padding:2.5rem 1rem;color:var(--txk);font-size:.78rem}
 </head>
 <body>
 
+<div id="spb"></div>
 <nav class="snav" id="snav">
   <div class="snav-inner">
     <a href="#s1" class="snav-link">Intro</a>
@@ -758,10 +760,12 @@ function mRdy(){var a=document.getElementById('ma').value,b=document.getElementB
 function mCheck(){if(ans[5])return;ans[5]=1;var d=A[5],v={a:document.getElementById('ma').value,b:document.getElementById('mb').value,c:document.getElementById('mc').value,d:document.getElementById('md').value};var ok=1;['a','b','c','d'].forEach(function(k){var s=document.getElementById('m'+k);s.disabled=1;if(v[k]===d.c[k])s.classList.add('mok');else{s.classList.add('mno');ok=0}});qres[5]=!!ok;if(ok){sc++;fb(5,d.f.ok,1)}else fb(5,d.f.no,0);document.getElementById('mchk').style.display='none';document.getElementById('d5').classList.remove('active');document.getElementById('d5').classList.add(ok?'ok':'no');document.getElementById('bn5').classList.add('show')}
 var fbLinks={1:{s:'#s4',l:'Tendens'},2:{s:'#s4',l:'Oberoende'},3:{s:'#s3',l:'Källtyper'},4:{s:'#s4',l:'Tendens & Oberoende'},5:{s:'#s4',l:'ÄKOT-kriterierna'},6:{s:'#s6',l:'Historiebruk'}};
 function fb(q,html,ok){var f=document.getElementById('fb'+q);var extra='';if(!ok&&fbLinks[q]){extra='<br><a href="'+fbLinks[q].s+'" class="fb-link">↑ Läs om '+fbLinks[q].l+'</a>'}f.innerHTML=html+extra;f.className='fb show '+(ok?'fbok':'fbno')}
-var snav=document.getElementById('snav'),heroH=window.innerHeight*.65;
+var snav=document.getElementById('snav'),spb=document.getElementById('spb'),heroH=window.innerHeight*.65;
 var navSections=['s1','s2','s3','s4','s5','s6','quiz'];
 window.addEventListener('scroll',function(){
   var y=window.scrollY;
+  var pct=Math.round(y/(document.body.scrollHeight-window.innerHeight)*100);
+  spb.style.width=pct+'%';
   if(y>heroH)snav.classList.add('show');else snav.classList.remove('show');
   var active='';
   navSections.forEach(function(id){var el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=80)active=id;});
