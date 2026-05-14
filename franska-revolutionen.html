@@ -341,7 +341,14 @@
   .card-nameplate {
     position: absolute; bottom: 0; left: 0; right: 0;
     padding: 18px 20px;
-    background: linear-gradient(to bottom, rgba(33,24,41,0.0) 0%, rgba(33,24,41,0.88) 30%, rgba(33,24,41,0.97) 100%);
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    transition: background 0.4s ease, border-color 0.4s ease;
+  }
+
+  .card-nameplate.has-image {
+    background: linear-gradient(to bottom, rgba(33,24,41,0.0) 0%, rgba(33,24,41,0.92) 35%, rgba(33,24,41,0.98) 100%);
+    border-top-color: transparent;
   }
 
   .card-name {
@@ -1038,11 +1045,11 @@
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
-            <img src="https://andre-edu.github.io/history-interactive/images/ludvig-xvi.webp" alt="Ludvig XVI" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="portrait-placeholder" style="display:none">
+            <div class="portrait-placeholder">
               <div class="portrait-silhouette"></div>
               <div class="portrait-label">Porträtt</div>
             </div>
+            <img src="https://andre-edu.github.io/history-interactive/images/ludvig-xvi.webp" alt="Ludvig XVI" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;opacity:0;transition:opacity .4s ease;" onload="this.style.opacity='1';this.closest('.flip-front').querySelector('.card-nameplate').classList.add('has-image')">
           </div>
           <div class="card-nameplate">
             <div class="card-name">Ludvig XVI</div>
@@ -1066,11 +1073,11 @@
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
-            <img src="https://andre-edu.github.io/history-interactive/images/marie-antoinette.webp" alt="Marie Antoinette" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="portrait-placeholder" style="display:none">
+            <div class="portrait-placeholder">
               <div class="portrait-silhouette"></div>
               <div class="portrait-label">Porträtt</div>
             </div>
+            <img src="https://andre-edu.github.io/history-interactive/images/marie-antoinette.webp" alt="Marie Antoinette" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;opacity:0;transition:opacity .4s ease;" onload="this.style.opacity='1';this.closest('.flip-front').querySelector('.card-nameplate').classList.add('has-image')">
           </div>
           <div class="card-nameplate">
             <div class="card-name">Marie Antoinette</div>
@@ -1094,11 +1101,11 @@
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
-            <img src="https://andre-edu.github.io/history-interactive/images/robespierre.webp" alt="Maximilien Robespierre" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="portrait-placeholder" style="display:none">
+            <div class="portrait-placeholder">
               <div class="portrait-silhouette"></div>
               <div class="portrait-label">Porträtt</div>
             </div>
+            <img src="https://andre-edu.github.io/history-interactive/images/robespierre.webp" alt="Maximilien Robespierre" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;opacity:0;transition:opacity .4s ease;" onload="this.style.opacity='1';this.closest('.flip-front').querySelector('.card-nameplate').classList.add('has-image')">
           </div>
           <div class="card-nameplate">
             <div class="card-name">Maximilien Robespierre</div>
@@ -1122,11 +1129,11 @@
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
-            <img src="https://andre-edu.github.io/history-interactive/images/danton.webp" alt="Georges Danton" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="portrait-placeholder" style="display:none">
+            <div class="portrait-placeholder">
               <div class="portrait-silhouette"></div>
               <div class="portrait-label">Porträtt</div>
             </div>
+            <img src="https://andre-edu.github.io/history-interactive/images/danton.webp" alt="Georges Danton" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;opacity:0;transition:opacity .4s ease;" onload="this.style.opacity='1';this.closest('.flip-front').querySelector('.card-nameplate').classList.add('has-image')">
           </div>
           <div class="card-nameplate">
             <div class="card-name">Georges Danton</div>
@@ -1150,11 +1157,11 @@
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
-            <img src="https://andre-edu.github.io/history-interactive/images/napoleon.webp" alt="Napoleon Bonaparte" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="portrait-placeholder" style="display:none">
+            <div class="portrait-placeholder">
               <div class="portrait-silhouette"></div>
               <div class="portrait-label">Porträtt</div>
             </div>
+            <img src="https://andre-edu.github.io/history-interactive/images/napoleon.webp" alt="Napoleon Bonaparte" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;opacity:0;transition:opacity .4s ease;" onload="this.style.opacity='1';this.closest('.flip-front').querySelector('.card-nameplate').classList.add('has-image')">
           </div>
           <div class="card-nameplate">
             <div class="card-name">Napoleon Bonaparte</div>
@@ -1178,11 +1185,11 @@
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
-            <img src="https://andre-edu.github.io/history-interactive/images/abbe-sieyes.webp" alt="Abbé Sieyès" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="portrait-placeholder" style="display:none">
+            <div class="portrait-placeholder">
               <div class="portrait-silhouette"></div>
               <div class="portrait-label">Porträtt</div>
             </div>
+            <img src="https://andre-edu.github.io/history-interactive/images/abbe-sieyes.webp" alt="Abbé Sieyès" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;opacity:0;transition:opacity .4s ease;" onload="this.style.opacity='1';this.closest('.flip-front').querySelector('.card-nameplate').classList.add('has-image')">
           </div>
           <div class="card-nameplate">
             <div class="card-name">Abbé Sieyès</div>
@@ -1206,11 +1213,11 @@
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
-            <img src="https://andre-edu.github.io/history-interactive/images/olympe-de-gouges.webp" alt="Olympe de Gouges" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="portrait-placeholder" style="display:none">
+            <div class="portrait-placeholder">
               <div class="portrait-silhouette"></div>
               <div class="portrait-label">Porträtt</div>
             </div>
+            <img src="https://andre-edu.github.io/history-interactive/images/olympe-de-gouges.webp" alt="Olympe de Gouges" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;opacity:0;transition:opacity .4s ease;" onload="this.style.opacity='1';this.closest('.flip-front').querySelector('.card-nameplate').classList.add('has-image')">
           </div>
           <div class="card-nameplate">
             <div class="card-name">Olympe de Gouges</div>
