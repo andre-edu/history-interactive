@@ -342,7 +342,7 @@
 
   .card-nameplate {
     padding: 18px 20px;
-    background: var(--card);
+    background: linear-gradient(to bottom, rgba(33,24,41,0.88) 0%, rgba(33,24,41,0.97) 100%);
     border-top: 1px solid var(--border);
   }
 
@@ -377,6 +377,16 @@
     display: flex; flex-direction: column;
     padding: 22px 20px;
     gap: 8px;
+    position: relative;
+  }
+
+  .flip-back::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--portrait) center top / cover no-repeat;
+    opacity: 0.05;
+    border-radius: 4px;
+    pointer-events: none;
   }
 
   .back-name {
@@ -1025,7 +1035,7 @@
   <div class="gallery-grid">
 
     <!-- Ludvig XVI -->
-    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')">
+    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/ludvig-xvi.webp')" onclick="this.classList.toggle('flipped')">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1053,7 +1063,7 @@
     </div>
 
     <!-- Marie Antoinette -->
-    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.08s">
+    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/marie-antoinette.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.08s">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1081,7 +1091,7 @@
     </div>
 
     <!-- Robespierre -->
-    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.16s">
+    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/robespierre.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.16s">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1109,7 +1119,7 @@
     </div>
 
     <!-- Danton -->
-    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.24s">
+    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/danton.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.24s">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1137,7 +1147,7 @@
     </div>
 
     <!-- Napoleon -->
-    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.32s">
+    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/napoleon.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.32s">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1165,7 +1175,7 @@
     </div>
 
     <!-- Abbé Sieyès -->
-    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.40s">
+    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/abbe-sieyes.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.40s">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1193,7 +1203,7 @@
     </div>
 
     <!-- Olympe de Gouges -->
-    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.48s">
+    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/olympe-de-gouges.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.48s">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
