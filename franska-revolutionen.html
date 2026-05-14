@@ -282,10 +282,8 @@
     -webkit-backface-visibility: hidden;
     border-radius: 4px;
     border: 1px solid var(--border);
+    overflow: hidden;
   }
-
-  .flip-front { overflow: hidden; }
-  .flip-back  { overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--gold-dim) transparent; }
 
   .flip-back { transform: rotateY(180deg); }
 
@@ -293,13 +291,13 @@
   .flip-front {
     background: var(--card);
     display: flex; flex-direction: column;
+    position: relative;
   }
 
   .portrait-area {
-    flex: 1;
+    position: absolute; inset: 0;
     background: var(--surface);
     display: flex; align-items: center; justify-content: center;
-    position: relative;
     overflow: hidden;
   }
 
@@ -341,9 +339,9 @@
   }
 
   .card-nameplate {
+    position: absolute; bottom: 0; left: 0; right: 0;
     padding: 18px 20px;
-    background: linear-gradient(to bottom, rgba(33,24,41,0.88) 0%, rgba(33,24,41,0.97) 100%);
-    border-top: 1px solid var(--border);
+    background: linear-gradient(to bottom, rgba(33,24,41,0.0) 0%, rgba(33,24,41,0.88) 30%, rgba(33,24,41,0.97) 100%);
   }
 
   .card-name {
@@ -375,8 +373,8 @@
   .flip-back {
     background: linear-gradient(145deg, #1e1428, #150f1e);
     display: flex; flex-direction: column;
-    padding: 22px 20px;
-    gap: 8px;
+    padding: 18px 18px 16px;
+    gap: 6px;
     position: relative;
   }
 
@@ -391,37 +389,38 @@
 
   .back-name {
     font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--gold);
-    padding-bottom: 12px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--border);
   }
 
   .back-section-title {
     font-family: 'EB Garamond', serif;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     letter-spacing: 2.5px;
     text-transform: uppercase;
     color: var(--gold-dim);
     margin-top: 4px;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
   }
 
   .back-text {
-    font-size: 0.9rem;
+    font-size: 0.87rem;
     color: var(--text);
-    line-height: 1.6;
+    line-height: 1.5;
   }
 
   .back-fate {
     margin-top: auto;
-    padding-top: 12px;
+    padding-top: 10px;
     border-top: 1px solid var(--border);
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-style: italic;
     color: #e57065;
     display: flex; align-items: flex-start; gap: 8px;
+    line-height: 1.45;
   }
 
   .back-fate::before { content: '†'; flex-shrink: 0; }
