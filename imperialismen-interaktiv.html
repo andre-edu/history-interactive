@@ -3,929 +3,722 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imperialismen - Interaktiv Guide</title>
+    <title>Imperialismen – Interaktiv guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Source+Sans+Pro:wght@400;600;700&display=swap');
-        
         :root {
-            --primary-color: #8B2635;
-            --secondary-color: #D4AF37;
-            --accent-color: #1a4d72;
-            --text-color: #2C3E50;
-            --bg-color: #FEFEFE;
-            --card-bg: #F8F9FA;
-            --border-color: #E1E8ED;
-            --success-color: #27AE60;
-            --error-color: #E74C3C;
-            --shadow: 0 4px 12px rgba(0,0,0,0.15);
+            --navy:        #04090f;
+            --navy-mid:    #080f18;
+            --navy-card:   #0d1a28;
+            --gold:        #c9a84c;
+            --gold-bright: #e2c76e;
+            --gold-dim:    rgba(201,168,76,0.12);
+            --gold-border: rgba(201,168,76,0.25);
+            --text:        #b8a98c;
+            --text-bright: #e8d9c0;
+            --text-muted:  #4e6880;
+            --border:      rgba(201,168,76,0.14);
+            --border-card: rgba(255,255,255,0.045);
+            --success:     #3d9e6a;
+            --success-bg:  rgba(61,158,106,0.10);
+            --error:       #b84040;
+            --error-bg:    rgba(184,64,64,0.10);
         }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Lora',serif; background-color:var(--navy); color:var(--text); line-height:1.8; min-height:100vh; }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* Progress */
+        .progress-sticky { position:sticky; top:0; z-index:100; background:rgba(13,27,42,0.95); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); padding:0.55rem 1.5rem; display:flex; align-items:center; gap:1rem; }
+        .progress-label  { font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); white-space:nowrap; }
+        .progress-bar    { flex:1; height:3px; background:rgba(255,255,255,0.07); border-radius:2px; overflow:hidden; }
+        .progress-fill   { height:100%; background:linear-gradient(90deg,var(--gold),var(--gold-bright)); width:0%; transition:width 0.7s cubic-bezier(.4,0,.2,1); }
+        .progress-count  { font-size:0.78rem; color:var(--gold); font-weight:600; white-space:nowrap; font-family:'Playfair Display',serif; }
 
-        body {
-            font-family: 'Crimson Text', serif;
-            line-height: 1.7;
-            color: var(--text-color);
-            background: linear-gradient(135deg, #fefefe 0%, #f8f9fa 100%);
-            min-height: 100vh;
-        }
+        /* Layout */
+        .container { max-width:860px; margin:0 auto; padding:2rem 2rem 5rem; }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+        /* Header */
+        header { text-align:center; padding:4rem 1rem 3.5rem; border-bottom:1px solid var(--border); margin-bottom:3rem; }
+        .header-label { font-size:0.72rem; letter-spacing:0.25em; text-transform:uppercase; color:var(--text-muted); margin-bottom:1.5rem; }
+        h1 { font-family:'Playfair Display',serif; font-size:clamp(2.8rem,6vw,4.2rem); font-weight:900; color:var(--text-bright); line-height:1.05; margin-bottom:1rem; }
+        h1 em { color:var(--gold); font-style:italic; }
+        .gold-rule { width:48px; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:1.2rem auto; }
+        .subtitle { font-size:1rem; color:var(--text-muted); font-style:italic; }
 
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
-            color: white;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-        }
+        /* Sections */
+        .content-section { background:var(--navy-mid); border:1px solid var(--border-card); border-top:2px solid var(--gold); border-radius:2px; padding:2.5rem; margin-bottom:2.5rem; }
+        h2 { font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:var(--text-bright); margin-bottom:1.4rem; }
+        h3 { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--gold); margin:1.6rem 0 0.7rem; }
+        p  { margin-bottom:1.2rem; font-size:1rem; }
+        strong { color:var(--text-bright); font-weight:600; }
+        em     { color:var(--gold); font-style:italic; }
 
-        h1 {
-            font-size: 3rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            letter-spacing: -0.02em;
-        }
+        /* Control cards */
+        .control-types { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; margin:2rem 0; }
+        .control-card  { background:var(--navy-card); border:1px solid var(--border); border-radius:2px; padding:1.7rem; transition:border-color 0.25s,transform 0.25s; }
+        .control-card:hover { border-color:var(--gold); transform:translateY(-3px); }
+        .ctrl-icon    { width:40px; height:40px; color:var(--gold); margin-bottom:1rem; stroke-width:1.4; }
+        .ctrl-type    { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--text-bright); margin-bottom:0.25rem; }
+        .ctrl-tagline { font-size:0.85rem; color:var(--gold); font-style:italic; margin-bottom:0.9rem; }
+        .control-card p { font-size:0.9rem; margin-bottom:0.9rem; color:var(--text); }
+        .example-box { background:var(--gold-dim); border-left:2px solid var(--gold); padding:0.7rem 0.9rem; font-size:0.83rem; font-style:italic; color:var(--text); line-height:1.5; }
 
-        .subtitle {
-            font-size: 1.3rem;
-            opacity: 0.9;
-            font-style: italic;
-        }
+        /* Stats */
+        .stats-grid  { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:2rem 0; }
+        .stat-card   { text-align:center; padding:1.6rem 1rem; background:var(--navy-card); border:1px solid var(--border); border-radius:2px; }
+        .stat-number { display:block; font-family:'Playfair Display',serif; font-size:2.8rem; font-weight:900; color:var(--gold); line-height:1; margin-bottom:0.6rem; }
+        .stat-label  { font-size:0.82rem; color:var(--text-muted); line-height:1.45; }
 
-        .content-section {
-            background: var(--card-bg);
-            padding: 2.5rem;
-            margin-bottom: 2rem;
-            border-radius: 12px;
-            border-left: 5px solid var(--primary-color);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
+        /* Timeline */
+        .timeline { border-left:2px solid var(--gold-dim); margin:1.5rem 0; }
+        .timeline-item { position:relative; padding:1.2rem 1.5rem 1.2rem 2rem; margin-bottom:0.5rem; background:var(--navy-card); border:1px solid var(--border-card); border-radius:0 2px 2px 0; }
+        .timeline-item::before { content:''; position:absolute; left:-7px; top:1.6rem; width:12px; height:12px; background:var(--gold); border-radius:50%; border:2px solid var(--navy); }
+        .timeline-item h3 { margin-top:0; margin-bottom:0.5rem; }
+        .timeline-item p  { margin-bottom:0; font-size:0.93rem; }
 
-        h2 {
-            font-size: 2.2rem;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-        }
+        /* Highlight */
+        .highlight-box { background:var(--gold-dim); border-left:3px solid var(--gold); padding:1.2rem 1.5rem; margin:1.5rem 0; font-style:italic; font-size:0.97rem; line-height:1.7; }
 
-        h3 {
-            font-size: 1.6rem;
-            color: var(--accent-color);
-            margin: 1.5rem 0 1rem 0;
-            font-weight: 600;
-        }
+        /* Quiz */
+        .quiz-container { background:rgba(19,34,52,0.6); border:1px solid var(--gold-border); border-radius:2px; padding:2rem; margin:2.5rem 0; }
+        .quiz-header    { display:flex; align-items:center; gap:0.75rem; margin-bottom:1.8rem; padding-bottom:1rem; border-bottom:1px solid var(--border); }
+        .quiz-icon      { width:18px; height:18px; color:var(--gold); flex-shrink:0; }
+        .quiz-title     { font-family:'Playfair Display',serif; font-size:0.8rem; color:var(--gold); font-weight:700; letter-spacing:0.12em; text-transform:uppercase; }
+        .question       { background:var(--navy-card); border:1px solid var(--border-card); border-radius:2px; padding:1.5rem; margin-bottom:1.5rem; }
+        .question:last-of-type { margin-bottom:0; }
+        .question-num   { display:block; font-size:0.67rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); opacity:0.7; margin-bottom:0.6rem; }
+        .question-text  { font-family:'Lora',serif; font-size:1rem; font-style:italic; color:var(--text-bright); margin-bottom:1.2rem; line-height:1.7; }
+        .options { display:grid; gap:0.55rem; }
+        .option  { display:flex; align-items:flex-start; gap:0.75rem; background:rgba(13,27,42,0.7); border:1px solid rgba(255,255,255,0.07); border-radius:2px; padding:0.85rem 1rem; cursor:pointer; transition:border-color 0.18s,background 0.18s; font-family:'Lora',serif; font-size:0.93rem; color:var(--text); text-align:left; width:100%; line-height:1.55; }
+        .option-letter { font-family:'Playfair Display',serif; font-weight:700; color:var(--gold); font-size:0.82rem; min-width:16px; margin-top:1px; flex-shrink:0; }
+        .option:hover:not(:disabled) { border-color:var(--gold-border); background:rgba(201,168,76,0.05); color:var(--text-bright); }
+        .option.correct  { border-color:var(--success); background:var(--success-bg); color:#b0ddbf; }
+        .option.incorrect{ border-color:var(--error);   background:var(--error-bg); }
+        .option.revealed { border-color:var(--success); background:var(--success-bg); color:#b0ddbf; }
+        .option:disabled { cursor:default; }
+        .feedback        { margin-top:1rem; padding:0.9rem 1.1rem; border-radius:2px; font-size:0.9rem; line-height:1.65; display:none; font-family:'Lora',serif; }
+        .feedback.show   { display:block; }
+        .feedback.correct  { background:var(--success-bg); border:1px solid var(--success); color:#a0d5b5; }
+        .feedback.incorrect{ background:var(--error-bg);   border:1px solid var(--error);   color:#dda0a0; }
 
-        p {
-            margin-bottom: 1.2rem;
-            font-size: 1.1rem;
-        }
+        /* Matching */
+        .matching-table { width:100%; border-collapse:collapse; margin:1rem 0; }
+        .matching-table tr { border-bottom:1px solid var(--border); }
+        .matching-table tr:last-child { border-bottom:none; }
+        .matching-table td { padding:0.85rem 0.5rem; font-size:0.93rem; vertical-align:middle; }
+        .match-concept { color:var(--text-bright); font-style:italic; width:38%; padding-right:1rem; }
+        .matching-select { width:100%; background:rgba(13,27,42,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:2px; padding:0.6rem 0.8rem; color:var(--text); font-family:'Lora',serif; font-size:0.88rem; cursor:pointer; -webkit-appearance:none; }
+        .matching-select:focus { outline:none; border-color:var(--gold-border); }
+        .matching-select.correct-select   { border-color:var(--success); background:var(--success-bg); color:#b0ddbf; }
+        .matching-select.incorrect-select { border-color:var(--error);   background:var(--error-bg); }
+        .matching-select option { background:#1a3050; }
+        .btn { background:transparent; border:1px solid var(--gold-border); color:var(--gold); padding:0.65rem 1.4rem; border-radius:2px; cursor:pointer; font-family:'Playfair Display',serif; font-size:0.8rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; transition:all 0.2s; margin-top:1rem; }
+        .btn:hover { background:var(--gold); color:var(--navy); }
 
-        .control-types {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
+        /* ══ EMPIRE BUBBLES ══ */
+        .bubbles-heading { font-size:0.72rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); margin-top:2rem; margin-bottom:1.2rem; }
+        .bubble-stage    { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:1.5rem; padding:1rem 0 0.5rem; }
+        .empire-bubble   { border-radius:50%; background:radial-gradient(circle at 35% 30%,rgba(201,168,76,0.35),rgba(201,168,76,0.07)); border:1px solid rgba(201,168,76,0.25); display:flex; flex-direction:column; align-items:center; justify-content:center; transition:all 0.3s ease; cursor:default; flex-shrink:0; }
+        .empire-bubble:hover { background:radial-gradient(circle at 35% 30%,rgba(201,168,76,0.55),rgba(201,168,76,0.18)); border-color:var(--gold); transform:scale(1.06); box-shadow:0 0 40px rgba(201,168,76,0.2); z-index:5; }
+        .empire-bubble.ref-bubble { border-style:dashed; opacity:0.45; }
+        .empire-bubble.ref-bubble:hover { opacity:0.8; }
+        .bubble-name { font-family:'Playfair Display',serif; font-weight:700; color:var(--text-bright); text-align:center; line-height:1.25; padding:0 10%; }
+        .bubble-km   { color:var(--gold); text-align:center; margin-top:0.2rem; }
+        .bubble-infobox { margin-top:1rem; padding:1rem 1.2rem; background:var(--navy-card); border:1px solid var(--gold-border); border-radius:2px; font-size:0.88rem; line-height:1.65; min-height:58px; transition:all 0.2s; }
 
-        .control-card {
-            background: white;
-            padding: 1.8rem;
-            border-radius: 10px;
-            border: 2px solid var(--border-color);
-            transition: all 0.3s ease;
-            position: relative;
-        }
+        /* ══ AFRICA CHART ══ */
+        .chart-heading { font-size:0.72rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); margin:2rem 0 1.2rem; }
+        .chart-row   { display:flex; align-items:center; gap:1rem; margin-bottom:0.65rem; }
+        .chart-year  { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:700; color:var(--gold); min-width:38px; text-align:right; flex-shrink:0; }
+        .chart-track { flex:1; height:30px; background:rgba(255,255,255,0.04); border-radius:2px; overflow:hidden; }
+        .chart-bar   { height:100%; width:0; background:linear-gradient(90deg,rgba(120,50,40,0.9),var(--gold)); border-radius:2px; display:flex; align-items:center; justify-content:flex-end; padding-right:8px; transition:width 1.15s cubic-bezier(0.4,0,0.2,1); }
+        .chart-pct   { font-family:'Playfair Display',serif; font-size:0.72rem; font-weight:700; color:var(--navy); opacity:0; transition:opacity 0.4s ease 1s; white-space:nowrap; }
+        .chart-bar.go .chart-pct { opacity:1; }
+        .chart-note  { font-size:0.78rem; color:var(--text-muted); font-style:italic; flex-shrink:0; min-width:150px; }
 
-        .control-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow);
-            border-color: var(--primary-color);
-        }
+        /* ══ KIPLING ANALYZER ══ */
+        .source-document { background:var(--navy-card); border:1px solid var(--gold-border); border-radius:2px; padding:2rem; margin:2rem 0; }
+        .source-label    { font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); opacity:0.7; margin-bottom:1.2rem; }
+        .source-meta     { font-size:0.8rem; color:var(--text-muted); text-align:right; margin-top:1rem; }
+        .kl-hint         { font-size:0.78rem; color:var(--text-muted); font-style:italic; margin-bottom:0.8rem; }
+        .kipling-analyzer{ border-left:2px solid var(--gold-border); }
+        .kipling-line    { border-bottom:1px solid rgba(255,255,255,0.05); cursor:pointer; }
+        .kipling-line:last-child { border-bottom:none; }
+        .kl-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:0.65rem 1rem; transition:background 0.2s; }
+        .kipling-line:hover .kl-header { background:rgba(201,168,76,0.05); }
+        .kipling-line.kl-open .kl-header { background:rgba(201,168,76,0.09); }
+        .kl-text   { font-family:'Lora',serif; font-style:italic; font-size:1rem; color:var(--text-bright); flex:1; line-height:1.5; }
+        .kipling-line.kl-open .kl-text { color:var(--gold-bright); }
+        .kl-chevron { width:14px; height:14px; color:var(--text-muted); flex-shrink:0; transition:transform 0.25s,color 0.2s; }
+        .kipling-line.kl-open .kl-chevron { transform:rotate(180deg); color:var(--gold); }
+        .kl-analysis { display:none; padding:1rem 1.2rem 1.2rem; border-left:2px solid var(--gold); background:rgba(201,168,76,0.05); }
+        .kipling-line.kl-open .kl-analysis { display:block; }
+        .kl-device  { font-size:0.67rem; letter-spacing:0.13em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; opacity:0.8; }
+        .kl-body    { font-size:0.9rem; line-height:1.68; color:var(--text); }
+        .kl-concept { display:inline-block; border:1px solid var(--gold-border); padding:0.12rem 0.45rem; border-radius:2px; font-size:0.68rem; color:var(--gold); letter-spacing:0.04em; margin-top:0.55rem; margin-right:0.3rem; }
 
-        .control-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
-        }
+        /* Completion */
+        .completion { text-align:center; padding:3.5rem 2rem; background:var(--navy-mid); border:1px solid var(--gold-border); border-radius:2px; margin-top:2rem; display:none; }
+        .completion.show { display:block; }
+        .completion-title { font-family:'Playfair Display',serif; font-size:0.8rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-muted); margin-bottom:1rem; }
+        .completion-score { font-family:'Playfair Display',serif; font-size:4rem; font-weight:900; color:var(--gold); line-height:1; margin:0.5rem 0; }
+        .completion-sub   { color:var(--text-muted); font-style:italic; font-size:0.95rem; }
+        .completion-msg   { color:var(--text); font-size:1rem; margin-top:1rem; }
 
-        .informal { background: #E74C3C; }
-        .indirect { background: #F39C12; }
-        .direct { background: #8B2635; }
-
-        .highlight-box {
-            background: linear-gradient(135deg, var(--secondary-color)20, var(--secondary-color)05);
-            border-left: 4px solid var(--secondary-color);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 8px;
-            font-style: italic;
-        }
-
-        .quiz-container {
-            background: white;
-            border: 2px solid var(--primary-color);
-            border-radius: 16px;
-            padding: 2rem;
-            margin: 3rem 0;
-            box-shadow: var(--shadow);
-        }
-
-        .quiz-header {
-            background: var(--primary-color);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
-
-        .quiz-header h3 {
-            color: white;
-            margin: 0;
-            font-size: 1.4rem;
-        }
-
-        .question {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: var(--card-bg);
-            border-radius: 10px;
-            border-left: 4px solid var(--accent-color);
-        }
-
-        .question h4 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--text-color);
-            font-family: 'Source Sans Pro', sans-serif;
-            font-weight: 600;
-        }
-
-        .options {
-            display: grid;
-            gap: 0.8rem;
-        }
-
-        .option {
-            background: white;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: 'Source Sans Pro', sans-serif;
-        }
-
-        .option:hover {
-            border-color: var(--primary-color);
-            background: var(--primary-color)08;
-        }
-
-        .option.selected {
-            border-color: var(--primary-color);
-            background: var(--primary-color)15;
-        }
-
-        .option.correct {
-            border-color: var(--success-color);
-            background: var(--success-color)15;
-        }
-
-        .option.incorrect {
-            border-color: var(--error-color);
-            background: var(--error-color)15;
-        }
-
-        .feedback {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-            font-family: 'Source Sans Pro', sans-serif;
-            font-size: 0.95rem;
-            display: none;
-        }
-
-        .feedback.show {
-            display: block;
-        }
-
-        .feedback.correct {
-            background: var(--success-color)15;
-            border: 1px solid var(--success-color);
-            color: var(--success-color);
-        }
-
-        .feedback.incorrect {
-            background: var(--error-color)15;
-            border: 1px solid var(--error-color);
-            color: var(--error-color);
-        }
-
-        .input-question input {
-            width: 100%;
-            padding: 0.8rem;
-            border: 2px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 1rem;
-            font-family: 'Source Sans Pro', sans-serif;
-        }
-
-        .matching-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .matching-list {
-            background: white;
-            border-radius: 8px;
-            padding: 1rem;
-        }
-
-        .matching-item {
-            padding: 0.8rem;
-            margin: 0.5rem 0;
-            background: var(--card-bg);
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border: 2px solid transparent;
-        }
-
-        .matching-item:hover {
-            background: var(--primary-color)10;
-        }
-
-        .matching-item.selected {
-            border-color: var(--primary-color);
-            background: var(--primary-color)15;
-        }
-
-        .btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-family: 'Source Sans Pro', sans-serif;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            margin-top: 1rem;
-        }
-
-        .btn:hover {
-            background: var(--accent-color);
-            transform: translateY(-2px);
-        }
-
-        .progress-bar {
-            background: var(--border-color);
-            height: 6px;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-
-        .progress-fill {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            height: 100%;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
-        .timeline {
-            position: relative;
-            padding-left: 2rem;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 1rem;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: var(--primary-color);
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            margin-left: 1rem;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -1.5rem;
-            top: 1.5rem;
-            width: 12px;
-            height: 12px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            border: 3px solid white;
-        }
-
-        ul {
-            padding-left: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        li {
-            margin-bottom: 0.8rem;
-            font-size: 1.05rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            text-align: center;
-            border: 2px solid var(--border-color);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            display: block;
-        }
-
-        .stat-label {
-            color: var(--text-color);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        @media (max-width: 768px) {
-            .container { padding: 1rem; }
-            h1 { font-size: 2.2rem; }
-            .control-types { grid-template-columns: 1fr; }
-            .matching-container { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: 1fr; }
+        @media (max-width:720px) {
+            .container { padding:1rem 1rem 4rem; }
+            .control-types,.stats-grid { grid-template-columns:1fr; }
+            .chart-note { display:none; }
+            .matching-table td { display:block; width:100%; padding:0.5rem 0; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Imperialismen</h1>
-            <div class="subtitle">Europeisk expansion och världsherravälde 1870-1914</div>
-        </header>
 
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
+<div class="progress-sticky">
+    <span class="progress-label">Framsteg</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-count" id="progressCount">0 / 14</span>
+</div>
+
+<div class="container">
+
+<header>
+    <div class="header-label">Historia — Gymnasiet</div>
+    <h1>Imperial<em>ismen</em></h1>
+    <div class="gold-rule"></div>
+    <p class="subtitle">Europeisk expansion och världsherravälde 1870–1914</p>
+</header>
+
+<!-- ═ SEKTION 1 ═ -->
+<section class="content-section">
+    <h2>Vad är imperialism?</h2>
+    <p><strong>Imperialism</strong> innebär att en stat utövar kontroll över en annan — men kontrollen kan ta många olika former. Mellan 1870 och 1900 tog ett fåtal europeiska stater kontroll över circa en fjärdedel av jordens landyta.</p>
+    <div class="control-types">
+        <div class="control-card">
+            <svg class="ctrl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+            <div class="ctrl-type">Informell kontroll</div>
+            <div class="ctrl-tagline">"Jag styr din ekonomi, inte ditt land"</div>
+            <p>Ekonomiskt beroende skapas genom lån, handel och investeringar. Landet är formellt självständigt men reellt styrt utifrån.</p>
+            <div class="example-box"><strong>Exempel:</strong> Västerländska makters kontroll över Kina efter Opiumkrigen.</div>
         </div>
-
-        <section class="content-section">
-            <h2>Vad är imperialism?</h2>
-            <p><strong>Imperialism</strong> innebär att en stat utövar kontroll över en annan, men kontrollen kan ta många olika former. Mellan 1870 och 1900 tog ett fåtal europeiska stater kontroll över cirka en fjärdedel av jordens landyta.</p>
-            
-            <p>Tänk dig imperialism som en maffiaboss som kan kontrollera sitt territorium på olika sätt:</p>
-
-            <div class="control-types">
-                <div class="control-card">
-                    <div class="control-icon informal">🏦</div>
-                    <h3>Informell kontroll</h3>
-                    <p><em>"Jag styr din ekonomi, inte ditt land"</em></p>
-                    <p>En stormakt behöver inte ta över ett land militärt. Det räcker att göra landet ekonomiskt beroende genom lån, handel och investeringar.</p>
-                    <div class="highlight-box">
-                        <strong>Historiskt exempel:</strong> Västerländska makters ekonomiska kontroll över Kina efter Opiumkrigen – handel och avtal gav inflytande utan direkt styre.
-                    </div>
-                </div>
-
-                <div class="control-card">
-                    <div class="control-icon indirect">👑</div>
-                    <h3>Indirekt styre</h3>
-                    <p><em>"Du är ledare, men jag bestämmer"</em></p>
-                    <p>Här finns en lokal kung eller president kvar, men den verkliga makten ligger hos imperialmakten. Den styr genom lokala ledare som måste följa order.</p>
-                    <div class="highlight-box">
-                        <strong>Historiskt exempel:</strong> Britterna styrde delar av Afrika, som Nigeria, genom lokala hövdingar och emirer.
-                    </div>
-                </div>
-
-                <div class="control-card">
-                    <div class="control-icon direct">🏛️</div>
-                    <h3>Direkt styre</h3>
-                    <p><em>"Nu är det mitt territorium"</em></p>
-                    <p>Här tar stormakten över helt. Egen flagga, egna lagar, egna administratörer. Det tidigare landet förlorar sin självständighet.</p>
-                    <div class="highlight-box">
-                        <strong>Historiskt exempel:</strong> Indien under brittiskt kolonialstyre eller Algeriet under Frankrike.
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Quiz 1: After 30% -->
-        <div class="quiz-container">
-            <div class="quiz-header">
-                <h3>🧠 Kontrollera din förståelse</h3>
-            </div>
-            
-            <div class="question">
-                <h4>1. Storbritannien kontrollerar Egyptens ekonomi och utrikespolitik genom lån och handelsavtal, men låter den egyptiske khediven formellt styra landet. Vilken typ av imperialistisk kontroll är detta?</h4>
-                <div class="options">
-                    <div class="option" data-question="1" data-option="a">Direkt styre</div>
-                    <div class="option" data-question="1" data-option="b">Indirekt styre</div>
-                    <div class="option" data-question="1" data-option="c">Informell kontroll</div>
-                    <div class="option" data-question="1" data-option="d">Ekonomisk kolonialism</div>
-                </div>
-                <div class="feedback" id="feedback1"></div>
-            </div>
-
-            <div class="question">
-                <h4>2. Vilken av följande situationer representerar bäst "indirekt styre"?</h4>
-                <div class="options">
-                    <div class="option" data-question="2" data-option="a">Frankrike annekterar Algeriet och installerar franska guvernörer</div>
-                    <div class="option" data-question="2" data-option="b">Storbritannien låter maharajorna i Indien behålla sina titlar men bestämmer över deras politik</div>
-                    <div class="option" data-question="2" data-option="c">USA investerar massivt i Latinamerika utan politisk inblandning</div>
-                </div>
-                <div class="feedback" id="feedback2"></div>
-            </div>
+        <div class="control-card">
+            <svg class="ctrl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 19h18M5 19l3-10 4 4 3-8 3 8 4-4 2 10"/><circle cx="12" cy="3" r="1.3" fill="currentColor" stroke="none"/></svg>
+            <div class="ctrl-type">Indirekt styre</div>
+            <div class="ctrl-tagline">"Du är ledare, men jag bestämmer"</div>
+            <p>En lokal kung eller hövding behåller sin titel. Den verkliga beslutskraften ligger hos imperialmakten, som styr via lokala mellanhänder.</p>
+            <div class="example-box"><strong>Exempel:</strong> Brittiskt styre i Nigeria — emirer administrerade men följde brittiska direktiv.</div>
         </div>
-
-        <section class="content-section">
-            <h2>Varför expandera?</h2>
-            
-            <h3>📈 Ekonomiska motiv</h3>
-            <p>Den industriella revolutionen skapade ett enormt behov av <strong>råmaterial</strong> till fabrikerna och <strong>nya marknader</strong> för färdiga produkter. Kolonier blev både leverantörer och kunder.</p>
-
-            <h3>🏴 Nationalism och prestige</h3>
-            <p>Besittning av kolonier blev en symbol för <strong>stormaktsstatus</strong> och nationell ära. "Solen går aldrig ned över det brittiska imperiet" blev ett uttryck för nationell stolthet.</p>
-
-            <h3>🧬 Socialdarwinism</h3>
-            <p>En tro på att nationer var i en evig kamp för överlevnad där <strong>"den starkaste"</strong> (den teknologiskt avancerade) hade rätt att styra över andra. Detta var en pervertering av Darwins evolutionsteori.</p>
-            
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <span class="stat-number">1/4</span>
-                    <div class="stat-label">av jordens landyta kontrollerad av några få europeiska stater 1900</div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number">30</span>
-                    <div class="stat-label">år av intensiv expansion (1870-1900)</div>
-                </div>
-                <div class="stat-card">
-                    <span class="stat-number">6</span>
-                    <div class="stat-label">stora europeiska imperialmakter</div>
-                </div>
-            </div>
-        </section>
-
-        <section class="content-section">
-            <h2>Tekniken bakom expansionen</h2>
-            
-            <div class="timeline">
-                <div class="timeline-item">
-                    <h3>💊 Medicin: Kinin mot malaria</h3>
-                    <p>Upptäckten av kinin gjorde det möjligt för européer att överleva i tropiska klimat. Tidigare hade "den vite mannens grav" i Afrika stoppt expansionen.</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>🔫 Vapen: Kulsprutan</h3>
-                    <p>Modern militärteknik, som Maxim-gun kulsprutan, gjorde att små europeiska styrkor kunde krossa stora inhemska arméer. "Whatever happens, we have got the Maxim gun, and they have not."</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>🚂 Transport: Ångfartyg och järnvägar</h3>
-                    <p>Ångfartyg och järnvägar band samman imperier och möjliggjorde snabb resursutvinning. Suezkanalen förkortade resan till Indien dramatiskt.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Quiz 2: After 60% -->
-        <div class="quiz-container">
-            <div class="quiz-header">
-                <h3>🧠 Fördjupningsfrågor</h3>
-            </div>
-            
-            <div class="question">
-                <h4>3. En student hävdar att imperialismen främst drevs av europeernas "civilisationsuppdrag" att hjälpa underutvecklade folk. Vilken förklaring visar bäst på huvudorsaken till imperialismen?</h4>
-                <div class="options">
-                    <div class="option" data-question="3" data-option="a">Socialdarwinism gav européer en moralisk plikt att styra över andra</div>
-                    <div class="option" data-question="3" data-option="b">Industrialiseringen skapade behov av råmaterial och marknader</div>
-                    <div class="option" data-question="3" data-option="c">Kristna missionärer ville sprida evangeliet världen över</div>
-                    <div class="option" data-question="3" data-option="d">Européer ville genuint förbättra livsvillkoren i kolonierna</div>
-                </div>
-                <div class="feedback" id="feedback3"></div>
-            </div>
-
-            <div class="question">
-                <h4>4. Vilken teknologisk innovation var AVGÖRANDE för att europea kunde kolonisera tropiska områden i Afrika?</h4>
-                <div class="options">
-                    <div class="option" data-question="4" data-option="a">Kulsprutan Maxim-gun</div>
-                    <div class="option" data-question="4" data-option="b">Kinin mot malaria</div>
-                    <div class="option" data-question="4" data-option="c">Ångmaskinen</div>
-                    <div class="option" data-question="4" data-option="d">Järnvägsteknologi</div>
-                </div>
-                <div class="feedback" id="feedback4"></div>
-            </div>
-
-            <div class="question">
-                <h4>5. Vilken tidsperiod brukar kallas för "den nya imperialismen" när europeiska makter tog kontroll över stora delar av världen?</h4>
-                <div class="options">
-                    <div class="option" data-question="5" data-option="a">1800-1850</div>
-                    <div class="option" data-question="5" data-option="b">1870-1900</div>
-                    <div class="option" data-question="5" data-option="c">1900-1930</div>
-                    <div class="option" data-question="5" data-option="d">1850-1880</div>
-                </div>
-                <div class="feedback" id="feedback5"></div>
-            </div>
-        </section>
-
-        <section class="content-section">
-            <h2>Kapplöpningen om Afrika</h2>
-            <p><strong>Berlinkonferensen (1884–1885)</strong> fastställde regler för hur Afrika skulle delas upp. En nation var tvungen att fysiskt ockupera ett område för att få göra anspråk på det - detta kallades "effective occupation".</p>
-            
-            <div class="highlight-box">
-                <strong>Kung Leopold II av Belgien</strong> skapade Kongofristaten som sin privata egendom, vilket ledde till en extrem exploatering och miljontals dödsfall. Detta blev symbolen för imperialismens brutala sida.
-            </div>
-        </section>
-
-        <section class="content-section">
-            <h2>"The White Man's Burden"</h2>
-            <p>Europeisk självbild präglades av <strong>västerländsk exceptionalism</strong> – idén att den västerländska kulturen var överlägsen alla andra.</p>
-            
-            <p>Rudyard Kiplings dikt från 1899 om <em>"den vita mannens börda"</em> speglade tron att européer hade en moralisk plikt att "civilisera" andra folk. Men språkanalys avslöjar hur retorik användes för att rättfärdiga förtryck:</p>
-            
-            <ul>
-                <li><strong>"The Burden" (Bördan)</strong> - Förvandlar koloniseringen från maktjakt till självuppoffring</li>
-                <li><strong>"Half devil and half child"</strong> - Dubbel motivering: kontroll (djävul) och förmyndarskap (barn)</li>
-                <li><strong>"Send forth the best ye breed"</strong> - Framställer kolonisatörer som martyrer</li>
-            </ul>
-        </section>
-
-        <section class="content-section">
-            <h2>Motstånd och konsekvenser</h2>
-            
-            <h3>💪 Motstånd mot imperialismen</h3>
-            <p>Många folk gjorde våldsamt motstånd mot europeisk dominans:</p>
-            
-            <div class="timeline">
-                <div class="timeline-item">
-                    <h3>Boxarupproret i Kina (1900)</h3>
-                    <p><strong>"De rättfärdiga och harmoniska knytnävarna"</strong> var en nativistisk rörelse som ville driva ut allt västländskt inflytande. Änkekejsarinnan Cixi stödde dem initialt, men upproret krossades av en multinationell styrka som tvingade Kina att betala enorma skadestånd.</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <h3>Sepoyupproret i Indien (1857)</h3>
-                    <p>Utlöst av nya <strong>Enfield-patroner</strong> smorda med nöt- och grisflott (kränkande för både hinduer och muslimer). Men underliggande orsaker var brittisk ekonomisk exploatering och kulturell arrogans. Upproret ledde till att Ostindiska kompaniet upplöstes och kronan tog direkt kontroll.</p>
-                </div>
-            </div>
-            
-            <h3>🌍 Långsiktiga konsekvenser</h3>
-            <p>Imperialismen skapade en global marknad men lämnade ett arv av bitterhet och instabila gränser som påverkar världen än idag. Många nutida konflikter har rötter i den koloniala tidens artificiella gränsdragningar.</p>
-        </section>
-
-        <!-- Final Quiz: Complete Assessment -->
-        <div class="quiz-container">
-            <div class="quiz-header">
-                <h3>🎯 Avslutande reflektion - Testa dina kunskaper</h3>
-            </div>
-            
-            <div class="question">
-                <h4>6. Berlinkonferensen 1884-85 etablerade principen om "effective occupation". Vad innebar detta?</h4>
-                <div class="options">
-                    <div class="option" data-question="6" data-option="a">Europeiska makter måste få lokala ledares samtycke innan kolonisering</div>
-                    <div class="option" data-question="6" data-option="b">En nation måste fysiskt kontrollera ett område för att göra anspråk på det</div>
-                    <div class="option" data-question="6" data-option="c">Alla koloniala anspråk måste godkännas av samtliga europeiska makter</div>
-                    <div class="option" data-question="6" data-option="d">Bara kristna nationer kunde kolonisera afrikanska territorier</div>
-                </div>
-                <div class="feedback" id="feedback6"></div>
-            </div>
-
-            <div class="question">
-                <h4>7. Kiplings dikt beskriver koloniserade folk som "half devil and half child". Vilket retoriskt syfte tjänar denna beskrivning?</h4>
-                <div class="options">
-                    <div class="option" data-question="7" data-option="a">Att visa sympati för de koloniserade folkens situation</div>
-                    <div class="option" data-question="7" data-option="b">Att motivera både kontroll (djävul) och förmyndarskap (barn)</div>
-                    <div class="option" data-question="7" data-option="c">Att erkänna de koloniserades rätt till självbestämmande</div>
-                    <div class="option" data-question="7" data-option="d">Att kritisera europeisk rasism och kulturell arrogans</div>
-                </div>
-                <div class="feedback" id="feedback7"></div>
-            </div>
-
-            <div class="question">
-                <h4>8. Sepoyupproret utlöstes av patroner smorda med nöt- och grisflott. Varför blev detta så kontroversiellt?</h4>
-                <div class="options">
-                    <div class="option" data-question="8" data-option="a">Det var för dyrt för soldaterna att köpa nya patroner</div>
-                    <div class="option" data-question="8" data-option="b">Det kränkte både hinduers (ko = helig) och muslimers (gris = oren) religiösa övertygelser</div>
-                    <div class="option" data-question="8" data-option="c">Patronerna fungerade dåligt i det indiska klimatet</div>
-                    <div class="option" data-question="8" data-option="d">Soldaterna ville ha bättre betalning för att använda ny ammunition</div>
-                </div>
-                <div class="feedback" id="feedback8"></div>
-            </div>
-
-            <div class="question">
-                <h4>9. Boxarupprorets ursprungliga namn var "De rättfärdiga och harmoniska knytnävarna". Vad ville denna rörelse uppnå?</h4>
-                <div class="options">
-                    <div class="option" data-question="9" data-option="a">Modernisera Kina enligt västerländsk modell</div>
-                    <div class="option" data-question="9" data-option="b">Skydda kinesisk kultur och driva ut allt främmande inflytande</div>
-                    <div class="option" data-question="9" data-option="c">Etablera demokrati och religiös frihet i Kina</div>
-                    <div class="option" data-question="9" data-option="d">Skapa handelspartnerskap med europeiska makter</div>
-                </div>
-                <div class="feedback" id="feedback9"></div>
-            </div>
-
-            <div class="question">
-                <h4>10. Matcha motståndsmotiv med rätt beskrivning:</h4>
-                <div class="matching-container">
-                    <div class="matching-list">
-                        <h5>Motiv/Orsak</h5>
-                        <div class="matching-item" data-match="a">Ekonomisk exploatering</div>
-                        <div class="matching-item" data-match="b">Religiös kränkning</div>
-                        <div class="matching-item" data-match="c">Kulturell dominans</div>
-                        <div class="matching-item" data-match="d">Politisk annektering</div>
-                    </div>
-                    <div class="matching-list">
-                        <h5>Historiskt exempel</h5>
-                        <div class="matching-item" data-match="2">Sepoyernas patroner (nöt/gris)</div>
-                        <div class="matching-item" data-match="3">Boxarnas motstånd mot missionärer</div>
-                        <div class="matching-item" data-match="1">Indiska textilarbetares konkurrens med brittisk industri</div>
-                        <div class="matching-item" data-match="4">Oudh kungadömes införlivande 1856</div>
-                    </div>
-                </div>
-                <div class="feedback" id="feedback10"></div>
-                <button class="btn" onclick="checkMatching()">Kontrollera matchning</button>
-            </div>
-
-            <div class="question input-question">
-                <h4>11. Fyll i: Vilken kejsarinna stödde initialt Boxarna i deras kamp mot västerländskt inflytande? ________</h4>
-                <input type="text" id="input11" placeholder="Skriv ditt svar...">
-                <div class="feedback" id="feedback11"></div>
-                <button class="btn" onclick="checkInput(11, 'cixi')">Kontrollera svar</button>
-            </div>
-
-            <div class="question">
-                <h4>12. Vad var den VIKTIGASTE långsiktiga konsekvensen av imperialismen för dagens värld?</h4>
-                <div class="options">
-                    <div class="option" data-question="12" data-option="a">Spridning av demokratiska värderingar globalt</div>
-                    <div class="option" data-question="12" data-option="b">Ekonomisk utveckling i alla före detta kolonier</div>
-                    <div class="option" data-question="12" data-option="c">Artificiella gränser och etniska konflikter som påverkar världen idag</div>
-                    <div class="option" data-question="12" data-option="d">Förbättrade handelsrelationer mellan Europa och övriga världen</div>
-                </div>
-                <div class="feedback" id="feedback12"></div>
-            </div>
-        </div>
-
-        <div style="text-align: center; padding: 2rem; color: var(--text-color);">
-            <h3>🎉 Grattis! Du har slutfört den interaktiva guiden om imperialismen.</h3>
-            <p>Nu förstår du de komplexa drivkrafterna, metoderna och konsekvenserna av europeisk imperialism.</p>
+        <div class="control-card">
+            <svg class="ctrl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            <div class="ctrl-type">Direkt styre</div>
+            <div class="ctrl-tagline">"Nu är det mitt territorium"</div>
+            <p>Stormakten tar över fullständigt. Egna flaggor, egna lagar, egna administratörer. Det koloniserade landet förlorar sin suveränitet.</p>
+            <div class="example-box"><strong>Exempel:</strong> Indien under brittisk Raj, Algeriet under franskt direktstyre.</div>
         </div>
     </div>
+</section>
 
-    <script>
-        // Question answers and feedback
-        const answers = {
-            1: { correct: 'c', feedback: {
-                'a': 'Direkt styre innebär att imperialmakten tar över helt med egna administratörer. Här behåller khediven sin position.',
-                'b': 'Indirekt styre använder lokala ledare som marionetter. Här verkar khediven ha mer självständighet än så.',
-                'c': 'Korrekt! Informell kontroll innebär ekonomiskt inflytande utan formell politisk kontroll. Storbritannien styr genom ekonomisk makt.',
-                'd': '"Ekonomisk kolonialism" är inte en etablerad term för imperialistisk kontroll. Det korrekta begreppet är informell kontroll.'
-            }},
-            2: { correct: 'b', feedback: {
-                'a': 'Detta är direkt styre - Frankrike tar över helt med egna guvernörer och lagar.',
-                'b': 'Korrekt! Indirekt styre låter lokala ledare behålla titlar och ceremoniell makt men kontrollerar den verkliga politiken.',
-                'c': 'Detta är informell kontroll - ekonomiskt inflytande utan politisk inblandning.'
-            }},
-            3: { correct: 'b', feedback: {
-                'a': 'Socialdarwinism var en rättfärdighet, inte huvudorsaken. Den användes för att legitimera expansion som redan skedde av andra skäl.',
-                'b': 'Korrekt! Industrialiseringen skapade konkreta ekonomiska behov - råmaterial in, färdiga produkter ut. Detta var den grundläggande drivkraften.',
-                'c': 'Missionärer följde ofta med imperialismen men var sällan den primära orsaken till expansion.',
-                'd': 'Detta var retoriken ("civilisationsuppdraget") men inte den verkliga huvudorsaken. Studentens förklaring speglar denna missuppfattning.'
-            }},
-            4: { correct: 'b', feedback: {
-                'a': 'Kulsprutan var viktig för militär dominans men löste inte det grundläggande problemet med tropisk överlevnad.',
-                'b': 'Korrekt! Utan kinin mot malaria kunde européer inte överleva i tropiska klimat. Afrika kallades "den vite mannens grav" före kinin.',
-                'c': 'Ångmaskinen var viktig för transport men inte specifikt för tropiska områden.',
-                'd': 'Järnvägar var viktiga för att kontrollera områden efter kolonisering, inte för att iniciera kolonisering.'
-            }},
-            5: { correct: 'b', feedback: {
-                'a': '1800-1850 kallas för den "första" imperialismen eller tidig kolonialism, inte den nya imperialismen.',
-                'b': 'Korrekt! 1870-1900 kallas för "den nya imperialismen" när teknologi möjliggjorde snabb expansion över stora områden.',
-                'c': '1900-1930 var efter den intensiva expansionsperioden. Första världskriget ändrade den imperialistiska dynamiken.',
-                'd': '1850-1880 var övergångsperioden. Den riktiga intensiva expansionen började runt 1870.'
-            }},
-            6: { correct: 'b', feedback: {
-                'a': 'Berlinkonferensen krävde inget samtycke från lokala ledare - tvärtom ignorerades afrikaners åsikter totalt.',
-                'b': 'Korrekt! "Effective occupation" betydde att man måste fysiskt kontrollera och administrera ett område, inte bara sätta upp en flagga.',
-                'c': 'Det krävdes ingen enhällighet - konferensen skapade regler för konkurrensen, den stoppade den inte.',
-                'd': 'Religion var inte ett kriterium för kolonisering enligt Berlinkonferensen.'
-            }},
-            7: { correct: 'b', feedback: {
-                'a': 'Beskrivningen visar ingen sympati - den är nedvärderande och avhumaniserande.',
-                'b': 'Korrekt! "Djävul" motiverar kontroll och disciplin, "barn" motiverar förmyndarskap. Dubbel rättfärdighet för kolonialism.',
-                'c': 'Beskrivningen undergräver självbestämmande genom att förneka koloniserades mognad och rationalitet.',
-                'd': 'Dikten kritiserar inte rasism - den förkroppsligar det genom att presentera koloniserade som mindre än fullständigt mänskliga.'
-            }},
-            8: { correct: 'b', feedback: {
-                'a': 'Kostnad var inte frågan - det handlade om själva användningen av patronerna.',
-                'b': 'Korrekt! Patronerna kränkte djupt rotat religiösa tabun hos både hinduer (kon helig) och muslimer (grisen oren).',
-                'c': 'Patronernas funktion var inte problemet utan deras religiösa kränkning.',
-                'd': 'Detta var inte en lönefråga utan en djupt religiös konflikt.'
-            }},
-            9: { correct: 'b', feedback: {
-                'a': 'Boxarna var anti-västerländska och ville inte modernisera enligt västerländsk modell.',
-                'b': 'Korrekt! Som nativistisk rörelse ville Boxarna skydda kinesisk kultur och driva ut allt främmande - ekonomiskt, religiöst och politiskt.',
-                'c': 'Demokrati och religiös frihet var västerländska koncept som Boxarna motsatte sig.',
-                'd': 'Boxarna ville bryta handelsförbindelser med européer, inte stärka dem.'
-            }},
-            12: { correct: 'c', feedback: {
-                'a': 'Imperialismen spred sällan demokrati - snarare auktoritärt styre och rasistiska hierarkier.',
-                'b': 'Många före detta kolonier kämpar fortfarande med ekonomisk utveckling och beroende av gamla kolonimakter.',
-                'c': 'Korrekt! Artificiella koloniala gränser ignorerade etniska och kulturella grupperingar, vilket skapat bestående konflikter i Afrika, Mellanöstern och Asien.',
-                'd': 'Handelsrelationerna förblir ofta ojämlika med före detta kolonier som råmaterialexportörer.'
-            }}
-        };
+<!-- ═ QUIZ 1 ═ -->
+<div class="quiz-container">
+    <div class="quiz-header"><svg class="quiz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.8" fill="currentColor" stroke="none"/></svg><span class="quiz-title">Kontrollera din förståelse</span></div>
+    <div class="question">
+        <span class="question-num">Fråga 1</span>
+        <div class="question-text">Storbritannien kontrollerar Egyptens ekonomi och utrikespolitik genom lån och handelsavtal, men låter den egyptiske khediven formellt styra landet. Vilken typ av imperialistisk kontroll är detta?</div>
+        <div class="options">
+            <button class="option" data-question="1" data-option="a"><span class="option-letter">A</span>Direkt styre — stormakten installerar egna administratörer</button>
+            <button class="option" data-question="1" data-option="b"><span class="option-letter">B</span>Indirekt styre — khediven är en marionett under brittisk kontroll</button>
+            <button class="option" data-question="1" data-option="c"><span class="option-letter">C</span>Informell kontroll — ekonomiskt inflytande utan formell politisk kontroll</button>
+            <button class="option" data-question="1" data-option="d"><span class="option-letter">D</span>Ekonomisk kolonialism — ett begrepp för handelsbaserat styre</button>
+        </div>
+        <div class="feedback" id="feedback1"></div>
+    </div>
+    <div class="question">
+        <span class="question-num">Fråga 2</span>
+        <div class="question-text">Vilken av följande situationer representerar bäst "indirekt styre"?</div>
+        <div class="options">
+            <button class="option" data-question="2" data-option="a"><span class="option-letter">A</span>Frankrike annekterar Algeriet och installerar franska guvernörer och lagar</button>
+            <button class="option" data-question="2" data-option="b"><span class="option-letter">B</span>Storbritannien låter indiska maharajor behålla sina titlar men bestämmer deras utrikespolitik</button>
+            <button class="option" data-question="2" data-option="c"><span class="option-letter">C</span>USA investerar massivt i Latinamerika utan att blanda sig i den inhemska politiken</button>
+        </div>
+        <div class="feedback" id="feedback2"></div>
+    </div>
+</div>
 
-        const matching = {
-            'a': '1', // Ekonomisk exploatering -> Indiska textilarbetare
-            'b': '2', // Religiös kränkning -> Sepoy patroner  
-            'c': '3', // Kulturell dominans -> Boxarnas motstånd mot missionärer
-            'd': '4'  // Politisk annektering -> Oudh kungadöme
-        };
+<!-- ═ SEKTION 2 ═ -->
+<section class="content-section">
+    <h2>Varför expandera?</h2>
+    <h3>Ekonomiska motiv</h3>
+    <p>Den industriella revolutionen skapade ett enormt behov av <strong>råmaterial</strong> till fabrikerna och <strong>nya marknader</strong> för färdiga produkter. Kolonier löste båda problemen.</p>
+    <h3>Nationalism och prestige</h3>
+    <p>Besittning av kolonier blev en symbol för <strong>stormaktsstatus</strong>. En nation utan kolonier var inte en riktig stormakt. Europeiska makter tävlade om territorier för nationell ära och för att inte hamna på efterkälken.</p>
+    <h3>Socialdarwinism</h3>
+    <p>En pseudovetenskaplig tro på att nationer och "raser" befann sig i en naturlig kamp där den <strong>teknologiskt avancerade européen</strong> hade en biologisk rätt att styra över andra — en pervertering av Darwins evolutionsteori.</p>
 
-        let selectedMatches = {};
+    <div class="stats-grid">
+        <div class="stat-card"><span class="stat-number">¼</span><div class="stat-label">av jordens landyta kontrollerades av europeiska stater år 1900</div></div>
+        <div class="stat-card"><span class="stat-number">30</span><div class="stat-label">år av intensiv expansion — "den nya imperialismen" 1870–1900</div></div>
+        <div class="stat-card"><span class="stat-number">90%</span><div class="stat-label">av Afrika koloniserat av europeiska makter år 1914</div></div>
+    </div>
 
-        // Handle multiple choice questions
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('option')) {
-                const questionNum = e.target.dataset.question;
-                const selectedOption = e.target.dataset.option;
-                
-                // Remove previous selections
-                document.querySelectorAll(`[data-question="${questionNum}"]`).forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                });
-                
-                // Mark selection
-                e.target.classList.add('selected');
-                
-                // Check answer
-                setTimeout(() => checkAnswer(questionNum, selectedOption), 500);
-            }
-        });
+    <!-- ▶ EMPIRE BUBBLES ◀ -->
+    <div class="bubbles-heading">Imperiernas storlek år 1914 — cirkelareor proportionella mot verklig yta</div>
+    <div class="bubble-stage" id="bubbleStage">
+        <div class="empire-bubble" style="width:230px;height:230px" data-info="Det brittiska imperiet täckte 35,5 miljoner km² — ungefär 78× Sveriges yta. 'The sun never sets on the British Empire.' Kontrollerade Indien, Australien, Kanada och stora delar av Afrika och Mellanöstern.">
+            <span class="bubble-name" style="font-size:1rem">Brittiska<br>imperiet</span>
+            <span class="bubble-km" style="font-size:0.8rem">35,5 milj. km²</span>
+            <span style="font-size:0.68rem;color:var(--text-muted);margin-top:0.1rem">≈ 78× Sverige</span>
+        </div>
+        <div class="empire-bubble" style="width:131px;height:131px" data-info="Det franska imperiet täckte 11,5 miljoner km². Näst störst, med stora besittningar i Västafrika, Nordafrika och Indokina. 'La plus grande France.'">
+            <span class="bubble-name" style="font-size:0.85rem">Franska<br>imperiet</span>
+            <span class="bubble-km" style="font-size:0.7rem">11,5 milj. km²</span>
+        </div>
+        <div class="empire-bubble" style="width:66px;height:66px" data-info="Det tyska imperiet täckte 2,95 miljoner km². Kom sent till kapplöpningen och förlorade sina kolonier i Versaillesfördraget 1919.">
+            <span class="bubble-name" style="font-size:0.65rem">Tyska<br>imperiet</span>
+        </div>
+        <div class="empire-bubble" style="width:59px;height:59px" data-info="Det belgiska imperiet täckte 2,34 miljoner km² — nästan uteslutande Kongofristaten, kung Leopolds privata egendom. Plats för en av kolonialismens mest brutala terrorregimer.">
+            <span class="bubble-name" style="font-size:0.62rem">Belgiska<br>imperiet</span>
+        </div>
+        <div class="empire-bubble" style="width:55px;height:55px" data-info="Det portugisiska imperiet täckte 2,1 miljoner km². Ett av de äldsta imperierna — Angola, Moçambique, Goa. Portugal höll kvar sina kolonier längst av alla, fram till 1975.">
+            <span class="bubble-name" style="font-size:0.6rem">Port.<br>imperiet</span>
+        </div>
+        <div class="empire-bubble ref-bubble" style="width:27px;height:27px" data-info="Sverige (referens): 0,45 miljoner km². Ingen kolonialmakt av rang — gav upp sina kolonier tidigt på 1800-talet.">
+        </div>
+    </div>
+    <div class="bubble-infobox" id="bubbleInfo" style="color:var(--text-muted);font-style:italic">Hovra över en cirkel för information om varje imperium.</div>
+</section>
 
-        // Handle matching questions
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('matching-item')) {
-                const matchValue = e.target.dataset.match;
-                const isLeftSide = isNaN(matchValue); // Letters are left side, numbers are right side
-                
-                if (isLeftSide) {
-                    // Clicking on left side (concepts) - select/deselect
-                    document.querySelectorAll('.matching-item').forEach(item => {
-                        if (isNaN(item.dataset.match)) {
-                            item.classList.remove('selected');
-                        }
-                    });
-                    e.target.classList.add('selected');
-                } else {
-                    // Clicking on right side (examples) - make a match if left side is selected
-                    const selectedLeft = document.querySelector('.matching-item.selected');
-                    if (selectedLeft && isNaN(selectedLeft.dataset.match)) {
-                        const leftValue = selectedLeft.dataset.match;
-                        selectedMatches[leftValue] = matchValue;
-                        
-                        // Visual feedback
-                        selectedLeft.style.background = 'var(--success-color)15';
-                        selectedLeft.style.borderColor = 'var(--success-color)';
-                        e.target.style.background = 'var(--success-color)15';
-                        e.target.style.borderColor = 'var(--success-color)';
-                        
-                        // Remove selection
-                        selectedLeft.classList.remove('selected');
-                        
-                        // Add match indicators
-                        if (!selectedLeft.querySelector('.match-indicator')) {
-                            selectedLeft.innerHTML += ` <span class="match-indicator" style="color: var(--success-color); font-weight: bold;">→ ${matchValue}</span>`;
-                        }
-                        if (!e.target.querySelector('.match-indicator')) {
-                            e.target.innerHTML += ` <span class="match-indicator" style="color: var(--success-color); font-weight: bold;">← ${leftValue.toUpperCase()}</span>`;
-                        }
-                    }
-                }
-            }
-        });
+<!-- ═ QUIZ 2 ═ -->
+<div class="quiz-container">
+    <div class="quiz-header"><svg class="quiz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.8" fill="currentColor" stroke="none"/></svg><span class="quiz-title">Motiv och drivkrafter</span></div>
+    <div class="question">
+        <span class="question-num">Fråga 3</span>
+        <div class="question-text">En historiker skriver: "Utan industrialiseringen hade imperialismen 1870–1914 inte haft sin specifika karaktär." Vad belyser detta påstående bäst om imperialismens huvudmotiv?</div>
+        <div class="options">
+            <button class="option" data-question="3" data-option="a"><span class="option-letter">A</span>Industrialiseringen skapade ny militär teknologi som kulsprutan, vilket möjliggjorde erövring</button>
+            <button class="option" data-question="3" data-option="b"><span class="option-letter">B</span>Industrialiseringen krävde råmaterial in och marknader ut — kolonier löste båda behoven strukturellt</button>
+            <button class="option" data-question="3" data-option="c"><span class="option-letter">C</span>Industrialiseringen ledde till socialdarwinismens uppgång, som gav expansionen dess ideologiska grund</button>
+            <button class="option" data-question="3" data-option="d"><span class="option-letter">D</span>Industrialiseringen skapade ett produktionsöverskott som Europa behövde exportera till kolonierna</button>
+        </div>
+        <div class="feedback" id="feedback3"></div>
+    </div>
+    <div class="question">
+        <span class="question-num">Fråga 4</span>
+        <div class="question-text">En student beskriver imperialismen: "Det handlade om att vara störst — om inte vi tog det, tog Frankrike det." Vilket motiv beskriver studenten, och vad missar hen?</div>
+        <div class="options">
+            <button class="option" data-question="4" data-option="a"><span class="option-letter">A</span>Studenten beskriver socialdarwinismen rätt — kampen om territorier var biologiskt betingad</button>
+            <button class="option" data-question="4" data-option="b"><span class="option-letter">B</span>Studenten fångar prestige och nationell rivalitet, men missar att ekonomiska motiv var lika drivande</button>
+            <button class="option" data-question="4" data-option="c"><span class="option-letter">C</span>Studenten beskriver det ekonomiska motivet — råmaterialkonkurrens mellan europeiska industrinationer</button>
+            <button class="option" data-question="4" data-option="d"><span class="option-letter">D</span>Studenten har fel — imperialismen drevs uteslutande av civilisationsideologi, inte nationell tävlan</button>
+        </div>
+        <div class="feedback" id="feedback4"></div>
+    </div>
+</div>
 
-        function checkAnswer(questionNum, selectedOption) {
-            const answer = answers[questionNum];
-            const feedbackElement = document.getElementById(`feedback${questionNum}`);
-            const optionElement = document.querySelector(`[data-question="${questionNum}"][data-option="${selectedOption}"]`);
-            
-            if (selectedOption === answer.correct) {
-                optionElement.classList.add('correct');
-                feedbackElement.textContent = 'Korrekt! ' + answer.feedback[selectedOption];
-                feedbackElement.className = 'feedback correct show';
-            } else {
-                optionElement.classList.add('incorrect');
-                // Also show correct answer
-                const correctOption = document.querySelector(`[data-question="${questionNum}"][data-option="${answer.correct}"]`);
-                correctOption.classList.add('correct');
-                
-                feedbackElement.textContent = answer.feedback[selectedOption];
-                feedbackElement.className = 'feedback incorrect show';
-            }
-            
-            updateProgress();
+<!-- ═ SEKTION 3 ═ -->
+<section class="content-section">
+    <h2>Tekniken bakom expansionen</h2>
+    <div class="timeline">
+        <div class="timeline-item"><h3>Medicin — kinin mot malaria</h3><p>Innan kininet kallades Afrika "den vite mannens grav". Malaria dödade europeiska soldater i tropiska klimat. Kininet — utvunnet ur kinaträdens bark — möjliggjorde europeisk närvaro i inlandet. Det var den enskilt mest avgörande faktorn för Afrikas kolonisering.</p></div>
+        <div class="timeline-item"><h3>Vapenteknik — Maxim-gun kulsprutan</h3><p>Hiram Maxim konstruerade 1884 världens första självmatande kulspruta. En liten europeisk styrka på några hundra man kunde krossa inhemska arméer på tiotusentals. Belloc: <em>"Whatever happens, we have got the Maxim gun, and they have not."</em></p></div>
+        <div class="timeline-item"><h3>Transport — ångfartyg och järnvägar</h3><p>Suezkanalen (1869) halverade resan till Indien. Järnvägar möjliggjorde snabb resursutvinning från inlandet — och militär mobilisering om koloniserade folk reste sig.</p></div>
+    </div>
+</section>
+
+<!-- ═ QUIZ 3 ═ -->
+<div class="quiz-container">
+    <div class="quiz-header"><svg class="quiz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.8" fill="currentColor" stroke="none"/></svg><span class="quiz-title">Teknik och tidsperiod</span></div>
+    <div class="question">
+        <span class="question-num">Fråga 5</span>
+        <div class="question-text">Vilken teknologisk innovation var den MEST avgörande för att européer överhuvudtaget kunde kolonisera tropiska inlandsområden i Afrika?</div>
+        <div class="options">
+            <button class="option" data-question="5" data-option="a"><span class="option-letter">A</span>Maxim-gun kulsprutan — militär överlägsenhet var grunden för all kolonisering</button>
+            <button class="option" data-question="5" data-option="b"><span class="option-letter">B</span>Kinin mot malaria — utan det dog européer i tropikerna innan de ens nådde en strid</button>
+            <button class="option" data-question="5" data-option="c"><span class="option-letter">C</span>Ångfartyget — utan snabba transporter var kolonisering omöjlig att administrera</button>
+            <button class="option" data-question="5" data-option="d"><span class="option-letter">D</span>Järnvägsteknologin — utan järnvägar kunde resurser inte utvinnas lönsamt</button>
+        </div>
+        <div class="feedback" id="feedback5"></div>
+    </div>
+    <div class="question">
+        <span class="question-num">Fråga 6</span>
+        <div class="question-text">Vilken tidsperiod brukar kallas "den nya imperialismen" — den intensiva fas när europeiska makter kapades om världen?</div>
+        <div class="options">
+            <button class="option" data-question="6" data-option="a"><span class="option-letter">A</span>1800–1850</button>
+            <button class="option" data-question="6" data-option="b"><span class="option-letter">B</span>1870–1900</button>
+            <button class="option" data-question="6" data-option="c"><span class="option-letter">C</span>1900–1930</button>
+            <button class="option" data-question="6" data-option="d"><span class="option-letter">D</span>1850–1880</button>
+        </div>
+        <div class="feedback" id="feedback6"></div>
+    </div>
+</div>
+
+<!-- ═ SEKTION 4 ═ -->
+<section class="content-section">
+    <h2>Kapplöpningen om Afrika</h2>
+    <p><strong>Berlinkonferensen (1884–1885)</strong> samlade 14 europeiska stater för att fastställa regler för hur Afrika skulle delas upp — utan att en enda afrikansk representant var inbjuden. Konferensen etablerade principen om <strong>"effective occupation"</strong>: en nation måste fysiskt ockupera och administrera ett område för att göra anspråk på det.</p>
+
+    <!-- ▶ AFRICA CHART ◀ -->
+    <div class="chart-heading">Andel av Afrika under europeisk kontroll, 1800–1914</div>
+    <div id="africaChart">
+        <div class="chart-row"><span class="chart-year">1800</span><div class="chart-track"><div class="chart-bar" data-target="10"><span class="chart-pct">10%</span></div></div><span class="chart-note">Mestadels kusthandelsplatser</span></div>
+        <div class="chart-row"><span class="chart-year">1850</span><div class="chart-track"><div class="chart-bar" data-target="20"><span class="chart-pct">20%</span></div></div><span class="chart-note">Nordafrika + kapkolonier</span></div>
+        <div class="chart-row"><span class="chart-year">1870</span><div class="chart-track"><div class="chart-bar" data-target="35"><span class="chart-pct">35%</span></div></div><span class="chart-note">Innan Berlinkonferensen</span></div>
+        <div class="chart-row"><span class="chart-year">1880</span><div class="chart-track"><div class="chart-bar" data-target="55"><span class="chart-pct">55%</span></div></div><span class="chart-note">Kapplöpningen inleds</span></div>
+        <div class="chart-row"><span class="chart-year">1900</span><div class="chart-track"><div class="chart-bar" data-target="90"><span class="chart-pct">90%</span></div></div><span class="chart-note">Nästan helt koloniserat</span></div>
+        <div class="chart-row"><span class="chart-year">1914</span><div class="chart-track"><div class="chart-bar" data-target="96"><span class="chart-pct">96%</span></div></div><span class="chart-note">Etiopien + Liberia fria</span></div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:1.5rem">
+        <strong>Kung Leopold II av Belgien</strong> presenterade Kongofristaten som ett humanitärt projekt mot arabisk slavhandel. Verkligheten var en terrorregim: tvångsarbete, avhuggna händer som straff, och uppskattningsvis tio miljoner döda. Kongo var hans <em>privata egendom</em> — det tydligaste exemplet på klyftan mellan imperialistisk retorik och realitet.
+    </div>
+</section>
+
+<!-- ═ QUIZ 4 ═ -->
+<div class="quiz-container">
+    <div class="quiz-header"><svg class="quiz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.8" fill="currentColor" stroke="none"/></svg><span class="quiz-title">Berlinkonferensen och Kongo</span></div>
+    <div class="question">
+        <span class="question-num">Fråga 7</span>
+        <div class="question-text">Berlinkonferensen 1884–85 fastställde principen "effective occupation". Vad innebar detta konkret för europeiska kolonialmakter?</div>
+        <div class="options">
+            <button class="option" data-question="7" data-option="a"><span class="option-letter">A</span>Europeiska makter måste inhämta lokala ledares samtycke innan kolonisering påbörjades</button>
+            <button class="option" data-question="7" data-option="b"><span class="option-letter">B</span>En nation måste fysiskt kontrollera och administrera ett område — att plantera flagga räckte inte</button>
+            <button class="option" data-question="7" data-option="c"><span class="option-letter">C</span>Alla koloniala anspråk måste godkännas enhälligt av samtliga konferensnationer</button>
+            <button class="option" data-question="7" data-option="d"><span class="option-letter">D</span>Kristna missionärer måste vara etablerade i ett område innan politisk kolonisering fick påbörjas</button>
+        </div>
+        <div class="feedback" id="feedback7"></div>
+    </div>
+    <div class="question">
+        <span class="question-num">Fråga 8</span>
+        <div class="question-text">Leopold II presenterade Kongofristaten som ett humanitärt projekt mot arabisk slavhandel. Vad illustrerar kontrasten mellan hans retorik och hans faktiska styre?</div>
+        <div class="options">
+            <button class="option" data-question="8" data-option="a"><span class="option-letter">A</span>Att välvilliga avsikter kan urarta när administrationen saknar tillräckliga resurser</button>
+            <button class="option" data-question="8" data-option="b"><span class="option-letter">B</span>Att imperialismen faktiskt bekämpade slavhandeln, om än med hårda metoder</button>
+            <button class="option" data-question="8" data-option="c"><span class="option-letter">C</span>Att humanitär retorik systematiskt användes för att dölja ekonomisk exploatering och terror</button>
+            <button class="option" data-question="8" data-option="d"><span class="option-letter">D</span>Att belgiskt styre var ett ovanligt undantag, inte representativt för imperialismen i övrigt</button>
+        </div>
+        <div class="feedback" id="feedback8"></div>
+    </div>
+</div>
+
+<!-- ═ SEKTION 5: KIPLING ═ -->
+<section class="content-section">
+    <h2>"The White Man's Burden" — källanalys</h2>
+    <p>Rudyard Kiplings dikt från 1899 är det mest citerade litterära uttrycket för imperialistisk ideologi. Klicka på varje rad för att analysera det retoriska arbete den utför:</p>
+
+    <!-- ▶ KIPLING ANALYZER ◀ -->
+    <div class="source-document">
+        <div class="source-label">Primärkälla — Rudyard Kipling, 1899 — Klicka på varje rad för analys</div>
+        <div class="kl-hint">Varje rad gör ett specifikt retoriskt arbete. Klicka för att se vilket.</div>
+        <div class="kipling-analyzer" id="kiplingAnalyzer">
+
+            <div class="kipling-line">
+                <div class="kl-header"><span class="kl-text">Take up the White Man's burden—</span><svg class="kl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                <div class="kl-analysis">
+                    <div class="kl-device">Imperativ — Pliktretorik</div>
+                    <div class="kl-body">Dikten öppnar med ett befallande verb: "take up". Det finns inget utrymme att tacka nej — imperialismen presenteras som ett kall man är skyldig att svara på, inte ett val man gör. Ordet "burden" (börda) är centralt: det förvandlar erövring och ekonomisk vinst till en tung, ofrivillig plikt.</div>
+                    <span class="kl-concept">Civilisationsuppdraget</span><span class="kl-concept">Pliktretorik</span>
+                </div>
+            </div>
+
+            <div class="kipling-line">
+                <div class="kl-header"><span class="kl-text">Send forth the best ye breed—</span><svg class="kl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                <div class="kl-analysis">
+                    <div class="kl-device">Superlativ — Martyrnarrativ</div>
+                    <div class="kl-body">Kolonisatörerna är samhällets elit — "the best ye breed". Att skicka ut dem är en uppoffring av det bästa man har. Vad som i realiteten ofta var karriärmöjligheter och ekonomisk vinst förvandlas till självuppoffring. Kolonisatören konstrueras som martyr, inte erövrare.</div>
+                    <span class="kl-concept">Martyrnarrativ</span><span class="kl-concept">Elitism</span>
+                </div>
+            </div>
+
+            <div class="kipling-line">
+                <div class="kl-header"><span class="kl-text">Go bind your sons to exile</span><svg class="kl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                <div class="kl-analysis">
+                    <div class="kl-device">Ordval — "Exile" (exil)</div>
+                    <div class="kl-body">"Exile" är ett ord för ofrivillig förvisning — straff eller tvång. Att arbeta i kolonin framställs som en geografisk lidelse. I verkligheten var kolonialt ämbetsmannaskap eftertraktat: karriärmöjligheter, status och löner vida överträffade vad hemlandet erbjöd.</div>
+                    <span class="kl-concept">Offerretorik</span><span class="kl-concept">Faktaförfalskning</span>
+                </div>
+            </div>
+
+            <div class="kipling-line">
+                <div class="kl-header"><span class="kl-text">To serve your captives' need;</span><svg class="kl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                <div class="kl-analysis">
+                    <div class="kl-device">Paradox — Retorisk inversion</div>
+                    <div class="kl-body">"Serve your captives" är en retorisk paradox: den som erövrat och fängslar presenteras som den som tjänar. Makthierarkin vänds upp och ned. Verkligheten — att de koloniserade tvingades tjäna imperialmakten — försvinner helt.</div>
+                    <span class="kl-concept">Retorisk inversion</span><span class="kl-concept">Maktdöljande</span>
+                </div>
+            </div>
+
+            <div class="kipling-line">
+                <div class="kl-header"><span class="kl-text">To wait in heavy harness</span><svg class="kl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                <div class="kl-analysis">
+                    <div class="kl-device">Metafor — Dragdjuret</div>
+                    <div class="kl-body">"Harness" (sele, ok) är det redskap med vilket ett djur spänns för en vagn. Metaforen placerar kolonisatören i rollen som det ok-bärande dragdjuret — tålmodigt, plikttroget, under en tung börda. Kolonialismens faktiska redskap — gevär, tvång, ekonomisk utvinning — osynliggörs.</div>
+                    <span class="kl-concept">Djurmetafor (kolonisatören)</span><span class="kl-concept">Maktdöljande</span>
+                </div>
+            </div>
+
+            <div class="kipling-line">
+                <div class="kl-header"><span class="kl-text">On fluttered folk and wild—</span><svg class="kl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                <div class="kl-analysis">
+                    <div class="kl-device">Adjektiv — Avhumanisering</div>
+                    <div class="kl-body">"Fluttered" (uppjagade, irrationella) och "wild" (vilda, okontrollerade) är adjektiv som normalt beskriver djur eller naturkrafter. De koloniserade förnekas rationalitet och civiliserad status. "Wild" för dessutom med sig naturens lag — och i naturen kontrollerar det starka det vilda.</div>
+                    <span class="kl-concept">Avhumanisering</span><span class="kl-concept">Socialdarwinism</span>
+                </div>
+            </div>
+
+            <div class="kipling-line">
+                <div class="kl-header"><span class="kl-text">Your new-caught, sullen peoples,</span><svg class="kl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                <div class="kl-analysis">
+                    <div class="kl-device">Ordval — Djurmetafor + Otacksamhetsnarrativ</div>
+                    <div class="kl-body">"New-caught" är terminologi för djur som nyss infångats i det vilda — de koloniserade är byten, inte folk med historia och samhällen. "Sullen" (butter, trotsig) tillfogar en moralisk dom: de är otacksamma för sin "befrielse". Motstånd mot ockupation omtolkas som irrationell bitterhet.</div>
+                    <span class="kl-concept">Djurmetafor</span><span class="kl-concept">Otacksamhetsnarrativ</span>
+                </div>
+            </div>
+
+            <div class="kipling-line">
+                <div class="kl-header"><span class="kl-text">Half devil and half child.</span><svg class="kl-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+                <div class="kl-analysis">
+                    <div class="kl-device">Klimax — Dubbel dehumanisering</div>
+                    <div class="kl-body">Strofens sista rad och dess mest kända formulering. "Djävulen" och "barnet" är varandras motpoler, förenade i en kropp. Djävulen motiverar kontroll och disciplin — faran måste hanteras. Barnet motiverar förmyndarskap — de kan inte styra sig själva. Tillsammans skapar de ett fullständigt argument för kolonial makt som inte kräver den koloniserades samtycke.</div>
+                    <span class="kl-concept">Dubbel legitimering</span><span class="kl-concept">Förmyndarskap</span><span class="kl-concept">Fullständig dehumanisering</span>
+                </div>
+            </div>
+
+        </div>
+        <div class="source-meta">Rudyard Kipling, "The White Man's Burden", McClure's Magazine, 1899 (Offentlig domän)</div>
+    </div>
+</section>
+
+<!-- ═ QUIZ 5 ═ -->
+<div class="quiz-container">
+    <div class="quiz-header"><svg class="quiz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg><span class="quiz-title">Källanalys — Kipling</span></div>
+    <div class="question">
+        <span class="question-num">Fråga 9</span>
+        <div class="question-text">Kipling beskriver koloniserade folk som "half devil and half child". Vad är det retoriska syftet med att kombinera just dessa två bilder?</div>
+        <div class="options">
+            <button class="option" data-question="9" data-option="a"><span class="option-letter">A</span>Att visa sympati för de koloniserades svåra situation och uppmana till hjälp</button>
+            <button class="option" data-question="9" data-option="b"><span class="option-letter">B</span>Att skapa dubbel legitimitet — "djävulen" motiverar kontroll, "barnet" motiverar förmyndarskap</button>
+            <button class="option" data-question="9" data-option="c"><span class="option-letter">C</span>Att erkänna de koloniserades rätt till självbestämmande när de nått tillräcklig mognad</button>
+            <button class="option" data-question="9" data-option="d"><span class="option-letter">D</span>Att kritisera europeisk arrogans genom att använda kolonisatörernas eget språk mot dem</button>
+        </div>
+        <div class="feedback" id="feedback9"></div>
+    </div>
+    <div class="question">
+        <span class="question-num">Fråga 10</span>
+        <div class="question-text">Kipling kallar kolonialismen för "The White Man's Burden" — en <em>börda</em>. Varför är just detta ordval retoriskt effektivt för att rättfärdiga imperialismen?</div>
+        <div class="options">
+            <button class="option" data-question="10" data-option="a"><span class="option-letter">A</span>Det erkänner öppet att kolonisering innebär förtryck — ärligheten gör det moraliskt acceptabelt</button>
+            <button class="option" data-question="10" data-option="b"><span class="option-letter">B</span>Det förvandlar maktsökan till självuppoffring — kolonialisterna framställs som martyrer, inte erövrare</button>
+            <button class="option" data-question="10" data-option="c"><span class="option-letter">C</span>Det beskriver de faktiska ekonomiska kostnaderna — kolonierna var verkligen en ekonomisk belastning</button>
+            <button class="option" data-question="10" data-option="d"><span class="option-letter">D</span>Det visar att européer var medvetna om kolonialismens orättfärdighet men kände sig tvingade att agera</button>
+        </div>
+        <div class="feedback" id="feedback10"></div>
+    </div>
+</div>
+
+<!-- ═ SEKTION 6 ═ -->
+<section class="content-section">
+    <h2>Motstånd och uppror</h2>
+    <p>Koloniserade folk accepterade inte passivt europeisk dominans. Motstånd tog sig många former — diplomatisk, kulturell, religiös och väpnad.</p>
+    <div class="timeline">
+        <div class="timeline-item"><h3>Sepoyupproret i Indien (1857)</h3><p>Indiska soldater i brittisk tjänst fick nya Enfield-patroner som måste bitas av. Ryktet spred sig att patronerna smorts med nöt- och grisflott — djupt kränkande för hinduer (kon är helig) och muslimer (grisen oren). Upproret krossades men tvingade kronan att upplösa Ostindiska kompaniet och ta direkt kontroll.</p></div>
+        <div class="timeline-item"><h3>Boxarupproret i Kina (1900)</h3><p>"De rättfärdiga och harmoniska knytnävarna" var en nativistisk rörelse som ville driva ut allt västerländskt inflytande. Änkekejsarinnan Cixi stödde dem initialt. Upproret krossades av en multinationell styrka. Kina tvingades betala enorma skadestånd — ytterligare ett steg in i ekonomiskt beroende.</p></div>
+    </div>
+</section>
+
+<!-- ═ QUIZ 6 ═ -->
+<div class="quiz-container">
+    <div class="quiz-header"><svg class="quiz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.8" fill="currentColor" stroke="none"/></svg><span class="quiz-title">Motstånd och uppror</span></div>
+    <div class="question">
+        <span class="question-num">Fråga 11</span>
+        <div class="question-text">Sepoyupproret 1857 utlöstes av patroner smorda med nöt- och grisflott. Varför var just detta så explosivt — och vad avslöjar det om brittiskt styre i Indien?</div>
+        <div class="options">
+            <button class="option" data-question="11" data-option="a"><span class="option-letter">A</span>Det visar att soldaterna letade efter en ursäkt — det verkliga problemet handlade om lön och tjänstevillkor</button>
+            <button class="option" data-question="11" data-option="b"><span class="option-letter">B</span>Det kränkte hinduers och muslimers religiösa övertygelser, och avslöjar brittisk likgiltighet för indisk kultur</button>
+            <button class="option" data-question="11" data-option="c"><span class="option-letter">C</span>Patronerna fungerade dåligt i det indiska klimatet, vilket väckte legitim kritik mot brittisk utrustning</button>
+            <button class="option" data-question="11" data-option="d"><span class="option-letter">D</span>Det visar att religiösa konflikter alltid är mer explosiva än ekonomiska orättvisor under kolonisering</button>
+        </div>
+        <div class="feedback" id="feedback11"></div>
+    </div>
+    <div class="question">
+        <span class="question-num">Fråga 12</span>
+        <div class="question-text">Boxarnas officiella namn var "De rättfärdiga och harmoniska knytnävarna". Vad ville denna rörelse uppnå?</div>
+        <div class="options">
+            <button class="option" data-question="12" data-option="a"><span class="option-letter">A</span>Modernisera Kina snabbare än européerna genom att ta över deras teknologi och institutioner</button>
+            <button class="option" data-question="12" data-option="b"><span class="option-letter">B</span>Skydda kinesisk kultur och religion genom att driva ut allt västerländskt inflytande</button>
+            <button class="option" data-question="12" data-option="c"><span class="option-letter">C</span>Etablera demokratiska institutioner och religiös frihet i Kina med europeiskt stöd</button>
+            <button class="option" data-question="12" data-option="d"><span class="option-letter">D</span>Förhandla fram bättre handelsvillkor med européerna genom organiserat ekonomiskt motstånd</button>
+        </div>
+        <div class="feedback" id="feedback12"></div>
+    </div>
+</div>
+
+<!-- ═ MATCHNING ═ -->
+<div class="quiz-container">
+    <div class="quiz-header"><svg class="quiz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><span class="quiz-title">Matchning — Motiv och historiska exempel</span></div>
+    <div class="question">
+        <span class="question-num">Fråga 13</span>
+        <div class="question-text">Koppla varje orsak till motstånd med rätt historiskt exempel:</div>
+        <table class="matching-table">
+            <tr><td class="match-concept">Ekonomisk exploatering</td><td><select class="matching-select" id="match-a"><option value="">— Välj exempel —</option><option value="1">Indiska textilarbetares konkurrens med brittisk industri</option><option value="2">Sepoyernas patroner smorda med nöt- och grisflott</option><option value="3">Boxarnas motstånd mot västerländska missionärer</option><option value="4">Oudh kungadömes tvångsinförlivande 1856</option></select></td></tr>
+            <tr><td class="match-concept">Religiös kränkning</td><td><select class="matching-select" id="match-b"><option value="">— Välj exempel —</option><option value="1">Indiska textilarbetares konkurrens med brittisk industri</option><option value="2">Sepoyernas patroner smorda med nöt- och grisflott</option><option value="3">Boxarnas motstånd mot västerländska missionärer</option><option value="4">Oudh kungadömes tvångsinförlivande 1856</option></select></td></tr>
+            <tr><td class="match-concept">Kulturell dominans</td><td><select class="matching-select" id="match-c"><option value="">— Välj exempel —</option><option value="1">Indiska textilarbetares konkurrens med brittisk industri</option><option value="2">Sepoyernas patroner smorda med nöt- och grisflott</option><option value="3">Boxarnas motstånd mot västerländska missionärer</option><option value="4">Oudh kungadömes tvångsinförlivande 1856</option></select></td></tr>
+            <tr><td class="match-concept">Politisk annektering</td><td><select class="matching-select" id="match-d"><option value="">— Välj exempel —</option><option value="1">Indiska textilarbetares konkurrens med brittisk industri</option><option value="2">Sepoyernas patroner smorda med nöt- och grisflott</option><option value="3">Boxarnas motstånd mot västerländska missionärer</option><option value="4">Oudh kungadömes tvångsinförlivande 1856</option></select></td></tr>
+        </table>
+        <div class="feedback" id="feedbackMatching"></div>
+        <button class="btn" onclick="checkMatching()">Kontrollera matchning</button>
+    </div>
+</div>
+
+<!-- ═ SEKTION 7 ═ -->
+<section class="content-section">
+    <h2>Långsiktiga konsekvenser</h2>
+    <p>Imperialismens arv är inte bara historiskt — det formar dagens världspolitik, ekonomi och konflikter. Berlinkonferensens gränsdragningar ignorerade fullständigt afrikanska etniska gruppers, stammarnas och kungadömenas gränser.</p>
+    <div class="highlight-box"><strong>Ekonomiskt beroende</strong> — Många före detta kolonier exporterar fortfarande råmaterial och importerar förädlade varor, ett mönster inbyggt under kolonitiden och svårt att bryta.</div>
+</section>
+
+<!-- ═ QUIZ 7 ═ -->
+<div class="quiz-container">
+    <div class="quiz-header"><svg class="quiz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.8" fill="currentColor" stroke="none"/></svg><span class="quiz-title">Imperialismens arv</span></div>
+    <div class="question">
+        <span class="question-num">Fråga 14</span>
+        <div class="question-text">Vad var den mest beständiga strukturella konsekvensen av imperialismens gränsdragningar för eftervärlden?</div>
+        <div class="options">
+            <button class="option" data-question="14" data-option="a"><span class="option-letter">A</span>Spridning av demokratiska institutioner och rättsstatens principer i tidigare kolonier</button>
+            <button class="option" data-question="14" data-option="b"><span class="option-letter">B</span>Ekonomisk industrialisering i Afrika och Asien som lade grunden för dagens tillväxt</button>
+            <button class="option" data-question="14" data-option="c"><span class="option-letter">C</span>Artificiella gränser som klöv etniska grupper och skapade bestående politisk instabilitet</button>
+            <button class="option" data-question="14" data-option="d"><span class="option-letter">D</span>Förbättrade handelsrelationer med ömsesidiga ekonomiska fördelar för alla parter</button>
+        </div>
+        <div class="feedback" id="feedback14"></div>
+    </div>
+</div>
+
+<!-- ═ COMPLETION ═ -->
+<div class="completion" id="completion">
+    <div class="gold-rule"></div>
+    <div class="completion-title" style="margin-top:2rem">Avsnittet slutfört</div>
+    <div class="completion-score" id="finalScore">—</div>
+    <div class="completion-sub">rätt av 14 möjliga</div>
+    <div class="completion-msg" id="completionMsg"></div>
+    <div class="gold-rule" style="margin-top:2rem"></div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+/* ── QUIZ ENGINE ── */
+const TOTAL=14; let answeredCount=0,correctCount=0; const answered=new Set();
+const answers={
+    1:{correct:'c',feedback:{a:'Direkt styre innebär att imperialmakten tar fullständig kontroll med egna administratörer. Här behåller khediven sin post — det utesluter direkt styre.',b:'Indirekt styre kräver ett tydligt administrativt grepp med lokala ledare som befallningsmottagare. Khedivens ställning är mer autonom: ekonomin, inte befallningskedjan, styr.',c:'Korrekt. Informell kontroll innebär ekonomiskt inflytande utan formell politisk kontroll. Khediven styr formellt, men låneberoende och handelsavtal gör Egypten reellt styrt av brittiska intressen.',d:'"Ekonomisk kolonialism" är inte ett etablerat begrepp i typologin. Det korrekta akademiska begreppet är informell kontroll.'}},
+    2:{correct:'b',feedback:{a:'Det är direkt styre — Frankrike tar fullständig kontroll med egna institutioner och lagar. Inte indirekt styre, som bevarar lokal auktoritet.',b:'Korrekt. Indirekt styre bevarar lokal auktoritet ceremoniellt men kontrollerar den verkliga politiken. Maharajornas titlar kvarstår; deras självständighet gör det inte.',c:'Det är informell kontroll — ekonomiskt inflytande utan politisk inblandning. Det saknar det administrativa kontrollelement som definierar indirekt styre.'}},
+    3:{correct:'b',feedback:{a:'Kulsprutan är en konsekvens av industrialiseringen — den förklarar hur kolonisering möjliggjordes tekniskt, inte varför den ägde rum.',b:'Korrekt. Industrialiseringens material- och marknadsbehov var imperialismens strukturella drivkraft. Prestige, socialdarwinism och missionärer förstärkte en expansion som ekonomin redan motiverade.',c:'Socialdarwinismen var en ideologi som rättfärdigade imperialismen — inte orsaken till den.',d:'Kapitalexport var viktigare än produktöverflöd, och det handlade lika mycket om att importera råmaterial som att exportera varor.'}},
+    4:{correct:'b',feedback:{a:'Socialdarwinism handlar om biologisk determinism och "rasers" kamp — inte om nationell tävlan om territorier.',b:'Korrekt. Studenten fångar nationell prestige och rivalitet — en verklig drivkraft. Men hen missar det ekonomiska motivet, som var minst lika grundläggande.',c:'Studenten nämner inte råmaterial eller marknader — bara tävlan om att vara störst. Det är prestigeretorik, inte ekonomisk analys.',d:'Civilisationsideologin var retorik som rättfärdigade expansion, inte dess primära motor. Studenten nämner den inte alls.'}},
+    5:{correct:'b',feedback:{a:'Kulsprutan var avgörande för militär dominans men löste inte det grundläggande hindret: européer dog av malaria i tropikerna långt innan de nådde en strid.',b:'Korrekt. Afrika kallades "den vite mannens grav" just på grund av malaria. Kininet — inte geväret — var nyckeln som öppnade inlandet för europeisk närvaro.',c:'Ångfartyget var viktigt för logistik men löste inte det biologiska problemet med tropisk sjukdom.',d:'Järnvägar kom efter koloniseringen — de byggdes för att exploatera redan erövrade områden.'}},
+    6:{correct:'b',feedback:{a:'1800–1850 kallas tidig kolonialism — präglad av handelsstationer och kustkolonisering, inte den massiva inlandstök som kom senare.',b:'Korrekt. 1870–1900 kallas "den nya imperialismen" — perioden när ny teknologi, industriella behov och nationalistisk rivalitet drev en storskalig expansion.',c:'1900–1930 var en konsolideringsperiod. Det intensiva kapandet om landmassor var i stor utsträckning avslutat.',d:'1850–1880 var en övergångsperiod. Den riktigt intensiva fasen tog fart runt 1870.'}},
+    7:{correct:'b',feedback:{a:'Berlinkonferensen ignorerade lokala ledare totalt — ingen afrikansk representant var ens inbjuden.',b:'Korrekt. "Effective occupation" innebar faktisk fysisk kontroll och administration — inte bara ett anspråk på kartan. Det intensifierade kapplöpningen om att faktiskt ockupera territorier.',c:'Konferensen krävde ingen enhällighet. Den skapade ramverket för konkurrens, stoppade den inte.',d:'Religion var inget kriterium. "Effective occupation" handlade uteslutande om faktisk militär och administrativ närvaro.'}},
+    8:{correct:'c',feedback:{a:'Kongofrestatens terror handlade inte om resursbrist. Leopold hade enorma inkomster — terrorregimen var ett medvetet system för maximal utvinning.',b:'Leopolds styre ersatte arabisk slavhandel med europeisk tvångsarbete och lemlästning. Att kalla det ett framsteg är att köpa imperialisternas eget narrativ.',c:'Korrekt. Kongo är det tydligaste exemplet på hur humanitär retorik systematiskt användes för att dölja brutal ekonomisk exploatering.',d:'Kongo är inte ett undantag — det är ett extremfall av ett mönster. Tvångsarbete och kulturell förstörelse förekom i kolonierna generellt.'}},
+    9:{correct:'b',feedback:{a:'Dikten visar ingen sympati — den avhumaniserar koloniserade folk. "Sullen peoples" och "half devil" är inte medkänsla utan nedvärdering.',b:'Korrekt. "Djävulen" motiverar kontroll och disciplin — faran måste hanteras. "Barnet" motiverar förmyndarskap — de kan inte styra sig själva. Båda bilderna legitimerar kolonial makt från olika håll.',c:'Tvärtom. Beskrivningen förnekar de koloniserades kapacitet för självbestämmande.',d:'Kipling skriver som övertygad imperialist, inte som ironiker. Det finns inget av satirens distans.'}},
+    10:{correct:'b',feedback:{a:'Dikten erkänner inte förtryck — den osynliggör det. "Burden" framställer kolonialismen som europeisk uppoffring, inte som utvinning av andras resurser.',b:'Korrekt. "Bördan" är ett retoriskt mästerdrag: kolonialisterna framställs som martyrer som bär en tung plikt — inte erövrare som tjänar enorma rikedomar. Maktsökan förvandlas till självuppoffring.',c:'Kolonierna var inte en ekonomisk börda — de var enormt lönsamma. Kipling konstruerar en moralisk berättelse, inte en ekonomisk.',d:'Det finns inget i dikten som antyder moralisk tvekan. Ton är kall och entusiastisk.'}},
+    11:{correct:'b',feedback:{a:'Att avfärda upproret som en svepskur förringar de djupa och legitima skälen. Patronerna var gnistan som antände en uppladdad situation.',b:'Korrekt. Patronerna kränkte båda gruppers religiösa övertygelser simultant — ko helig i hinduismen, grisen oren i islam. Det avslöjar brittisk djup okunnighet om — eller likgiltighet för — indisk religion.',c:'Det handlade inte om teknisk kvalitet utan om religiös förorening.',d:'En alltför bred generalisering. Upproret hade dessutom djupa ekonomiska rötter.'}},
+    12:{correct:'b',feedback:{a:'Boxarna var djupt antivästerländska — de ville driva ut allt västerländskt, inklusive järnvägar och telegraf som de förstörde.',b:'Korrekt. Boxarna var en nativistisk rörelse — de ville bevara kinesisk kultur, religion och samhälle mot västerländsk påverkan. Deras mål var uteslutning, inte integration.',c:'Demokrati och religiös frihet är västerländska koncept som Boxarna aktivt motarbetade.',d:'Boxarna ville bryta handelsförbindelserna, inte omförhandla dem.'}},
+    14:{correct:'c',feedback:{a:'Imperialismen spred sällan demokrati — den skapade snarare auktoritära kolonialstrukturer och rasistiska hierarkier.',b:'Tvärtom. Kolonialismen deindustrialiserade många regioner aktivt. Ekonomin inriktades på råvaruexport, inte industriell utveckling.',c:'Korrekt. Berlinkonferensens linjer klöv etniska grupper, separerade besläktade folk och slog samman fiender i samma statsbildningar. Dessa gränser lever kvar och är en strukturell orsak till konflikter i Afrika, Mellanöstern och Asien.',d:'Handelsrelationerna förblev djupt ojämlika — råmaterialexport från kolonier, förädlade varor tillbaka.'}}
+};
+const matchingKey={'match-a':'1','match-b':'2','match-c':'3','match-d':'4'};
+
+document.addEventListener('click',function(e){
+    const btn=e.target.closest('.option');
+    if(!btn||btn.disabled)return;
+    const qNum=parseInt(btn.dataset.question),sel=btn.dataset.option;
+    if(answered.has(qNum))return;
+    checkAnswer(qNum,sel);
+});
+
+function checkAnswer(qNum,sel){
+    answered.add(qNum);
+    const a=answers[qNum]; if(!a)return;
+    const isCorrect=sel===a.correct;
+    document.querySelectorAll(`[data-question="${qNum}"]`).forEach(o=>{o.disabled=true;});
+    const selEl=document.querySelector(`[data-question="${qNum}"][data-option="${sel}"]`);
+    if(selEl)selEl.classList.add(isCorrect?'correct':'incorrect');
+    if(!isCorrect){const c=document.querySelector(`[data-question="${qNum}"][data-option="${a.correct}"]`);if(c)c.classList.add('revealed');}
+    const fb=document.getElementById(`feedback${qNum}`);
+    if(fb){fb.textContent=a.feedback[sel]||'';fb.className=`feedback show ${isCorrect?'correct':'incorrect'}`;}
+    if(isCorrect)correctCount++;
+    answeredCount++;updateProgress();
+}
+
+function checkMatching(){
+    if(answered.has('matching'))return;
+    for(const key of Object.keys(matchingKey)){
+        if(!document.getElementById(key).value){
+            const s=document.getElementById(key);s.style.borderColor='var(--error)';
+            setTimeout(()=>s.style.borderColor='',1200);return;
         }
+    }
+    answered.add('matching');let correct=0;
+    for(const[key,rv]of Object.entries(matchingKey)){
+        const s=document.getElementById(key),ok=s.value===rv;
+        s.classList.add(ok?'correct-select':'incorrect-select');s.disabled=true;if(ok)correct++;
+    }
+    const fb=document.getElementById('feedbackMatching');
+    if(correct===4){fb.textContent='Perfekt! Alla fyra matchningar är korrekta.';fb.className='feedback show correct';correctCount++;}
+    else{fb.textContent=`${correct} av 4 rätt. Rätta matchningar: Ekonomisk exploatering → Indiska textilarbetare | Religiös kränkning → Sepoyernas patroner | Kulturell dominans → Boxarnas motstånd mot missionärer | Politisk annektering → Oudhs tvångsinförlivande 1856.`;fb.className='feedback show incorrect';}
+    answeredCount++;updateProgress();
+}
 
-        function checkInput(questionNum, correctAnswer) {
-            const input = document.getElementById(`input${questionNum}`);
-            const feedback = document.getElementById(`feedback${questionNum}`);
-            const userAnswer = input.value.toLowerCase().trim();
-            
-            if (userAnswer === correctAnswer || userAnswer === correctAnswer + 'in') { // Accept both "kinin" and "kinin"
-                feedback.textContent = 'Korrekt!';
-                feedback.className = 'feedback correct show';
-                input.style.borderColor = 'var(--success-color)';
-            } else {
-                feedback.textContent = `Fel. Det korrekta svaret är "${correctAnswer}".`;
-                feedback.className = 'feedback incorrect show';
-                input.style.borderColor = 'var(--error-color)';
-            }
-            
-            updateProgress();
+function updateProgress(){
+    const pct=Math.round((answeredCount/TOTAL)*100);
+    document.getElementById('progressFill').style.width=pct+'%';
+    document.getElementById('progressCount').textContent=`${answeredCount} / ${TOTAL}`;
+    if(answeredCount>=TOTAL)setTimeout(showCompletion,700);
+}
+
+function showCompletion(){
+    const comp=document.getElementById('completion');comp.classList.add('show');
+    document.getElementById('finalScore').textContent=`${correctCount} / ${TOTAL}`;
+    let msg;
+    if(correctCount>=13)msg='Utmärkt — du behärskar imperialismens historia fullt ut.';
+    else if(correctCount>=10)msg='Bra resultat. Gå tillbaka och granska de frågor du missade.';
+    else if(correctCount>=7)msg='Godkänt, men du har luckor. Repetera avsnitten noga.';
+    else msg='Repetera texten och gör om uppgifterna.';
+    document.getElementById('completionMsg').textContent=msg;
+    comp.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ── AFRICA CHART ── */
+const chartObserver=new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+        if(entry.isIntersecting){
+            entry.target.querySelectorAll('.chart-bar').forEach((bar,i)=>{
+                const t=parseInt(bar.dataset.target);
+                setTimeout(()=>{bar.style.width=t+'%';bar.classList.add('go');},i*130);
+            });
+            chartObserver.unobserve(entry.target);
         }
+    });
+},{threshold:0.25});
+const chartEl=document.getElementById('africaChart');
+if(chartEl)chartObserver.observe(chartEl);
 
-        function checkMatching() {
-            const feedback = document.getElementById('feedback10');
-            let correct = 0;
-            let total = Object.keys(matching).length;
-            
-            for (let key in matching) {
-                if (selectedMatches[key] === matching[key]) {
-                    correct++;
-                }
-            }
-            
-            if (correct === total) {
-                feedback.textContent = `Perfekt! Alla ${correct} matchningar är korrekta.`;
-                feedback.className = 'feedback correct show';
-            } else {
-                feedback.textContent = `Du fick ${correct} av ${total} rätt. Korrekta matchningar: Ekonomisk exploatering-Textilarbetare, Religiös kränkning-Patroner, Kulturell dominans-Missionärer, Politisk annektering-Oudh.`;
-                feedback.className = 'feedback incorrect show';
-            }
-            
-            updateProgress();
-        }
+/* ── EMPIRE BUBBLES ── */
+const infoBox=document.getElementById('bubbleInfo');
+document.querySelectorAll('.empire-bubble').forEach(b=>{
+    b.addEventListener('mouseenter',()=>{
+        if(b.dataset.info&&infoBox){infoBox.textContent=b.dataset.info;infoBox.style.color='var(--text)';infoBox.style.fontStyle='normal';}
+    });
+    b.addEventListener('mouseleave',()=>{
+        if(infoBox){infoBox.textContent='Hovra över en cirkel för information om varje imperium.';infoBox.style.color='var(--text-muted)';infoBox.style.fontStyle='italic';}
+    });
+});
 
-        function updateProgress() {
-            const allQuestions = document.querySelectorAll('.question');
-            const answeredQuestions = document.querySelectorAll('.feedback.show').length;
-            const progressPercent = (answeredQuestions / allQuestions.length) * 100;
-            
-            document.getElementById('progressFill').style.width = progressPercent + '%';
-        }
-
-        // Auto-scroll to next question after answering
-        function scrollToNext(currentQuestion) {
-            const allQuestions = document.querySelectorAll('.question');
-            const currentIndex = Array.from(allQuestions).findIndex(q => q.querySelector(`#feedback${currentQuestion}`));
-            
-            if (currentIndex < allQuestions.length - 1) {
-                setTimeout(() => {
-                    allQuestions[currentIndex + 1].scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'center' 
-                    });
-                }, 1000);
-            }
-        }
-
-        // Initialize progress bar
-        updateProgress();
-    </script>
+/* ── KIPLING ACCORDION ── */
+document.querySelectorAll('.kipling-line').forEach(line=>{
+    line.addEventListener('click',()=>{
+        const isOpen=line.classList.contains('kl-open');
+        document.querySelectorAll('.kipling-line').forEach(l=>l.classList.remove('kl-open'));
+        if(!isOpen)line.classList.add('kl-open');
+    });
+});
+</script>
 </body>
 </html>
