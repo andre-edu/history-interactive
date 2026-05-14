@@ -748,6 +748,236 @@
     margin-bottom: 28px;
   }
 
+  /* ── INEQUALITY VISUAL ── */
+  .framing-visual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 32px 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .vis-panel {
+    padding: 24px 24px 22px;
+    background: var(--surface);
+  }
+
+  .vis-panel:first-child {
+    border-right: 1px solid var(--border);
+  }
+
+  .vis-panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--parchment);
+    margin-bottom: 4px;
+  }
+
+  .vis-panel-sub {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  /* Estate bars */
+  .estate-block { margin-bottom: 16px; }
+  .estate-block:last-child { margin-bottom: 0; }
+
+  .estate-name {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.85rem;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .bar-tag {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 0.72rem;
+    color: var(--muted);
+    width: 62px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    width: 0;
+    border-radius: 2px;
+    transition: width 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .bar-fill.gold   { background: var(--gold); }
+  .bar-fill.red    { background: var(--red-light); }
+  .bar-fill.dimgold { background: var(--gold-dim); opacity: 0.4; }
+  .bar-fill.dimred  { background: var(--red); opacity: 0.25; }
+
+  .bar-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    width: 34px;
+    flex-shrink: 0;
+    color: var(--parchment);
+  }
+
+  /* Overflow chart */
+  .overflow-chart { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+
+  .oc-row { display: flex; align-items: center; gap: 8px; }
+  .oc-sum-row { margin-top: 2px; }
+
+  .oc-label {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.82rem;
+    color: var(--muted);
+    width: 50px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .oc-track {
+    flex: 1;
+    height: 11px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .oc-track-sum {
+    flex: 1;
+    height: 11px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .oc-track-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    overflow: visible;
+  }
+
+  .oc-bar {
+    height: 100%;
+    width: 0;
+    border-radius: 2px;
+    transition: width 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .oc-bread    { background: var(--red-light); }
+  .oc-tax      { background: var(--gold-dim); }
+  .oc-sum-fill { background: linear-gradient(to right, var(--red-light) 74%, var(--gold-dim)); }
+
+  .oc-overflow-pill {
+    height: 11px;
+    width: 0;
+    background: #e57065;
+    border-radius: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    font-size: 0;
+    transition: width 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s,
+                font-size 0.3s ease 0.9s,
+                padding 0.3s ease 0.9s;
+    flex-shrink: 0;
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+  }
+
+  .oc-overflow-pill.animated {
+    font-size: 0.6rem;
+    padding: 0 4px;
+  }
+
+  .oc-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    width: 34px;
+    flex-shrink: 0;
+    color: var(--parchment);
+  }
+
+  .oc-over-val { color: #e57065; }
+
+  .oc-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 2px 0;
+  }
+
+  .oc-source {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .vis-footer {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--border);
+    background: rgba(168,40,31,0.07);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .vis-footer-text {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .vis-footer-text strong {
+    color: var(--parchment);
+    font-weight: 600;
+  }
+
+  .vis-footer-text .vis-verdict {
+    font-style: italic;
+    color: #e57065;
+  }
+
+  @media (max-width: 600px) {
+    .framing-visual { grid-template-columns: 1fr; }
+    .vis-panel:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+
   /* ── SCROLL FADE-IN ── */
   .fade-in {
     opacity: 0;
@@ -872,6 +1102,83 @@
 
     <div class="framing-pull">
       <p>En vanlig arbetarfamilj i Paris lade upp till 80 % av sin inkomst på enbart bröd. Adeln och prästerskapet (knappt 2 % av befolkningen) betalade i princip ingen skatt alls.</p>
+    </div>
+
+    <div class="framing-visual" id="ineq-visual">
+      <div class="vis-panel">
+        <div class="vis-panel-title">Skattebördan 1789</div>
+        <div class="vis-panel-sub">Befolkning och andel av skatterna per stånd</div>
+
+        <div class="estate-block">
+          <div class="estate-name">Tredje ståndet</div>
+          <div class="bar-row">
+            <span class="bar-tag">Befolkning</span>
+            <div class="bar-track"><div class="bar-fill gold" data-w="98"></div></div>
+            <span class="bar-val">98%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-tag">Skatter</span>
+            <div class="bar-track"><div class="bar-fill red" data-w="100"></div></div>
+            <span class="bar-val">~100%</span>
+          </div>
+        </div>
+
+        <div class="estate-block">
+          <div class="estate-name">Adel &amp; kyrka</div>
+          <div class="bar-row">
+            <span class="bar-tag">Befolkning</span>
+            <div class="bar-track"><div class="bar-fill dimgold" data-w="2"></div></div>
+            <span class="bar-val">2%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-tag">Skatter</span>
+            <div class="bar-track"><div class="bar-fill dimred" data-w="0.5"></div></div>
+            <span class="bar-val">~0%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="vis-panel">
+        <div class="vis-panel-title">Arbetarfamiljens budget</div>
+        <div class="vis-panel-sub">Andel av inkomsten, Paris 1789</div>
+
+        <div class="overflow-chart">
+          <div class="oc-row">
+            <span class="oc-label">Bröd</span>
+            <div class="oc-track">
+              <div class="oc-bar oc-bread" data-w="80"></div>
+            </div>
+            <span class="oc-val">80%</span>
+          </div>
+          <div class="oc-row">
+            <span class="oc-label">Skatter</span>
+            <div class="oc-track">
+              <div class="oc-bar oc-tax" data-w="27"></div>
+            </div>
+            <span class="oc-val">~27%</span>
+          </div>
+          <div class="oc-divider"></div>
+          <div class="oc-row oc-sum-row">
+            <span class="oc-label">Summa</span>
+            <div class="oc-track-wrap">
+              <div class="oc-track oc-track-sum">
+                <div class="oc-bar oc-sum-fill" data-w="100"></div>
+              </div>
+              <div class="oc-overflow-pill" data-w="27">+27%</div>
+            </div>
+            <span class="oc-val oc-over-val">107%</span>
+          </div>
+          <div class="oc-source">Skatteandel: NBER Working Paper 34816, 2025</div>
+        </div>
+      </div>
+
+      <div class="vis-footer">
+        <span class="vis-footer-text">
+          Bröd: <strong>80%</strong> av inkomsten. &nbsp; Skatter: <strong>25–30%</strong> av inkomsten. &nbsp; Summan överstiger 100%.
+          <span class="vis-verdict"> Skillnaden betalades med skulder.</span>
+        </span>
+      </div>
+
     </div>
 
     <p>
@@ -1327,7 +1634,37 @@
   }, { threshold: 0.12 });
   document.querySelectorAll('.tl-event, .fade-in').forEach(el => observer.observe(el));
 
-  // ── ACTIVE NAV LINK ──
+  // ── INEQUALITY VISUAL ANIMATION ──
+  const ineqVisual = document.getElementById('ineq-visual');
+  if (ineqVisual) {
+    const ineqObs = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting) return;
+      ineqObs.disconnect();
+
+      // Animate left panel bars
+      ineqVisual.querySelectorAll('.bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.w + '%';
+      });
+
+      // Animate right panel bars
+      ineqVisual.querySelectorAll('.oc-bar').forEach(bar => {
+        bar.style.width = bar.dataset.w + '%';
+      });
+
+      // Animate overflow pill — width relative to oc-track-sum flex sibling
+      const pill = ineqVisual.querySelector('.oc-overflow-pill');
+      if (pill) {
+        const track = ineqVisual.querySelector('.oc-track-sum');
+        const trackW = track ? track.offsetWidth : 120;
+        const pillW = Math.round(trackW * 0.27);
+        setTimeout(() => {
+          pill.style.width = pillW + 'px';
+          pill.classList.add('animated');
+        }, 200);
+      }
+    }, { threshold: 0.3 });
+    ineqObs.observe(ineqVisual);
+  }
   const navLinks = document.querySelectorAll('.sticky-nav a');
   const sections = ['orsaker','tidslinje','personer','quiz','konsekvenser']
     .map(id => document.getElementById(id))
