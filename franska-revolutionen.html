@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Franska Revolutionen 1789–1799</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0e0b10;
+    --surface:   #1a1420;
+    --card:      #211829;
+    --gold:      #c9a047;
+    --gold-dim:  #8a6c2a;
+    --red:       #a8281f;
+    --red-light: #d4342a;
+    --parchment: #e8d9b8;
+    --text:      #d4c4a0;
+    --muted:     #7a6a50;
+    --border:    rgba(201,160,71,0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 1000; opacity: 0.35;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 80px 40px 60px;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(168,40,31,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(201,160,71,0.08) 0%, transparent 70%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-year {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(60px, 12vw, 120px);
+    font-weight: 900;
+    font-style: italic;
+    color: var(--red);
+    opacity: 0.18;
+    line-height: 1;
+    letter-spacing: -4px;
+    user-select: none;
+    position: absolute;
+    top: 20px; left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 700;
+    color: var(--parchment);
+    position: relative;
+    z-index: 2;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .hero-sub {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--gold);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .hero-divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 16px; margin: 24px auto 0; max-width: 400px;
+  }
+  .hero-divider span { flex: 1; height: 1px; background: var(--border); }
+  .hero-divider .fleur {
+    color: var(--gold); font-size: 20px;
+  }
+
+  /* ── SECTION WRAPPER ── */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 70px 32px;
+  }
+
+  .section-label {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 4vw, 38px);
+    font-weight: 700;
+    color: var(--parchment);
+    margin-bottom: 48px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── TIMELINE ── */
+  .timeline {
+    position: relative;
+    padding-left: 0;
+  }
+
+  /* Vertical spine */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, var(--gold-dim) 10%, var(--gold-dim) 90%, transparent);
+  }
+
+  .tl-event {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    align-items: start;
+    margin-bottom: 48px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .tl-event.visible { opacity: 1; transform: translateY(0); }
+
+  /* Alternating: odd events left, even events right */
+  .tl-event:nth-child(odd) .tl-content  { grid-column: 1; text-align: right; padding-right: 32px; }
+  .tl-event:nth-child(odd) .tl-dot      { grid-column: 2; }
+  .tl-event:nth-child(odd) .tl-spacer   { grid-column: 3; }
+
+  .tl-event:nth-child(even) .tl-spacer  { grid-column: 1; }
+  .tl-event:nth-child(even) .tl-dot     { grid-column: 2; }
+  .tl-event:nth-child(even) .tl-content { grid-column: 3; text-align: left; padding-left: 32px; }
+
+  .tl-dot {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: flex-start; padding-top: 6px;
+  }
+
+  .tl-dot-inner {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--red);
+    border: 3px solid var(--gold);
+    box-shadow: 0 0 12px rgba(201,160,71,0.4);
+    flex-shrink: 0;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .tl-event:hover .tl-dot-inner {
+    transform: scale(1.4);
+    box-shadow: 0 0 20px rgba(201,160,71,0.7);
+  }
+
+  .tl-content {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 24px;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .tl-event:hover .tl-content {
+    border-color: var(--gold-dim);
+    background: #271e30;
+  }
+
+  /* Arrow nub toward spine */
+  .tl-event:nth-child(odd) .tl-content::after {
+    content: '';
+    position: absolute;
+    right: -9px; top: 14px;
+    border: 8px solid transparent;
+    border-left-color: var(--border);
+  }
+  .tl-event:nth-child(even) .tl-content::after {
+    content: '';
+    position: absolute;
+    left: -9px; top: 14px;
+    border: 8px solid transparent;
+    border-right-color: var(--border);
+  }
+
+  .tl-date {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .tl-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--parchment);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .tl-body {
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.65;
+  }
+
+  .tl-tag {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.7rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-family: 'EB Garamond', serif;
+  }
+
+  .tl-tag.politik   { background: rgba(201,160,71,0.12); color: var(--gold); }
+  .tl-tag.folket    { background: rgba(168,40,31,0.2);   color: #e57065; }
+  .tl-tag.terror    { background: rgba(100,0,0,0.4);     color: #e57065; border: 1px solid rgba(168,40,31,0.4); }
+  .tl-tag.militart  { background: rgba(50,80,50,0.3);    color: #88b888; }
+
+  .tl-spacer { /* intentionally empty */ }
+
+  /* ── PERSON GALLERY ── */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+  }
+
+  .flip-card {
+    perspective: 1000px;
+    height: 430px;
+    cursor: pointer;
+  }
+
+  .flip-inner {
+    position: relative;
+    width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+
+  .flip-front, .flip-back {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  .flip-front { overflow: hidden; }
+  .flip-back  { overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--gold-dim) transparent; }
+
+  .flip-back { transform: rotateY(180deg); }
+
+  /* FRONT */
+  .flip-front {
+    background: var(--card);
+    display: flex; flex-direction: column;
+  }
+
+  .portrait-area {
+    flex: 1;
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .portrait-area::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 70% at 50% 40%, rgba(201,160,71,0.05) 0%, transparent 70%);
+  }
+
+  .portrait-placeholder {
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    opacity: 0.5;
+  }
+
+  .portrait-silhouette {
+    width: 80px; height: 80px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: var(--gold-dim);
+    position: relative;
+  }
+  .portrait-silhouette::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; left: 50%;
+    transform: translateX(-50%);
+    width: 120px; height: 50px;
+    background: var(--gold-dim);
+    border-radius: 50% 50% 0 0;
+  }
+
+  .portrait-label {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    font-family: 'EB Garamond', serif;
+    margin-top: 20px;
+  }
+
+  .card-nameplate {
+    padding: 18px 20px;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+  }
+
+  .card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--parchment);
+    margin-bottom: 4px;
+  }
+
+  .card-role {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--gold);
+  }
+
+  .flip-hint {
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 6px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .flip-hint::before { content: '⟳'; font-size: 0.85rem; }
+
+  /* BACK */
+  .flip-back {
+    background: linear-gradient(145deg, #1e1428, #150f1e);
+    display: flex; flex-direction: column;
+    padding: 22px 20px;
+    gap: 8px;
+  }
+
+  .back-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold);
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .back-section-title {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.72rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-top: 4px;
+    margin-bottom: 2px;
+  }
+
+  .back-text {
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .back-fate {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #e57065;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+
+  .back-fate::before { content: '†'; flex-shrink: 0; }
+
+  /* ── FRAMING TEXT SECTIONS ── */
+  .framing-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 64px 32px;
+  }
+
+  .framing-section.outro {
+    padding-top: 0;
+  }
+
+  .framing-label {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 6px;
+  }
+
+  .framing-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3.5vw, 32px);
+    font-weight: 700;
+    color: var(--parchment);
+    margin-bottom: 28px;
+    line-height: 1.25;
+  }
+
+  .framing-body {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--text);
+  }
+
+  .framing-body p { margin-bottom: 1.1em; }
+  .framing-body p:last-child { margin-bottom: 0; }
+
+  .framing-body strong {
+    color: var(--parchment);
+    font-weight: 500;
+  }
+
+  .framing-pull {
+    border-left: 3px solid var(--gold-dim);
+    margin: 28px 0;
+    padding: 14px 24px;
+    background: rgba(201,160,71,0.04);
+    border-radius: 0 4px 4px 0;
+  }
+
+  .framing-pull p {
+    font-style: italic;
+    font-size: 1.08rem;
+    color: var(--parchment);
+    margin: 0;
+    line-height: 1.7;
+  }
+
+  .framing-pull cite {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    font-style: normal;
+  }
+
+  .framing-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+  }
+
+  .framing-pill {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 16px;
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .pill-label {
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    font-family: 'EB Garamond', serif;
+  }
+
+  .pill-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    color: var(--parchment);
+    font-weight: 600;
+  }
+
+  .framing-divider {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  .framing-divider hr {
+    border: none;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── QUIZ ── */
+  .quiz-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 64px 32px;
+  }
+
+  .quiz-progress-bar {
+    height: 3px;
+    background: var(--surface);
+    border-radius: 2px;
+    margin-bottom: 36px;
+    overflow: hidden;
+  }
+
+  .quiz-progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--red), var(--gold));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .quiz-counter {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 0.82rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 16px;
+  }
+
+  .quiz-question {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+    font-weight: 700;
+    color: var(--parchment);
+    line-height: 1.45;
+    margin-bottom: 28px;
+  }
+
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .quiz-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    text-align: left;
+    width: 100%;
+    font-family: 'EB Garamond', serif;
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 1.55;
+  }
+
+  .quiz-option:hover:not(:disabled) {
+    border-color: var(--gold-dim);
+    background: #271e30;
+  }
+
+  .quiz-option:disabled { cursor: default; }
+
+  .quiz-option.correct {
+    border-color: #4a8a4a;
+    background: rgba(74,138,74,0.12);
+    color: var(--parchment);
+  }
+
+  .quiz-option.wrong {
+    border-color: var(--red);
+    background: rgba(168,40,31,0.12);
+    color: var(--text);
+    opacity: 0.7;
+  }
+
+  .option-letter {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--gold-dim);
+    font-family: 'Playfair Display', serif;
+    margin-top: 1px;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+
+  .quiz-option.correct .option-letter {
+    background: #4a8a4a;
+    border-color: #4a8a4a;
+    color: white;
+  }
+
+  .quiz-option.wrong .option-letter {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+
+  .quiz-feedback {
+    display: block;
+    max-height: 0;
+    overflow: hidden;
+    background: var(--surface);
+    border-left: 3px solid var(--gold-dim);
+    border-radius: 0 4px 4px 0;
+    padding: 0 20px;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.65;
+    transition: max-height 0.35s ease, padding 0.35s ease, margin-bottom 0.35s ease;
+  }
+
+  .quiz-feedback.show {
+    max-height: 300px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+
+  .quiz-feedback strong {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .quiz-btn {
+    display: inline-block;
+    font-family: 'EB Garamond', serif;
+    font-size: 0.85rem;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--gold-dim);
+    background: transparent;
+    padding: 10px 28px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .quiz-btn:hover { background: var(--gold); color: var(--bg); }
+  .quiz-btn:disabled { opacity: 0.35; cursor: default; }
+  .quiz-btn:disabled:hover { background: transparent; color: var(--gold); }
+
+  .quiz-result {
+    display: none;
+    text-align: center;
+    padding: 48px 0 24px;
+    animation: fadeSlideIn 0.4s ease;
+  }
+
+  .quiz-result.show { display: block; }
+
+  .result-score {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(48px, 10vw, 80px);
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .result-label {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .result-verdict {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--parchment);
+    margin-bottom: 28px;
+  }
+
+  /* ── SCROLL FADE-IN ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .timeline::before { left: 20px; }
+
+    .tl-event {
+      grid-template-columns: 40px 1fr !important;
+      grid-template-rows: auto;
+    }
+
+    .tl-event:nth-child(odd) .tl-dot,
+    .tl-event:nth-child(even) .tl-dot   { grid-column: 1; grid-row: 1; }
+
+    .tl-event:nth-child(odd) .tl-content,
+    .tl-event:nth-child(even) .tl-content {
+      grid-column: 2; grid-row: 1;
+      text-align: left !important;
+      padding-left: 16px !important;
+      padding-right: 0 !important;
+    }
+
+    .tl-event:nth-child(odd) .tl-spacer,
+    .tl-event:nth-child(even) .tl-spacer { display: none; }
+
+    .tl-event:nth-child(odd) .tl-content::after,
+    .tl-event:nth-child(even) .tl-content::after { display: none; }
+  }
+  /* ── STICKY NAV ── */
+  .sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(14, 11, 16, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+  }
+
+  .sticky-nav ul {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    max-width: 1100px;
+    margin: 0 auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .sticky-nav ul::-webkit-scrollbar { display: none; }
+
+  .sticky-nav a {
+    display: block;
+    padding: 14px 18px;
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 0.88rem;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .sticky-nav a:hover { color: var(--parchment); }
+
+  .sticky-nav a.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  @media (max-width: 700px) {
+    .sticky-nav { padding: 0 8px; }
+    .sticky-nav a { padding: 12px 12px; font-size: 0.82rem; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-year">1789</div>
+  <h1 class="hero-title">Franska Revolutionen</h1>
+  <p class="hero-sub">Liberté · Égalité · Fraternité</p>
+  <div class="hero-divider">
+    <span></span>
+    <span class="fleur">✦</span>
+    <span></span>
+  </div>
+</header>
+
+<!-- STICKY NAV -->
+<nav class="sticky-nav" aria-label="Sidnavigation">
+  <ul>
+    <li><a href="#orsaker"    data-section="orsaker">Orsaker</a></li>
+    <li><a href="#tidslinje"  data-section="tidslinje">Tidslinje</a></li>
+    <li><a href="#personer"   data-section="personer">Personer</a></li>
+    <li><a href="#quiz"       data-section="quiz">Quiz</a></li>
+    <li><a href="#konsekvenser" data-section="konsekvenser">Konsekvenser</a></li>
+  </ul>
+</nav>
+
+<!-- INTRO: ORSAKER -->
+<section class="framing-section fade-in" id="orsaker">
+  <p class="framing-label">Bakgrund · Vad kom före?</p>
+  <h2 class="framing-title">Ett samhälle på bristningsgränsen</h2>
+
+  <div class="framing-body">
+    <p>
+      Frankrike år 1789 var inte ett land som gick in i revolution av en slump. Det var ett samhälle som under lång tid hade byggt upp spänningar som till slut inte gick att hålla tillbaka. För att förstå varför folket reste sig måste vi förstå vad livet faktiskt innebar för de flesta, och hur absurt orättvist det gamla systemet var.
+    </p>
+
+    <div class="framing-pull">
+      <p>En vanlig arbetarfamilj i Paris lade upp till 80 % av sin inkomst på enbart bröd. Adeln och prästerskapet (knappt 2 % av befolkningen) betalade i princip ingen skatt alls.</p>
+    </div>
+
+    <p>
+      Det franska samhället var indelat i tre <strong>stånd</strong>: prästerskapet, adeln och alla andra, det tredje ståndet. De 26 miljonerna i det tredje ståndet bar hela statens skattebörda, medan de privilegierade klasserna skyddades av lagar baserade på <strong>börd snarare än förtjänst</strong>. En duktig köpman kunde aldrig nå de ämbeten som en inkompetent adelsman fick av arvsrätt.
+    </p>
+    <p>
+      Till detta kom en <strong>djup statlig finanskris</strong>. Frankrike hade skuldsatt sig enormt genom stödet till den amerikanska revolutionen och decennier av krig. År 1787 gick hälften av statsbudgeten till räntor. Kungen var tvungen att kalla till generalständerna, för första gången sedan 1614, och be om hjälp. Det öppnade en dörr som han inte kunde stänga igen.
+    </p>
+    <p>
+      Men det räckte inte med hunger och fattigdom. Revolutionen behövde också <strong>idéer</strong>. Upplysningens filosofer, som Rousseau, Voltaire och Montesquieu, hade under decennier spridit tankar om folksuveränitet, naturrätt och maktdelning. Folk hade börjat se det befintliga systemet inte som Guds ordning, utan som en mänsklig konstruktion som gick att förändra. Det var just den kombinationen av materiell nöd och ideologisk sprängkraft som gjorde revolutionen möjlig.
+    </p>
+  </div>
+
+  <div class="framing-pills">
+    <div class="framing-pill">
+      <span class="pill-label">Utlösande år</span>
+      <span class="pill-value">1787–1789</span>
+    </div>
+    <div class="framing-pill">
+      <span class="pill-label">Tredje ståndet</span>
+      <span class="pill-value">~98% av befolkningen</span>
+    </div>
+    <div class="framing-pill">
+      <span class="pill-label">Brödandel av inkomst</span>
+      <span class="pill-value">Upp till 80%</span>
+    </div>
+    <div class="framing-pill">
+      <span class="pill-label">Statsbudget till räntor</span>
+      <span class="pill-value">50% år 1787</span>
+    </div>
+  </div>
+</section>
+
+<div class="framing-divider"><hr></div>
+
+<!-- TIMELINE -->
+<section class="section" id="tidslinje">
+  <p class="section-label">Händelseförlopp · 1789–1799</p>
+  <h2 class="section-title">Tio år som förändrade Europa</h2>
+
+  <div class="timeline">
+
+    <div class="tl-event">
+      <div class="tl-content">
+        <div class="tl-date">Maj 1789</div>
+        <div class="tl-title">Generalständerna sammankallas</div>
+        <div class="tl-body">Kung Ludvig XVI kallar samman generalständerna för första gången sedan 1614 för att lösa statens djupa finanskris. Det tredje ståndet anländer med 60 000 klagolistor, de s.k. cahiers de doléances.</div>
+        <span class="tl-tag politik">Politik</span>
+      </div>
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-spacer"></div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-spacer"></div>
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-content">
+        <div class="tl-date">20 Juni 1789</div>
+        <div class="tl-title">Eden i bollhuset</div>
+        <div class="tl-body">Utestängda från riksdagssalen svär representanterna för det tredje ståndet att de inte ska skingras förrän Frankrike fått en skriven konstitution. En av historiens mest dramatiska politiska handlingar.</div>
+        <span class="tl-tag politik">Politik</span>
+      </div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-content">
+        <div class="tl-date">14 Juli 1789</div>
+        <div class="tl-title">Stormningen av Bastiljen</div>
+        <div class="tl-body">En folkmassa stormar det gamla fängelset och symbolen för kunglig tyranni. Man söker krut och vapen för att försvara sig mot kungens trupper. Sju fångar befriade. Händelsen utlöser revolutionen nationellt.</div>
+        <span class="tl-tag folket">Folkuppror</span>
+      </div>
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-spacer"></div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-spacer"></div>
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-content">
+        <div class="tl-date">Augusti 1789</div>
+        <div class="tl-title">Deklarationen om de mänskliga rättigheterna</div>
+        <div class="tl-body">Nationalförsamlingen antar en historisk deklaration grundad i upplysningsidéernas folksuveränitet och naturrätt. Dokumentet slår fast att "alla män föds och förblir fria och lika i rättigheter."</div>
+        <span class="tl-tag politik">Politik</span>
+      </div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-content">
+        <div class="tl-date">Oktober 1789</div>
+        <div class="tl-title">Marschen till Versailles</div>
+        <div class="tl-body">Tusentals parisiska kvinnor marscherar till Versailles krävande bröd. Kungafamiljen tvingas flytta till Paris, nu under folkets direkta bevakning. Konungen är symboliskt en fånge hos nationen.</div>
+        <span class="tl-tag folket">Folkuppror</span>
+      </div>
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-spacer"></div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-spacer"></div>
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-content">
+        <div class="tl-date">Juni 1791</div>
+        <div class="tl-title">Kungafamiljens flyktförsök</div>
+        <div class="tl-body">Ludvig XVI och Marie Antoinette försöker fly till Österrike men erkänns och grips i Varennes. Tilltaget krossar förtroendet för kungen och stärker den republikanska rörelsen dramatiskt.</div>
+        <span class="tl-tag politik">Politik</span>
+      </div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-content">
+        <div class="tl-date">21 Januari 1793</div>
+        <div class="tl-title">Ludvig XVI avrättas</div>
+        <div class="tl-body">Konungen döms för förräderi mot nationen och guillotineras på Place de la Révolution inför en stor folkmassa. Monarkisternas Europa skakas om, och krigen mot revolutionsfrankriket intensifieras.</div>
+        <span class="tl-tag terror">Terror</span>
+      </div>
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-spacer"></div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-spacer"></div>
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-content">
+        <div class="tl-date">1793 – 1794</div>
+        <div class="tl-title">Terrorväldet (La Terreur)</div>
+        <div class="tl-body">Under Robespierre och Välfärdsutskottets ledning avrättas upp till 17 000 personer officiellt och 10 000 dör i fängelse. Terrorn motiveras som ett nödvändigt skydd mot inbördeskrig och utländsk invasion.</div>
+        <span class="tl-tag terror">Terror</span>
+      </div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-content">
+        <div class="tl-date">27 Juli 1794</div>
+        <div class="tl-title">Thermidorreaktionen</div>
+        <div class="tl-body">Robespierre arresteras och avrättas dagen efter av sina egna kollegor. Jakobinernas radikala period tar slut. Direktoriet, en mer konservativ femmannastyrelse, tar makten.</div>
+        <span class="tl-tag politik">Politik</span>
+      </div>
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-spacer"></div>
+    </div>
+
+    <div class="tl-event">
+      <div class="tl-spacer"></div>
+      <div class="tl-dot"><div class="tl-dot-inner"></div></div>
+      <div class="tl-content">
+        <div class="tl-date">9 November 1799</div>
+        <div class="tl-title">Napoleons statskupp: 18 Brumaire</div>
+        <div class="tl-body">General Napoleon Bonaparte genomför en statskupp och avsätter Direktoriet. Han utropas till Förste konsul. Den revolutionära perioden är officiellt slut, men dess idéer ska snart spridas av franska bajonetter över hela Europa.</div>
+        <span class="tl-tag militart">Militärt</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div style="max-width:1100px; margin: 0 auto 0; padding: 0 32px;">
+  <div style="height:1px; background: linear-gradient(to right, transparent, var(--border), transparent);"></div>
+</div>
+
+<!-- PERSON GALLERY -->
+<section class="section" id="personer">
+  <p class="section-label">Aktörerna · Sju gestalter</p>
+  <h2 class="section-title">Nyckelpersoner</h2>
+
+  <div class="gallery-grid">
+
+    <!-- Ludvig XVI -->
+    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="portrait-area">
+            <img src="https://andre-edu.github.io/history-interactive/images/ludvig-xvi.webp" alt="Ludvig XVI" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="portrait-placeholder" style="display:none">
+              <div class="portrait-silhouette"></div>
+              <div class="portrait-label">Porträtt</div>
+            </div>
+          </div>
+          <div class="card-nameplate">
+            <div class="card-name">Ludvig XVI</div>
+            <div class="card-role">Frankrikes siste enväldige kung</div>
+            <div class="flip-hint">Vänd kortet</div>
+          </div>
+        </div>
+        <div class="flip-back">
+          <div class="back-name">Ludvig XVI (1754–1793)</div>
+          <div class="back-section-title">Roll & karaktär</div>
+          <div class="back-text">Välmenande men obeslutsam monark som ärvde en stat på ruinens rand. Oförmögen att navigera finanskrisen eller läsa folkstämningens skift.</div>
+          <div class="back-section-title">Ideologi</div>
+          <div class="back-text">Troende på kunglig absolutism och gudomlig rätt, ett system vars legitimitet revolution och upplysning hade undergrävt.</div>
+          <div class="back-fate">Dömd för förräderi och guillotinerad 21 januari 1793 på Place de la Révolution.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marie Antoinette -->
+    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.08s">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="portrait-area">
+            <img src="https://andre-edu.github.io/history-interactive/images/marie-antoinette.webp" alt="Marie Antoinette" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="portrait-placeholder" style="display:none">
+              <div class="portrait-silhouette"></div>
+              <div class="portrait-label">Porträtt</div>
+            </div>
+          </div>
+          <div class="card-nameplate">
+            <div class="card-name">Marie Antoinette</div>
+            <div class="card-role">Drottning av Frankrike</div>
+            <div class="flip-hint">Vänd kortet</div>
+          </div>
+        </div>
+        <div class="flip-back">
+          <div class="back-name">Marie Antoinette (1755–1793)</div>
+          <div class="back-section-title">Roll & karaktär</div>
+          <div class="back-text">Österrikisk prinsessa som blev Frankrikes drottning och symbol för hovets upplevda slöseri. Smeknamnet "Madame Déficit" speglar hur hon hatades av folket.</div>
+          <div class="back-section-title">Historisk komplexitet</div>
+          <div class="back-text">Moderna historiker nyanserar bilden: hon var delvis offer för propaganda och politiska intressen snarare än verkligen ansvarig för statens finanser.</div>
+          <div class="back-fate">Avrättad 16 oktober 1793, nio månader efter sin make.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Robespierre -->
+    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.16s">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="portrait-area">
+            <img src="https://andre-edu.github.io/history-interactive/images/robespierre.webp" alt="Maximilien Robespierre" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="portrait-placeholder" style="display:none">
+              <div class="portrait-silhouette"></div>
+              <div class="portrait-label">Porträtt</div>
+            </div>
+          </div>
+          <div class="card-nameplate">
+            <div class="card-name">Maximilien Robespierre</div>
+            <div class="card-role">Jakobinernas ledare · "Den omutlige"</div>
+            <div class="flip-hint">Vänd kortet</div>
+          </div>
+        </div>
+        <div class="flip-back">
+          <div class="back-name">Robespierre (1758–1794)</div>
+          <div class="back-section-title">Roll & karaktär</div>
+          <div class="back-text">Advokat och centralgestalt i Välfärdsutskottet. Övertygad om att terror var ett nödvändigt redskap för att skapa dygd och rädda revolutionen från sina fiender.</div>
+          <div class="back-section-title">Ideologi</div>
+          <div class="back-text">Inspirerad av Rousseaus folkvilja och en republikansk dygdetik. Varken korrumperad av pengar eller makt, men kallblodig i sin politiska logik.</div>
+          <div class="back-fate">Avrättad av sina egna allierade dagen efter sin arrestering, 28 juli 1794.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danton -->
+    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.24s">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="portrait-area">
+            <img src="https://andre-edu.github.io/history-interactive/images/danton.webp" alt="Georges Danton" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="portrait-placeholder" style="display:none">
+              <div class="portrait-silhouette"></div>
+              <div class="portrait-label">Porträtt</div>
+            </div>
+          </div>
+          <div class="card-nameplate">
+            <div class="card-name">Georges Danton</div>
+            <div class="card-role">Revolutionär ledare · Folktalare</div>
+            <div class="flip-hint">Vänd kortet</div>
+          </div>
+        </div>
+        <div class="flip-back">
+          <div class="back-name">Georges Danton (1759–1794)</div>
+          <div class="back-section-title">Roll & karaktär</div>
+          <div class="back-text">Kraftfull advokat och folklig ledare med stor retorisk begåvning. Hjälpte organisera försvaret av republiken i revolutionens tidiga fas men kritiserade terrorns hänsynslöshet.</div>
+          <div class="back-section-title">Tragik</div>
+          <div class="back-text">Pläderade för en mildare linje och en fredsprocess, vilket gjorde honom till ett hot i Robespierres ögon. Hans sista ord lär ha varit: "Visa mitt huvud för folket, det är värt att se."</div>
+          <div class="back-fate">Guillotinerad 5 april 1794, dömd som kontrarevolutionär av sina egna.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Napoleon -->
+    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.32s">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="portrait-area">
+            <img src="https://andre-edu.github.io/history-interactive/images/napoleon.webp" alt="Napoleon Bonaparte" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="portrait-placeholder" style="display:none">
+              <div class="portrait-silhouette"></div>
+              <div class="portrait-label">Porträtt</div>
+            </div>
+          </div>
+          <div class="card-nameplate">
+            <div class="card-name">Napoleon Bonaparte</div>
+            <div class="card-role">General · Förste konsul · Kejsare</div>
+            <div class="flip-hint">Vänd kortet</div>
+          </div>
+        </div>
+        <div class="flip-back">
+          <div class="back-name">Napoleon Bonaparte (1769–1821)</div>
+          <div class="back-section-title">Roll & karaktär</div>
+          <div class="back-text">Korsikanskt militärgeni som steg snabbt i graderna under revolutionens krig. Utnyttjade den politiska instabiliteten och folkets längtan efter ordning för att gripa makten.</div>
+          <div class="back-section-title">Arv</div>
+          <div class="back-text">Spred revolutionens idéer om rättslig jämlikhet via Code Napoléon men begravde dess demokratiska ambitioner under ett auktoritärt välde. Revolutionär och reaktionär på samma gång.</div>
+          <div class="back-fate">Exilerad till Sankt Helena 1815 och dog 1821. Revolutionens barn och dess dödgrävare.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Abbé Sieyès -->
+    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.40s">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="portrait-area">
+            <img src="https://andre-edu.github.io/history-interactive/images/abbe-sieyes.webp" alt="Abbé Sieyès" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="portrait-placeholder" style="display:none">
+              <div class="portrait-silhouette"></div>
+              <div class="portrait-label">Porträtt</div>
+            </div>
+          </div>
+          <div class="card-nameplate">
+            <div class="card-name">Abbé Sieyès</div>
+            <div class="card-role">Präst · Pamflettist · Politisk strateg</div>
+            <div class="flip-hint">Vänd kortet</div>
+          </div>
+        </div>
+        <div class="flip-back">
+          <div class="back-name">Abbé Sieyès (1748–1836)</div>
+          <div class="back-section-title">Roll & karaktär</div>
+          <div class="back-text">Präst som trots sin ståndstillhörighet valde det tredje ståndet. Genom pamfletten "Vad är det tredje ståndet?" formulerade han kärnan i revolutionens legitimitetskrav: nationen är allt.</div>
+          <div class="back-section-title">Ideologi</div>
+          <div class="back-text">Förespråkade representativ demokrati och nationell suveränitet. Var med om att planera Napoleons statskupp men underskattade hur mycket makt Bonaparte faktiskt skulle ta.</div>
+          <div class="back-fate">En av få revolutionärer som överlevde hela perioden. Avled 1836 i hög ålder under det borgerliga kungadömet.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Olympe de Gouges -->
+    <div class="flip-card fade-in" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.48s">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="portrait-area">
+            <img src="https://andre-edu.github.io/history-interactive/images/olympe-de-gouges.webp" alt="Olympe de Gouges" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="portrait-placeholder" style="display:none">
+              <div class="portrait-silhouette"></div>
+              <div class="portrait-label">Porträtt</div>
+            </div>
+          </div>
+          <div class="card-nameplate">
+            <div class="card-name">Olympe de Gouges</div>
+            <div class="card-role">Dramatiker · Pamflettist · Feminist</div>
+            <div class="flip-hint">Vänd kortet</div>
+          </div>
+        </div>
+        <div class="flip-back">
+          <div class="back-name">Olympe de Gouges (1748–1793)</div>
+          <div class="back-section-title">Roll & karaktär</div>
+          <div class="back-text">Självlärd dramatiker och politisk skribent som engagerade sig mot slaveri och för kvinnors rättigheter. Skrev hundratals pamfletter under revolutionen och vägrade tiga när andra teg.</div>
+          <div class="back-section-title">Hennes viktigaste text</div>
+          <div class="back-text">År 1791 skrev hon en Deklaration om kvinnans rättigheter, modellerad direkt på revolutionens egna rättighetsdokument. Budskapet var enkelt: om revolutionen menade allvar med frihet och jämlikhet, gällde det kvinnor lika mycket som män.</div>
+          <div class="back-fate">Guillotinerad 3 november 1793, dömd för att ha kritiserat Robespierre. Revolutionen som lovade jämlikhet för alla avrättade henne för att hon tog löftet på allvar.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="framing-divider" style="max-width:1100px; padding: 0 32px;"><hr></div>
+
+<!-- QUIZ -->
+<section class="quiz-section fade-in" id="quiz">
+  <p class="framing-label">Testa dig själv · Diagnostiska frågor</p>
+  <h2 class="framing-title">Vad vet du om franska revolutionen?</h2>
+
+  <div id="quiz-progress-bar" class="quiz-progress-bar">
+    <div class="quiz-progress-fill" id="quiz-fill" style="width: 0%"></div>
+  </div>
+
+  <div id="quiz-body">
+    <div class="quiz-counter" id="quiz-counter">Fråga 1 av 6</div>
+    <div class="quiz-question" id="quiz-q"></div>
+    <div class="quiz-options" id="quiz-opts"></div>
+    <div class="quiz-feedback" id="quiz-feedback"></div>
+    <button class="quiz-btn" id="quiz-next" disabled onclick="nextQuestion()">Nästa fråga →</button>
+  </div>
+
+  <div class="quiz-result" id="quiz-result">
+    <div class="result-score" id="result-score"></div>
+    <div class="result-label">rätta svar av 6</div>
+    <div class="result-verdict" id="result-verdict"></div>
+    <button class="quiz-btn" onclick="resetQuiz()">Försök igen</button>
+  </div>
+</section>
+
+<div class="framing-divider" style="max-width:1100px; padding: 0 32px;"><hr></div>
+
+<!-- OUTRO: KONSEKVENSER -->
+<section class="framing-section outro fade-in" id="konsekvenser">
+  <p class="framing-label">Efterspel · Vad kom efter?</p>
+  <h2 class="framing-title">Revolutionens långa skugga över Europa</h2>
+
+  <div class="framing-body">
+    <p>
+      Revolutionen slutade formellt 1799 när Napoleon tog makten. Men dess konsekvenser slutade aldrig. De idéer som formulerats i Paris om frihet, jämlikhet och folkens rätt att styra sig själva skulle under de kommande hundra åren riva ner kungadömen, starta nya revolutioner och omforma hela den politiska världsordningen.
+    </p>
+
+    <div class="framing-pull">
+      <p>"Alla privilegier måste ha ett slut, eller alla måste dela dem. Det kan inte finnas ett mellanläge."</p>
+      <cite>Abbé Sieyès, 1789</cite>
+    </div>
+
+    <p>
+      På kort sikt var konsekvenserna brutala. Terrorväldet kostade tiotusentals liv. Krigen mot Europas monarkier drog in hela kontinenten i ett decennium av konflikt. Ekonomin var instabil, den politiska ordningen kaotisk. Det gamla Frankrike var borta, men det nya hade ännu inte funnit sin form.
+    </p>
+    <p>
+      På lång sikt blev revolutionens arv omvälvande. <strong>Feodalväsendet avskaffades</strong> permanent, inte bara i Frankrike utan i land efter land när Napoleons arméer marcherade fram med Code Napoléon, ett rättsystem byggt på principen att alla medborgare är lika inför lagen. Det är ett fundament vi i Sverige fortfarande lever med.
+    </p>
+    <p>
+      Revolutionen uppfann också den <strong>moderna nationalismen</strong>. Före 1789 var en fransman lojalitetsskyldig mot sin kung och sin kyrka. Efter 1789 var han medborgare i en nation, en abstrakt gemenskap av likvärdiga individer. Den idén spred sig som eld och eldade på de nationella rörelser som under 1800-talet skapade länder som Tyskland och Italien.
+    </p>
+    <p>
+      Slutligen lade revolutionen grunden för vår tids politiska vokabulär: begreppen <span style="color:#e05555; font-weight:600;">vänster</span> och <span style="color:#5580cc; font-weight:600;">höger</span> härstammar från var representanterna satt i Nationalförsamlingen 1789. De som ville förändra satt till <span style="color:#e05555; font-weight:600;">vänster</span>. De som ville bevara satt till <span style="color:#5580cc; font-weight:600;">höger</span>. Revolutionen ritade den karta som europeisk politik fortfarande navigerar efter.
+    </p>
+  </div>
+
+  <div class="framing-pills">
+    <div class="framing-pill">
+      <span class="pill-label">Avrättade under terrorn</span>
+      <span class="pill-value">~17 000 officiellt</span>
+    </div>
+    <div class="framing-pill">
+      <span class="pill-label">Napoleonskrigen</span>
+      <span class="pill-value">1803–1815</span>
+    </div>
+    <div class="framing-pill">
+      <span class="pill-label">Länder med Code Napoléon</span>
+      <span class="pill-value">Stora delar av Europa</span>
+    </div>
+    <div class="framing-pill">
+      <span class="pill-label">Begreppsparet vänster/höger</span>
+      <span class="pill-value">Myntat 1789</span>
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center; padding: 40px; color: var(--muted); font-style:italic; font-size:0.85rem; border-top: 1px solid var(--border);">
+  Interaktivt läromedel · Franska Revolutionen 1789–1799
+</footer>
+
+<script>
+  // ── INTERSECTION OBSERVER ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.tl-event, .fade-in').forEach(el => observer.observe(el));
+
+  // ── ACTIVE NAV LINK ──
+  const navLinks = document.querySelectorAll('.sticky-nav a');
+  const sections = ['orsaker','tidslinje','personer','quiz','konsekvenser']
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.sticky-nav a[data-section="${entry.target.id}"]`);
+        if (active) {
+          active.classList.add('active');
+          active.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+        }
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  sections.forEach(s => navObserver.observe(s));
+
+  // ── QUIZ DATA ──
+  const questions = [
+    {
+      q: "Varför stormades fästningen Bastiljen den 14 juli 1789?",
+      opts: [
+        {
+          t: "För att befria de politiska fångar som kungen hållit inspärrade utan rättegång i åratal.",
+          correct: false,
+          feedback: "Det här är en vanlig missuppfattning. Vid stormningen satt faktiskt bara sju fångar i Bastiljen: fem vanliga brottslingar och två som ansågs sinnessjuka. Inga politiska fångar. Fästningen stormades för vapenförrådet, inte för att befria någon."
+        },
+        {
+          t: "För att komma åt krut och vapen och kunna försvara sig mot de kungliga trupperna utanför Paris.",
+          correct: true,
+          feedback: "Rätt! Folket fruktade ett kungligt angrepp och behövde beväpna sig. Bastiljen valdes för sitt vapenförråd, inte för sina fångar. Händelsen blev ändå en kraftfull symbol för revolutionen."
+        },
+        {
+          t: "För att förstöra symbolen för det kungliga förtrycket och visa upp revolutionens styrka offentligt.",
+          correct: false,
+          feedback: "Bastiljen var förvisso en symbol för kungamakten, men folket styrdes av ett mer omedelbart och praktiskt behov: vapen och ammunition. Det symboliska värdet kom i efterhand; i stunden handlade det om självförsvar."
+        },
+        {
+          t: "För att ta tillbaka de skatter och rikedomar som kungen hade stulit från det tredje ståndet.",
+          correct: false,
+          feedback: "Bastiljen var ett fängelse och en militär fästning, inte ett skattevalv. Det fanns inga kungliga rikedomar att ta tillbaka där. Motivet var militärt: folket behövde krut och gevär mot de trupper som samlades kring Paris."
+        }
+      ]
+    },
+    {
+      q: "Vilken grupp styrde Frankrike under terrorväldet 1793–1794?",
+      opts: [
+        {
+          t: "Napoleon Bonaparte, som använde revolutionens kaos för att bygga sin militära maktbas och karriär.",
+          correct: false,
+          feedback: "Napoleon var visserligen aktiv under revolutionskrigen, men han var vid den här tiden en relativt okänd officer utan politisk makt. Hans genombrott kom vid belägringen av Toulon 1793, och han spelade ingen roll i terrorväldet."
+        },
+        {
+          t: "Kung Ludvig XVI, som försökte återta makten med hjälp av Österrikes och Preussens arméer.",
+          correct: false,
+          feedback: "Kung Ludvig XVI avrättades redan i januari 1793, och han kunde alltså inte styra Frankrike under terrorväldet. Hans flyktförsök och kontakter med utländska makter bidrog dock till att skärpa revolutionärernas misstänksamhet."
+        },
+        {
+          t: "Robespierre och Välfärdsutskottet, tolv män som styrde republiken med diktatorisk järnhand.",
+          correct: true,
+          feedback: "Rätt! Comité de salut public (Välfärdsutskottet), med Robespierre som centralgestalt styrde Frankrike under terrorväldet. De tolv männen fattade beslut om liv och död utan normala rättsprocesser."
+        },
+        {
+          t: "Nationalförsamlingens moderata girondiner, som hade fördrivit jakobinerna och tagit kontrollen.",
+          correct: false,
+          feedback: "Det var tvärtom: jakobinerna fördrev girondinfraktionen i juni 1793 och tog ensam kontroll. Girondinerna var de moderata; många av dem avrättades sedan under just det terrorvälde som jakobinerna drev igenom."
+        }
+      ]
+    },
+    {
+      q: "Vad var den viktigaste orsaken till att generalständerna sammankallades år 1789?",
+      opts: [
+        {
+          t: "Kungen ville reformera samhället och ge det tredje ståndet större politiskt inflytande och rättigheter.",
+          correct: false,
+          feedback: "Ludvig XVI sammankallde inte generalständerna av reformiver. Han var en politiskt konservativ monark som i första hand behövde lösa en finansiell kris. Att han oavsiktligt öppnade dörren för politisk förändring var en konsekvens han inte förutsåg."
+        },
+        {
+          t: "Hungerkravallerna i Paris hade eskalerat till en nivå som kungen inte längre kunde ignorera eller hantera.",
+          correct: false,
+          feedback: "Hungern var ett allvarligt bakgrundsproblem, men generalständerna sammankallades primärt för att lösa statens finanskris, inte som ett svar på folkliga kravaller. Brödpriserna var en orsak till missnöjet, men inte det direkta skälet till sammankallandet."
+        },
+        {
+          t: "Den franska staten var nära total bankrutt och kungen behövde lagstiftat godkännande för att ta ut nya skatter.",
+          correct: true,
+          feedback: "Rätt! År 1787 gick hälften av hela statsbudgeten till att betala räntor på krigsskulder. Kungen behövde nya skatteintäkter, och för det krävdes generalständernas godkännande. Det var en teknisk nödlösning som fick revolutionära konsekvenser."
+        },
+        {
+          t: "Frankrike hotades av militär invasion och kungen ville samla nationens stöd mot ett gemensamt yttre hot.",
+          correct: false,
+          feedback: "Det yttre krigshotet mot Frankrike kom efter revolutionen, inte före. Österrike och Preussen förklarade krig mot Frankrike 1792. År 1789 var det den inre finanskrisen, inte ett yttre hot, som tvingade kungen att kalla samman generalständerna."
+        }
+      ]
+    },
+    {
+      q: "Vilken samhällsgrupp ledde den franska revolutionens inledande fas?",
+      opts: [
+        {
+          t: "Fattiga stadsbor och landsbygdsbönder som reste sig mot adeln och krävde brödpriser de hade råd med.",
+          correct: false,
+          feedback: "Det här är en vanlig missuppfattning. De fattiga deltog i folkliga aktioner som stormningen av Bastiljen, men revolutionens tidiga ledarskap, de som formulerade kraven och drev igenom Nationalförsamlingen, kom från bourgeoisien: köpmän, advokater och intellektuella."
+        },
+        {
+          t: "Välbärgade borgare och liberal adel som var frustrerade över privilegiesystemets orättvisa och ineffektivitet.",
+          correct: true,
+          feedback: "Rätt! Bourgeoisien var ekonomiskt framgångsrik men politiskt blockerad av ett system där börd, inte talang, avgjorde allt. Tillsammans med liberal adel drev de igenom de tidiga reformerna; det var inte ett uppror underifrån utan ett maktskifte inom eliten."
+        },
+        {
+          t: "Unga militärofficerare som ville modernisera Frankrike och befria det från kyrkans och adelns inflytande.",
+          correct: false,
+          feedback: "Militären spelade ingen ledande roll i revolutionens inledande fas; officerskåren var tvärtom ofta lojal mot kungen. Det var civilbefolkningens borgerliga skikt, advokater, köpmän och pamflettister, som drev de politiska kraven, inte armén."
+        },
+        {
+          t: "Radikala präster som brutit med den katolska kyrkan och förespråkade ett sekulärt och jämlikt samhälle.",
+          correct: false,
+          feedback: "Kyrkan som institution var en del av det gamla systemet som revolutionen ville förändra, inte en drivkraft bakom den. Även om enstaka präster som Abbé Sieyès spelade viktiga roller, var det inte prästerskapet som kollektiv som ledde revolutionen; tvärtom konfiskerades kyrkans egendomar 1789."
+        }
+      ]
+    },
+    {
+      q: "Vad hände med Robespierre i slutet av terrorväldet sommaren 1794?",
+      opts: [
+        {
+          t: "Han flydde förklätd till Österrike tillsammans med delar av det uppbrutna Välfärdsutskottets ledamöter.",
+          correct: false,
+          feedback: "Robespierre flydde inte. Han greps i Nationalkonventet den 27 juli 1794 och hade inte möjlighet att fly. Att söka skydd utomlands hade dessutom inneburit att bekräfta anklagelserna om förräderi; det var otänkbart för en man som kallade sig \"den omutlige\"."
+        },
+        {
+          t: "Han arresterades av sina egna kollegor i Nationalkonventet och guillotinerades dagen efter greppet.",
+          correct: true,
+          feedback: "Rätt! Den 9 thermidor greps Robespierre av konventsledamöter som fruktade att de själva stod på tur. Han guillotinerades nästa dag utan rättegång, precis som han hade låtit göra med tusentals andra. Terrorn vände sig mot sin upphovsman."
+        },
+        {
+          t: "Han avgick frivilligt och överlämnade makten till Direktoriet efter att ha erkänt terrorns överdrifter.",
+          correct: false,
+          feedback: "Robespierre avgick inte frivilligt och erkände aldrig terrorns överdrifter; han försvarade den ända till slutet som en nödvändig och dygdig politik. Det var hans kollegor som agerade, inte han själv. Direktoriet bildades dessutom först ett drygt år efter hans avrättning."
+        },
+        {
+          t: "Han dog i fängelset av sjukdom innan rättegången hann inledas och domen verkställas officiellt.",
+          correct: false,
+          feedback: "Robespierre dog inte av sjukdom. Han avrättades genom guillotinen den 28 juli 1794, dagen efter sin arrestering. Det skyndades medvetet på, för hans motståndare ville inte ge honom tid att organisera ett motdrag eller tala inför domstol."
+        }
+      ]
+    },
+    {
+      q: "Varför ansåg Robespierre och jakobinerna att terrorväldet var nödvändigt?",
+      opts: [
+        {
+          t: "De ville personligen hämnas på de adliga klasser som hade förnedrat dem och stängt dem ute från makten.",
+          correct: false,
+          feedback: "Robespierre drevs inte av personlig hämnd; han kom faktiskt från en hyfsat respekterad familj och hade aldrig misshandlats av adeln. Han motiverade terrorn konsekvent i abstrakta termer om dygd och republikens överlevnad, inte i termer av personliga uppgörelser."
+        },
+        {
+          t: "De ansåg att revolutionen krävde ordning och disciplin för att inte degenerera till kaos och anarkiska uppror.",
+          correct: false,
+          feedback: "Ordning och disciplin var ett argument för terrorn, men det var inte det centrala motivet. Robespierre motiverade terrorn i termer av yttre och inre hot mot republiken; det var en krigslogik, inte en polisstrategi. Utan hotet om inbördeskrig och invasion hade terrorn svårare att motiveras."
+        },
+        {
+          t: "De såg terrorn som ett desparat försvar av republiken mot inbördeskrig och utländska invasioner utifrån.",
+          correct: true,
+          feedback: "Rätt! Frankrike kämpade 1793–1794 mot inbördeskrig i Vendée och invasion från Österrike, Preussen och England på en och samma gång. Robespierre motiverade terrorn som ett kirurgiskt nödgrepp; utan det, hävdade han, skulle revolutionen krossas. Det gör terrorn förklarlig, om än inte försvarbar."
+        },
+        {
+          t: "De ville skrämma hela Europa och visa att den franska revolutionen inte kunde stoppas av monarkernas allianer.",
+          correct: false,
+          feedback: "Terrorn riktades primärt inåt, mot inre fiender, verkliga eller inbillade, och inte som ett utrikespolitiskt budskap till Europa. Att avskräcka utländska monarker var snarare en bieffekt. Robespierre talade om att rena republiken inifrån, inte om att imponera på omvärlden."
+        }
+      ]
+    }
+  ];
+
+  let current = 0;
+  let score = 0;
+  let answered = false;
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // Shuffle options once on load, preserve shuffled order
+  let shuffled = buildShuffled();
+
+  function buildShuffled() {
+    return shuffle([...questions]).map(q => ({ ...q, opts: shuffle([...q.opts]) }));
+  }
+
+  function renderQuestion() {
+    const q = shuffled[current];
+    answered = false;
+
+    document.getElementById('quiz-counter').textContent = `Fråga ${current + 1} av ${shuffled.length}`;
+    document.getElementById('quiz-fill').style.width = `${(current / shuffled.length) * 100}%`;
+    document.getElementById('quiz-q').textContent = q.q;
+
+    const optsEl = document.getElementById('quiz-opts');
+    optsEl.innerHTML = '';
+    const letters = ['A', 'B', 'C', 'D'];
+
+    q.opts.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-option';
+      btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt.t}</span>`;
+      btn.onclick = () => selectAnswer(opt, btn, q);
+      optsEl.appendChild(btn);
+    });
+
+    const fb = document.getElementById('quiz-feedback');
+    fb.className = 'quiz-feedback';
+    fb.innerHTML = '';
+
+    const nextBtn = document.getElementById('quiz-next');
+    nextBtn.disabled = true;
+    nextBtn.textContent = current < shuffled.length - 1 ? 'Nästa fråga →' : 'Se resultatet →';
+  }
+
+  function selectAnswer(opt, btn, q) {
+    if (answered) return;
+    answered = true;
+
+    document.querySelectorAll('.quiz-option').forEach(b => {
+      b.disabled = true;
+      const idx = [...b.parentElement.children].indexOf(b);
+      if (q.opts[idx].correct) b.classList.add('correct');
+    });
+
+    if (opt.correct) {
+      score++;
+      btn.classList.add('correct');
+    } else {
+      btn.classList.add('wrong');
+    }
+
+    showFeedback(opt.correct, opt.feedback);
+    document.getElementById('quiz-next').disabled = false;
+  }
+
+  function showFeedback(correct, text) {
+    const fb = document.getElementById('quiz-feedback');
+    fb.innerHTML = `<strong>${correct ? '✓ Rätt' : '✗ Inte riktigt'}</strong>${text}`;
+    fb.className = 'quiz-feedback show';
+  }
+
+  function nextQuestion() {
+    current++;
+    if (current >= shuffled.length) {
+      showResult();
+    } else {
+      renderQuestion();
+    }
+  }
+
+  function showResult() {
+    document.getElementById('quiz-body').style.display = 'none';
+    document.getElementById('quiz-fill').style.width = '100%';
+    const result = document.getElementById('quiz-result');
+    result.classList.add('show');
+    document.getElementById('result-score').textContent = score;
+
+    const verdicts = [
+      [0, 2, "Revolutionen kräver sin tribut. Fortsätt läsa!"],
+      [3, 4, "Bra kämpat, du börjar förstå revolutionens logik."],
+      [5, 5, "Imponerande! Robespierre hade anlitat dig."],
+      [6, 6, "Perfekt! Du tillhör Nationalförsamlingens finaste."]
+    ];
+    const v = verdicts.find(([lo, hi]) => score >= lo && score <= hi);
+    document.getElementById('result-verdict').textContent = v ? v[2] : '';
+  }
+
+  function resetQuiz() {
+    current = 0; score = 0;
+    shuffled = buildShuffled();
+    document.getElementById('quiz-body').style.display = '';
+    document.getElementById('quiz-result').classList.remove('show');
+    renderQuestion();
+  }
+
+  renderQuestion();
+</script>
+</body>
+</html>
