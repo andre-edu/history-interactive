@@ -1,27 +1,28 @@
 <!DOCTYPE html>
+
 <html lang="sv">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tysklands snabba industrialisering - Interaktiv Guide</title>
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tysklands snabba industrialisering - Interaktiv Guide</title>
+<style>
         @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Sans+Pro:wght@400;600;700&display=swap');
         
         :root {
-            --primary-color: #2E4057;
-            --secondary-color: #73858C;
-            --accent-color: #D97D54;
-            --steel-color: #4A5D6A;
-            --iron-color: #6C7B7F;
-            --coal-color: #2C3E50;
-            --success-color: #27AE60;
-            --warning-color: #E67E22;
-            --text-color: #2C3E50;
-            --bg-color: #FEFEFE;
-            --card-bg: #F8F9FA;
-            --border-color: #BDC3C7;
-            --shadow: 0 4px 15px rgba(46, 64, 87, 0.12);
-            --industrial-gradient: linear-gradient(135deg, #2E4057 0%, #73858C 100%);
+            --primary-color: #1A1A1A;
+            --secondary-color: #555555;
+            --accent-color: #C9A84C;
+            --steel-color: #444444;
+            --iron-color: #666666;
+            --coal-color: #1A1A1A;
+            --success-color: #2E7D32;
+            --warning-color: #8B1A1A;
+            --text-color: #1A1A1A;
+            --bg-color: #FAF8F4;
+            --card-bg: #F5F2EC;
+            --border-color: #D4C9A8;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+            --industrial-gradient: linear-gradient(135deg, #1A1A1A 0%, #3D1A1A 100%);
         }
 
         * {
@@ -34,7 +35,7 @@
             font-family: 'Source Sans Pro', sans-serif;
             line-height: 1.7;
             color: var(--text-color);
-            background: linear-gradient(135deg, #fefefe 0%, #f5f7fa 100%);
+            background: linear-gradient(135deg, #FAF8F4 0%, #F0EBE0 100%);
             min-height: 100vh;
         }
 
@@ -100,6 +101,56 @@
             transition: width 0.6s ease;
         }
 
+        .objectives-section {
+            background: #FDF8EC;
+            border: 1.5px solid #C9A84C;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .objectives-header {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .objectives-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .objectives-list li {
+            font-size: 1rem;
+            padding: 0.45rem 0 0.45rem 1.8rem;
+            border-bottom: 0.5px solid #D4C9A8;
+            position: relative;
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
+
+        .objectives-list li:last-child {
+            border-bottom: none;
+        }
+
+        .objectives-list li::before {
+            content: '';
+            position: absolute;
+            left: 0.35rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--accent-color);
+        }
+
         .content-section {
             background: var(--card-bg);
             padding: 2.5rem;
@@ -129,55 +180,171 @@
         p {
             margin-bottom: 1.3rem;
             font-size: 1.05rem;
-            text-align: justify;
         }
 
-        .timeline {
+        /* ── Horizontal proportional timeline ── */
+        .htl-wrapper {
+            margin: 2.5rem 0 1rem;
+            user-select: none;
+        }
+
+        .htl-scale {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: var(--steel-color);
+            margin-bottom: 0.3rem;
+            padding: 0 0;
+        }
+
+        .htl-track {
             position: relative;
-            padding-left: 3rem;
-            margin: 2rem 0;
+            height: 160px;
         }
 
-        .timeline::before {
-            content: '';
+        .htl-bar {
             position: absolute;
-            left: 1.5rem;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--accent-color);
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-color), #8B1A1A);
+            border-radius: 2px;
+            transform: translateY(-50%);
         }
 
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2.5rem;
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin-left: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .timeline-item::before {
-            content: '';
+        .htl-event {
             position: absolute;
-            left: -2rem;
-            top: 2rem;
-            width: 16px;
-            height: 16px;
-            background: var(--accent-color);
+            top: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .htl-above { flex-direction: column-reverse; }
+        .htl-below { flex-direction: column; }
+
+        .htl-dot {
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
-            border: 4px solid white;
+            background: var(--accent-color);
+            border: 3px solid white;
             box-shadow: 0 0 0 2px var(--accent-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+            flex-shrink: 0;
+            z-index: 2;
         }
 
-        .date-badge {
-            background: var(--industrial-gradient);
-            color: white;
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
+        .htl-dot-end {
+            background: #8B1A1A;
+            box-shadow: 0 0 0 2px #8B1A1A;
+        }
+
+        .htl-diamond {
+            width: 14px;
+            height: 14px;
+            background: white;
+            border: 3px solid var(--primary-color);
+            transform: rotate(45deg);
+            box-shadow: 0 0 0 2px var(--primary-color);
+            transition: transform 0.2s;
+            flex-shrink: 0;
+            z-index: 2;
+        }
+
+        .htl-event:hover .htl-dot,
+        .htl-event.active .htl-dot { transform: scale(1.4); box-shadow: 0 0 0 3px var(--accent-color); }
+        .htl-event:hover .htl-diamond,
+        .htl-event.active .htl-diamond { transform: rotate(45deg) scale(1.35); }
+
+        .htl-stem {
+            width: 2px;
+            background: var(--border-color);
+            flex-shrink: 0;
+        }
+        .htl-stem-up   { height: 28px; }
+        .htl-stem-down { height: 28px; }
+
+        .htl-label { text-align: center; }
+        .htl-label-up   { margin-bottom: 2px; }
+        .htl-label-down { margin-top: 2px; }
+
+        .htl-year {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            white-space: nowrap;
+        }
+
+        .htl-name {
+            font-size: 0.72rem;
+            color: var(--steel-color);
+            white-space: nowrap;
+        }
+
+        .htl-endpoint {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Detail panels */
+        .htl-details { margin-top: 0.5rem; }
+
+        .htl-detail {
+            display: none;
+            background: white;
+            border: 1.5px solid var(--accent-color);
+            border-radius: 10px;
+            overflow: hidden;
+            animation: htlSlide 0.25s ease;
+        }
+
+        .htl-detail.open { display: block; }
+
+        @keyframes htlSlide {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .htl-detail-inner {
+            padding: 1.4rem 1.8rem;
+        }
+
+        .htl-detail-year {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        .htl-detail-inner h4 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin: 0 0 0.7rem;
+        }
+
+        .htl-detail-inner p {
+            font-size: 0.95rem;
+            color: var(--steel-color);
+            margin: 0;
+            line-height: 1.65;
+        }
+
+        @media (max-width: 768px) {
+            .htl-name { display: none; }
+            .htl-stem { height: 20px; }
+        }
             font-weight: 600;
             display: inline-block;
             margin-bottom: 1rem;
@@ -192,15 +359,56 @@
 
         .factor-card {
             background: white;
-            padding: 2rem;
             border-radius: 12px;
             border-top: 4px solid var(--accent-color);
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .factor-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.13);
+        }
+
+        .factor-card.open {
+            box-shadow: 0 6px 20px rgba(201,168,76,0.2);
+        }
+
+        .factor-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.3rem 1.4rem;
+        }
+
+        .factor-header h3 {
+            flex: 1;
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .factor-chevron {
+            flex-shrink: 0;
+            color: var(--accent-color);
+            transition: transform 0.35s ease;
+        }
+
+        .factor-card.open .factor-chevron {
+            transform: rotate(180deg);
+        }
+
+        .factor-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+            padding: 0 1.4rem;
+        }
+
+        .factor-card.open .factor-body {
+            max-height: 700px;
+            padding: 0 1.4rem 1.4rem;
         }
 
         .factor-icon {
@@ -212,7 +420,7 @@
             justify-content: center;
             font-size: 1.5rem;
             color: white;
-            margin-bottom: 1rem;
+            flex-shrink: 0;
             background: var(--industrial-gradient);
         }
 
@@ -240,6 +448,26 @@
             color: var(--steel-color);
         }
 
+        .pause-prompt {
+            border-top: 2px solid var(--accent-color);
+            padding: 1.2rem 1.5rem;
+            margin: 2.5rem 0 0 0;
+            background: #FDF8EC;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .pause-prompt p {
+            font-size: 0.95rem;
+            color: var(--steel-color);
+            font-style: italic;
+            margin: 0;
+        }
+
+        .pause-prompt strong {
+            color: var(--accent-color);
+            font-style: normal;
+        }
+
         .quiz-container {
             background: white;
             border: 3px solid var(--primary-color);
@@ -252,10 +480,13 @@
         .quiz-header {
             background: var(--industrial-gradient);
             color: white;
-            padding: 1.5rem 2rem;
+            padding: 1.2rem 2rem;
             border-radius: 10px;
             margin-bottom: 2rem;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
         }
 
         .quiz-header h3 {
@@ -263,6 +494,25 @@
             margin: 0;
             font-size: 1.4rem;
             font-family: 'Oswald', sans-serif;
+        }
+
+        .quiz-reset-btn {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.35);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.35rem 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.2s;
+            flex-shrink: 0;
+            letter-spacing: 0.02em;
+        }
+
+        .quiz-reset-btn:hover {
+            background: rgba(255,255,255,0.28);
         }
 
         .question {
@@ -368,6 +618,23 @@
             box-shadow: 0 4px 12px rgba(46, 64, 87, 0.3);
         }
 
+        .btn-secondary {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-color);
+            background: var(--card-bg);
+            box-shadow: none;
+        }
+
+        .matching-wrapper {
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
         .matching-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -432,6 +699,139 @@
             font-weight: 600;
         }
 
+        /* ── Bloom taxonomy badges ── */
+        .bloom-badge {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            border: 1px solid transparent;
+        }
+
+        .bloom-minnas   { background: #EAF3FB; color: #1A5276; border-color: #AED6F1; }
+        .bloom-forsta   { background: #EAFAF1; color: #1E8449; border-color: #A9DFBF; }
+        .bloom-tillampa { background: #FEF9E7; color: #7D6608; border-color: #F9E79F; }
+        .bloom-analysera{ background: #FEF0E7; color: #784212; border-color: #FAD7A0; }
+        .bloom-utvardera{ background: #FDEDEC; color: #922B21; border-color: #F5B7B1; }
+
+        .bloom-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding: 0.9rem 1.2rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .bloom-legend-title {
+            width: 100%;
+            font-size: 0.78rem;
+            color: var(--steel-color);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        /* ── Blur-reveal repetition cards ── */
+        .blur-section {
+            margin: 2.5rem 0;
+        }
+
+        .blur-heading {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 1.2rem;
+        }
+
+        .blur-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .blur-card {
+            background: white;
+            border: 1.5px solid var(--border-color);
+            border-top: 3px solid var(--accent-color);
+            border-radius: 10px;
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: box-shadow 0.2s, transform 0.2s;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .blur-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+        }
+
+        .blur-card.revealed {
+            border-top-color: var(--success-color);
+            cursor: default;
+        }
+
+        .blur-card.revealed:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .blur-term {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            line-height: 1.3;
+        }
+
+        .blur-def {
+            font-size: 0.85rem;
+            color: var(--steel-color);
+            line-height: 1.55;
+            filter: blur(5px);
+            transition: filter 0.4s ease;
+            flex: 1;
+            user-select: none;
+        }
+
+        .blur-card.revealed .blur-def {
+            filter: none;
+            user-select: text;
+        }
+
+        .blur-hint {
+            font-size: 0.75rem;
+            color: var(--accent-color);
+            font-style: italic;
+            text-align: center;
+            transition: opacity 0.3s;
+        }
+
+        .blur-card.revealed .blur-hint {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @media (max-width: 900px) {
+            .blur-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 560px) {
+            .blur-grid { grid-template-columns: 1fr; }
+        }
+
         .conclusion {
             background: var(--industrial-gradient);
             color: white;
@@ -448,343 +848,672 @@
             font-family: 'Oswald', sans-serif;
         }
 
+        .score-summary {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2rem 2.5rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .score-inner {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .score-circle {
+            flex-shrink: 0;
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: var(--industrial-gradient);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .score-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.6rem;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        .score-denom {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .score-text h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin-bottom: 0.4rem;
+        }
+
+        .score-text p {
+            margin-bottom: 0.8rem;
+            color: var(--steel-color);
+            font-size: 0.95rem;
+        }
+
+        .score-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .score-pill {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .pill-strong { background: #d4edda; color: #155724; }
+        .pill-ok     { background: #fff3cd; color: #856404; }
+        .pill-weak   { background: #f8d7da; color: #721c24; }
+
+        @media (max-width: 600px) {
+            .score-inner { flex-direction: column; text-align: center; }
+            .score-pills { justify-content: center; }
+        }
+
+        .keystat-panel {
+            background: var(--primary-color);
+            border-radius: 14px;
+            padding: 1.8rem 2rem;
+            margin: 2rem 0;
+            color: white;
+        }
+
+        .keystat-heading {
+            font-family: 'Oswald', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent-color);
+            margin-bottom: 1.4rem;
+        }
+
+        .keystat-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0;
+        }
+
+        .keystat-item {
+            padding: 0 1.4rem;
+            border-right: 1px solid rgba(255,255,255,0.12);
+        }
+
+        .keystat-item:first-child {
+            padding-left: 0;
+        }
+
+        .keystat-item:last-child {
+            border-right: none;
+        }
+
+        .keystat-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .keystat-unit {
+            font-size: 1.2rem;
+            font-weight: 400;
+            opacity: 0.85;
+        }
+
+        .keystat-label {
+            font-size: 0.82rem;
+            color: rgba(255,255,255,0.75);
+            line-height: 1.45;
+        }
+
+        @media (max-width: 900px) {
+            .keystat-grid { grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+            .keystat-item { border-right: none; padding: 0; }
+        }
+
+        .chart-block {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem 1.8rem 1.2rem;
+            margin: 1.8rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+
+        .chart-block--half {
+            max-width: 420px;
+        }
+
+        .chart-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 0.2rem;
+        }
+
+        .chart-subtitle {
+            font-size: 0.78rem;
+            color: var(--steel-color);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
             .container { padding: 1rem; }
             h1 { font-size: 2.5rem; }
             .factors-grid { grid-template-columns: 1fr; }
             .matching-container { grid-template-columns: 1fr; }
-            .timeline { padding-left: 2rem; }
+            .htl-name { display: none; }
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Tysklands snabba industrialisering</h1>
-            <div class="subtitle">Från splittrat till europeisk stormakt 1834-1914</div>
-        </header>
+<div class="container">
+<header>
+<h1>Tysklands snabba industrialisering</h1>
+<div class="subtitle">Från splittrat till europeisk stormakt 1834-1914</div>
+</header>
+<div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.4rem;">
+<span style="font-size:0.85rem; color:var(--steel-color); font-weight:600; letter-spacing:0.03em;">FRAMSTEG</span>
+<span id="progressLabel" style="font-size:0.85rem; color:var(--accent-color); font-weight:600;"></span>
+</div>
+<div class="progress-bar">
+<div class="progress-fill" id="progressFill"></div>
+</div>
+<section class="objectives-section">
+<div class="objectives-header">
+<svg aria-hidden="true" fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="20"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Efter den här genomgången ska du kunna:
+            </div>
+<ul class="objectives-list">
+<li>Förklara varför Zollverein 1834 var avgörande för Tysklands industrialisering, långt innan politisk ening</li>
+<li>Beskriva hur Tysklands "sena start" blev en strategisk fördel i den andra industriella revolutionen</li>
+<li>Redogöra för minst tre strukturella faktorer (ekonomiska, politiska, sociala) bakom det tyska industriella genombrottet</li>
+<li>Argumentera mot vanliga missuppfattningar, t.ex. att naturresurser ensamt förklarar Tysklands framgång</li>
+</ul>
+</section>
+<section class="content-section">
+<h2>Introduktion: Det tyska "industriella miraklet"</h2>
+<p>Tysklands snabba industriella framväxt under slutet av 1800-talet och början av 1900-talet var resultatet av en unik kombination av politisk ening, statlig styrning, teknologisk innovation och nya affärsstrukturer. Detta "industriella mirakel" förändrade helt Europas maktbalans på bara några decennier.</p>
 
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
+<div class="keystat-panel">
+    <div class="keystat-heading">Nyckeltal att ha i minnet</div>
+    <div class="keystat-grid">
+        <div class="keystat-item">
+            <div class="keystat-number">40 <span class="keystat-unit">år</span></div>
+            <div class="keystat-label">Från tullunion till europeisk industrijätte (1834-1871)</div>
         </div>
-
-        <section class="content-section">
-            <h2>⚙️ Introduktion: Det tyska "industriella miraklet"</h2>
-            
-            <p>Tysklands snabba industriella framväxt under slutet av 1800-talet och början av 1900-talet var resultatet av en unik kombination av politisk ening, statlig styrning, teknologisk innovation och nya affärsstrukturer. Detta "industriella mirakel" förändrade helt Europas maktbalans på bara några decennier.</p>
-
-            <div class="stats-box">
-                <span class="stat-highlight">40 år</span>
-                <div class="stat-context">Från splittrad tullunion (1834) till europeisk industrijätte (1870-talet)</div>
-            </div>
-
-            <h3>🏭 Från splittring till enhet</h3>
-            <p>När <strong>Zollverein (Tullföreningen)</strong> etablerades 1834 under preussisk ledning skapades något revolutionerande: en hemmamarknad på nästan <strong>34 miljoner människor</strong> där inre tullar avskaffades. Detta var decennier före den politiska enigheten 1871. Denna enorma marknad stimulerade handel och ekonomisk aktivitet på ett sätt som de splittrade tyska staterna aldrig kunnat uppnå individuellt.</p>
-
-            <p>När Tyskland sedan enades politiskt 1871 efter segern i fransk-tyska kriget, blev landet Europas ledande militära och industriella makt. Men grunden för denna framgång hade lagts mycket tidigare genom ekonomisk integration.</p>
-
-            <h3>⚗️ Andra industriella revolutionen - Tysklands strategiska fördel</h3>
-            <p>Tyskland tog ledningen i den <strong>andra industriella revolutionen</strong> (cirka 1870-1914), som präglades av stål, kemikalier och elektricitet - inte textil och järn som den första industriella revolutionen (1760-1840). Detta var en avgörande strategisk fördel eftersom Tyskland inte behövde konkurrera med Storbritanniens redan etablerade dominans inom textil och traditionell järnproduktion.</p>
-
-            <p>Istället kunde Tyskland <strong>hoppa över gamla teknologier</strong> och satsa direkt på de nyaste metoderna. Genom att snabbt adoptera nya processer för massproduktion av stål (som Bessemer- och Siemens-Martin-processerna) blev Tyskland världsledande. År 1901 producerade Tyskland nästan hälften så mycket stål som Storbritannien trots att de startat industrialiseringen decennier senare.</p>
-
-            <h3>🔬 Kemikalier och elektricitet - nya världsmarknader</h3>
-            <p>Inom den <strong>kemiska industrin</strong> kontrollerade Tyskland omkring <strong>90% av världsmarknaden</strong> före första världskriget. Detta var möjligt eftersom kemisk industri var ny och Tyskland kunde investera massivt i forskning och utveckling utan att behöva konkurrera med etablerade brittiska företag.</p>
-
-            <p>Tyska forskare och uppfinnare gjorde landet till världsledare även inom elektricitet och precisionsindustri. Detta visade att <strong>organisationen och strategiska valen var viktigare än bara naturresurser</strong> - många länder hade kol och järn, men Tyskland organiserade sin industri smartare.</p>
-
-            <h3>🏴󠁧󠁢󠁥󠁮󠁧󠁿 Tyskland vs Storbritannien - två olika modeller</h3>
-            <p>Till skillnad från <strong>den brittiska laissez-faire-modellen</strong> (där staten inte ingrep i ekonomin) spelade den tyska staten en mycket mer aktiv roll. Den preussiska staten subventionerade järnvägsbyggen, drev gruvor och planerade strategiskt, medan Storbritannien lät marknaden styra sig själv.</p>
-
-            <p>Tyska <strong>investeringsbanker</strong> mobiliserade också enorma kapitalbelopp för långsiktiga industriella satsningar, medan brittiska banker fokuserade mer på handel och kortfristig finansiering. Detta gav Tyskland fördelar när nya industrier krävde stora initiala investeringar.</p>
-
-            <div class="highlight-box">
-                <strong>Viktiga strategiska val:</strong> Tyskland valde att satsa på nya, växande industrier istället för att konkurrera med Storbritannien inom textil och traditionell järnproduktion. Kombinerat med mer statlig planering och storskaliga affärsstrukturer blev detta en vinnande strategi som visade att <strong>timing, organisation och strategi var viktigare än bara naturresurser</strong>.
-            </div>
-        </section>
-
-        <!-- Quiz 1: After 25% -->
-        <div class="quiz-container">
-            <div class="quiz-header">
-                <h3>🧠 Första kontrollen - Grundförutsättningar</h3>
-            </div>
-            
-            <div class="question">
-                <h4>1. Tyskland enades politiskt 1871, men vad hade redan skapats 1834 som lade grunden för industriell utveckling?</h4>
-                <div class="options">
-                    <div class="option" data-question="1" data-option="a">En gemensam armé och militärindustri</div>
-                    <div class="option" data-question="1" data-option="b">Zollverein - en tullunion som skapade en stor hemmamarknad</div>
-                    <div class="option" data-question="1" data-option="c">Ett gemensamt järnvägssystem</div>
-                    <div class="option" data-question="1" data-option="d">En centraliserad nationalbank</div>
-                </div>
-                <div class="feedback" id="feedback1"></div>
-            </div>
-
-            <div class="question">
-                <h4>2. En elev säger: "Tyskland blev snabbt industrialiserat eftersom de bara kopierade Storbritanniens metoder." Vad visar att detta är fel?</h4>
-                <div class="options">
-                    <div class="option" data-question="2" data-option="a">Tyskland fokuserade på nya industrier som stål, kemikalier och elektricitet</div>
-                    <div class="option" data-question="2" data-option="b">Tyskland använde inte ångmaskiner</div>
-                    <div class="option" data-question="2" data-option="c">Tyskland hade inte tillgång till kol</div>
-                </div>
-                <div class="feedback" id="feedback2"></div>
-            </div>
-
-            <div class="question">
-                <h4>3. Vilken storlek hade den tyska hemmamarknaden som skapades genom Zollverein?</h4>
-                <div class="options">
-                    <div class="option" data-question="3" data-option="a">15 miljoner människor</div>
-                    <div class="option" data-question="3" data-option="b">34 miljoner människor</div>
-                    <div class="option" data-question="3" data-option="c">50 miljoner människor</div>
-                    <div class="option" data-question="3" data-option="d">20 miljoner människor</div>
-                </div>
-                <div class="feedback" id="feedback3"></div>
-            </div>
-        </section>
-
-        <section class="content-section">
-            <h2>🏭 De sex nyckelfaktorerna</h2>
-            
-            <div class="factors-grid">
-                <div class="factor-card">
-                    <div class="factor-icon">🏛️</div>
-                    <h3>1. Ekonomisk och politisk ening</h3>
-                    <p><strong>Zollverein (1834):</strong> Tullföreningen under preussisk ledning avskaffade inre tullar och skapade en sammanhängande hemmamarknad på <strong>34 miljoner människor</strong> - en av Europas största enhetliga marknader. Detta stimulerade handel och ekonomisk aktivitet decennier före politisk ening.</p>
-                    <p><strong>Riksbildningen (1871):</strong> Den politiska enigheten efter fransk-tyska kriget skapade en stabil nationalstat som blev Europas ledande militära och industriella makt. Kombinationen av ekonomisk och politisk ening var unik i Europa.</p>
-                </div>
-
-                <div class="factor-card">
-                    <div class="factor-icon">⚗️</div>
-                    <h3>2. Fokus på "nya" industrier</h3>
-                    <p><strong>Andra industriella revolutionen:</strong> Tyskland satsade strategiskt på stål, kemikalier och elektricitet istället för att konkurrera inom textil och traditionell järnproduktion som Storbritannien dominerade.</p>
-                    <p><strong>Konkreta resultat:</strong> Genom Bessemer- och Siemens-Martin-processerna blev Tyskland världsledande i stålproduktion. År 1901 producerade Tyskland nästan hälften så mycket stål som Storbritannien. Inom kemikalier kontrollerade Tyskland <strong>90% av världsmarknaden</strong> före första världskriget.</p>
-                </div>
-
-                <div class="factor-card">
-                    <div class="factor-icon">🏦</div>
-                    <h3>3. Staten och bankernas roll</h3>
-                    <p><strong>Aktiv statlig politik:</strong> Till skillnad från den brittiska laissez-faire-modellen spelade den tyska (särskilt preussiska) staten en direkt roll genom att subventionera järnvägsbyggen och driva gruvor. Staten gav senare utrymme åt privata entreprenörer men behöll strategisk kontroll.</p>
-                    <p><strong>Investeringsbanker:</strong> Specialiserade affärsbanker mobiliserade enorma kapitalbelopp och erbjöd långfristiga lån med låg ränta till industriella entreprenörer. Detta var avgörande eftersom de nya industrierna krävde mycket större investeringar än tidigare.</p>
-                </div>
-
-                <div class="factor-card">
-                    <div class="factor-icon">🏢</div>
-                    <h3>4. Storskaliga affärsstrukturer</h3>
-                    <p><strong>Karteller och koncerner:</strong> Tyskland utvecklade ett system med stora, koncentrerade företag som ofta gick samman i karteller för att kontrollera priser och produktion. Ett exempel är <strong>kolsyndikatet i Rhenland-Westfalen som kontrollerade 98% av den tyska kolmarknaden</strong>.</p>
-                    <p><strong>Vertikal integration:</strong> Stora företag som stålproducenten Krupp kontrollerade hela produktionskedjan från råmaterial till färdiga varor. Detta gav enorma effektivitetsfördelar och marknadskontrroll.</p>
-                </div>
-
-                <div class="factor-card">
-                    <div class="factor-icon">🚂</div>
-                    <h3>5. Infrastruktur och utbildning</h3>
-                    <p><strong>Järnvägsnätet:</strong> Efter 1835 skedde en extremt snabb utbyggnad av järnvägen som knöt ihop de olika delarna av landet. Detta möjliggjorde transport av resurser som kol och järn till växande städer och fabriker, samt distribution av färdiga varor till hela hemmamarknaden.</p>
-                    <p><strong>Vetenskap och expertis:</strong> Den industriella tillväxten gynnades av hög nivå på teknisk utbildning och medveten satsning på forskning och utveckling inom industrin. Tyska universitet blev ledande inom teknisk och kemisk forskning.</p>
-                </div>
-
-                <div class="factor-card">
-                    <div class="factor-icon">👥</div>
-                    <h3>6. Social och demografisk utveckling</h3>
-                    <p><strong>Befolkningsexplosion:</strong> Mellan 1871 och 1911 ökade Tysklands befolkning med nästan <strong>60%</strong>, vilket gav både en stor arbetskraftsreserv och en växande marknad för konsumentvaror. Detta demografiska "bonusdividend" var avgörande för industrialiseringen.</p>
-                    <p><strong>Sociallagstiftning:</strong> För att dämpa social oro och säkra en lojal arbetskraft införde Bismarck världens första omfattande socialförsäkringssystem - sjuk-, olycksfalls- och ålderdomsförsäkring. Detta stabiliserade arbetsmarknaden och minskade konflikter.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="content-section">
-            <h2>🏢 Unika affärsstrukturer - karteller och koncerner</h2>
-            
-            <p>En av de mest säregna aspekterna av tysk industrialisering var utvecklingen av <strong>karteller och storskaliga koncerner</strong>. Till skillnad från den brittiska modellen med många konkurrerande småföretag utvecklade Tyskland ett system med enorma, koncentrerade företag.</p>
-
-            <h3>📊 Kolsyndikatet - 98% marknadskontroll</h3>
-            <p>Det mest dramatiska exemplet var <strong>kolsyndikatet i Rhenland-Westfalen som kontrollerade 98% av den tyska kolmarknaden</strong>. Detta var inte statlig socialism, utan privata företag som gick samman för att kontrollera priser och produktion. Denna koncentration gav enorma effektivitetsfördelar och möjliggjorde massiva investeringar.</p>
-
-            <p>Kartellerna visade att <strong>tysk affärsorganisation fokuserade på storskalighet och kontroll</strong> istället för fri konkurrens. Detta gav Deutschland konkurrensfördelar på världsmarknaden eftersom de kunde planera långsiktigt och investera enorma summor.</p>
-
-            <h3>⚙️ Vertikal integration - från råvara till färdig produkt</h3>
-            <p>Stora företag som <strong>stålproducenten Krupp kontrollerade hela produktionskedjan</strong> från råmaterial till färdiga varor. Detta betydde att de ägde gruvor, transportmedel, fabriker och distributionskanaler - en helt annan modell än Storbritanniens specialiserade småföretag.</p>
-
-            <div class="stats-box">
-                <span class="stat-highlight">98%</span>
-                <div class="stat-context">av tysk kolproduktion kontrollerades av ett enda syndikatet</div>
-            </div>
-        </section>
-
-        <section class="content-section">
-            <h2>👥 Demografisk explosion och social stabilitet</h2>
-            
-            <p>Tysklands industrialisering gynnades enormt av demografiska förändringar och innovativ sociallagstiftning som stabiliserade arbetsmarknaden.</p>
-
-            <h3>📈 60% befolkningsökning på 40 år</h3>
-            <p>Mellan 1871 och 1911 ökade Tysklands befolkning med nästan <strong>60%</strong>. Detta gav två avgörande fördelar: en enorm arbetskraftsreserv för de nya fabrikerna och en växande hemmamarknad för konsumentvaror. Utan denna demografiska "bonus" hade industrialiseringen varit mycket svårare.</p>
-
-            <h3>🛡️ Bismarcks socialförsäkringar - världens första</h3>
-            <p>För att dämpa social oro och säkra en lojal arbetskraft införde <strong>Bismarck världens första omfattande socialförsäkringssystem</strong> - sjuk-, olycksfalls- och ålderdomsförsäkring. Detta var revolutionerande och gav Tyskland en stabil, lojal arbetskraft som inte gick ut i strejk lika ofta som i andra länder.</p>
-
-            <p>Sociallagstiftningen visade hur Tyskland kombinerade industriell modernisering med social innovation - något som bidrog till stabiliteten under den snabba förändringen.</p>
-
-            <div class="highlight-box">
-                <strong>Demografisk fördel:</strong> Kombinationen av snabb befolkningstillväxt och social trygghet gav Tyskland både arbetskraft och hemmamarknad - två nyckelkomponenter för industriell framgång.
-            </div>
-        </section>
-            
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="date-badge">1834</div>
-                    <h3>Zollverein etableras</h3>
-                    <p>Preussen leder skapandet av en tullunion som avskaffar handelshinder mellan tyska stater och skapar en hemmamarknad på 34 miljoner människor.</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="date-badge">1835-1870</div>
-                    <h3>Järnvägsrevolution</h3>
-                    <p>Snabb utbyggnad av järnvägsnätet knyter ihop råvarukällor med växande industristäder. Staten subventionerar strategiskt viktiga linjer.</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="date-badge">1870-1890</div>
-                    <h3>Stålproduktionens genombrott</h3>
-                    <p>Tyskland adopterar snabbt Bessemer- och Siemens-Martin-processerna. År 1901 producerar Tyskland nästan hälften så mycket stål som Storbritannien.</p>
-                </div>
-                
-                <div class="timeline-item">
-                    <div class="date-badge">1880-1914</div>
-                    <h3>Kemisk och elektrisk dominans</h3>
-                    <p>Tyska företag kontrollerar 90% av världens kemiska marknad. Elektricitetsindustrin revolutionerar produktion och kommunikation.</p>
-                </div>
-            </div>
-
-            <div class="stats-box">
-                <span class="stat-highlight">90%</span>
-                <div class="stat-context">av världsmarknaden för kemikalier kontrollerades av Tyskland före 1914</div>
-            </div>
-        </section>
-
-        <!-- Quiz 2: After 60% -->
-        <div class="quiz-container">
-            <div class="quiz-header">
-                <h3>🧠 Fördjupning - Strukturella faktorer</h3>
-            </div>
-            
-            <div class="question">
-                <h4>4. Varför var det en fördel för Tyskland att komma senare till industrialiseringen än Storbritannien?</h4>
-                <div class="options">
-                    <div class="option" data-question="4" data-option="a">De kunde fokusera på nya teknologier istället för gamla industrier</div>
-                    <div class="option" data-question="4" data-option="b">De hade mer naturresurser än Storbritannien</div>
-                    <div class="option" data-question="4" data-option="c">De hade billigare arbetskraft</div>
-                    <div class="option" data-question="4" data-option="d">De hade större befolkning från början</div>
-                </div>
-                <div class="feedback" id="feedback4"></div>
-            </div>
-
-            <div class="question">
-                <h4>5. Vad skiljde den tyska staten från den brittiska när det gällde industriell utveckling?</h4>
-                <div class="options">
-                    <div class="option" data-question="5" data-option="a">Tyskland lät marknaden styra helt självt</div>
-                    <div class="option" data-question="5" data-option="b">Tyskland spelade en mer aktiv roll genom subventioner och planering</div>
-                    <div class="option" data-question="5" data-option="c">Tyskland förbjöd all privat företagsamhet</div>
-                </div>
-                <div class="feedback" id="feedback5"></div>
-            </div>
-
-            <div class="question">
-                <h4>6. Tyska kolsyndikatet kontrollerade 98% av kolmarknaden. Vad visar detta om tysk affärsorganisation?</h4>
-                <div class="options">
-                    <div class="option" data-question="6" data-option="a">Fri konkurrens och många små företag</div>
-                    <div class="option" data-question="6" data-option="b">Koncentration och kartellbildning för marknadskontroll</div>
-                    <div class="option" data-question="6" data-option="c">Statlig äganderätt över all industri</div>
-                    <div class="option" data-question="6" data-option="d">Internationell spridning av företag</div>
-                </div>
-                <div class="feedback" id="feedback6"></div>
-            </div>
-
-            <div class="question input-question">
-                <h4>7. Hur många procent ökade Tysklands befolkning mellan 1871 och 1911?</h4>
-                <input type="text" id="input7" placeholder="Ange procent utan %-tecken...">
-                <div class="feedback" id="feedback7"></div>
-                <button class="btn" onclick="checkInput(7, '60', ['sextio'])">Kontrollera svar</button>
-            </div>
-        </section>
-
-        <!-- Final Quiz -->
-        <div class="quiz-container">
-            <div class="quiz-header">
-                <h3>🎯 Slutlig analys - Helhetsbild</h3>
-            </div>
-            
-            <div class="question">
-                <h4>8. En elev påstår: "Tyskland industrialiserades snabbt bara för att de hade mer kol och järn än andra länder." Vad är det viktigaste argumentet mot detta?</h4>
-                <div class="options">
-                    <div class="option" data-question="8" data-option="a">Naturresurser var viktiga, men organisationen och strategiska valen var avgörande</div>
-                    <div class="option" data-question="8" data-option="b">Tyskland hade faktiskt mindre naturresurser än Storbritannien</div>
-                    <div class="option" data-question="8" data-option="c">Kol och järn var inte viktiga för industrialisering</div>
-                    <div class="option" data-question="8" data-option="d">Tyskland importerade alla sina råvaror</div>
-                </div>
-                <div class="feedback" id="feedback8"></div>
-            </div>
-
-            <div class="question">
-                <h4>9. Vilken var den viktigaste skillnaden mellan första och andra industriella revolutionen för Tysklands framgång?</h4>
-                <div class="options">
-                    <div class="option" data-question="9" data-option="a">Tyskland kunde fokusera på stål, kemikalier och elektricitet istället för textil</div>
-                    <div class="option" data-question="9" data-option="b">Tyskland använde inte ångkraft</div>
-                    <div class="option" data-question="9" data-option="c">Tyskland hade bättre transporter från början</div>
-                    <div class="option" data-question="9" data-option="d">Tyskland hade redan ett enhetligt politiskt system</div>
-                </div>
-                <div class="feedback" id="feedback9"></div>
-            </div>
-
-            <div class="question">
-                <h4>10. Matcha viktig faktor med dess specifika bidrag till tysk industrialisering:</h4>
-                <div class="matching-container">
-                    <div class="matching-list">
-                        <h5>Faktorer</h5>
-                        <div class="matching-item" data-match="a">Zollverein 1834</div>
-                        <div class="matching-item" data-match="b">Investeringsbanker</div>
-                        <div class="matching-item" data-match="c">Kartellbildning</div>
-                        <div class="matching-item" data-match="d">Bismarcks sociallagstiftning</div>
-                    </div>
-                    <div class="matching-list">
-                        <h5>Specifikt bidrag</h5>
-                        <div class="matching-item" data-match="1">Skapade stor hemmamarknad på 34 miljoner</div>
-                        <div class="matching-item" data-match="2">Mobiliserade kapital för stora investeringar</div>
-                        <div class="matching-item" data-match="3">Kontrollerade 98% av kolmarknaden</div>
-                        <div class="matching-item" data-match="4">Säkrade lojal och stabil arbetskraft</div>
-                    </div>
-                </div>
-                <div class="feedback" id="feedback10"></div>
-                <button class="btn" onclick="checkMatching()">Kontrollera matchning</button>
-            </div>
-
-            <div class="question">
-                <h4>11. Vad är den viktigaste lärdomen från Tysklands snabba industrialisering för förståelsen av ekonomisk utveckling?</h4>
-                <div class="options">
-                    <div class="option" data-question="11" data-option="a">Naturresurser är det enda som behövs</div>
-                    <div class="option" data-question="11" data-option="b">Strukturella faktorer, statens roll och strategiska val är avgörande</div>
-                    <div class="option" data-question="11" data-option="c">Industrialisering sker alltid automatiskt över tid</div>
-                    <div class="option" data-question="11" data-option="d">Endast fri marknad utan statlig inblandning fungerar</div>
-                </div>
-                <div class="feedback" id="feedback11"></div>
-            </div>
-
-            <div class="question">
-                <h4>12. Varför var tidpunkten (1834-1914) så viktig för Tysklands industriella framgång?</h4>
-                <div class="options">
-                    <div class="option" data-question="12" data-option="a">Det var då andra industriella revolutionen möjliggjorde fokus på nya industrier</div>
-                    <div class="option" data-question="12" data-option="b">Det var när första världskriget startade</div>
-                    <div class="option" data-question="12" data-option="c">Det var då demokratin infördes</div>
-                    <div class="option" data-question="12" data-option="d">Det var när alla andra länder slutade industrialisera</div>
-                </div>
-                <div class="feedback" id="feedback12"></div>
-            </div>
+        <div class="keystat-item">
+            <div class="keystat-number">34 <span class="keystat-unit">mn</span></div>
+            <div class="keystat-label">Människor i den hemmamarknad Zollverein skapade</div>
         </div>
-
-        <div class="conclusion">
-            <h3>⚙️ Slutsats: Lektioner från det tyska "miraklet"</h3>
-            <p>Tysklands snabba industrialisering visar hur strukturella fördelar, strategiska val och rätt timing kan skapa dramatisk ekonomisk förändring. Det var inte bara naturresurser eller tur - det var en kombination av ekonomisk ening, statlig planering, fokus på nya teknologier och innovativa affärsstrukturer som skapade Europas nya industrijätte.</p>
+        <div class="keystat-item">
+            <div class="keystat-number">60 <span class="keystat-unit">%</span></div>
+            <div class="keystat-label">Befolkningsökning i Tyskland 1871-1911</div>
+        </div>
+        <div class="keystat-item">
+            <div class="keystat-number">90 <span class="keystat-unit">%</span></div>
+            <div class="keystat-label">Av världsmarknaden för kemikalier kontrollerades av Tyskland 1914</div>
+        </div>
+        <div class="keystat-item">
+            <div class="keystat-number">98 <span class="keystat-unit">%</span></div>
+            <div class="keystat-label">Av tyska kolmarknaden kontrollerades av ett enda syndikatet</div>
         </div>
     </div>
+</div>
+<h3>Från splittring till enhet</h3>
+<p>När <strong>Zollverein (Tullföreningen)</strong> etablerades 1834 under preussisk ledning skapades något revolutionerande: en hemmamarknad på nästan <strong>34 miljoner människor</strong> där inre tullar avskaffades. Detta var decennier före den politiska enigheten 1871. Denna enorma marknad stimulerade handel och ekonomisk aktivitet på ett sätt som de splittrade tyska staterna aldrig kunnat uppnå individuellt.</p>
+<p>När Tyskland sedan enades politiskt 1871 efter segern i fransk-tyska kriget, blev landet Europas ledande militära och industriella makt. Men grunden för denna framgång hade lagts mycket tidigare genom ekonomisk integration.</p>
+<h3>Andra industriella revolutionen - Tysklands strategiska fördel</h3>
+<p>Tyskland tog ledningen i den <strong>andra industriella revolutionen</strong> (cirka 1870-1914), som präglades av stål, kemikalier och elektricitet - inte textil och järn som den första industriella revolutionen (1760-1840). Detta var en avgörande strategisk fördel eftersom Tyskland inte behövde konkurrera med Storbritanniens redan etablerade dominans inom textil och traditionell järnproduktion.</p>
+<p>Istället kunde Tyskland <strong>hoppa över gamla teknologier</strong> och satsa direkt på de nyaste metoderna. Genom att snabbt adoptera nya processer för massproduktion av stål (som Bessemer- och Siemens-Martin-processerna) blev Tyskland världsledande. År 1901 producerade Tyskland nästan hälften så mycket stål som Storbritannien trots att de startat industrialiseringen decennier senare.</p>
 
-    <script>
+<div class="chart-block">
+    <div class="chart-title">Stålproduktion 1870-1910 (miljoner ton)</div>
+    <div class="chart-subtitle">Källa: historiska uppskattningar, McNeill &amp; Parker</div>
+    <canvas id="steelChart" height="200"></canvas>
+</div>
+<h3>Kemikalier och elektricitet - nya världsmarknader</h3>
+<p>Inom den <strong>kemiska industrin</strong> kontrollerade Tyskland omkring <strong>90% av världsmarknaden</strong> före första världskriget. Detta var möjligt eftersom kemisk industri var ny och Tyskland kunde investera massivt i forskning och utveckling utan att behöva konkurrera med etablerade brittiska företag.</p>
+
+<div class="chart-block chart-block--half">
+    <div class="chart-title">Världsmarknadsandelar i kemikalier ca. 1913</div>
+    <canvas id="chemChart" height="220"></canvas>
+</div>
+<p>Tyska forskare och uppfinnare gjorde landet till världsledare även inom elektricitet och precisionsindustri. Detta visade att <strong>organisationen och strategiska valen var viktigare än bara naturresurser</strong> - många länder hade kol och järn, men Tyskland organiserade sin industri smartare.</p>
+<h3>󠁧󠁢󠁥󠁮󠁧󠁿 Tyskland vs Storbritannien - två olika modeller</h3>
+<p>Till skillnad från <strong>den brittiska laissez-faire-modellen</strong> (där staten inte ingrep i ekonomin) spelade den tyska staten en mycket mer aktiv roll. Den preussiska staten subventionerade järnvägsbyggen, drev gruvor och planerade strategiskt, medan Storbritannien lät marknaden styra sig själv.</p>
+<p>Tyska <strong>investeringsbanker</strong> mobiliserade också enorma kapitalbelopp för långsiktiga industriella satsningar, medan brittiska banker fokuserade mer på handel och kortfristig finansiering. Detta gav Tyskland fördelar när nya industrier krävde stora initiala investeringar.</p>
+<div class="highlight-box">
+<strong>Viktiga strategiska val:</strong> Tyskland valde att satsa på nya, växande industrier istället för att konkurrera med Storbritannien inom textil och traditionell järnproduktion. Kombinerat med mer statlig planering och storskaliga affärsstrukturer blev detta en vinnande strategi som visade att <strong>timing, organisation och strategi var viktigare än bara naturresurser</strong>.
+            </div>
+</section>
+<!-- Quiz 1: After 25% -->
+<div class="pause-prompt">
+<p><strong>Stanna upp.</strong> Innan du svarar: vad lade grunden för Tysklands industrialisering, och varför var ekonomisk integration viktigare än politisk ening? Tänk igenom det innan du scrollar vidare.</p>
+</div>
+<div class="bloom-legend">
+    <div class="bloom-legend-title">Frågorna är märkta efter kognitiv nivå (Blooms taxonomi):</div>
+    <span class="bloom-badge bloom-minnas">Minnas</span>
+    <span class="bloom-badge bloom-forsta">Förstå</span>
+    <span class="bloom-badge bloom-tillampa">Tillämpa</span>
+    <span class="bloom-badge bloom-analysera">Analysera</span>
+    <span class="bloom-badge bloom-utvardera">Utvärdera</span>
+</div>
+<div class="quiz-container">
+<div class="quiz-header">
+<h3>Första kontrollen - Grundförutsättningar</h3><button class="quiz-reset-btn" onclick="resetQuiz(this);event.stopPropagation()">Starta om</button>
+</div>
+<div class="question">
+<span class="bloom-badge bloom-minnas">Minnas</span>
+<h4>1. Tyskland enades politiskt 1871, men vad hade redan skapats 1834 som lade grunden för industriell utveckling?</h4>
+<div class="options">
+<div class="option" data-option="a" data-question="1">En gemensam armé och delad militärindustri</div>
+<div class="option" data-option="b" data-question="1">Zollverein, en tullunion med fri inre handel</div>
+<div class="option" data-option="c" data-question="1">Ett gemensamt järnvägsnät som band ihop staterna</div>
+<div class="option" data-option="d" data-question="1">En gemensam centralbank för alla tyska stater</div>
+</div>
+<div class="feedback" id="feedback1"></div>
+</div>
+<div class="question">
+<span class="bloom-badge bloom-forsta">Förstå</span>
+<h4>2. En elev säger: "Tyskland blev snabbt industrialiserat eftersom de bara kopierade Storbritanniens metoder." Vad visar att detta är fel?</h4>
+<div class="options">
+<div class="option" data-option="a" data-question="2">Satsa på stål, kemikalier och elektricitet</div>
+<div class="option" data-option="b" data-question="2">Kopiera Storbritanniens ångmaskinsdrivna textilindustri</div>
+<div class="option" data-option="c" data-question="2">Undvika kol och förlita sig på vattenkraft</div>
+</div>
+<div class="feedback" id="feedback2"></div>
+</div>
+<div class="question">
+<span class="bloom-badge bloom-minnas">Minnas</span>
+<h4>3. Vilken storlek hade den tyska hemmamarknaden som skapades genom Zollverein?</h4>
+<div class="options">
+<div class="option" data-option="a" data-question="3">15 miljoner människor</div>
+<div class="option" data-option="b" data-question="3">34 miljoner människor</div>
+<div class="option" data-option="c" data-question="3">50 miljoner människor</div>
+<div class="option" data-option="d" data-question="3">20 miljoner människor</div>
+</div>
+<div class="feedback" id="feedback3"></div>
+</div>
+
+<section class="content-section">
+<h2>De sex nyckelfaktorerna</h2>
+<div class="factors-grid">
+<div class="factor-card" onclick="toggleFactor(this)"><div class="factor-header"><div class="factor-icon">
+<svg aria-hidden="true" fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="26"><line x1="3" x2="21" y1="22" y2="22"></line><line x1="6" x2="6" y1="18" y2="11"></line><line x1="10" x2="10" y1="18" y2="11"></line><line x1="14" x2="14" y1="18" y2="11"></line><line x1="18" x2="18" y1="18" y2="11"></line><polygon points="12 2 20 7 4 7"></polygon></svg>
+</div><h3>1. Ekonomisk och politisk ening</h3><svg aria-hidden="true" class="factor-chevron" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="18"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div class="factor-body"><p><strong>Zollverein (1834):</strong> Tullföreningen under preussisk ledning avskaffade inre tullar och skapade en sammanhängande hemmamarknad på <strong>34 miljoner människor</strong> - en av Europas största enhetliga marknader. Detta stimulerade handel och ekonomisk aktivitet decennier före politisk ening.</p><p><strong>Riksbildningen (1871):</strong> Den politiska enigheten efter fransk-tyska kriget skapade en stabil nationalstat som blev Europas ledande militära och industriella makt. Kombinationen av ekonomisk och politisk ening var unik i Europa.</p></div></div>
+<div class="factor-card" onclick="toggleFactor(this)"><div class="factor-header"><div class="factor-icon">
+<svg aria-hidden="true" fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="26"><path d="M9 3h6"></path><path d="M10 3v6l-4.5 9a1 1 0 0 0 .9 1.5h11.2a1 1 0 0 0 .9-1.5L14 9V3"></path><line x1="6.5" x2="17.5" y1="17" y2="17"></line></svg>
+</div><h3>2. Fokus på "nya" industrier</h3><svg aria-hidden="true" class="factor-chevron" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="18"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div class="factor-body"><p><strong>Andra industriella revolutionen:</strong> Tyskland satsade strategiskt på stål, kemikalier och elektricitet istället för att konkurrera inom textil och traditionell järnproduktion som Storbritannien dominerade.</p><p><strong>Konkreta resultat:</strong> Genom Bessemer- och Siemens-Martin-processerna blev Tyskland världsledande i stålproduktion. År 1901 producerade Tyskland nästan hälften så mycket stål som Storbritannien. Inom kemikalier kontrollerade Tyskland <strong>90% av världsmarknaden</strong> före första världskriget.</p></div></div>
+<div class="factor-card" onclick="toggleFactor(this)"><div class="factor-header"><div class="factor-icon">
+<svg aria-hidden="true" fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="26"><rect height="14" rx="2" width="20" x="2" y="7"></rect><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path><line x1="12" x2="12" y1="12" y2="16"></line><line x1="10" x2="14" y1="14" y2="14"></line></svg>
+</div><h3>3. Staten och bankernas roll</h3><svg aria-hidden="true" class="factor-chevron" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="18"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div class="factor-body"><p><strong>Aktiv statlig politik:</strong> Till skillnad från den brittiska laissez-faire-modellen spelade den tyska (särskilt preussiska) staten en direkt roll genom att subventionera järnvägsbyggen och driva gruvor. Staten gav senare utrymme åt privata entreprenörer men behöll strategisk kontroll.</p><p><strong>Investeringsbanker:</strong> Specialiserade affärsbanker mobiliserade enorma kapitalbelopp och erbjöd långfristiga lån med låg ränta till industriella entreprenörer. Detta var avgörande eftersom de nya industrierna krävde mycket större investeringar än tidigare.</p></div></div>
+<div class="factor-card" onclick="toggleFactor(this)"><div class="factor-header"><div class="factor-icon">
+<svg aria-hidden="true" fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="26"><path d="M2 20V8l6-4v4l6-4v4l6-4v16"></path><line x1="2" x2="22" y1="20" y2="20"></line><rect height="6" width="3" x="8" y="14"></rect><rect height="6" width="3" x="13" y="14"></rect><line x1="5" x2="5" y1="11" y2="11.01"></line><line x1="19" x2="19" y1="11" y2="11.01"></line></svg>
+</div><h3>4. Storskaliga affärsstrukturer</h3><svg aria-hidden="true" class="factor-chevron" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="18"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div class="factor-body"><p><strong>Karteller och koncerner:</strong> Tyskland utvecklade ett system med stora, koncentrerade företag som ofta gick samman i karteller för att kontrollera priser och produktion. Ett exempel är <strong>kolsyndikatet i Rhenland-Westfalen som kontrollerade 98% av den tyska kolmarknaden</strong>.</p><p><strong>Vertikal integration:</strong> Stora företag som stålproducenten Krupp kontrollerade hela produktionskedjan från råmaterial till färdiga varor. Detta gav enorma effektivitetsfördelar och marknadskontrroll.</p></div></div>
+<div class="factor-card" onclick="toggleFactor(this)"><div class="factor-header"><div class="factor-icon">
+<svg aria-hidden="true" fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="26"><rect height="13" rx="2" width="16" x="4" y="3"></rect><path d="M4 11h16"></path><path d="M8 16l-2 4"></path><path d="M16 16l2 4"></path><line x1="7" x2="17" y1="20" y2="20"></line><circle cx="9" cy="7.5" r="1"></circle><circle cx="15" cy="7.5" r="1"></circle></svg>
+</div><h3>5. Infrastruktur och utbildning</h3><svg aria-hidden="true" class="factor-chevron" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="18"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div class="factor-body"><p><strong>Järnvägsnätet:</strong> Efter 1835 skedde en extremt snabb utbyggnad av järnvägen som knöt ihop de olika delarna av landet. Detta möjliggjorde transport av resurser som kol och järn till växande städer och fabriker, samt distribution av färdiga varor till hela hemmamarknaden.</p><p><strong>Vetenskap och expertis:</strong> Den industriella tillväxten gynnades av hög nivå på teknisk utbildning och medveten satsning på forskning och utveckling inom industrin. Tyska universitet blev ledande inom teknisk och kemisk forskning.</p></div></div>
+<div class="factor-card" onclick="toggleFactor(this)"><div class="factor-header"><div class="factor-icon">
+<svg aria-hidden="true" fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="26"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+</div><h3>6. Social och demografisk utveckling</h3><svg aria-hidden="true" class="factor-chevron" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="18"><polyline points="6 9 12 15 18 9"></polyline></svg></div><div class="factor-body"><p><strong>Befolkningsexplosion:</strong> Mellan 1871 och 1911 ökade Tysklands befolkning med nästan <strong>60%</strong>, vilket gav både en stor arbetskraftsreserv och en växande marknad för konsumentvaror. Detta demografiska "bonusdividend" var avgörande för industrialiseringen.</p><p><strong>Sociallagstiftning:</strong> För att dämpa social oro och säkra en lojal arbetskraft införde Bismarck världens första omfattande socialförsäkringssystem - sjuk-, olycksfalls- och ålderdomsförsäkring. Detta stabiliserade arbetsmarknaden och minskade konflikter.</p></div></div>
+</div>
+</section>
+<section class="content-section">
+<h2>Unika affärsstrukturer - karteller och koncerner</h2>
+<p>En av de mest säregna aspekterna av tysk industrialisering var utvecklingen av <strong>karteller och storskaliga koncerner</strong>. Till skillnad från den brittiska modellen med många konkurrerande småföretag utvecklade Tyskland ett system med enorma, koncentrerade företag.</p>
+<h3>Kolsyndikatet - 98% marknadskontroll</h3>
+<p>Det mest dramatiska exemplet var <strong>kolsyndikatet i Rhenland-Westfalen som kontrollerade 98% av den tyska kolmarknaden</strong>. Detta var inte statlig socialism, utan privata företag som gick samman för att kontrollera priser och produktion. Denna koncentration gav enorma effektivitetsfördelar och möjliggjorde massiva investeringar.</p>
+<p>Kartellerna visade att <strong>tysk affärsorganisation fokuserade på storskalighet och kontroll</strong> istället för fri konkurrens. Detta gav Deutschland konkurrensfördelar på världsmarknaden eftersom de kunde planera långsiktigt och investera enorma summor.</p>
+<h3>Vertikal integration - från råvara till färdig produkt</h3>
+<p>Stora företag som <strong>stålproducenten Krupp kontrollerade hela produktionskedjan</strong> från råmaterial till färdiga varor. Detta betydde att de ägde gruvor, transportmedel, fabriker och distributionskanaler - en helt annan modell än Storbritanniens specialiserade småföretag.</p>
+
+</section>
+<section class="content-section">
+<h2>Demografisk explosion och social stabilitet</h2>
+<p>Tysklands industrialisering gynnades enormt av demografiska förändringar och innovativ sociallagstiftning som stabiliserade arbetsmarknaden.</p>
+<h3>60% befolkningsökning på 40 år</h3>
+<p>Mellan 1871 och 1911 ökade Tysklands befolkning med nästan <strong>60%</strong>. Detta gav två avgörande fördelar: en enorm arbetskraftsreserv för de nya fabrikerna och en växande hemmamarknad för konsumentvaror. Utan denna demografiska "bonus" hade industrialiseringen varit mycket svårare.</p>
+<h3>Bismarcks socialförsäkringar - världens första</h3>
+<p>För att dämpa social oro och säkra en lojal arbetskraft införde <strong>Bismarck världens första omfattande socialförsäkringssystem</strong> - sjuk-, olycksfalls- och ålderdomsförsäkring. Detta var revolutionerande och gav Tyskland en stabil, lojal arbetskraft som inte gick ut i strejk lika ofta som i andra länder.</p>
+<p>Sociallagstiftningen visade hur Tyskland kombinerade industriell modernisering med social innovation - något som bidrog till stabiliteten under den snabba förändringen.</p>
+<div class="highlight-box">
+<strong>Demografisk fördel:</strong> Kombinationen av snabb befolkningstillväxt och social trygghet gav Tyskland både arbetskraft och hemmamarknad - två nyckelkomponenter för industriell framgång.
+            </div>
+</section>
+<div class="htl-wrapper">
+  <div class="htl-scale">
+    <span>1834</span><span>1850</span><span>1860</span><span>1870</span><span>1880</span><span>1890</span><span>1900</span><span>1914</span>
+  </div>
+  <div class="htl-track">
+    <div class="htl-bar"></div>
+
+    <!-- 1834 – 0% -->
+    <div class="htl-event htl-above" style="left:0%" onclick="openHtlEvent(0)" data-idx="0">
+      <div class="htl-dot"></div>
+      <div class="htl-stem htl-stem-up"></div>
+      <div class="htl-label htl-label-up">
+        <div class="htl-year">1834</div>
+        <div class="htl-name">Zollverein</div>
+      </div>
+    </div>
+
+    <!-- 1852 – 22.5% -->
+    <div class="htl-event htl-below" style="left:22.5%" onclick="openHtlEvent(1)" data-idx="1">
+      <div class="htl-dot"></div>
+      <div class="htl-stem htl-stem-down"></div>
+      <div class="htl-label htl-label-down">
+        <div class="htl-year">1835-1870</div>
+        <div class="htl-name">Järnvägsrevolution</div>
+      </div>
+    </div>
+
+    <!-- 1871 – 46% – special diamond -->
+    <div class="htl-event htl-above htl-special" style="left:46.25%" onclick="openHtlEvent(2)" data-idx="2">
+      <div class="htl-diamond"></div>
+      <div class="htl-stem htl-stem-up"></div>
+      <div class="htl-label htl-label-up">
+        <div class="htl-year">1871</div>
+        <div class="htl-name">Politisk ening</div>
+      </div>
+    </div>
+
+    <!-- 1880 – 57.5% -->
+    <div class="htl-event htl-below" style="left:57.5%" onclick="openHtlEvent(3)" data-idx="3">
+      <div class="htl-dot"></div>
+      <div class="htl-stem htl-stem-down"></div>
+      <div class="htl-label htl-label-down">
+        <div class="htl-year">1870-1890</div>
+        <div class="htl-name">Staalgenombrott</div>
+      </div>
+    </div>
+
+    <!-- 1900 – 82.5% -->
+    <div class="htl-event htl-above" style="left:82.5%" onclick="openHtlEvent(4)" data-idx="4">
+      <div class="htl-dot"></div>
+      <div class="htl-stem htl-stem-up"></div>
+      <div class="htl-label htl-label-up">
+        <div class="htl-year">1880-1914</div>
+        <div class="htl-name">Kemisk dominans</div>
+      </div>
+    </div>
+
+    <!-- 1914 endpoint -->
+    <div class="htl-endpoint" style="left:100%">
+      <div class="htl-dot htl-dot-end"></div>
+      <div class="htl-stem htl-stem-down"></div>
+      <div class="htl-label htl-label-down">
+        <div class="htl-year">1914</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail panels -->
+  <div class="htl-details">
+    <div class="htl-detail" id="htldetail-0">
+      <div class="htl-detail-inner">
+        <div class="htl-detail-year">1834</div>
+        <h4>Zollverein etableras</h4>
+        <p>Preussen leder skapandet av en tullunion som avskaffar handelshinder mellan tyska stater och skapar en hemmamarknad pa 34 miljoner manniskor. Detta ar decennier fore politisk ening och lagger den ekonomiska grunden for allt som foljer.</p>
+      </div>
+    </div>
+    <div class="htl-detail" id="htldetail-1">
+      <div class="htl-detail-inner">
+        <div class="htl-detail-year">1835-1870</div>
+        <h4>Järnvägsrevolution</h4>
+        <p>Snabb utbyggnad av järnvägsnätet knyter ihop råvarukällor med växande industristäder. Staten subventionerar strategiskt viktiga linjer. Järnvägen driver dessutom en enorm efterfrågan pa stål, kol och maskiner.</p>
+      </div>
+    </div>
+    <div class="htl-detail" id="htldetail-2">
+      <div class="htl-detail-inner">
+        <div class="htl-detail-year">1871</div>
+        <h4>Det tyska riket proklameras</h4>
+        <p>Efter segern i det fransk-tyska kriget proklameras det tyska riket i Versailles slott. Bismarcks diplomati förenar de tyska staterna under preussisk ledning. Den politiska enigheten kompletterar den ekonomiska som Zollverein skapade 37 ar tidigare.</p>
+      </div>
+    </div>
+    <div class="htl-detail" id="htldetail-3">
+      <div class="htl-detail-inner">
+        <div class="htl-detail-year">1870-1890</div>
+        <h4>Stålproduktionens genombrott</h4>
+        <p>Deutschland adopterar snabbt Bessemer- och Siemens-Martin-processerna. Krupp och andra staltillverkare vaxer till europeiska giganter. Ar 1901 producerar Tyskland nastan hälften sa mycket stal som Storbritannien, trots att de startade industrialiseringen decennier senare.</p>
+      </div>
+    </div>
+    <div class="htl-detail" id="htldetail-4">
+      <div class="htl-detail-inner">
+        <div class="htl-detail-year">1880-1914</div>
+        <h4>Kemisk och elektrisk dominans</h4>
+        <p>Tyska foretag kontrollerar 90% av varldens kemiska marknad. Elektricitetsindustrin revolutionerar produktion och kommunikation. BASF, Bayer och Hoechst grundlaggs och blir globala ledare. Vid forsta varldskrigets utbrott ar Tyskland Europas dominerande industriella makt.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Quiz 2: After 60% -->
+<div class="pause-prompt">
+<p><strong>Stanna upp.</strong> Du har nu läst om de sex nyckelfaktorerna och de unika affärsstrukturerna. Vilka tre faktorer anser du var mest avgörande, och varför? Formulera ett svar i huvudet innan du fortsätter.</p>
+</div>
+<div class="quiz-container">
+<div class="quiz-header">
+<h3>Fördjupning - Strukturella faktorer</h3><button class="quiz-reset-btn" onclick="resetQuiz(this);event.stopPropagation()">Starta om</button>
+</div>
+<div class="question">
+<span class="bloom-badge bloom-forsta">Förstå</span>
+<h4>4. Varför var det en fördel för Tyskland att komma senare till industrialiseringen än Storbritannien?</h4>
+<div class="options">
+<div class="option" data-option="a" data-question="4">Hoppa över gamla teknologier och satsa på de nyaste</div>
+<div class="option" data-option="b" data-question="4">Tillgång till mer naturresurser än Storbritannien</div>
+<div class="option" data-option="c" data-question="4">Lägre löner och billigare produktionskostnader</div>
+<div class="option" data-option="d" data-question="4">En redan stor och välutbildad industriarbetarklass</div>
+</div>
+<div class="feedback" id="feedback4"></div>
+</div>
+<div class="question">
+<span class="bloom-badge bloom-forsta">Förstå</span>
+<h4>5. Vad skiljde den tyska staten från den brittiska när det gällde industriell utveckling?</h4>
+<div class="options">
+<div class="option" data-option="a" data-question="5">Lät marknaden styra utan någon statlig inblandning</div>
+<div class="option" data-option="b" data-question="5">Styrde aktivt med subventioner och strategisk planering</div>
+<div class="option" data-option="c" data-question="5">Förbjöd privat äganderätt och nationaliserade industrin</div>
+</div>
+<div class="feedback" id="feedback5"></div>
+</div>
+<div class="question">
+<span class="bloom-badge bloom-analysera">Analysera</span>
+<h4>6. Tyska kolsyndikatet kontrollerade 98% av kolmarknaden. Vad visar detta om tysk affärsorganisation?</h4>
+<div class="options">
+<div class="option" data-option="a" data-question="6">Fri konkurrens mellan många oberoende småföretag</div>
+<div class="option" data-option="b" data-question="6">Stark koncentration och kartellkontroll av marknaden</div>
+<div class="option" data-option="c" data-question="6">Statlig äganderätt och nationalisering av industrin</div>
+<div class="option" data-option="d" data-question="6">Tyska företags expansion på internationella marknader</div>
+</div>
+<div class="feedback" id="feedback6"></div>
+</div>
+<div class="question input-question">
+<span class="bloom-badge bloom-minnas">Minnas</span>
+<h4>7. Hur många procent ökade Tysklands befolkning mellan 1871 och 1911?</h4>
+<input id="input7" placeholder="Ange procent utan %-tecken..." type="text"/>
+<div class="feedback" id="feedback7"></div>
+<button class="btn" onclick="checkInput(7, '60', ['sextio', '60%', 'ca 60', 'ungefär 60', 'cirka 60', 'nästan 60', 'ca. 60', '~60'])">Kontrollera svar</button>
+</div>
+
+<!-- Final Quiz -->
+<div class="pause-prompt">
+<p><strong>Stanna upp.</strong> Du har nu läst hela materialet. Vad är den viktigaste skillnaden mellan Tysklands och Storbritanniens industrialisering? Och vad visar det tyska exemplet om sambandet mellan stat, kapital och teknologi? Tänk igenom det innan du tar den sista delen.</p>
+</div>
+<div class="quiz-container">
+<div class="quiz-header">
+<h3>Slutlig analys - Helhetsbild</h3><button class="quiz-reset-btn" onclick="resetQuiz(this);event.stopPropagation()">Starta om</button>
+</div>
+<div class="question">
+<span class="bloom-badge bloom-utvardera">Utvärdera</span>
+<h4>8. En elev påstår: "Tyskland industrialiserades snabbt bara för att de hade mer kol och järn än andra länder." Vad är det viktigaste argumentet mot detta?</h4>
+<div class="options">
+<div class="option" data-option="a" data-question="8">Organisation och strategiska val var minst lika avgörande</div>
+<div class="option" data-option="b" data-question="8">Tyskland hade faktiskt färre naturresurser än Britannien</div>
+<div class="option" data-option="c" data-question="8">Kol och järn saknade egentlig betydelse för industrin</div>
+<div class="option" data-option="d" data-question="8">Samtliga råvaror importerades från grannländerna</div>
+</div>
+<div class="feedback" id="feedback8"></div>
+</div>
+<div class="question">
+<span class="bloom-badge bloom-analysera">Analysera</span>
+<h4>9. Vilken var den viktigaste skillnaden mellan första och andra industriella revolutionen för Tysklands framgång?</h4>
+<div class="options">
+<div class="option" data-option="a" data-question="9">Fokus på stål och elektricitet snarare än textil</div>
+<div class="option" data-option="b" data-question="9">Ångkraften spelande ingen roll i den tyska industrin</div>
+<div class="option" data-option="c" data-question="9">Överlägsna transporter som redan var fullt utbyggda</div>
+<div class="option" data-option="d" data-question="9">Ett politiskt enhetligt system som länge var på plats</div>
+</div>
+<div class="feedback" id="feedback9"></div>
+</div>
+<div class="question">
+<span class="bloom-badge bloom-tillampa">Tillämpa</span>
+<h4>10. Matcha viktig faktor med dess specifika bidrag till tysk industrialisering:</h4>
+<p style="font-size:0.88rem; color:var(--steel-color); margin-bottom:1rem;">Klicka en faktor, sedan ett bidrag. Klicka en matchad faktor igen för att ångra.</p>
+<div class="matching-wrapper" id="matchingWrapper">
+<div class="matching-container" id="matchingContainer">
+<div class="matching-list" id="leftList">
+<h5>Faktorer</h5>
+<div class="matching-item" data-match="a">Zollverein 1834</div>
+<div class="matching-item" data-match="b">Investeringsbanker</div>
+<div class="matching-item" data-match="c">Kartellbildning</div>
+<div class="matching-item" data-match="d">Bismarcks sociallagstiftning</div>
+</div>
+<div class="matching-list" id="rightList">
+<h5>Specifikt bidrag</h5>
+<div class="matching-item" data-match="1">Skapade stor hemmamarknad på 34 miljoner</div>
+<div class="matching-item" data-match="2">Mobiliserade kapital för stora investeringar</div>
+<div class="matching-item" data-match="3">Kontrollerade 98% av kolmarknaden</div>
+<div class="matching-item" data-match="4">Säkrade lojal och stabil arbetskraft</div>
+</div>
+</div>
+<svg id="matchingSvg" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible;"></svg>
+</div>
+<div class="feedback" id="feedback10"></div>
+<div style="display:flex; gap:0.8rem; flex-wrap:wrap; margin-top:1rem;">
+<button class="btn" onclick="checkMatching()">Kontrollera matchning</button>
+<button class="btn btn-secondary" onclick="resetMatching()">Återställ</button>
+</div>
+</div>
+<div class="question">
+<span class="bloom-badge bloom-utvardera">Utvärdera</span>
+<h4>11. Vad är den viktigaste lärdomen från Tysklands snabba industrialisering för förståelsen av ekonomisk utveckling?</h4>
+<div class="options">
+<div class="option" data-option="a" data-question="11">Tillgång till naturresurser är den enda avgörande faktorn</div>
+<div class="option" data-option="b" data-question="11">Statens roll och strategiska strukturer är avgörande</div>
+<div class="option" data-option="c" data-question="11">Industrialisering sker alltid automatiskt med tiden</div>
+<div class="option" data-option="d" data-question="11">Endast fri marknad utan statlig inblandning fungerar</div>
+</div>
+<div class="feedback" id="feedback11"></div>
+</div>
+<div class="question">
+<span class="bloom-badge bloom-analysera">Analysera</span>
+<h4>12. Varför var tidpunkten (1834-1914) så viktig för Tysklands industriella framgång?</h4>
+<div class="options">
+<div class="option" data-option="a" data-question="12">Tajmningen med den andra industriella revolutionen</div>
+<div class="option" data-option="b" data-question="12">Perioden sammanfaller med det första världskrigets utbrott</div>
+<div class="option" data-option="c" data-question="12">Demokratin och folkligt styre var nyss etablerade</div>
+<div class="option" data-option="d" data-question="12">Övriga europeiska länder upphörde med sin industrialisering</div>
+</div>
+<div class="feedback" id="feedback12"></div>
+</div>
+</div>
+<div class="blur-section">
+    <div class="blur-heading">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Repetitionskort — klicka för att avslöja förklaringen
+    </div>
+    <div class="blur-grid">
+
+        <div class="blur-card" onclick="revealCard(this)">
+            <div class="blur-term">Zollverein</div>
+            <div class="blur-def">Tullföreningen grundad 1834 under preussisk ledning. Avskaffade inre tullar och skapade en hemmamarknad på 34 miljoner människor — decennier före politisk ening.</div>
+            <div class="blur-hint">Klicka för att visa</div>
+        </div>
+
+        <div class="blur-card" onclick="revealCard(this)">
+            <div class="blur-term">Andra industriella revolutionen</div>
+            <div class="blur-def">Perioden ca 1870-1914 präglad av stål, kemikalier och elektricitet. Tyskland kunde satsa direkt på dessa nya industrier utan att konkurrera med Storbritanniens etablerade textilindustri.</div>
+            <div class="blur-hint">Klicka för att visa</div>
+        </div>
+
+        <div class="blur-card" onclick="revealCard(this)">
+            <div class="blur-term">Kartell</div>
+            <div class="blur-def">Samarbetsavtal mellan företag i samma bransch för att kontrollera priser och produktion. Det tyska kolsyndikatet styrde 98% av marknaden — privat planering, inte statlig socialism.</div>
+            <div class="blur-hint">Klicka för att visa</div>
+        </div>
+
+        <div class="blur-card" onclick="revealCard(this)">
+            <div class="blur-term">Vertikal integration</div>
+            <div class="blur-def">Strategi där ett företag kontrollerar hela kedjan från råmaterial till färdig produkt. Krupp ägde gruvor, smeltverk, fabriker och distribution — en enorm effektivitetsfördel.</div>
+            <div class="blur-hint">Klicka för att visa</div>
+        </div>
+
+        <div class="blur-card" onclick="revealCard(this)">
+            <div class="blur-term">Laissez-faire</div>
+            <div class="blur-def">Brittisk ekonomisk princip: staten ska inte ingripa i ekonomin. Kontrasten till den tyska modellen med aktiv statlig planering, subventioner och strategiska investeringar.</div>
+            <div class="blur-hint">Klicka för att visa</div>
+        </div>
+
+        <div class="blur-card" onclick="revealCard(this)">
+            <div class="blur-term">Investeringsbank</div>
+            <div class="blur-def">Specialiserade banker som mobiliserade långsiktigt kapital för stora industriella satsningar med låg ränta. Avgörande eftersom andra industriella revolutionens industrier krävde enorm startkapital.</div>
+            <div class="blur-hint">Klicka för att visa</div>
+        </div>
+
+        <div class="blur-card" onclick="revealCard(this)">
+            <div class="blur-term">Bessemer-processen</div>
+            <div class="blur-def">Metod för massproduktion av stål genom att blåsa luft genom smält järn. Tillsammans med Siemens-Martin-processen möjliggjorde den Tysklands explosiva stålexpansion från 1870-talet.</div>
+            <div class="blur-hint">Klicka för att visa</div>
+        </div>
+
+        <div class="blur-card" onclick="revealCard(this)">
+            <div class="blur-term">Bismarcks sociallagstiftning</div>
+            <div class="blur-def">Världens första statliga socialförsäkringssystem (sjuk-, olycksfalls- och ålderdomsförsäkring). Syftet var att dämpa social oro och säkra en lojal, stabil arbetskraft åt industrin.</div>
+            <div class="blur-hint">Klicka för att visa</div>
+        </div>
+
+    </div>
+</div>
+
+<div class="conclusion">
+<h3>Slutsats: Lektioner från det tyska "miraklet"</h3>
+<p>Tysklands snabba industrialisering visar hur strukturella fördelar, strategiska val och rätt timing kan skapa dramatisk ekonomisk förändring. Det var inte bara naturresurser eller tur - det var en kombination av ekonomisk ening, statlig planering, fokus på nya teknologier och innovativa affärsstrukturer som skapade Europas nya industrijätte.</p>
+</div>
+<div class="score-summary" id="scoreSummary">
+<div class="score-inner">
+<div class="score-circle" id="scoreCircle">
+<span class="score-number" id="scoreNumber">–</span>
+<span class="score-denom" id="scoreDenom">/ 12</span>
+</div>
+<div class="score-text">
+<h3 id="scoreTitle">Slutresultat</h3>
+<p id="scoreMessage">Svara på frågorna ovan för att se ditt resultat.</p>
+<div class="score-pills" id="scorePills"></div>
+</div>
+</div>
+</div>
+</div>
+<script>
         // Question answers targeting specific misconceptions about German industrialization
         const answers = {
             1: { correct: 'b', feedback: {
@@ -847,70 +1576,122 @@
             }}
         };
 
-        const matching = {
-            'a': '1', // Zollverein -> Stor hemmamarknad
-            'b': '2', // Investeringsbanker -> Mobiliserade kapital  
-            'c': '3', // Karteller -> Kontrollerade kolmarknaden
-            'd': '4'  // Sociallagstiftning -> Lojal arbetskraft
-        };
+        const matchingAnswers = { 'a':'1', 'b':'2', 'c':'3', 'd':'4' };
+        const PAIR_COLORS = ['#C9A84C','#8B1A1A','#1A4A6B','#2E7D32'];
+        const pairColorMap = { 'a':0,'b':1,'c':2,'d':3 };
+        let matchState = {};
+        let selectedLeft = null;
 
-        let selectedMatches = {};
+        function getMatchColor(lk) { return PAIR_COLORS[pairColorMap[lk]]; }
+
+        function drawMatchLines() {
+            const svg = document.getElementById('matchingSvg');
+            const wrapper = document.getElementById('matchingWrapper');
+            if (!svg || !wrapper) return;
+            svg.innerHTML = '';
+            const wr = wrapper.getBoundingClientRect();
+            for (const [lk, rk] of Object.entries(matchState)) {
+                const le = wrapper.querySelector('[data-match="' + lk + '"]');
+                const re = wrapper.querySelector('[data-match="' + rk + '"]');
+                if (!le || !re) continue;
+                const lr = le.getBoundingClientRect();
+                const rr = re.getBoundingClientRect();
+                const x1 = lr.right - wr.left, y1 = lr.top + lr.height/2 - wr.top;
+                const x2 = rr.left - wr.left,  y2 = rr.top + rr.height/2 - wr.top;
+                const cx = (x2 - x1) * 0.45;
+                const color = getMatchColor(lk);
+                const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+                path.setAttribute('d','M '+x1+' '+y1+' C '+(x1+cx)+' '+y1+' '+(x2-cx)+' '+y2+' '+x2+' '+y2);
+                path.setAttribute('stroke', color);
+                path.setAttribute('stroke-width', '2.5');
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke-linecap', 'round');
+                svg.appendChild(path);
+                [[x1,y1],[x2,y2]].forEach(([px,py]) => {
+                    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+                    c.setAttribute('cx', px); c.setAttribute('cy', py);
+                    c.setAttribute('r', '4'); c.setAttribute('fill', color);
+                    svg.appendChild(c);
+                });
+            }
+        }
+
+        function updateMatchingUI() {
+            const wrapper = document.getElementById('matchingWrapper');
+            if (!wrapper) return;
+            wrapper.querySelectorAll('.matching-item').forEach(el => {
+                el.classList.remove('selected','matched');
+                el.style.borderColor = ''; el.style.background = '';
+            });
+            for (const [lk, rk] of Object.entries(matchState)) {
+                const color = getMatchColor(lk);
+                const le = wrapper.querySelector('[data-match="' + lk + '"]');
+                const re = wrapper.querySelector('[data-match="' + rk + '"]');
+                if (le) { le.classList.add('matched'); le.style.borderColor=color; le.style.background=color+'18'; }
+                if (re) { re.classList.add('matched'); re.style.borderColor=color; re.style.background=color+'18'; }
+            }
+            if (selectedLeft) {
+                const el = wrapper.querySelector('[data-match="' + selectedLeft + '"]');
+                if (el) el.classList.add('selected');
+            }
+            drawMatchLines();
+        }
 
         // Handle multiple choice questions
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('option')) {
                 const questionNum = e.target.dataset.question;
                 const selectedOption = e.target.dataset.option;
-                
-                // Remove previous selections
-                document.querySelectorAll(`[data-question="${questionNum}"]`).forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
+                document.querySelectorAll('[data-question="' + questionNum + '"]').forEach(o => {
+                    o.classList.remove('selected','correct','incorrect');
                 });
-                
-                // Mark selection
                 e.target.classList.add('selected');
-                
-                // Check answer
                 setTimeout(() => checkAnswer(questionNum, selectedOption), 500);
             }
         });
 
-        // Handle matching questions
+        // Handle matching clicks
         document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('matching-item')) {
-                const matchValue = e.target.dataset.match;
-                const isLeftSide = isNaN(matchValue);
-                
-                if (isLeftSide) {
-                    document.querySelectorAll('.matching-item').forEach(item => {
-                        if (isNaN(item.dataset.match)) {
-                            item.classList.remove('selected');
-                        }
-                    });
-                    e.target.classList.add('selected');
-                } else {
-                    const selectedLeft = document.querySelector('.matching-item.selected');
-                    if (selectedLeft && isNaN(selectedLeft.dataset.match)) {
-                        const leftValue = selectedLeft.dataset.match;
-                        selectedMatches[leftValue] = matchValue;
-                        
-                        selectedLeft.style.background = 'var(--success-color)15';
-                        selectedLeft.style.borderColor = 'var(--success-color)';
-                        e.target.style.background = 'var(--success-color)15';
-                        e.target.style.borderColor = 'var(--success-color)';
-                        
-                        selectedLeft.classList.remove('selected');
-                        
-                        if (!selectedLeft.querySelector('.match-indicator')) {
-                            selectedLeft.innerHTML += ` <span class="match-indicator" style="color: var(--success-color); font-weight: bold;">→ ${matchValue}</span>`;
-                        }
-                        if (!e.target.querySelector('.match-indicator')) {
-                            e.target.innerHTML += ` <span class="match-indicator" style="color: var(--success-color); font-weight: bold;">← ${leftValue.toUpperCase()}</span>`;
-                        }
-                    }
+            const item = e.target.closest('.matching-item');
+            if (!item) return;
+            const key = item.dataset.match;
+            const isLeft = isNaN(key);
+            if (isLeft) {
+                if (matchState[key]) { delete matchState[key]; selectedLeft = null; }
+                else if (selectedLeft === key) { selectedLeft = null; }
+                else { selectedLeft = key; }
+            } else {
+                if (selectedLeft) {
+                    for (const [lk, rk] of Object.entries(matchState)) { if (rk === key) delete matchState[lk]; }
+                    delete matchState[selectedLeft];
+                    matchState[selectedLeft] = key;
+                    selectedLeft = null;
                 }
             }
+            updateMatchingUI();
         });
+
+        function resetMatching() {
+            matchState = {}; selectedLeft = null;
+            const fb = document.getElementById('feedback10');
+            fb.className = 'feedback'; fb.textContent = '';
+            updateMatchingUI(); updateProgress();
+        }
+
+        function checkMatching() {
+            const feedback = document.getElementById('feedback10');
+            let correct = 0;
+            const total = Object.keys(matchingAnswers).length;
+            for (let key in matchingAnswers) { if (matchState[key] === matchingAnswers[key]) correct++; }
+            if (correct === total) {
+                feedback.textContent = 'Perfekt! Alla ' + correct + ' matchningar är korrekta.';
+                feedback.className = 'feedback correct show';
+            } else {
+                feedback.textContent = 'Du fick ' + correct + ' av ' + total + ' rätt. Korrekta: Zollverein - Hemmamarknad, Investeringsbanker - Kapital, Karteller - Kolkontroll, Sociallagstiftning - Lojal arbetskraft.';
+                feedback.className = 'feedback incorrect show';
+            }
+            updateProgress();
+        }
 
         function checkAnswer(questionNum, selectedOption) {
             const answer = answers[questionNum];
@@ -956,38 +1737,208 @@
             updateProgress();
         }
 
-        function checkMatching() {
-            const feedback = document.getElementById('feedback10');
-            let correct = 0;
-            let total = Object.keys(matching).length;
-            
-            for (let key in matching) {
-                if (selectedMatches[key] === matching[key]) {
-                    correct++;
-                }
+
+
+        function revealCard(card) {
+            if (!card.classList.contains('revealed')) {
+                card.classList.add('revealed');
             }
-            
-            if (correct === total) {
-                feedback.textContent = `Perfekt! Alla ${correct} matchningar är korrekta.`;
-                feedback.className = 'feedback correct show';
-            } else {
-                feedback.textContent = `Du fick ${correct} av ${total} rätt. Korrekta matchningar: Zollverein-Hemmamarknad, Investeringsbanker-Kapital, Karteller-Kolkontroll, Sociallagstiftning-Lojal arbetskraft.`;
-                feedback.className = 'feedback incorrect show';
+        }
+
+        function openHtlEvent(idx) {
+            const allDetails = document.querySelectorAll('.htl-detail');
+            const allEvents  = document.querySelectorAll('.htl-event');
+            const target = document.getElementById('htldetail-' + idx);
+            const isOpen = target && target.classList.contains('open');
+            allDetails.forEach(d => d.classList.remove('open'));
+            allEvents.forEach(e => e.classList.remove('active'));
+            if (!isOpen && target) {
+                target.classList.add('open');
+                const evEl = document.querySelector('[data-idx="' + idx + '"]');
+                if (evEl) evEl.classList.add('active');
+                setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
             }
-            
+        }
+
+        function toggleFactor(card) {
+            card.classList.toggle('open');
+        }
+
+        function resetQuiz(btn) {
+            const container = btn.closest('.quiz-container');
+            container.querySelectorAll('.option').forEach(o => {
+                o.classList.remove('selected', 'correct', 'incorrect');
+            });
+            container.querySelectorAll('.feedback').forEach(f => {
+                f.className = 'feedback';
+                f.textContent = '';
+            });
+            container.querySelectorAll('input[type="text"]').forEach(i => {
+                i.value = '';
+                i.style.borderColor = '';
+            });
+            // Reset matching if in this container
+            if (container.querySelector('#matchingWrapper')) {
+                matchState = {};
+                selectedLeft = null;
+                updateMatchingUI();
+            }
             updateProgress();
         }
 
         function updateProgress() {
             const allQuestions = document.querySelectorAll('.question');
-            const answeredQuestions = document.querySelectorAll('.feedback.show').length;
-            const progressPercent = (answeredQuestions / allQuestions.length) * 100;
-            
+            const correctAnswers = document.querySelectorAll('.feedback.correct.show').length;
+            const answeredTotal = document.querySelectorAll('.feedback.show').length;
+            const total = allQuestions.length;
+            const progressPercent = (correctAnswers / total) * 100;
             document.getElementById('progressFill').style.width = progressPercent + '%';
+            document.getElementById('progressLabel').textContent = correctAnswers + ' / ' + total + ' rätt';
+
+            // Update score summary
+            document.getElementById('scoreNumber').textContent = correctAnswers;
+            const pct = Math.round((correctAnswers / total) * 100);
+
+            let title, msg;
+            if (answeredTotal === 0) {
+                title = 'Slutresultat';
+                msg = 'Svara på frågorna ovan för att se ditt resultat.';
+            } else if (answeredTotal < total) {
+                title = 'Fortsätt – du är på väg!';
+                msg = 'Du har besvarat ' + answeredTotal + ' av ' + total + ' frågor. Slutför alla för ett fullständigt resultat.';
+            } else if (pct >= 90) {
+                title = 'Utmärkt! Du behärskar ämnet.';
+                msg = 'Du visar en djup förståelse för Tysklands industrialisering och de strukturella faktorer som drev den.';
+            } else if (pct >= 70) {
+                title = 'Bra jobbat! Solida kunskaper.';
+                msg = 'Du har god förståelse för de flesta faktorer. Se igenom de frågor du missade för att befästa helheten.';
+            } else if (pct >= 50) {
+                title = 'Godkänt – men det finns mer att lära.';
+                msg = 'Du har koll på grunderna men missa inte de strukturella samband som förklarar Tysklands snabba framgång.';
+            } else {
+                title = 'Gå igenom materialet igen.';
+                msg = 'Läs avsnitten om Zollverein, andra industriella revolutionen och kartellerna på nytt – det är kärnan i ämnet.';
+            }
+
+            document.getElementById('scoreTitle').textContent = title;
+            document.getElementById('scoreMessage').textContent = msg;
+
+            // Category pills – group by quiz block
+            if (answeredTotal > 0) {
+                const q1 = [1,2,3], q2 = [4,5,6,7], q3 = [8,9,10,11,12];
+                const labels = ['Grundförutsättningar', 'Strukturella faktorer', 'Helhetsbild'];
+                const groups = [q1, q2, q3];
+                let pillsHtml = '';
+                groups.forEach((group, i) => {
+                    let correct = 0, answered = 0;
+                    group.forEach(n => {
+                        const fb = document.getElementById('feedback' + n);
+                        if (fb && fb.classList.contains('show')) {
+                            answered++;
+                            if (fb.classList.contains('correct')) correct++;
+                        }
+                    });
+                    if (answered > 0) {
+                        const ratio = correct / group.length;
+                        const cls = ratio >= 0.75 ? 'pill-strong' : ratio >= 0.5 ? 'pill-ok' : 'pill-weak';
+                        pillsHtml += '<span class="score-pill ' + cls + '">' + labels[i] + ': ' + correct + '/' + group.length + '</span>';
+                    }
+                });
+                document.getElementById('scorePills').innerHTML = pillsHtml;
+            }
         }
 
         // Initialize progress bar
         updateProgress();
+
+        // Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            const GOLD   = '#C9A84C';
+            const RED    = '#8B1A1A';
+            const GRAY   = '#AAAAAA';
+            const BLUE   = '#1A4A6B';
+
+            // Steel production chart
+            const steelCtx = document.getElementById('steelChart');
+            if (steelCtx) {
+                new Chart(steelCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['1870','1880','1890','1900','1910'],
+                        datasets: [
+                            {
+                                label: 'Storbritannien',
+                                data: [0.6, 1.3, 3.6, 5.0, 6.5],
+                                borderColor: RED,
+                                backgroundColor: RED + '18',
+                                borderWidth: 2.5,
+                                pointRadius: 4,
+                                pointBackgroundColor: RED,
+                                fill: true,
+                                tension: 0.35
+                            },
+                            {
+                                label: 'Tyskland',
+                                data: [0.3, 0.7, 2.2, 6.6, 13.1],
+                                borderColor: GOLD,
+                                backgroundColor: GOLD + '18',
+                                borderWidth: 2.5,
+                                pointRadius: 4,
+                                pointBackgroundColor: GOLD,
+                                fill: true,
+                                tension: 0.35
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top', labels: { font: { size: 12 }, color: '#1A1A1A' } },
+                            tooltip: { mode: 'index', intersect: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'Miljoner ton', color: '#555', font: { size: 11 } },
+                                grid: { color: '#E8E4DC' },
+                                ticks: { color: '#555' }
+                            },
+                            x: { grid: { color: '#E8E4DC' }, ticks: { color: '#555' } }
+                        }
+                    }
+                });
+            }
+
+            // Chemical market share doughnut
+            const chemCtx = document.getElementById('chemChart');
+            if (chemCtx) {
+                new Chart(chemCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Tyskland', 'Storbritannien', 'USA', 'Ovriga'],
+                        datasets: [{
+                            data: [90, 4, 3, 3],
+                            backgroundColor: [GOLD, RED, BLUE, GRAY],
+                            borderColor: 'white',
+                            borderWidth: 3,
+                            hoverOffset: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        cutout: '62%',
+                        plugins: {
+                            legend: { position: 'right', labels: { font: { size: 12 }, color: '#1A1A1A', padding: 14 } },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => ' ' + ctx.label + ': ' + ctx.parsed + '%'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
     </script>
-</body>
+</div></div></body>
 </html>
