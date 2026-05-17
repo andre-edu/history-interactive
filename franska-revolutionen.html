@@ -255,6 +255,27 @@
   .tl-spacer { /* intentionally empty */ }
 
   /* ── PERSON GALLERY ── */
+  .person-link {
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold-dim);
+    padding-bottom: 1px;
+    transition: color 0.15s, border-color 0.15s;
+    cursor: pointer;
+  }
+  .person-link:hover {
+    color: var(--parchment);
+    border-bottom-color: var(--parchment);
+  }
+
+  .gallery-intro {
+    font-family: 'EB Garamond', serif;
+    font-size: 1.02rem;
+    line-height: 1.85;
+    color: var(--text);
+    margin-bottom: 36px;
+  }
+
   .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -1366,7 +1387,7 @@
       <div class="tl-content">
         <div class="tl-date">20 Juni 1789</div>
         <div class="tl-title">Eden i bollhuset</div>
-        <div class="tl-body">Utestängda från riksdagssalen svär representanterna för det tredje ståndet att de inte ska skingras förrän Frankrike fått en skriven konstitution. En av historiens mest dramatiska politiska handlingar.</div>
+        <div class="tl-body">Utestängda från riksdagssalen svär representanterna för det tredje ståndet att de inte ska skingras förrän Frankrike fått en skriven konstitution. En av historiens mest dramatiska politiska handlingar. <a class="person-link" onclick="openCard('card-sieyes')">Abbé Sieyès</a> var en av drivkrafterna bakom beslutet — hans pamflett <em>Vad är det tredje ståndet?</em> hade månader tidigare lagt den ideologiska grunden.</div>
         <span class="tl-tag politik">Politik</span>
       </div>
     </div>
@@ -1388,7 +1409,7 @@
       <div class="tl-content">
         <div class="tl-date">Augusti 1789</div>
         <div class="tl-title">Deklarationen om de mänskliga rättigheterna</div>
-        <div class="tl-body">Nationalförsamlingen antar en historisk deklaration grundad i upplysningsidéernas folksuveränitet och naturrätt. Dokumentet slår fast att "alla män föds och förblir fria och lika i rättigheter."</div>
+        <div class="tl-body">Nationalförsamlingen antar en historisk deklaration grundad i upplysningsidéernas folksuveränitet och naturrätt. Dokumentet slår fast att "alla män föds och förblir fria och lika i rättigheter." <a class="person-link" onclick="openCard('card-olympe')">Olympe de Gouges</a> svarade 1791 med en egen deklaration om kvinnors rättigheter och påpekade att löftet inte gällde halva befolkningen.</div>
         <span class="tl-tag politik">Politik</span>
       </div>
     </div>
@@ -1410,7 +1431,7 @@
       <div class="tl-content">
         <div class="tl-date">Juni 1791</div>
         <div class="tl-title">Kungafamiljens flyktförsök</div>
-        <div class="tl-body">Ludvig XVI och Marie Antoinette försöker fly till Österrike men känns igen av befolkningen och grips i Varennes. Tilltaget krossar förtroendet för kungen och stärker den republikanska rörelsen dramatiskt.</div>
+        <div class="tl-body"><a class="person-link" onclick="openCard('card-ludvig')">Ludvig XVI</a> och <a class="person-link" onclick="openCard('card-marie')">Marie Antoinette</a> försöker fly till Österrike men känns igen av befolkningen och grips i Varennes. Flykten organiserades av den svenske greve <a class="person-link" onclick="openCard('card-fersen')">Axel von Fersen</a>, som också delfinansierade den. Tilltaget krossar förtroendet för kungen och stärker den republikanska rörelsen dramatiskt.</div>
         <span class="tl-tag politik">Politik</span>
       </div>
     </div>
@@ -1419,7 +1440,7 @@
       <div class="tl-content">
         <div class="tl-date">21 Januari 1793</div>
         <div class="tl-title">Ludvig XVI avrättas</div>
-        <div class="tl-body">Konungen döms för förräderi mot nationen och guillotineras på Place de la Révolution inför en stor folkmassa. Monarkisternas Europa skakas om, och krigen mot revolutionsfrankriket intensifieras.</div>
+        <div class="tl-body"><a class="person-link" onclick="openCard('card-ludvig')">Ludvig XVI</a> döms för förräderi mot nationen och guillotineras på Place de la Révolution inför en stor folkmassa. <a class="person-link" onclick="openCard('card-marie')">Marie Antoinette</a> följer nio månader senare, den 16 oktober 1793. Monarkisternas Europa skakas om och krigen mot revolutionsfrankriket intensifieras.</div>
         <span class="tl-tag terror">Terror</span>
       </div>
       <div class="tl-dot"><div class="tl-dot-inner"></div></div>
@@ -1435,7 +1456,7 @@
         <div class="terreur-blade tb3"></div>
         <div class="tl-date">1793 – 1794</div>
         <div class="tl-title">Terrorväldet (La Terreur)</div>
-        <div class="tl-body">Under Robespierre och Välfärdsutskottets ledning avrättas upp till 17 000 personer officiellt och 10 000 dör i fängelse. Terrorn motiveras som ett nödvändigt skydd mot inbördeskrig och utländsk invasion.</div>
+        <div class="tl-body">Under <a class="person-link" onclick="openCard('card-robespierre')">Robespierre</a> och Välfärdsutskottets ledning avrättas upp till 17 000 personer officiellt och 10 000 dör i fängelse. <a class="person-link" onclick="openCard('card-marat')">Marat</a>s tidning eldade på folkliga krav på mer blod, medan <a class="person-link" onclick="openCard('card-danton')">Danton</a> vände sig mot terrorns hänsynslöshet — och guillotinerades för det i april 1794.</div>
         <span class="tl-tag terror">Terror</span>
       </div>
     </div>
@@ -1444,7 +1465,7 @@
       <div class="tl-content">
         <div class="tl-date">27 Juli 1794</div>
         <div class="tl-title">Thermidorreaktionen</div>
-        <div class="tl-body">Robespierre arresteras och avrättas dagen efter av sina egna kollegor. Jakobinernas radikala period tar slut. Direktoriet, en mer konservativ femmannastyrelse, tar makten.</div>
+        <div class="tl-body"><a class="person-link" onclick="openCard('card-robespierre')">Robespierre</a> arresteras och avrättas dagen efter av sina egna kollegor. Jakobinernas radikala period tar slut. Direktoriet, en mer konservativ femmannastyrelse, tar makten.</div>
         <span class="tl-tag politik">Politik</span>
       </div>
       <div class="tl-dot"><div class="tl-dot-inner"></div></div>
@@ -1457,7 +1478,7 @@
       <div class="tl-content">
         <div class="tl-date">9 November 1799</div>
         <div class="tl-title">Napoleons statskupp: 18 Brumaire</div>
-        <div class="tl-body">General Napoleon Bonaparte genomför en statskupp och avsätter Direktoriet. Han utropas till Förste konsul. Den revolutionära perioden är officiellt slut, men dess idéer ska snart spridas av franska bajonetter över hela Europa.</div>
+        <div class="tl-body">General <a class="person-link" onclick="openCard('card-napoleon')">Napoleon Bonaparte</a> genomför en statskupp och avsätter Direktoriet. Han utropas till Förste konsul. Den revolutionära perioden är officiellt slut, men dess idéer ska snart spridas av franska bajonetter över hela Europa.</div>
         <span class="tl-tag militart">Militärt</span>
       </div>
     </div>
@@ -1475,10 +1496,21 @@
   <p class="section-label">Aktörerna · Nio gestalter</p>
   <h2 class="section-title">Nyckelpersoner</h2>
 
+  <p class="gallery-intro">
+    Revolutionen formades av nio gestalter med vitt skilda roller och öden.
+    Kungaparet <a class="person-link" onclick="openCard('card-ludvig')">Ludvig XVI</a> och <a class="person-link" onclick="openCard('card-marie')">Marie Antoinette</a> representerade det gamla systemet inifrån;
+    den svenske greve <a class="person-link" onclick="openCard('card-fersen')">Axel von Fersen</a> länkade samman den amerikanska, franska och svenska politiken i en enda levnadsbana.
+    <a class="person-link" onclick="openCard('card-sieyes')">Abbé Sieyès</a> formulerade revolutionens legitimitetskrav,
+    <a class="person-link" onclick="openCard('card-danton')">Danton</a> och <a class="person-link" onclick="openCard('card-marat')">Marat</a> var folkets röster,
+    och <a class="person-link" onclick="openCard('card-robespierre')">Robespierre</a> drev terrorn till sina yttersta gränser.
+    <a class="person-link" onclick="openCard('card-olympe')">Olympe de Gouges</a> påminde om att revolutionens löften om frihet inte gällde alla,
+    och <a class="person-link" onclick="openCard('card-napoleon')">Napoleon</a> begravde slutligen dess demokratiska ideal.
+  </p>
+
   <div class="gallery-grid">
 
     <!-- Ludvig XVI -->
-    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/ludvig-xvi.webp')" onclick="this.classList.toggle('flipped')">
+    <div class="flip-card fade-in" id="card-ludvig" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/ludvig-xvi.webp')" onclick="this.classList.toggle('flipped')">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1500,13 +1532,15 @@
           <div class="back-text">Välmenande men obeslutsam monark som ärvde en stat på ruinens rand. Oförmögen att hantera finanskrisen eller förstå hur folkstämningen förändrades.</div>
           <div class="back-section-title">Ideologi</div>
           <div class="back-text">Troende på kunglig absolutism och gudomlig rätt, ett system vars legitimitet revolution och upplysning hade undergrävt.</div>
+          <div class="back-section-title">Myten och gapet</div>
+          <div class="back-text">Citatet "låt dem äta kakor" tillskrivs vanligen Marie Antoinette men är nästan säkert falskt — Rousseau citerade liknande ord om "en stor prinsessa" redan 1765, när drottningen var tio år gammal. Ändå fångar det verkliga gapet: hovet levde i en värld där man helt enkelt inte förstod att folk svalt.</div>
           <div class="back-fate">Dömd för förräderi och guillotinerad 21 januari 1793 på Place de la Révolution.</div>
         </div>
       </div>
     </div>
 
     <!-- Marie Antoinette -->
-    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/marie-antoinette.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.08s">
+    <div class="flip-card fade-in" id="card-marie" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/marie-antoinette.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.08s">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1527,14 +1561,14 @@
           <div class="back-section-title">Roll & karaktär</div>
           <div class="back-text">Österrikisk prinsessa som blev Frankrikes drottning och symbol för hovets upplevda slöseri. Smeknamnet "Madame Déficit" speglar hur hon hatades av folket.</div>
           <div class="back-section-title">Historisk komplexitet</div>
-          <div class="back-text">Moderna historiker nyanserar bilden: hon var delvis offer för propaganda och politiska intressen snarare än verkligen ansvarig för statens finanser.</div>
+          <div class="back-text">Moderna historiker nyanserar bilden: hon var delvis offer för propaganda och politiska intressen snarare än verkligen ansvarig för statens finanser. Pamfletterna mot henne var extrema och anklagade henne för utsvävningar och förräderi på ett sätt som sade mer om revolutionens behov av en syndabock än om hennes faktiska handlingar. Vid sitt lilla slott Petit Trianon sökte hon en enklare tillvaro, långt från Versailles ceremoniväsen — en sida av henne som sällan syns i historieskrivningen.</div>
           <div class="back-fate">Avrättad 16 oktober 1793, nio månader efter sin make.</div>
         </div>
       </div>
     </div>
 
     <!-- Axel von Fersen -->
-    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/axel-von-fersen.webp'); transition-delay: 0.12s" onclick="this.classList.toggle('flipped')">
+    <div class="flip-card fade-in" id="card-fersen" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/axel-von-fersen.webp'); transition-delay: 0.12s" onclick="this.classList.toggle('flipped')">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1546,7 +1580,7 @@
           </div>
           <div class="card-nameplate">
             <div class="card-name">Axel von Fersen</div>
-            <div class="card-role">Svensk greve · Marie Antoinettes vän</div>
+            <div class="card-role">Svensk greve · Marie Antoinettes "vän"</div>
             <div class="flip-hint">Vänd kortet</div>
           </div>
         </div>
@@ -1562,7 +1596,7 @@
     </div>
 
     <!-- Robespierre -->
-    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/robespierre.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.16s">
+    <div class="flip-card fade-in" id="card-robespierre" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/robespierre.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.16s">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1590,7 +1624,7 @@
     </div>
 
     <!-- Danton -->
-    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/danton.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.24s">
+    <div class="flip-card fade-in" id="card-danton" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/danton.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.24s">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1618,7 +1652,7 @@
     </div>
 
     <!-- Napoleon -->
-    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/napoleon.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.32s">
+    <div class="flip-card fade-in" id="card-napoleon" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/napoleon.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.32s">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1646,7 +1680,7 @@
     </div>
 
     <!-- Abbé Sieyès -->
-    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/abbe-sieyes.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.40s">
+    <div class="flip-card fade-in" id="card-sieyes" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/abbe-sieyes.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.40s">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1674,7 +1708,7 @@
     </div>
 
     <!-- Olympe de Gouges -->
-    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/olympe-de-gouges.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.48s">
+    <div class="flip-card fade-in" id="card-olympe" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/olympe-de-gouges.webp')" onclick="this.classList.toggle('flipped')" style="transition-delay: 0.48s">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1702,7 +1736,7 @@
     </div>
 
     <!-- Marat -->
-    <div class="flip-card fade-in" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/marat.webp'); transition-delay: 0.56s" onclick="this.classList.toggle('flipped')">
+    <div class="flip-card fade-in" id="card-marat" style="--portrait: url('https://andre-edu.github.io/history-interactive/images/marat.webp'); transition-delay: 0.56s" onclick="this.classList.toggle('flipped')">
       <div class="flip-inner">
         <div class="flip-front">
           <div class="portrait-area">
@@ -1823,6 +1857,16 @@
 </footer>
 
 <script>
+  // ── OPEN CARD ON NAME CLICK ──
+  function openCard(id) {
+    const card = document.getElementById(id);
+    if (!card) return;
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => {
+      if (!card.classList.contains('flipped')) card.classList.add('flipped');
+    }, 500);
+  }
+
   // ── INTERSECTION OBSERVER ──
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
