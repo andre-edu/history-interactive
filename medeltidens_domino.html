@@ -1,0 +1,310 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Inter:wght@400;500&display=swap');
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.kn{position:absolute;cursor:pointer;border-radius:8px;padding:9px 11px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;transition:opacity .25s,box-shadow .25s}
+.kn:hover{filter:brightness(1.07)}
+@keyframes kring{0%,100%{box-shadow:0 0 0 0 transparent}55%{box-shadow:0 0 0 6px var(--kpc,transparent)}}
+.kring{animation:kring 1.7s ease-in-out infinite}
+</style>
+
+<h2 class="sr-only">Medeltidens dominoeffekt — interaktiv orsak-verkan visualisering 900–1523</h2>
+
+<div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:10px;border-bottom:.5px solid var(--color-border-tertiary,#e4e4e7)">
+  <div>
+    <div style="font-size:10px;letter-spacing:4px;color:var(--color-text-secondary,#71717a);margin-bottom:3px;font-family:'Inter',system-ui,sans-serif">HISTORIA · INTERAKTIV VISUALISERING</div>
+    <div style="font-size:19px;font-weight:500;font-family:'Playfair Display',Georgia,'Times New Roman',serif">Medeltidens dominoeffekt</div>
+    <div style="font-size:11px;color:var(--color-text-secondary,#71717a);font-style:italic;margin-top:3px;font-family:'Inter',system-ui,sans-serif">En kedja av orsaker och konsekvenser 900–1523 · Klicka en nod · Scrolla höger</div>
+  </div>
+  <div style="display:flex;gap:7px;flex-shrink:0;margin-top:4px">
+    <button id="kbplay" style="font-size:11px;padding:5px 13px;font-family:'Inter',system-ui,sans-serif">&#9654; Spela kedjan</button>
+    <button id="kbreset" style="font-size:11px;display:none;font-family:'Inter',system-ui,sans-serif">Återställ</button>
+  </div>
+</div>
+
+<div style="display:flex;gap:16px;padding:8px 0;flex-wrap:wrap">
+  <div style="display:flex;align-items:center;gap:5px"><div style="width:8px;height:8px;border-radius:50%;background:#3D6094"></div><span style="font-size:9.5px;color:var(--color-text-secondary,#71717a);letter-spacing:2px;font-family:'Inter',system-ui,sans-serif">KLIMAT</span></div>
+  <div style="display:flex;align-items:center;gap:5px"><div style="width:8px;height:8px;border-radius:50%;background:#B8953A"></div><span style="font-size:9.5px;color:var(--color-text-secondary,#71717a);letter-spacing:2px;font-family:'Inter',system-ui,sans-serif">SAMHÄLLE</span></div>
+  <div style="display:flex;align-items:center;gap:5px"><div style="width:8px;height:8px;border-radius:50%;background:#A8522E"></div><span style="font-size:9.5px;color:var(--color-text-secondary,#71717a);letter-spacing:2px;font-family:'Inter',system-ui,sans-serif">POLITIK</span></div>
+  <div style="display:flex;align-items:center;gap:5px"><div style="width:8px;height:8px;border-radius:50%;background:#7A1515"></div><span style="font-size:9.5px;color:var(--color-text-secondary,#71717a);letter-spacing:2px;font-family:'Inter',system-ui,sans-serif">VÄNDPUNKT</span></div>
+</div>
+
+<div id="kkscroll" style="overflow-x:auto;overflow-y:hidden;border:.5px solid var(--color-border-tertiary,#e4e4e7);border-radius:8px">
+  <div style="position:relative;width:1560px;height:490px">
+    <svg id="kksvg" width="1560" height="490" style="position:absolute;top:0;left:0;pointer-events:none">
+      <defs>
+        <marker id="kkarr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 2L8 5L2 8" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <rect x="0" y="6" width="1560" height="148" fill="rgba(61,96,148,.06)"/>
+      <rect x="0" y="172" width="1560" height="168" fill="rgba(184,149,58,.06)"/>
+      <rect x="0" y="354" width="1560" height="128" fill="rgba(168,82,46,.06)"/>
+      <text x="12" y="80" font-size="8" fill="#6A9DD0" letter-spacing="2" font-family="Inter,sans-serif" opacity=".55">KLIMAT</text>
+      <text x="12" y="258" font-size="8" fill="#C9A03A" letter-spacing="2" font-family="Inter,sans-serif" opacity=".55">SAMHÄLLE</text>
+      <text x="12" y="418" font-size="8" fill="#D96A42" letter-spacing="2" font-family="Inter,sans-serif" opacity=".55">POLITIK</text>
+    </svg>
+    <div id="kknodes"></div>
+  </div>
+</div>
+
+<div id="kkprogwrap" style="margin:7px 0 3px;display:none">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div style="flex:1;height:2.5px;background:var(--color-border-tertiary,#e4e4e7);border-radius:2px;overflow:hidden">
+      <div id="kkprogbar" style="height:100%;background:#B8953A;width:0%"></div>
+    </div>
+    <span id="kkprogtxt" style="font-size:10px;color:var(--color-text-secondary,#71717a);min-width:38px;text-align:right;font-family:'Inter',system-ui,sans-serif">1 / 12</span>
+  </div>
+</div>
+
+<div id="kkdetail" style="margin-top:10px;border-top:.5px solid var(--color-border-tertiary,#e4e4e7);padding-top:10px;min-height:50px">
+  <div style="text-align:center;font-size:12px;color:var(--color-text-secondary,#71717a);font-style:italic;padding:8px 0;font-family:'Inter',system-ui,sans-serif">Klicka en nod för att utforska orsaker och konsekvenser · Tryck "Spela kedjan" för guidad genomgång</div>
+</div>
+
+<script>
+(function(){
+  var SERIF="'Playfair Display',Georgia,'Times New Roman',serif";
+  var SANS="'Inter',system-ui,-apple-system,sans-serif";
+  var NW=128,NH=76,MW=158,MH=98;
+  var TC={
+    k:{bg:'rgba(61,96,148,.1)',  br:'#3D6094',hl:'#6A9DD0',lbl:'KLIMAT & NATUR'},
+    s:{bg:'rgba(184,149,58,.1)', br:'#B8953A',hl:'#C9A03A',lbl:'SAMHÄLLE & EKONOMI'},
+    p:{bg:'rgba(168,82,46,.1)',  br:'#A8522E',hl:'#D96A42',lbl:'POLITIK & MAKT'},
+    m:{bg:'rgba(122,21,21,.14)', br:'#7A1515',hl:'#BB2222',lbl:'HISTORISK VÄNDPUNKT'}
+  };
+  var C_TXT='var(--color-text-primary,#18181b)';
+  var C_MUT='var(--color-text-secondary,#71717a)';
+  var C_BG ='var(--color-background-secondary,#f8f9fa)';
+  var C_BRD='var(--color-border-tertiary,#e4e4e7)';
+  var C_BR2='var(--color-border-secondary,#d4d4d8)';
+
+  var NODES=[
+    {id:'varme',x:18,y:24,w:NW,h:NH,tr:'k',yr:'900–1300',ic:'ti-sun',
+     ti:'Medeltida\nvärmeperioden',sh:'+2°C varmare klimat',
+     dt:'Europa upplevde ett ovanligt varmt klimat, upp till 2°C varmare än idag. Glaciärerna drog sig tillbaka och längre odlingssäsonger gav bättre skördar och färre missväxtår. Perioden nådde sin kulmen kring år 1000 och samverkade med tre avgörande jordbruksinnovationer: hjulplogen, tresädet och hästkragen. Tillsammans bidrog de till att Skandinaviens befolkning beräknas ha tredubblats mellan år 750 och 1300.',
+     ko:'Möjliggjorde befolkningsökning och nyodling'},
+
+    {id:'lilla_istiden',x:196,y:24,w:NW,h:NH,tr:'k',yr:'ca 1300→',ic:'ti-snowflake',
+     ti:'Lilla istidens\ninbrott',sh:'Kylan återvänder för gott',
+     dt:'Under 1300-talets inledning vänder klimatet och en kallare period, lilla istiden, tar sin början. Den varade ända till 1800-talets slut och innebar kortare växtsäsonger, strängare vintrar och mer extremt väder. Klimatförsämringen drabbade spannmålsodlingen extra hårt, eftersom råg och korn kräver en tillräckligt lång och varm vegetationsperiod. Den befolkning som vuxit explosivt under värmeperioden hade inga buffertar kvar när krisen slog till.',
+     ko:'Direkt orsak till missväxt och svält'},
+
+    {id:'missvaxt',x:374,y:98,w:NW,h:NH,tr:'k',yr:'1310-tal',ic:'ti-cloud-rain',
+     ti:'Missväxt\noch svält',sh:'Extremväder slår ut skördarna',
+     dt:'Redan på 1310-talet drabbades Norden av extrema väderförhållanden med ihållande regn och svår torka, vilket ledde till missväxt och hungersnöd. I vissa områden slog skördarna helt fel flera år i rad, och utan fungerande livsmedelslagring eller handelsnätverk saknade lokala samhällen skyddsnät. Uppskattningsvis dog 10 till 15 procent av befolkningen av svält redan innan pesten anlände. Hungersnöden försvagade befolkningens immunförsvar till historiskt låga nivåer.',
+     ko:'Skapar en biologiskt sårbar befolkning utan marginaler'},
+
+    {id:'befolkning',x:18,y:188,w:NW,h:NH,tr:'s',yr:'750–1300',ic:'ti-users',
+     ti:'Befolknings-\növergång',sh:'3× fler på 550 år',
+     dt:'Skandinaviens befolkning trefaldigades under perioden. Fler munnar att mätta tvingade fram en expansion där skogar röjdes och sanka utmarker dikades för att skapa nya gårdar. Dessa fick ofta namnändelser som -torp och -röd, och dessa ortnamn lever kvar i landskapet än idag. Befolkningstrycket drev också fram städernas framväxt och handelsexpansionen, och kring år 1150 var Norden fullt integrerat i det latinska kristna Europa.',
+     ko:'Skapar resurstryck och strukturell sårbarhet'},
+
+    {id:'forsvagad',x:502,y:188,w:NW,h:NH,tr:'s',yr:'1340-tal',ic:'ti-user-x',
+     ti:'Försvagad\nbefolkning',sh:'Svält → svagt immunförsvar',
+     dt:'Decennier av missväxt gör befolkningen kroniskt undernärd. Medeltida medicin saknade förståelse för sambandet mellan näring och immunförsvar, och de som överlevde svälten bar med sig en biologisk skörhet utan att känna till den. När pesten spreds längs handelvägarna från Centralasien fann den en befolkning med minimal motståndskraft. Samhällets resiliens var på historisk bottennivå precis när den värsta katastrofen i historien var på väg.',
+     ko:'Den perfekta grogrunden för en historisk pandemi'},
+
+    {id:'digerdoden',x:680,y:140,w:MW,h:MH,tr:'m',mega:1,yr:'1349–1360',ic:'ti-skull',
+     ti:'DIGERDÖDEN',sh:'50% av Nordens befolkning',
+     dt:'Bubonpesten, orsakad av bakterien Yersinia pestis och spridd av loppor på råttor, anlände med handelsfartyg till Norden 1349 till 1350. Dödligheten utan behandling låg på 60 till 70 procent, och hela byar utraderades på kort tid. Pesten återkom sedan i upprepade vågor: barnadöden 1360 drabbade framför allt de barn och unga som saknade immunitet från det första utbrottet. Befolkningsnivåerna från perioden före pesten nåddes i Norden inte förrän på 1600-talet.',
+     ko:'Slog sönder alla samhällets strukturer på ett decennium'},
+
+    {id:'odegårdar',x:898,y:188,w:NW,h:NH,tr:'s',yr:'1350–1400',ic:'ti-home-off',
+     ti:'Ödegårdar &\nbrist på folk',sh:'1/3 av gårdarna öde',
+     dt:'Hela byar försvann från kartan, och i delar av Skandinavien övergavs upp till en tredjedel av alla gårdar. Skogen återerövrade mark som generationer av bönder hade odlat upp. Landgillena, det vill säga arrendena som bönderna betalade, rasade kraftigt i takt med att jordägarna konkurrerade om de få kvarvarande hyresgästerna. Ortnamn med prefixet Öde-, till exempel Ödeby och Ödestorp, vittnar fortfarande om denna demografiska katastrof.',
+     ko:'Skapar ny maktbalans till böndernas fördel'},
+
+    {id:'bonderna',x:1076,y:188,w:NW,h:NH,tr:'s',yr:'1350–1430',ic:'ti-scale',
+     ti:'Bönderna\nstärks',sh:'Krisens paradoxala frihet',
+     dt:'Arbetsmarknadens järnlag slog igenom: när utbudet av arbete minskar, stiger dess pris. Överlevande bönder var eftertraktade och fick bättre villkor, kunde byta herre och kräva friheter som tidigare var otänkbara. Inom jordbruket skedde en omställning mot boskapsskötsel, som var mindre arbetsintensivt än spannmålsodling. Sverige hade dessutom en relativt stark grupp självägande bönder, skattebönder, som aldrig var fullt ut livegna på samma sätt som i stora delar av övriga Europa.',
+     ko:'Stärkt bondeposition utmanar den feodala ordningen'},
+
+    {id:'kalmar',x:766,y:356,w:NW,h:NH,tr:'p',yr:'1397',ic:'ti-crown',
+     ti:'Kalmarunionen\nbildas',sh:'Tre riken enade',
+     dt:'Ur krisens kaos lyckades drottning Margareta förena Sverige, Danmark och Norge. Hon hade redan 1389 besegrat Albrekt av Mecklenburg vid Åsle utanför Falköping och tagit kontroll över Sverige. Erik av Pommern kröntes till unionskung i Kalmar 1397, men Margareta höll i de faktiska trådarna fram till sin död 1412. Unionens mål var en stark centralmakt där kungen kontrollerade rikets viktigaste borgar och ämbeten, men detta kolliderade med adelns krav på lokalt inflytande.',
+     ko:'126 år av nordisk politisk dramatik tar sin början'},
+
+    {id:'adelns_kris',x:946,y:356,w:NW,h:NH,tr:'p',yr:'1350–1430',ic:'ti-trending-down',
+     ti:'Adelns\nekonomiska kris',sh:'Inga bönder = ingen inkomst',
+     dt:'Jordägarnas inkomstmodell kollapsade när gårdar stod tomma och landgillena rasade. Många stora gods styckades upp i jämnstora fästegårdar för att överhuvudtaget locka till sig hyresgäster. Adelns svar blev att försöka höja skatterna och skärpa kontrollen, men svenska bönder hade en starkare juridisk ställning än i stora delar av övriga Europa och kunde inte reduceras till livegna. Den ekonomiska krisen tvingade stormännen att söka inflytande via riksrådet snarare än via godset.',
+     ko:'Desperata skattehöjningar ger upphov till folklig revolt'},
+
+    {id:'engelbrekt',x:1146,y:356,w:NW,h:NH,tr:'p',yr:'1434',ic:'ti-sword',
+     ti:'Engelbrekt-\nupproret',sh:'Dalarna reser sig',
+     dt:'Erik av Pommerns utländska fogdar krävde tunga skatter för att finansiera kriget mot Hansan, och bönderna var redan utblottade efter pestens efterdyningar. Engelbrekt Engelbrektsson var inte en vanlig bonde utan en bergsman, det vill säga gruvägare, från Bergslagen med lokal auktoritet och kontakter. Upproret ledde 1435 till det första svenska riksmötet med representanter från alla fyra stånden, ett tydligt embryo till riksdagen. Engelbrekt mördades 1436 av en rival inom adeln, men hans symboliska roll i svensk historia är enorm.',
+     ko:'Accelererar unionens kris och stärker riksrådet'},
+
+    {id:'blodbad',x:1358,y:238,w:MW,h:MH,tr:'m',mega:1,yr:'1520–1527',ic:'ti-alert-triangle',
+     ti:'STOCKHOLMS\nBLODBAD',sh:'~80 avrättade · medeltidens slut',
+     dt:'Kristian II bröt sitt amnestilöfte och lät avrätta omkring 80 ledande adelsmän, biskopar och borgare under tre novemberdagar 1520. Biskop Gustav Trolle av Uppsala använde ett juridiskt knep och förklarade motståndarledarna för kättare, vilket gav religiös täckning för de politiska avrättningarna. Kropparna brändes utanför staden. Gustav Vasa samlade landet i uppror, Sverige lämnade unionen 1523, och Västerås riksdag 1527 drog in kyrkans egendomar till kronan. Det moderna Norden tog form ur medeltidens aska.',
+     ko:'Medeltidens slut — det moderna Sverige, Danmark och Norge tar form'}
+  ];
+
+  var CONNS=[
+    {f:'varme',t:'befolkning'},{f:'varme',t:'lilla_istiden'},
+    {f:'lilla_istiden',t:'missvaxt'},{f:'befolkning',t:'missvaxt'},
+    {f:'missvaxt',t:'forsvagad'},{f:'forsvagad',t:'digerdoden'},
+    {f:'digerdoden',t:'odegårdar'},{f:'digerdoden',t:'kalmar'},
+    {f:'digerdoden',t:'adelns_kris'},{f:'odegårdar',t:'bonderna'},
+    {f:'odegårdar',t:'adelns_kris'},{f:'bonderna',t:'engelbrekt'},
+    {f:'adelns_kris',t:'engelbrekt'},{f:'engelbrekt',t:'blodbad'},
+    {f:'kalmar',t:'blodbad',by:472}
+  ];
+  var SEQ=['varme','lilla_istiden','befolkning','missvaxt','forsvagad','digerdoden','odegårdar','bonderna','kalmar','adelns_kris','engelbrekt','blodbad'];
+  var NM={};
+  NODES.forEach(function(n){NM[n.id]=n;});
+  var sel=null,playing=false,pidx=0,ptm=null;
+
+  function ncx(n){return n.x+(n.w||NW)/2;}
+  function ncy(n){return n.y+(n.h||NH)/2;}
+
+  function gpath(c){
+    var s=NM[c.f],t=NM[c.t];
+    var sw=s.w||NW,sh=s.h||NH,tw=t.w||NW,th=t.h||NH;
+    var sx=ncx(s),sy=ncy(s),tx=ncx(t),ty=ncy(t),dx=tx-sx,dy=ty-sy;
+    var x1,y1,x2,y2;
+    if(Math.abs(dx)>Math.abs(dy)*1.15){
+      x1=dx>0?s.x+sw:s.x; y1=sy; x2=dx>0?t.x:t.x+tw; y2=ty;
+    } else {
+      x1=sx; y1=dy>0?s.y+sh:s.y; x2=tx; y2=dy>0?t.y:t.y+th;
+    }
+    if(c.by) return 'M'+x1+' '+y1+' C'+x1+' '+c.by+' '+x2+' '+c.by+' '+x2+' '+y2;
+    var mx=(x1+x2)/2,my=(y1+y2)/2;
+    if(Math.abs(dx)>Math.abs(dy)*1.15) return 'M'+x1+' '+y1+' C'+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2;
+    return 'M'+x1+' '+y1+' C'+x1+' '+my+' '+x2+' '+my+' '+x2+' '+y2;
+  }
+
+  function getHL(id){
+    var h={}; h[id]=1;
+    CONNS.forEach(function(c){if(c.f===id)h[c.t]=1; if(c.t===id)h[c.f]=1;});
+    return h;
+  }
+
+  function renderConns(){
+    var svg=document.getElementById('kksvg');
+    var old=svg.querySelectorAll('.kc');
+    for(var i=0;i<old.length;i++) old[i].parentNode.removeChild(old[i]);
+    var hl=sel?getHL(sel.id):null;
+    CONNS.forEach(function(c){
+      var active=sel&&(c.f===sel.id||c.t===sel.id);
+      var vis=!sel||(hl[c.f]&&hl[c.t]);
+      var el=document.createElementNS('http://www.w3.org/2000/svg','path');
+      el.setAttribute('class','kc');
+      el.setAttribute('d',gpath(c));
+      el.setAttribute('fill','none');
+      el.setAttribute('stroke',active?'#B8953A':C_BR2);
+      el.setAttribute('stroke-width',active?'2.5':'1');
+      if(!active) el.setAttribute('stroke-dasharray','5 4');
+      el.setAttribute('marker-end','url(#kkarr)');
+      el.style.opacity=vis?'1':'0.1';
+      el.style.transition='opacity .25s,stroke .25s,stroke-width .25s';
+      svg.appendChild(el);
+    });
+  }
+
+  function renderNodes(){
+    var wrap=document.getElementById('kknodes');
+    wrap.innerHTML='';
+    var hl=sel?getHL(sel.id):null;
+    NODES.forEach(function(n){
+      var isSel=sel&&sel.id===n.id;
+      var isHL=!sel||hl[n.id];
+      var tc=TC[n.tr];
+      var d=document.createElement('div');
+      d.className='kn'+(n.mega?' mega':'')+(isSel?' kring':'');
+      d.style.left=n.x+'px'; d.style.top=n.y+'px';
+      d.style.width=(n.w||NW)+'px'; d.style.height=(n.h||NH)+'px';
+      d.style.background=isSel?tc.br:C_BG;
+      d.style.border=(isSel?'2px':'0.5px')+' solid '+(isSel?tc.hl:isHL?tc.br:C_BRD);
+      d.style.opacity=isHL?'1':'0.18';
+      if(isSel) d.style.setProperty('--kpc',tc.bg);
+      var tc2=isSel?'#fff':C_TXT;
+      var sc2=isSel?'rgba(255,255,255,.72)':C_MUT;
+      d.innerHTML=
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start">'+
+          '<span style="font-size:8px;letter-spacing:1.5px;color:'+sc2+';font-family:'+SANS+'">'+n.yr+'</span>'+
+          '<i class="ti '+n.ic+'" style="font-size:'+(n.mega?15:13)+'px;color:'+(isSel?'rgba(255,255,255,.88)':tc.hl)+'" aria-hidden="true"></i>'+
+        '</div>'+
+        '<div style="font-size:'+(n.mega?11.5:10.5)+'px;font-weight:500;line-height:1.3;white-space:pre-line;color:'+tc2+';font-family:'+SANS+'">'+n.ti+'</div>'+
+        '<div style="font-size:8.5px;color:'+sc2+';line-height:1.3;font-family:'+SANS+'">'+n.sh+'</div>';
+      (function(node){d.addEventListener('click',function(){kkSelect(node);});})(n);
+      wrap.appendChild(d);
+    });
+  }
+
+  function renderDetail(){
+    var panel=document.getElementById('kkdetail');
+    if(!sel){
+      panel.style.borderTopColor=C_BRD;
+      panel.innerHTML='<div style="text-align:center;font-size:12px;color:'+C_MUT+';font-style:italic;padding:8px 0;font-family:'+SANS+'">Klicka en nod för att utforska orsaker och konsekvenser · Tryck "Spela kedjan" för guidad genomgång</div>';
+      return;
+    }
+    var tc=TC[sel.tr];
+    panel.style.borderTopColor=tc.br;
+    var inc=CONNS.filter(function(c){return c.t===sel.id;}).length;
+    var out=CONNS.filter(function(c){return c.f===sel.id;}).length;
+    panel.innerHTML=
+      '<div style="display:flex;gap:12px;align-items:flex-start">'+
+        '<div style="width:36px;height:36px;border-radius:8px;background:'+tc.bg+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'+
+          '<i class="ti '+sel.ic+'" style="font-size:19px;color:'+tc.br+'" aria-hidden="true"></i>'+
+        '</div>'+
+        '<div style="flex:1;min-width:0">'+
+          '<div style="font-size:9px;letter-spacing:3px;color:'+tc.br+';margin-bottom:3px;font-family:'+SANS+'">'+sel.yr+' · '+tc.lbl+'</div>'+
+          '<div style="font-size:15px;font-weight:500;margin-bottom:7px;font-family:'+SERIF+'">'+sel.ti.replace(/\n/g,' ')+'</div>'+
+          '<div style="font-size:13px;line-height:1.75;color:'+C_MUT+';margin-bottom:7px;font-family:'+SANS+'">'+sel.dt+'</div>'+
+          '<div style="font-size:12px;color:'+tc.br+';font-style:italic;margin-bottom:5px;font-family:'+SANS+'">&#x21b3; '+sel.ko+'</div>'+
+          '<div style="font-size:10px;color:'+C_MUT+';letter-spacing:1px;font-family:'+SANS+'">'+inc+' orsak'+(inc!==1?'er':'')+' &middot; '+out+' konsekvens'+(out!==1?'er':'')+' i kedjan</div>'+
+        '</div>'+
+      '</div>';
+  }
+
+  function render(){renderConns();renderNodes();renderDetail();}
+
+  function kkSelect(node){
+    sel=(sel&&sel.id===node.id)?null:node;
+    document.getElementById('kbreset').style.display=sel?'inline-block':'none';
+    render();
+  }
+
+  function kkReset(){
+    kkStop(); sel=null;
+    document.getElementById('kbreset').style.display='none';
+    render();
+  }
+
+  function kkPlay(){
+    if(playing){kkStop();return;}
+    playing=true; pidx=0;
+    document.getElementById('kbplay').innerHTML='&#9632; Pausa';
+    document.getElementById('kkprogwrap').style.display='block';
+    document.getElementById('kbreset').style.display='inline-block';
+    kkStep();
+  }
+
+  function kkStep(){
+    if(!playing) return;
+    if(pidx>=SEQ.length){kkStop();return;}
+    sel=NM[SEQ[pidx]];
+    render();
+    var pct=Math.round((pidx+1)/SEQ.length*100);
+    var bar=document.getElementById('kkprogbar');
+    bar.style.transition='none'; bar.style.width='0%';
+    setTimeout(function(){bar.style.transition='width 2s linear'; bar.style.width=pct+'%';},30);
+    document.getElementById('kkprogtxt').textContent=(pidx+1)+' / '+SEQ.length;
+    var sc=document.getElementById('kkscroll');
+    sc.scrollTo({left:Math.max(0,ncx(sel)-sc.clientWidth/2),behavior:'smooth'});
+    pidx++;
+    ptm=setTimeout(kkStep,2500);
+  }
+
+  function kkStop(){
+    playing=false; clearTimeout(ptm); ptm=null;
+    document.getElementById('kbplay').innerHTML='&#9654; Spela kedjan';
+    document.getElementById('kkprogwrap').style.display='none';
+  }
+
+  document.getElementById('kbplay').addEventListener('click',kkPlay);
+  document.getElementById('kbreset').addEventListener('click',kkReset);
+  render();
+})();
+</script>
