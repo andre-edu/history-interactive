@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shakespeare: Interactive English</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:     #0d1421;
+      --bg2:    #131d30;
+      --bg3:    #1a2640;
+      --gold:   #c9a84c;
+      --gold2:  #e8c96d;
+      --gold3:  rgba(201,168,76,0.13);
+      --border: rgba(201,168,76,0.18);
+      --text:   #e0d8cc;
+      --muted:  #8a8070;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lora', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    /* HEADER */
+    .hdr {
+      text-align: center;
+      padding: 3.5rem 1.5rem 2rem;
+    }
+    .hdr::after {
+      content: '';
+      display: block;
+      width: 72px;
+      height: 1px;
+      background: var(--gold);
+      margin: 1.5rem auto 0;
+      opacity: 0.45;
+    }
+    .hdr-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .hdr h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 700;
+      color: var(--gold2);
+      line-height: 1.05;
+      margin-bottom: 0.5rem;
+    }
+    .hdr-sub {
+      font-size: 0.92rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* PLAYS STRIP */
+    .plays-strip {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      padding: 0.85rem 1.5rem;
+      background: rgba(0,0,0,0.22);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .strip-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-right: 0.4rem;
+    }
+    .chip {
+      font-family: 'Lora', serif;
+      font-size: 0.73rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      border: 1px solid;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .chip:hover { transform: translateY(-1px); }
+    .chip.tragedy { color: #e09090; border-color: rgba(139,26,26,0.55); background: rgba(139,26,26,0.12); }
+    .chip.comedy  { color: #90c898; border-color: rgba(40,100,50,0.55);  background: rgba(40,100,50,0.12); }
+    .chip.history { color: #88b8d8; border-color: rgba(20,70,110,0.55);  background: rgba(20,70,110,0.12); }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      padding: 1.5rem 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    .tab {
+      font-family: 'Lora', serif;
+      font-size: 0.82rem;
+      padding: 0.65rem 1.2rem;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--muted);
+      cursor: pointer;
+      position: relative;
+      bottom: -1px;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+    .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .tab.soon   { opacity: 0.38; cursor: not-allowed; }
+    .tab:not(.active):not(.soon):hover { color: var(--text); }
+
+    /* CONTENT */
+    .content {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    .sec-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      color: var(--gold2);
+      margin-bottom: 0.3rem;
+    }
+    .sec-sub {
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin-bottom: 1.7rem;
+    }
+
+    /* CONTEXT CARDS */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .ctx-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem 1.1rem;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .ctx-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s;
+    }
+    .ctx-card:hover, .ctx-card.on {
+      border-color: rgba(201,168,76,0.45);
+      transform: translateY(-2px);
+    }
+    .ctx-card.on { background: var(--bg3); }
+    .ctx-card:hover::after, .ctx-card.on::after { transform: scaleX(1); }
+
+    .ctx-icon  { font-size: 1.55rem; margin-bottom: 0.55rem; }
+    .ctx-name  { font-family: 'Playfair Display', serif; font-size: 0.98rem; color: var(--gold2); margin-bottom: 0.3rem; }
+    .ctx-teaser { font-size: 0.78rem; color: var(--muted); line-height: 1.55; }
+
+    /* DETAIL PANEL */
+    .detail {
+      display: none;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.45rem;
+      margin-bottom: 2.75rem;
+      animation: slideIn 0.25s ease;
+    }
+    .detail.show { display: block; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .detail-hd {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.9rem;
+    }
+    .detail-hd-icon  { font-size: 1.7rem; }
+    .detail-hd-title { font-family: 'Playfair Display', serif; font-size: 1.18rem; color: var(--gold2); }
+    .detail-body     { font-size: 0.875rem; line-height: 1.85; }
+    .detail-body p   { margin-bottom: 0.6rem; }
+    .detail-body p:last-child { margin-bottom: 0; }
+    .detail-body strong { color: var(--gold2); font-weight: 600; }
+    .detail-body em     { color: #a8c0d8; }
+
+    .vocab-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 1rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid var(--border);
+    }
+    .vocab-pill {
+      font-size: 0.74rem;
+      padding: 0.2rem 0.6rem;
+      background: var(--gold3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .vocab-pill b { color: var(--gold); font-weight: 500; }
+
+    /* MAP */
+    .map-box  { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--bg2); }
+    .map-bar  { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.2rem; border-bottom: 1px solid var(--border); }
+    .map-bar-title { font-family: 'Playfair Display', serif; font-size: 0.98rem; color: var(--gold2); }
+    .map-bar-hint  { font-size: 0.73rem; color: var(--muted); font-style: italic; }
+
+    .map-inner { display: flex; }
+    .map-svg   { flex: 1 1 auto; min-width: 0; }
+    .map-svg svg { display: block; width: 100%; }
+
+    .map-panel {
+      width: 230px;
+      flex-shrink: 0;
+      padding: 1.2rem;
+      border-left: 1px solid var(--border);
+      background: rgba(0,0,0,0.18);
+      display: flex;
+      flex-direction: column;
+    }
+    .mp-name  { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--gold2); margin-bottom: 0.18rem; }
+    .mp-date  { font-size: 0.71rem; color: var(--gold); font-style: italic; margin-bottom: 0.65rem; }
+    .mp-text  { font-size: 0.78rem; line-height: 1.72; flex: 1; }
+    .mp-vocab { margin-top: 0.65rem; padding-top: 0.65rem; border-top: 1px solid var(--border); font-size: 0.73rem; color: var(--muted); font-style: italic; }
+    .mp-empty { color: var(--muted); font-style: italic; font-size: 0.8rem; text-align: center; margin: auto; line-height: 1.9; }
+
+    .marker { cursor: pointer; }
+    .marker:hover .mk-fill { opacity: 1 !important; }
+
+    @media (max-width: 640px) {
+      .map-inner  { flex-direction: column; }
+      .map-panel  { width: 100%; border-left: none; border-top: 1px solid var(--border); }
+      .tabs       { justify-content: flex-start; }
+    }
+
+    /* ── TAB PANES ── */
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* ── PLAY SWITCHER ── */
+    .play-switcher { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.75rem; justify-content: center; }
+    .ps-btn {
+      font-family: 'Lora', serif; font-size: 0.78rem;
+      padding: 0.6rem 0.5rem; border-radius: 8px;
+      border: 1px solid; background: transparent; cursor: pointer; transition: all 0.2s;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      gap: 0.3rem; width: 112px; min-height: 88px; text-align: center;
+    }
+    .play-icon { display: block; opacity: 0.75; transition: opacity 0.2s; }
+    .ps-btn.on .play-icon, .ps-btn:hover .play-icon { opacity: 1; }
+    .ps-btn.tragedy              { color: #e09090; border-color: rgba(139,26,26,0.45); }
+    .ps-btn.tragedy.on,
+    .ps-btn.tragedy:hover        { background: rgba(139,26,26,0.18); color: #f0a0a0; border-color: rgba(139,26,26,0.75); }
+    .ps-btn.comedy               { color: #90c898; border-color: rgba(40,100,50,0.45); }
+    .ps-btn.comedy.on,
+    .ps-btn.comedy:hover         { background: rgba(40,100,50,0.18); color: #a8d8b0; border-color: rgba(40,100,50,0.75); }
+    .ps-btn.history              { color: #88b8d8; border-color: rgba(20,70,110,0.45); }
+    .ps-btn.history.on,
+    .ps-btn.history:hover        { background: rgba(20,70,110,0.18); color: #a0c8e8; border-color: rgba(20,70,110,0.75); }
+
+    /* ── PLAY INTRO ── */
+    .play-intro {
+      font-size: 0.85rem; color: var(--text); line-height: 1.75;
+      margin-bottom: 1.5rem; padding: 0.9rem 1.15rem;
+      background: var(--bg2); border-left: 2px solid var(--gold);
+      border-radius: 0 6px 6px 0;
+    }
+    .play-intro em { color: var(--gold2); font-style: italic; }
+    .play-year { font-family: 'Playfair Display', serif; color: var(--gold); font-style: italic; margin-right: 0.4rem; }
+
+    /* ── WEB ── */
+    .web-wrap  { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--bg2); }
+    .web-bar   { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.2rem; border-bottom: 1px solid var(--border); }
+    .web-bar-title { font-family: 'Playfair Display', serif; font-size: 0.98rem; color: var(--gold2); }
+    .web-bar-hint  { font-size: 0.73rem; color: var(--muted); font-style: italic; }
+    .web-inner { display: flex; }
+    .web-svg   { flex: 1 1 auto; min-width: 0; background: #090f1a; }
+    .web-svg svg { display: block; width: 100%; }
+
+    .char-panel {
+      width: 235px; flex-shrink: 0; padding: 1.2rem;
+      border-left: 1px solid var(--border); background: rgba(0,0,0,0.18);
+      display: flex; flex-direction: column;
+    }
+    .cp-name  { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--gold2); margin-bottom: 0.15rem; }
+    .cp-role  { font-size: 0.72rem; color: var(--gold); font-style: italic; margin-bottom: 0.65rem; }
+    .cp-text  { font-size: 0.8rem; line-height: 1.72; }
+    .cp-text em { color: var(--gold2); font-style: italic; }
+    .cp-empty { color: var(--muted); font-style: italic; font-size: 0.8rem; text-align: center; margin: auto; line-height: 1.9; }
+
+    .edge-legend { display: flex; gap: 1.2rem; flex-wrap: wrap; padding: 0.6rem 1.2rem; border-top: 1px solid var(--border); background: rgba(0,0,0,0.12); }
+    .el-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; color: var(--muted); }
+
+    @media (max-width: 640px) {
+      .web-inner  { flex-direction: column; }
+      .char-panel { width: 100%; border-left: none; border-top: 1px solid var(--border); }
+    }
+
+    /* ── TAB 3: GENRE SORTER ── */
+    .genre-instruction {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      color: var(--gold2);
+      min-height: 2rem;
+      margin-bottom: 1.5rem;
+      transition: opacity 0.3s;
+    }
+    .genre-instruction span {
+      display: inline-block;
+      padding: 0.4rem 1.2rem;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--bg2);
+      font-size: 0.88rem;
+      font-family: 'Lora', serif;
+      font-style: italic;
+    }
+    .genre-feedback {
+      text-align: center;
+      font-size: 0.85rem;
+      font-family: 'Lora', serif;
+      min-height: 1.5rem;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s;
+    }
+    .genre-feedback.correct { color: #90c898; }
+    .genre-feedback.wrong   { color: #e09090; }
+
+    /* Play card pool */
+    .play-pool {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+      min-height: 60px;
+    }
+    .pool-card {
+      font-family: 'Lora', serif;
+      font-size: 0.8rem;
+      padding: 0.55rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg2);
+      cursor: pointer;
+      transition: all 0.22s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      user-select: none;
+    }
+    .pool-card svg { flex-shrink: 0; opacity: 0.7; }
+    .pool-card:hover { border-color: rgba(201,168,76,0.5); transform: translateY(-2px); }
+    .pool-card.selected {
+      border-color: var(--gold);
+      background: var(--bg3);
+      color: var(--gold2);
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 2px rgba(201,168,76,0.25);
+    }
+    .pool-card.wrong-anim {
+      animation: wrongShake 0.4s ease;
+    }
+    @keyframes wrongShake {
+      0%,100%{ transform: translateX(0); }
+      20%    { transform: translateX(-6px); }
+      60%    { transform: translateX(6px); }
+      80%    { transform: translateX(-3px); }
+    }
+
+    /* Genre buckets */
+    .genre-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .genre-bucket {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .genre-bucket:hover  { border-color: rgba(201,168,76,0.45); transform: translateY(-1px); }
+    .genre-bucket.ready  { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(201,168,76,0.2); }
+
+    .bucket-header {
+      padding: 0.7rem 1rem;
+      text-align: center;
+    }
+    .bucket-header.tragedy { background: rgba(139,26,26,0.2); border-bottom: 1px solid rgba(139,26,26,0.3); }
+    .bucket-header.comedy  { background: rgba(40,100,50,0.2);  border-bottom: 1px solid rgba(40,100,50,0.3); }
+    .bucket-header.history { background: rgba(20,70,110,0.2);  border-bottom: 1px solid rgba(20,70,110,0.3); }
+
+    .bucket-label {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      margin-bottom: 0.2rem;
+    }
+    .bucket-label.tragedy { color: #e09090; }
+    .bucket-label.comedy  { color: #90c898; }
+    .bucket-label.history { color: #88b8d8; }
+
+    .bucket-def {
+      font-size: 0.72rem;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .bucket-slots {
+      min-height: 80px;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    /* Placed cards (inside buckets) */
+    .placed-card {
+      border-radius: 6px;
+      cursor: pointer;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      padding: 0 0.65rem;
+      font-family: 'Lora', serif;
+      font-size: 0.78rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      transition: border-color 0.2s, background 0.2s;
+      justify-content: space-between;
+    }
+    .placed-card:hover { border-color: rgba(201,168,76,0.4); }
+    .placed-card.active {
+      border-color: var(--gold);
+      background: rgba(201,168,76,0.08);
+      color: var(--gold2);
+    }
+    .placed-card .pf-hint { font-size: 0.67rem; color: var(--muted); font-style: italic; }
+    .placed-card.active .pf-hint { display: none; }
+
+    /* Reveal panel below genre row */
+    .reveal-panel {
+      display: none;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 8px 8px 0;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      animation: slideIn 0.2s ease;
+    }
+    .reveal-panel.show { display: block; }
+    .reveal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      color: var(--gold2);
+      margin-bottom: 0.6rem;
+    }
+    .reveal-quote {
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--gold2);
+      margin-bottom: 0.3rem;
+      line-height: 1.5;
+    }
+    .reveal-modern {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+      line-height: 1.55;
+    }
+    .reveal-themes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .reveal-tag {
+      font-size: 0.72rem;
+      padding: 0.18rem 0.55rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    /* Reset button */
+    .sort-reset {
+      display: block;
+      margin: 0 auto;
+      font-family: 'Lora', serif;
+      font-size: 0.8rem;
+      padding: 0.45rem 1.2rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sort-reset:hover { color: var(--text); border-color: rgba(201,168,76,0.4); }
+
+    @media (max-width: 600px) {
+      .genre-row { grid-template-columns: 1fr; }
+    }
+
+    /* ── CHARACTER WEB ANIMATIONS ── */
+    @keyframes nodeIn {
+      from { transform: scale(0.15); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+    @keyframes edgeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .char-node {
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    /* ── EDGE FLOW ANIMATIONS ── */
+    @keyframes edgeFlowSupport { from{stroke-dashoffset:9}  to{stroke-dashoffset:0} }
+    @keyframes edgeFlowHostile { from{stroke-dashoffset:8}  to{stroke-dashoffset:0} }
+    @keyframes edgeFlowPower   { from{stroke-dashoffset:26} to{stroke-dashoffset:0} }
+
+    /* ── TAB 4: THEN VS NOW ── */
+    .tn-header {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem 1.2rem; margin-bottom: 1.25rem;
+    }
+    .tn-scene   { font-family:'Playfair Display',serif; font-size:0.95rem; color:var(--gold2); margin-bottom:0.25rem; }
+    .tn-context { font-size:0.82rem; color:var(--muted); font-style:italic; }
+
+    .tn-controls {
+      display:flex; justify-content:flex-end; align-items:center;
+      margin-bottom:0.3rem;
+    }
+    /* Column headers sit above the table, matching the lp-main grid exactly */
+    .tn-col-hds {
+      display:grid; grid-template-columns:1fr 1fr;
+      margin-bottom:0.25rem;
+    }
+    .tn-col-hd {
+      font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted);
+    }
+    .tn-col-hd:first-child { padding-left:calc(1rem + 14px + 0.55rem); }
+    .tn-col-hd:last-child  { padding-left:1.1rem; border-left:1px solid var(--border); }
+    .tn-quiz-btn {
+      font-family:'Lora',serif; font-size:0.75rem;
+      padding:0.32rem 0.9rem; border:1px solid var(--border);
+      border-radius:20px; background:transparent; color:var(--muted); cursor:pointer; transition:all 0.2s;
+    }
+    .tn-quiz-btn:hover { color:var(--text); border-color:var(--gold); }
+    .tn-quiz-btn.active { color:var(--gold); border-color:var(--gold); background:var(--gold3); }
+
+    /* Line table */
+    .tn-table { border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:2rem; }
+    .line-pair { border-bottom:1px solid var(--border); cursor:pointer; transition:background 0.15s; }
+    .line-pair:last-child { border-bottom:none; }
+    .line-pair:hover  { background:rgba(201,168,76,0.04); }
+    .line-pair.open   { background:rgba(201,168,76,0.07); }
+
+    .lp-main { display:grid; grid-template-columns:1fr 1fr; }
+    .lp-then {
+      padding:0.85rem 1rem; display:flex; gap:0.55rem;
+      align-items:flex-start; border-right:1px solid var(--border);
+    }
+    .lp-num  { font-size:0.65rem; color:var(--muted); min-width:14px; padding-top:0.15rem; flex-shrink:0; }
+    .lp-then-text {
+      font-family:'Playfair Display',serif; font-style:italic;
+      font-size:0.87rem; color:var(--gold2); line-height:1.6;
+    }
+    .lp-now { padding:0.85rem 1.1rem; position:relative; }
+    .lp-now-text {
+      font-family:'Lora',serif; font-size:0.84rem;
+      color:var(--text); line-height:1.6; display:block; transition:filter 0.35s;
+    }
+    .lp-reveal-hint { display:none; font-size:0.68rem; color:var(--muted); font-style:italic; margin-top:0.2rem; }
+
+    /* Quiz mode */
+    .quiz-mode .lp-now-text          { filter:blur(5px) brightness(0.45); user-select:none; }
+    .quiz-mode .lp-reveal-hint       { display:block; }
+    .quiz-mode .line-pair.revealed .lp-now-text    { filter:none; }
+    .quiz-mode .line-pair.revealed .lp-reveal-hint { display:none; }
+
+    /* Vocab panel */
+    .lp-vocab {
+      display:none; flex-wrap:wrap; gap:0.4rem;
+      padding:0.55rem 1rem 0.7rem 2.5rem;
+      background:rgba(0,0,0,0.15); border-top:1px solid var(--border);
+      animation:slideIn 0.2s ease;
+    }
+    .line-pair.open .lp-vocab { display:flex; }
+    .vp-chip {
+      font-size:0.74rem; padding:0.18rem 0.6rem;
+      background:var(--gold3); border:1px solid var(--border);
+      border-radius:4px; color:var(--text); line-height:1.55;
+    }
+    .vp-chip b { color:var(--gold2); font-weight:500; }
+
+    /* Coined words */
+    .tn-coined { margin-top:0.25rem; }
+    .coined-label { font-size:0.68rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:0.7rem; }
+    .coined-row   { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; }
+    .coined-card  { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:0.85rem 1rem; }
+    .coined-word  { font-family:'Playfair Display',serif; font-size:1rem; color:var(--gold2); margin-bottom:0.25rem; }
+    .coined-note  { font-size:0.73rem; color:var(--muted); line-height:1.5; }
+
+    @media(max-width:600px){
+      .lp-main  { grid-template-columns:1fr; }
+      .lp-then  { border-right:none; border-bottom:1px solid var(--border); }
+      .coined-row { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="hdr">
+  <p class="hdr-eyebrow">Interactive English · B1/B2</p>
+  <h1>Shakespeare</h1>
+  <p class="hdr-sub">Life, world, and works · 1564–1616</p>
+</header>
+
+<!-- ── PLAYS STRIP ── -->
+<div class="plays-strip">
+  <span class="strip-label">Eight plays:</span>
+  <span class="chip tragedy" onclick="goToPlay('romeo')">Romeo &amp; Juliet</span>
+  <span class="chip tragedy" onclick="goToPlay('macbeth')">Macbeth</span>
+  <span class="chip tragedy" onclick="goToPlay('othello')">Othello</span>
+  <span class="chip tragedy" onclick="goToPlay('hamlet')">Hamlet</span>
+  <span class="chip comedy"  onclick="goToPlay('dream')">A Midsummer Night's Dream</span>
+  <span class="chip comedy"  onclick="goToPlay('muchado')">Much Ado About Nothing</span>
+  <span class="chip history" onclick="goToPlay('henry')">Henry V</span>
+  <span class="chip history" onclick="goToPlay('richard')">Richard III</span>
+</div>
+
+<!-- ── TABS ── -->
+<nav class="tabs">
+  <button class="tab active" onclick="switchTab(0)">🌍 Shakespeare's World</button>
+  <button class="tab" onclick="switchTab(1)">🃏 In Your Hands</button>
+  <button class="tab" onclick="switchTab(2)">📖 What Kind of Story?</button>
+  <button class="tab" onclick="switchTab(3)">📜 Then vs. Now</button>
+</nav>
+
+<div id="pane-0" class="tab-pane active">
+<!-- ── TAB 1 CONTENT ── -->
+<main class="content">
+
+  <h2 class="sec-title">Elizabethan England</h2>
+  <p class="sec-sub">Shakespeare lived in a fascinating and dangerous world. Click a card to find out more.</p>
+
+  <div class="cards-grid">
+    <div class="ctx-card" onclick="showDetail('theatre', this)">
+      <div class="ctx-icon">🎭</div>
+      <div class="ctx-name">The Theatre</div>
+      <p class="ctx-teaser">Open-air stages, 3,000 spectators, and plays performed in daylight...</p>
+    </div>
+    <div class="ctx-card" onclick="showDetail('monarch', this)">
+      <div class="ctx-icon">👑</div>
+      <div class="ctx-name">The Monarch</div>
+      <p class="ctx-teaser">Queen Elizabeth I and King James I, the rulers who loved Shakespeare's company...</p>
+    </div>
+    <div class="ctx-card" onclick="showDetail('plague', this)">
+      <div class="ctx-icon">☠️</div>
+      <div class="ctx-name">The Plague</div>
+      <p class="ctx-teaser">The Black Death kept returning, shutting theatres and killing thousands...</p>
+    </div>
+    <div class="ctx-card" onclick="showDetail('language', this)">
+      <div class="ctx-icon">📜</div>
+      <div class="ctx-name">The Language</div>
+      <p class="ctx-teaser">Early Modern English sounded different, and Shakespeare invented 1,700 new words...</p>
+    </div>
+  </div>
+
+  <div class="detail" id="detail"></div>
+
+  <!-- MAP -->
+  <h2 class="sec-title">Elizabethan London</h2>
+  <p class="sec-sub">Click a marker to explore the places that shaped Shakespeare's life and work.</p>
+
+  <div class="map-box">
+    <div class="map-bar">
+      <span class="map-bar-title">London, circa 1600</span>
+      <span class="map-bar-hint">Click the markers to explore</span>
+    </div>
+    <div class="map-inner">
+      <div class="map-svg">
+        <svg viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg">
+
+          <!-- Sky/water base -->
+          <rect width="640" height="340" fill="#090f1a"/>
+
+          <!-- North bank land -->
+          <path d="M0,0 L640,0 L640,190 C570,184 500,186 420,187 C340,188 260,184 180,183 C110,182 55,188 0,192 Z" fill="#19130b"/>
+
+          <!-- South bank land -->
+          <path d="M0,340 L640,340 L640,248 C580,252 510,256 430,255 C350,254 270,257 190,259 C120,261 60,257 0,252 Z" fill="#19130b"/>
+
+          <!-- Thames -->
+          <path d="M0,192 C70,200 150,207 240,211 C330,215 420,216 510,213 C570,211 610,208 640,206
+                   L640,248 C610,250 570,253 510,255 C420,257 330,257 240,257 C150,257 70,253 0,250 Z"
+                fill="#152030"/>
+
+          <!-- Thames shimmer -->
+          <path d="M30,215 Q220,222 440,217 Q570,213 625,210" fill="none" stroke="#1c3348" stroke-width="1.2" opacity="0.7"/>
+          <path d="M20,232 Q230,238 450,234 Q580,231 628,228" fill="none" stroke="#1c3348" stroke-width="0.8" opacity="0.45"/>
+
+          <!-- Thames label -->
+          <text x="320" y="234" font-family="Georgia,serif" font-style="italic" font-size="11" fill="#27435c" text-anchor="middle" letter-spacing="1.5">River Thames</text>
+
+          <!-- Building silhouettes -->
+          <!-- Westminster / Whitehall -->
+          <rect x="46" y="155" width="70" height="34" fill="#110d07" opacity="0.95"/>
+          <rect x="60" y="139" width="13" height="19" fill="#110d07" opacity="0.95"/>
+          <rect x="86" y="144" width="11" height="14" fill="#110d07" opacity="0.95"/>
+          <!-- Blackfriars area -->
+          <rect x="158" y="168" width="32" height="20" fill="#110d07" opacity="0.8"/>
+          <!-- St Paul's -->
+          <rect x="214" y="160" width="48" height="26" fill="#110d07" opacity="0.95"/>
+          <polygon points="238,132 230,162 246,162" fill="#110d07" opacity="0.95"/>
+          <!-- Tower of London -->
+          <rect x="490" y="150" width="60" height="36" fill="#110d07" opacity="0.95"/>
+          <rect x="494" y="137" width="14" height="17" fill="#110d07" opacity="0.95"/>
+          <rect x="531" y="137" width="14" height="17" fill="#110d07" opacity="0.95"/>
+          <!-- Globe silhouette hint -->
+          <ellipse cx="272" cy="284" rx="20" ry="12" fill="none" stroke="#28200c" stroke-width="2" opacity="0.65"/>
+
+          <!-- London Bridge (spans full Thames north→south) -->
+          <rect x="300" y="197" width="22" height="72" fill="#1c1608" stroke="#302814" stroke-width="0.5"/>
+          <rect x="295" y="194" width="32" height="7"  fill="#241e0c"/>
+          <rect x="295" y="262" width="32" height="7"  fill="#241e0c"/>
+
+          <!-- District labels -->
+          <text x="88"  y="123" font-family="Georgia,serif" font-size="9" fill="#352a14" text-anchor="middle" letter-spacing="0.5">Westminster</text>
+          <text x="238" y="123" font-family="Georgia,serif" font-size="9" fill="#352a14" text-anchor="middle" letter-spacing="0.5">City of London</text>
+          <text x="520" y="123" font-family="Georgia,serif" font-size="9" fill="#352a14" text-anchor="middle" letter-spacing="0.5">East End</text>
+          <text x="272" y="318" font-family="Georgia,serif" font-size="9" fill="#352a14" text-anchor="middle" letter-spacing="0.5">Southwark</text>
+
+          <!-- ── MARKERS ── -->
+
+          <!-- Globe (main, larger) -->
+          <g class="marker" id="mk-globe" onclick="selectLoc('globe')">
+            <circle class="mk-fill" cx="272" cy="284" r="15" fill="#c9a84c" opacity="0.88"/>
+            <circle cx="272" cy="284" r="15" fill="none" stroke="#e8c96d" stroke-width="1.2"/>
+            <text x="272" y="289" font-family="Georgia,serif" font-size="11" font-weight="bold" fill="#0d1421" text-anchor="middle">G</text>
+          </g>
+
+          <!-- Whitehall -->
+          <g class="marker" id="mk-whitehall" onclick="selectLoc('whitehall')">
+            <circle class="mk-fill" cx="84" cy="163" r="13" fill="#c9a84c" opacity="0.88"/>
+            <circle cx="84" cy="163" r="13" fill="none" stroke="#e8c96d" stroke-width="1.2"/>
+            <text x="84" y="168" font-family="Georgia,serif" font-size="11" font-weight="bold" fill="#0d1421" text-anchor="middle">W</text>
+          </g>
+
+          <!-- St Paul's -->
+          <g class="marker" id="mk-stpauls" onclick="selectLoc('stpauls')">
+            <circle class="mk-fill" cx="238" cy="162" r="13" fill="#c9a84c" opacity="0.88"/>
+            <circle cx="238" cy="162" r="13" fill="none" stroke="#e8c96d" stroke-width="1.2"/>
+            <text x="238" y="167" font-family="Georgia,serif" font-size="9" font-weight="bold" fill="#0d1421" text-anchor="middle">SP</text>
+          </g>
+
+          <!-- Tower -->
+          <g class="marker" id="mk-tower" onclick="selectLoc('tower')">
+            <circle class="mk-fill" cx="516" cy="162" r="13" fill="#c9a84c" opacity="0.88"/>
+            <circle cx="516" cy="162" r="13" fill="none" stroke="#e8c96d" stroke-width="1.2"/>
+            <text x="516" y="167" font-family="Georgia,serif" font-size="11" font-weight="bold" fill="#0d1421" text-anchor="middle">T</text>
+          </g>
+
+          <!-- London Bridge (secondary) -->
+          <g class="marker" id="mk-bridge" onclick="selectLoc('bridge')">
+            <circle class="mk-fill" cx="311" cy="235" r="10" fill="#8a6820" opacity="0.9"/>
+            <circle cx="311" cy="235" r="10" fill="none" stroke="#c9a84c" stroke-width="1"/>
+            <text x="311" y="239" font-family="Georgia,serif" font-size="8" font-weight="bold" fill="#e8d090" text-anchor="middle">LB</text>
+          </g>
+
+          <!-- Blackfriars (secondary) -->
+          <g class="marker" id="mk-blackfriars" onclick="selectLoc('blackfriars')">
+            <circle class="mk-fill" cx="175" cy="172" r="10" fill="#8a6820" opacity="0.9"/>
+            <circle cx="175" cy="172" r="10" fill="none" stroke="#c9a84c" stroke-width="1"/>
+            <text x="175" y="176" font-family="Georgia,serif" font-size="8" font-weight="bold" fill="#e8d090" text-anchor="middle">BF</text>
+          </g>
+
+          <!-- Legend -->
+          <rect x="434" y="272" width="192" height="55" rx="4" fill="#0a1018" opacity="0.85" stroke="#2a2410" stroke-width="0.5"/>
+          <circle cx="454" cy="289" r="7"  fill="#c9a84c" opacity="0.88"/>
+          <text x="467" y="293" font-family="Georgia,serif" font-size="9" fill="#8a8070">Major location</text>
+          <circle cx="454" cy="311" r="6"  fill="#8a6820" opacity="0.9"/>
+          <text x="467" y="315" font-family="Georgia,serif" font-size="9" fill="#8a8070">Secondary location</text>
+
+          <!-- North arrow -->
+          <polygon points="607,36 603,47 611,47" fill="#4a4030"/>
+          <text x="607" y="56" font-family="Georgia,serif" font-size="9" fill="#4a4030" text-anchor="middle">N</text>
+
+        </svg>
+      </div>
+
+      <!-- Info panel -->
+      <div class="map-panel" id="map-panel">
+        <p class="mp-empty">← Click a marker<br>on the map<br>to learn more</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<div id="pane-1" class="tab-pane">
+<main class="content">
+  <h2 class="sec-title">Shakespeare in Your Hands</h2>
+  <p class="sec-sub">Choose a play, then click a character to learn about them.</p>
+
+  <div class="play-switcher">
+    <button class="ps-btn tragedy on" onclick="loadPlay('romeo',this)"><svg class="play-icon" preserveAspectRatio="xMidYMid meet" viewBox="0 0 46 28" width="38" height="32">
+    <circle cx="15" cy="14" r="11" fill="none" stroke="currentColor" stroke-width="2.2"/>
+    <circle cx="31" cy="14" r="11" fill="none" stroke="currentColor" stroke-width="2.2"/>
+  </svg>Romeo &amp; Juliet</button>
+    <button class="ps-btn tragedy"    onclick="loadPlay('macbeth',this)"><svg class="play-icon" preserveAspectRatio="xMidYMid meet" viewBox="0 0 28 46" width="38" height="32">
+    <path d="M14 40 L10 28 L10 8 L18 8 L18 28 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+    <path d="M5 22 L23 22" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
+    <path d="M11 8 L11 4 L17 4 L17 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="14" cy="3" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+  </svg>Macbeth</button>
+    <button class="ps-btn tragedy"    onclick="loadPlay('othello',this)"><svg class="play-icon" preserveAspectRatio="xMidYMid meet" viewBox="0 0 44 30" width="38" height="32">
+    <path d="M3 15 Q22 3 41 15 Q22 27 3 15 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+    <circle cx="22" cy="15" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/>
+    <circle cx="22" cy="15" r="2" fill="currentColor"/>
+  </svg>Othello</button>
+    <button class="ps-btn tragedy"    onclick="loadPlay('hamlet',this)"><svg class="play-icon" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 38" width="38" height="32">
+    <path d="M16 4 C8 4 4 10 4 16 C4 22 7 26 12 28 L12 33 L20 33 L20 28 C25 26 28 22 28 16 C28 10 24 4 16 4 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+    <ellipse cx="11" cy="16" rx="3.5" ry="4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    <ellipse cx="21" cy="16" rx="3.5" ry="4" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    <path d="M14.5 23 L16 21 L17.5 23" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+  </svg>Hamlet</button>
+    <button class="ps-btn comedy"     onclick="loadPlay('dream',this)"><svg class="play-icon" preserveAspectRatio="xMidYMid meet" viewBox="0 0 42 36" width="38" height="32">
+    <path d="M18 4 A14 14 0 1 0 18 32 A10 10 0 1 1 18 4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M32 7 L33.2 11 L37 11 L34 13.5 L35.2 17.5 L32 15 L28.8 17.5 L30 13.5 L27 11 L30.8 11 Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+  </svg>A Midsummer Night's Dream</button>
+    <button class="ps-btn comedy"     onclick="loadPlay('muchado',this)"><svg class="play-icon" viewBox="0 0 50 36" width="38" height="28" preserveAspectRatio="xMidYMid meet">
+    <path d="M2 2 L28 2 L28 20 L12 20 L8 27 L8 20 L2 20 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+    <path d="M22 8 L48 8 L48 26 L42 26 L42 32 L38 26 L22 26 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+  </svg>Much Ado About Nothing</button>
+    <button class="ps-btn history"    onclick="loadPlay('richard',this)"><svg class="play-icon" viewBox="0 0 54 40" width="40" height="30" preserveAspectRatio="xMidYMid meet"><g transform="rotate(38, 27, 18)" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="27" y1="4" x2="27" y2="13" stroke-width="2.5"/><line x1="21" y1="8" x2="33" y2="8" stroke-width="2.5"/><path d="M21 13 L19 25 L35 25 L33 13 Z" stroke-width="2.2"/><path d="M14 25 L14 31 L40 31 L40 25" stroke-width="2.5"/></g></svg>Richard III</button>
+    <button class="ps-btn history"    onclick="loadPlay('henry',this)"><svg class="play-icon" viewBox="0 0 54 36" width="40" height="27" preserveAspectRatio="xMidYMid meet"><path d="M8 26 L2 6 L18 21 L27 5 L36 21 L52 6 L46 26 L46 32 L8 32 Z" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/><line x1="8" y1="26" x2="46" y2="26" stroke="currentColor" stroke-width="1.2"/><circle cx="2" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="27" cy="5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="52" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Henry V</button>
+  </div>
+
+  <div class="play-intro" id="play-intro"></div>
+
+  <div class="web-wrap">
+    <div class="web-bar">
+      <span class="web-bar-title" id="web-title">Character web</span>
+      <span class="web-bar-hint">Click a character to learn more</span>
+    </div>
+    <div class="web-inner">
+      <div class="web-svg">
+        <svg id="char-web" viewBox="0 0 580 430" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="char-panel" id="char-panel">
+        <p class="cp-empty">&#8592; Click a character<br>to learn more</p>
+      </div>
+    </div>
+    <div class="edge-legend">
+      <span class="el-item">
+        <svg width="22" height="8" style="flex-shrink:0"><line x1="0" y1="4" x2="22" y2="4" stroke="#c9a84c" stroke-width="1.5"/><polygon points="18,1 22,4 18,7" fill="#c9a84c"/></svg>
+        Love / support
+      </span>
+      <span class="el-item">
+        <svg width="22" height="8" style="flex-shrink:0"><line x1="0" y1="4" x2="22" y2="4" stroke="#b05050" stroke-width="1.5"/><polygon points="18,1 22,4 18,7" fill="#b05050"/></svg>
+        Hostile
+      </span>
+      <span class="el-item">
+        <svg width="22" height="8" style="flex-shrink:0"><line x1="0" y1="4" x2="22" y2="4" stroke="#8878c0" stroke-width="1.5"/><polygon points="18,1 22,4 18,7" fill="#8878c0"/></svg>
+        Power / magic
+      </span>
+    </div>
+  </div>
+</main>
+</div>
+
+<div id="pane-2" class="tab-pane">
+<main class="content">
+  <h2 class="sec-title">What Kind of Story Is This?</h2>
+  <p class="sec-sub">Shakespeare wrote three types of plays. Sort the six plays into the correct genre, then click each placed card to reveal a quote and key themes.</p>
+
+  <div class="genre-instruction" id="g-instruction">
+    <span>Click a play to select it</span>
+  </div>
+  <div class="genre-feedback" id="g-feedback">&nbsp;</div>
+
+  <!-- Play card pool -->
+  <div class="play-pool" id="play-pool"></div>
+
+  <!-- Genre buckets -->
+  <div class="genre-row">
+    <div class="genre-bucket" id="bucket-tragedy" onclick="assignGenre('tragedy')">
+      <div class="bucket-header tragedy">
+        <div class="bucket-label tragedy">Tragedy</div>
+        <div class="bucket-def">The hero has a fatal flaw that leads to their downfall and death.</div>
+      </div>
+      <div class="bucket-slots" id="slots-tragedy"></div>
+    </div>
+    <div class="genre-bucket" id="bucket-comedy" onclick="assignGenre('comedy')">
+      <div class="bucket-header comedy">
+        <div class="bucket-label comedy">Comedy</div>
+        <div class="bucket-def">Confusion, misunderstandings, and love, but always a happy ending.</div>
+      </div>
+      <div class="bucket-slots" id="slots-comedy"></div>
+    </div>
+    <div class="genre-bucket" id="bucket-history" onclick="assignGenre('history')">
+      <div class="bucket-header history">
+        <div class="bucket-label history">History</div>
+        <div class="bucket-def">Based on real English kings and the events of their reigns.</div>
+      </div>
+      <div class="bucket-slots" id="slots-history"></div>
+    </div>
+  </div>
+
+  <div class="reveal-panel" id="reveal-panel"></div>
+  <button class="sort-reset" onclick="resetSorter()">↺ Reset</button>
+</main>
+</div>
+
+<div id="pane-3" class="tab-pane">
+<main class="content">
+  <h2 class="sec-title">Then vs. Now</h2>
+  <p class="sec-sub">Famous lines from Shakespeare paired with plain modern English. Click any line for vocabulary notes, or try Quiz mode and test yourself.</p>
+
+  <div class="play-switcher">
+    <button class="ps-btn tn-ps-btn tragedy on" onclick="loadThenNow('romeo',this)"><svg viewBox="0 0 46 28" width="22" height="14" style="flex-shrink:0;opacity:0.8"><circle cx="15" cy="14" r="11" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="31" cy="14" r="11" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>Romeo &amp; Juliet</button>
+    <button class="ps-btn tn-ps-btn tragedy" onclick="loadThenNow('macbeth',this)"><svg viewBox="0 0 28 46" width="13" height="22" style="flex-shrink:0;opacity:0.8"><path d="M14 40 L10 28 L10 8 L18 8 L18 28 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M5 22 L23 22" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>Macbeth</button>
+    <button class="ps-btn tn-ps-btn tragedy" onclick="loadThenNow('othello',this)"><svg viewBox="0 0 44 30" width="22" height="15" style="flex-shrink:0;opacity:0.8"><path d="M3 15 Q22 3 41 15 Q22 27 3 15 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="22" cy="15" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="22" cy="15" r="2" fill="currentColor"/></svg>Othello</button>
+    <button class="ps-btn tn-ps-btn tragedy" onclick="loadThenNow('hamlet',this)"><svg viewBox="0 0 32 38" width="16" height="20" style="flex-shrink:0;opacity:0.8"><path d="M16 4 C8 4 4 10 4 16 C4 22 7 26 12 28 L12 33 L20 33 L20 28 C25 26 28 22 28 16 C28 10 24 4 16 4 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><ellipse cx="11" cy="16" rx="3.5" ry="4" fill="none" stroke="currentColor" stroke-width="1.8"/><ellipse cx="21" cy="16" rx="3.5" ry="4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Hamlet</button>
+    <button class="ps-btn tn-ps-btn comedy" onclick="loadThenNow('dream',this)"><svg viewBox="0 0 42 36" width="20" height="17" style="flex-shrink:0;opacity:0.8"><path d="M18 4 A14 14 0 1 0 18 32 A10 10 0 1 1 18 4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>A Midsummer Night's Dream</button>
+    <button class="ps-btn tn-ps-btn comedy" onclick="loadThenNow('muchado',this)"><svg viewBox="0 0 50 36" width="26" height="19" style="flex-shrink:0;opacity:0.8"><path d="M2 2 L28 2 L28 20 L12 20 L8 27 L8 20 L2 20 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M22 8 L48 8 L48 26 L42 26 L42 32 L38 26 L22 26 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>Much Ado About Nothing</button>
+    <button class="ps-btn tn-ps-btn history" onclick="loadThenNow('henry',this)"><svg viewBox="0 0 54 36" width="22" height="15" style="flex-shrink:0;opacity:0.8"><path d="M8 26 L2 6 L18 21 L27 5 L36 21 L52 6 L46 26 L46 32 L8 32 Z" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/><line x1="8" y1="26" x2="46" y2="26" stroke="currentColor" stroke-width="1.2"/></svg>Henry V</button>
+    <button class="ps-btn tn-ps-btn history" onclick="loadThenNow('richard',this)"><svg viewBox="0 0 54 40" width="22" height="16" style="flex-shrink:0;opacity:0.8"><g transform="rotate(38,27,18)" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="27" y1="4" x2="27" y2="13" stroke-width="2.5"/><line x1="21" y1="8" x2="33" y2="8" stroke-width="2.5"/><path d="M21 13 L19 25 L35 25 L33 13 Z" stroke-width="2.2"/><path d="M14 25 L14 31 L40 31 L40 25" stroke-width="2.5"/></g></svg>Richard III</button>
+  </div>
+
+  <div class="tn-header">
+    <div class="tn-scene" id="tn-scene"></div>
+    <div class="tn-context" id="tn-context"></div>
+  </div>
+
+  <div class="tn-controls">
+    <button class="tn-quiz-btn" id="tn-quiz-btn" onclick="toggleQuiz()">🎓 Quiz mode</button>
+  </div>
+  <div class="tn-col-hds">
+    <span class="tn-col-hd">Then</span>
+    <span class="tn-col-hd">Now</span>
+  </div>
+
+  <div class="tn-table" id="tn-table"></div>
+  <div class="tn-coined" id="tn-coined"></div>
+</main>
+</div>
+
+<script>
+
+/* ── TAB 4: THEN VS NOW ── */
+const thenNow = {
+  romeo: {
+    scene: 'Act II, Scene II: The Balcony',
+    context: "Romeo stands beneath Juliet's window at night. She does not know he is there. He speaks about his love.",
+    lines: [
+      { then:"But soft! What light through yonder window breaks?",
+        now: "Wait, what is that light shining through that window over there?",
+        vocab:[{w:"soft",m:'an exclamation meaning "wait" or "hush", not the adjective'},{w:"yonder",m:"over there; at a distance"}] },
+      { then:"It is the east, and Juliet is the sun.",
+        now: "The east is where the sun rises, and Juliet shines as brightly and beautifully as the sun itself.",
+        vocab:[{w:"metaphor",m:'saying something IS something else; Romeo does not mean this literally; he means Juliet is the most important and beautiful thing in his world'}] },
+      { then:"What's in a name? That which we call a rose / By any other name would smell as sweet.",
+        now: "Why do names matter? A rose would still smell just as beautiful whatever we chose to call it.",
+        vocab:[{w:"Juliet's argument",m:"She means that Romeo's family name (Montague) is just a word; it does not define who he really is"}] },
+      { then:"Parting is such sweet sorrow.",
+        now: "Saying goodbye is painful, but somehow beautiful at the same time.",
+        vocab:[{w:"parting",m:"saying goodbye; the moment of leaving someone"},{w:"sweet sorrow",m:"a paradox: two completely opposite feelings experienced at the same time"}] },
+      { then:"A plague on both your houses!",
+        now: "A curse on both of your families!",
+        vocab:[{w:"plague",m:"a deadly infectious disease; here used as a curse"},{w:"houses",m:"noble families or clans"}] }
+    ],
+    coined:[
+      {word:"bedroom",note:"Shakespeare is one of the first writers recorded using this word in English"},
+      {word:"uncomfortable",note:"Shakespeare gave this word its emotional, personal meaning"},
+      {word:"lonely",note:'Before Shakespeare, "lonely" simply meant "solitary"; he made it feel like pain'}
+    ]
+  },
+  macbeth: {
+    scene: "Act II / Act V: Macbeth's Mind Unravels",
+    context: "As Macbeth's crimes pile up, guilt and paranoia begin to destroy him and his wife.",
+    lines: [
+      { then:"Is this a dagger which I see before me?",
+        now: "Am I really seeing a dagger floating in front of me, or is my mind playing tricks?",
+        vocab:[{w:"dagger",m:"a short double-edged knife used as a weapon"},{w:"before me",m:"in front of me"}] },
+      { then:"Fair is foul, and foul is fair.",
+        now: "What seems beautiful and good is actually evil, and what seems ugly and evil may turn out to be good.",
+        vocab:[{w:"fair",m:"beautiful, attractive, good"},{w:"foul",m:"ugly, evil, disgusting"}] },
+      { then:"Out, damned spot! Out, I say!",
+        now: "Disappear, you cursed stain! Go away!",
+        vocab:[{w:"damned",m:"cursed; Lady Macbeth imagines blood on her hands that will not wash off"},{w:"spot",m:"a small stain or mark"}] },
+      { then:"Tomorrow, and tomorrow, and tomorrow, / Creeps in this petty pace from day to day.",
+        now: "Day after day after day slowly drags by, each one small and meaningless.",
+        vocab:[{w:"petty",m:"small, unimportant, trivial"},{w:"pace",m:"speed or rate of movement"}] },
+      { then:"Double, double toil and trouble; / Fire burn and cauldron bubble.",
+        now: "Stir twice, stir twice: work hard and cause chaos; let the fire burn and the pot boil.",
+        vocab:[{w:"toil",m:"hard, exhausting physical work"},{w:"cauldron",m:"a large pot, here used by the witches for their magic spell"}] }
+    ],
+    coined:[
+      {word:"gloomy",note:"Shakespeare first wrote this word down in English"},
+      {word:"lackluster",note:'He invented this word, meaning "dull" or "without energy or brightness"'},
+      {word:"eyeball",note:'The first recorded use of "eyeball" as a single word appears in Shakespeare'}
+    ]
+  },
+  othello: {
+    scene: "Act III, Scene III: The Temptation",
+    context: "Iago carefully manipulates Othello, planting seeds of jealousy about Desdemona.",
+    lines: [
+      { then:"O, beware, my lord, of jealousy! / It is the green-eyed monster which doth mock / The meat it feeds on.",
+        now: "Be very careful of jealousy, my lord! It is like a monster with green eyes that mocks and slowly destroys the very person who feels it.",
+        vocab:[{w:"doth",m:'an old form of "does"'},{w:"green-eyed monster",m:'Shakespeare invented this phrase for jealousy; we still say "green with envy" today'}] },
+      { then:"I am not what I am.",
+        now: "I am not the person I appear to be.",
+        vocab:[{w:"context",m:"Said by Iago: one of the most chilling lines in Shakespeare; he openly admits his deception to the audience"}] },
+      { then:"She loved me for the dangers I had passed.",
+        now: "She fell in love with me because of the dangerous adventures and hardships I had survived.",
+        vocab:[{w:"passed",m:'here means "gone through" or "survived"'}] },
+      { then:"O, I have lost my reputation! I have lost the immortal part of myself.",
+        now: "I have destroyed my good name! I have lost the most important, lasting part of who I am.",
+        vocab:[{w:"reputation",m:"the opinion other people have of you; your public image"},{w:"immortal",m:"lasting forever; never dying"}] }
+    ],
+    coined:[
+      {word:"generous",note:"Shakespeare first used this word in its modern sense"},
+      {word:"manager",note:"Shakespeare appears to be the first writer to use this word"},
+      {word:"fashionable",note:'First recorded use of "fashionable" appears in Shakespeare'}
+    ]
+  },
+  hamlet: {
+    scene: "Act III, Scene I: The Most Famous Speech in English",
+    context: "Hamlet contemplates life, death, and whether it is worth continuing to exist.",
+    lines: [
+      { then:"To be, or not to be, that is the question.",
+        now: "Should I keep living, or end my life? That is what I have to decide.",
+        vocab:[{w:"To be",m:'"To be" means "to exist" or "to live"; this is a question about whether life is worth the suffering it brings'}] },
+      { then:"There is something rotten in the state of Denmark.",
+        now: "Something is deeply wrong and corrupt in the Danish royal court.",
+        vocab:[{w:"rotten",m:"decayed, corrupt, morally wrong"},{w:"state",m:"here means the country and its government, not a physical condition"}] },
+      { then:"The lady doth protest too much, methinks.",
+        now: "I think the woman insists too strongly; she is trying too hard to convince us.",
+        vocab:[{w:"doth",m:'old form of "does"'},{w:"protest",m:'here means "insist" or "declare firmly", not "object" or demonstrate'},{w:"methinks",m:"I think; it seems to me"}] },
+      { then:"To thine own self be true.",
+        now: "Be honest and true to yourself, above everything else.",
+        vocab:[{w:"thine",m:'old form of "your"'},{w:"own self",m:"your true identity; who you really are deep down"}] },
+      { then:"What a piece of work is a man!",
+        now: "What an extraordinary and remarkable creature a human being is!",
+        vocab:[{w:"piece of work",m:"a created thing; here used admiringly; Hamlet is amazed by human potential, even as he feels despair"}] }
+    ],
+    coined:[
+      {word:"amazement",note:"Shakespeare used this word in a stronger, more overwhelming sense than before"},
+      {word:"excitement",note:"First recorded use in its modern emotional sense appears in Shakespeare"},
+      {word:"traditional",note:'Shakespeare helped establish "traditional" as a word for things passed down through generations'}
+    ]
+  },
+  dream: {
+    scene: "The Enchanted Forest, Various Scenes",
+    context: "In the fairy world, magic causes chaos, and the fairies observe human foolishness with amusement.",
+    lines: [
+      { then:"Lord, what fools these mortals be!",
+        now: "Goodness, how foolish human beings are!",
+        vocab:[{w:"Lord",m:'an exclamation of surprise, like "Good heavens!" or "Oh my!"'},{w:"mortals",m:"human beings; people who will die (unlike the immortal fairies)"}] },
+      { then:"The course of true love never did run smooth.",
+        now: "Real love is never straightforward or easy; there are always obstacles.",
+        vocab:[{w:"course",m:"the path or direction something takes"},{w:"run smooth",m:"go easily, without problems or difficulties"}] },
+      { then:"Though she be but little, she is fierce.",
+        now: "Even though she is small, she is powerful and determined.",
+        vocab:[{w:"but",m:'here means "only" or "just"'},{w:"fierce",m:"strong, powerful, intense and brave"}] },
+      { then:"I know a bank where the wild thyme blows.",
+        now: "I know a place where wild herbs grow and sway gently in the breeze.",
+        vocab:[{w:"bank",m:"a raised area of ground; a grassy slope"},{w:"thyme",m:"a small herb with a strong, sweet scent"}] }
+    ],
+    coined:[
+      {word:"swagger",note:"Shakespeare first used this word; Puck uses it to describe a proud, striding walk"},
+      {word:"moonbeam",note:'First recorded use of "moonbeam" as a single word appears in this play'},
+      {word:"bedroom",note:"First written down by Shakespeare in this period of his career"}
+    ]
+  },
+  henry: {
+    scene: "Act III, Scene I / Act IV, Scene III",
+    context: "King Henry V inspires his exhausted, outnumbered soldiers before the Battle of Agincourt.",
+    lines: [
+      { then:"Once more unto the breach, dear friends, once more!",
+        now: "Back into the gap in the wall, my dear friends. Charge again!",
+        vocab:[{w:"breach",m:"a gap or hole broken through a defensive wall during a battle"},{w:"unto",m:'old form of "into" or "to"'}] },
+      { then:"We few, we happy few, we band of brothers.",
+        now: "We are a small group, but we are lucky, and we are a true brotherhood.",
+        vocab:[{w:"happy",m:'here means "lucky" or "fortunate", not joyful'},{w:"band",m:"a group of people united by a shared purpose or experience"}] },
+      { then:"He that outlives this day, and comes safe home, / Will stand a-tiptoe when this day is named.",
+        now: "Whoever survives today and returns home safely will stand tall with pride whenever this day is mentioned.",
+        vocab:[{w:"outlives",m:"lives through; survives beyond"},{w:"a-tiptoe",m:"standing on tiptoe, a sign of excitement, pride, and eagerness"}] },
+      { then:"All things are ready, if our minds be so.",
+        now: "Everything is prepared; the only question is whether we ourselves are mentally ready.",
+        vocab:[{w:"if our minds be so",m:"if our thoughts and attitudes are also prepared; if we truly believe in what we are doing"}] }
+    ],
+    coined:[
+      {word:"leapfrog",note:"Shakespeare first recorded this children's game by name in Henry V"},
+      {word:"luggage",note:'First use of "luggage" as a word for baggage and belongings appears here'},
+      {word:"laughable",note:'Shakespeare invented this word, meaning "worthy of laughter"'}
+    ]
+  },
+  muchado: {
+    scene: "Act II / Act IV: Beatrice, Benedick and the Game of Love",
+    context: "Two people who claim to hate each other slowly realise they are in love.",
+    lines: [
+      { then:"I do love nothing in the world so well as you.",
+        now: "There is nothing and no one in the world that I love as much as I love you.",
+        vocab:[{w:"so well as",m:"as much as; to the same degree as"}] },
+      { then:"Sigh no more, ladies, sigh no more. / Men were deceivers ever.",
+        now: "Stop sighing and being sad, ladies. Men have always been dishonest; that is nothing new.",
+        vocab:[{w:"sigh",m:"to breathe out slowly as a sign of sadness or longing"},{w:"deceivers",m:"people who lie and trick others"}] },
+      { then:"Speak low, if you speak love.",
+        now: "If you are speaking of love, keep your voice quiet and gentle.",
+        vocab:[{w:"speak low",m:"speak quietly; keep your voice soft"}] },
+      { then:"I will live in thy heart, die in thy lap, and be buried in thy eyes.",
+        now: "I will live inside your heart, rest in your arms, and be remembered forever in your eyes.",
+        vocab:[{w:"thy",m:'old form of "your"'},{w:"lap",m:"the flat surface formed by your thighs when you are sitting down"}] }
+    ],
+    coined:[
+      {word:"dishearten",note:'Shakespeare invented the word "dishearten", meaning to make someone lose hope or confidence'},
+      {word:"critic",note:'First recorded use of "critic" as a judge of art or writing appears in Shakespeare'},
+      {word:"zany",note:'Shakespeare first used "zany" as an adjective, meaning amusingly strange or odd'}
+    ]
+  },
+  richard: {
+    scene: "Act I, Scene I / Act V, Scene IV",
+    context: "Richard reveals his true nature at the start, and meets his end on the battlefield.",
+    lines: [
+      { then:"Now is the winter of our discontent / Made glorious summer by this sun of York.",
+        now: "The dark, unhappy times we have lived through are now being turned into a glorious period, thanks to the new King of York.",
+        vocab:[{w:"discontent",m:"dissatisfaction; deep unhappiness with the current situation"},{w:"sun of York",m:'a pun: the "son" (child) of York is king, bringing "sun" (light and warmth) to the country'}] },
+      { then:"I am determined to prove a villain.",
+        now: "I have made up my mind to be evil and to cause harm.",
+        vocab:[{w:"determined",m:"having firmly decided on a course of action"},{w:"villain",m:"an evil person who deliberately causes harm to others"}] },
+      { then:"A horse! A horse! My kingdom for a horse!",
+        now: "I need a horse desperately! I would give my entire kingdom just for one horse right now!",
+        vocab:[{w:"context",m:"Richard's last words in battle; his horse has been killed and he is about to lose everything"},{w:"kingdom",m:"the land and country ruled by a king"}] },
+      { then:"I am not in the giving vein today.",
+        now: "I am not in the mood to be generous today.",
+        vocab:[{w:"vein",m:'here means "mood" or "frame of mind"'},{w:"giving vein",m:"the mood to be generous and give things away"}] }
+    ],
+    coined:[
+      {word:"bloodsucking",note:"Shakespeare invented this vivid word; it first appears in Richard III"},
+      {word:"radiance",note:'First recorded use of "radiance" to mean brilliant light or beauty appears in Shakespeare'},
+      {word:"outbreak",note:'Shakespeare first used "outbreak" to describe a sudden explosion of violence or feeling'}
+    ]
+  }
+};
+
+let currentTnPlay = null;
+let tnQuizMode    = false;
+
+function initThenNow() {
+  loadThenNow('romeo', document.querySelector('.tn-ps-btn'));
+}
+
+function loadThenNow(key, btn) {
+  currentTnPlay = key;
+  tnQuizMode = false;
+  document.getElementById('tn-quiz-btn').classList.remove('active');
+  document.getElementById('tn-quiz-btn').textContent = '🎓 Quiz mode';
+  document.getElementById('tn-table').classList.remove('quiz-mode');
+  document.querySelectorAll('.tn-ps-btn').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  renderThenNow(key);
+}
+
+function renderThenNow(key) {
+  const d = thenNow[key];
+  document.getElementById('tn-scene').textContent   = d.scene;
+  document.getElementById('tn-context').textContent = d.context;
+
+  document.getElementById('tn-table').innerHTML = d.lines.map((ln, i) =>
+    '<div class="line-pair" id="lp-'+i+'" onclick="handleLineClick('+i+')">'
+    + '<div class="lp-main">'
+    + '<div class="lp-then"><span class="lp-num">'+(i+1)+'</span><span class="lp-then-text">'+ln.then+'</span></div>'
+    + '<div class="lp-now"><span class="lp-now-text">'+ln.now+'</span><span class="lp-reveal-hint">click to reveal</span></div>'
+    + '</div>'
+    + '<div class="lp-vocab" id="vp-'+i+'">'
+    + ln.vocab.map(v => '<span class="vp-chip"><b>'+v.w+'</b> \u2014 '+v.m+'</span>').join('')
+    + '</div></div>'
+  ).join('');
+
+  document.getElementById('tn-coined').innerHTML =
+    '<p class="coined-label">Words Shakespeare gave the English language</p>'
+    + '<div class="coined-row">'
+    + d.coined.map(c =>
+        '<div class="coined-card"><div class="coined-word">'+c.word+'</div><div class="coined-note">'+c.note+'</div></div>'
+      ).join('')
+    + '</div>';
+}
+
+function handleLineClick(i) {
+  const lp = document.getElementById('lp-'+i);
+  if (tnQuizMode) {
+    lp.classList.add('revealed');
+  } else {
+    const isOpen = lp.classList.contains('open');
+    document.querySelectorAll('.line-pair').forEach(el => el.classList.remove('open'));
+    if (!isOpen) lp.classList.add('open');
+  }
+}
+
+function toggleQuiz() {
+  tnQuizMode = !tnQuizMode;
+  const btn = document.getElementById('tn-quiz-btn');
+  btn.classList.toggle('active', tnQuizMode);
+  btn.textContent = tnQuizMode ? '📖 Study mode' : '🎓 Quiz mode';
+  document.getElementById('tn-table').classList.toggle('quiz-mode', tnQuizMode);
+  document.querySelectorAll('.line-pair').forEach(lp => lp.classList.remove('revealed','open'));
+}
+
+
+/* ── TAB 3: GENRE SORTER ── */
+const sortData = {
+  romeo:   {
+    genre:'tragedy', title:'Romeo & Juliet',
+    quote:'"What light through yonder window breaks?"',
+    modern:'What is that light shining through the window?',
+    themes:['Love','Fate','Family conflict','Death'],
+    wrongs:{
+      comedy:'Romeo and Juliet feels like a love story, but it ends in the deaths of both lovers, which makes it a tragedy.',
+      history:'Romeo and Juliet is set in fictional Verona, not based on English royal history. It is a tragedy.'
+    }
+  },
+  macbeth: {
+    genre:'tragedy', title:'Macbeth',
+    quote:'"Is this a dagger which I see before me?"',
+    modern:'Am I really seeing a dagger in front of me, or is my mind playing tricks?',
+    themes:['Ambition','Guilt','Power','Fate'],
+    wrongs:{
+      comedy:'Macbeth has no happy ending; it ends with murder, madness, and death. That makes it a tragedy.',
+      history:'Although Macbeth was a real Scottish king, Shakespeare changed the facts to make it a dramatic tragedy, not a history play.'
+    }
+  },
+  othello: {
+    genre:'tragedy', title:'Othello',
+    quote:'"O, beware, my lord, of jealousy!"',
+    modern:'Be careful, my lord: jealousy is a very dangerous emotion.',
+    themes:['Jealousy','Betrayal','Race','Trust'],
+    wrongs:{
+      comedy:'Othello ends with murder and suicide; it is a tragedy, not a comedy.',
+      history:'Othello is set in Venice and Cyprus, but it is not based on English royal history. It is a tragedy about jealousy.'
+    }
+  },
+  hamlet:  {
+    genre:'tragedy', title:'Hamlet',
+    quote:'"To be, or not to be, that is the question."',
+    modern:'Should I continue living, or end my life? That is what I have to decide.',
+    themes:['Revenge','Indecision','Death','Corruption'],
+    wrongs:{
+      comedy:'Hamlet ends with almost every major character dead. That is the definition of a tragedy.',
+      history:'Hamlet is set in Denmark, but it is not based on English royal history. Shakespeare\'s history plays focus on English kings.'
+    }
+  },
+  dream:   {
+    genre:'comedy', title:"A Midsummer Night's Dream",
+    quote:'"Lord, what fools these mortals be!"',
+    modern:'Humans are such foolish creatures!',
+    themes:['Love','Magic','Dreams','Transformation'],
+    wrongs:{
+      tragedy:'A Midsummer Night\'s Dream ends happily with marriages and celebrations, which makes it a comedy, not a tragedy.',
+      history:'A Midsummer Night\'s Dream is set in a magical forest near Athens. It has nothing to do with English royal history.'
+    }
+  },
+  henry:   {
+    genre:'history', title:'Henry V',
+    quote:'"We few, we happy few, we band of brothers."',
+    modern:'We are a small group, but we are lucky: we are brothers in arms.',
+    themes:['Leadership','War','Patriotism','Glory'],
+    wrongs:{
+      tragedy:'Henry V ends in victory and marriage, not the death of the hero. It is a history play with a triumphant ending.',
+      comedy:'Henry V is about a real English king and the Battle of Agincourt. It is a history play, not a comedy.'
+    }
+  },
+  muchado: {
+    genre:'comedy', title:'Much Ado About Nothing',
+    quote:'"I do love nothing in the world so well as you."',
+    modern:'There is nothing and no one in the world I love as much as you.',
+    themes:['Wit','Deception','Love','Honour'],
+    wrongs:{
+      tragedy:'Much Ado About Nothing ends with weddings and celebrations, not death. Even though Hero is falsely accused, everything is resolved happily, which makes it a comedy.',
+      history:'Much Ado is set in Messina, Sicily, and involves fictional characters. It has nothing to do with English royal history. It is a comedy.'
+    }
+  },
+  richard: {
+    genre:'history', title:'Richard III',
+    quote:'"Now is the winter of our discontent."',
+    modern:'The dark, unhappy times we have been living through are finally over.',
+    themes:['Ambition','Power','Tyranny','Justice'],
+    wrongs:{
+      tragedy:'Richard III is based on the real historical King Richard III and the Wars of the Roses. Because it dramatises real English royal history, it is classified as a history play.',
+      comedy:'Richard III ends with the death of the king and the restoration of order under Henry Tudor. It is a history play, not a comedy.'
+    }
+  }
+};
+
+const poolIcons = {
+  romeo:   '<svg viewBox="0 0 46 28" width="22" height="14"><circle cx="15" cy="14" r="11" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="31" cy="14" r="11" fill="none" stroke="currentColor" stroke-width="2.2"/></svg>',
+  macbeth: '<svg viewBox="0 0 28 46" width="13" height="22"><path d="M14 40 L10 28 L10 8 L18 8 L18 28 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M5 22 L23 22" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/></svg>',
+  othello: '<svg viewBox="0 0 44 30" width="22" height="15"><path d="M3 15 Q22 3 41 15 Q22 27 3 15 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="22" cy="15" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="22" cy="15" r="2" fill="currentColor"/></svg>',
+  hamlet:  '<svg viewBox="0 0 32 38" width="16" height="20"><path d="M16 4 C8 4 4 10 4 16 C4 22 7 26 12 28 L12 33 L20 33 L20 28 C25 26 28 22 28 16 C28 10 24 4 16 4 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><ellipse cx="11" cy="16" rx="3.5" ry="4" fill="none" stroke="currentColor" stroke-width="1.8"/><ellipse cx="21" cy="16" rx="3.5" ry="4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+  dream:   '<svg viewBox="0 0 42 36" width="20" height="17"><path d="M18 4 A14 14 0 1 0 18 32 A10 10 0 1 1 18 4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>',
+  henry:   '<svg viewBox="0 0 54 36" width="23" height="16"><path d="M8 26 L2 6 L18 21 L27 5 L36 21 L52 6 L46 26 L46 32 L8 32 Z" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round"/><line x1="8" y1="26" x2="46" y2="26" stroke="currentColor" stroke-width="1.2"/><circle cx="2" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="27" cy="5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="52" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+  muchado: '<svg viewBox="0 0 50 36" width="26" height="19"><path d="M2 2 L28 2 L28 20 L12 20 L8 27 L8 20 L2 20 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M22 8 L48 8 L48 26 L42 26 L42 32 L38 26 L22 26 Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg>',
+  richard: '<svg viewBox="0 0 54 40" width="22" height="16"><g transform="rotate(38, 27, 18)" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="27" y1="4" x2="27" y2="13" stroke-width="2.5"/><line x1="21" y1="8" x2="33" y2="8" stroke-width="2.5"/><path d="M21 13 L19 25 L35 25 L33 13 Z" stroke-width="2.2"/><path d="M14 25 L14 31 L40 31 L40 25" stroke-width="2.5"/></g></svg>'
+};
+
+let selectedPlay = null;
+let placed = {};
+let tab3ready = false;
+
+function initSorter() {
+  if (tab3ready) return;
+  tab3ready = true;
+  const pool = document.getElementById('play-pool');
+  pool.innerHTML = '';
+  placed = {};
+  selectedPlay = null;
+  ['romeo','macbeth','othello','hamlet','dream','henry','muchado','richard'].forEach(key => {
+    const d = sortData[key];
+    const card = document.createElement('div');
+    card.className = 'pool-card';
+    card.id = 'pool-' + key;
+    card.innerHTML = poolIcons[key] + d.title;
+    card.onclick = () => selectPlay(key);
+    pool.appendChild(card);
+  });
+  setInstruction('Click a play to select it');
+  setFeedback('');
+  ['tragedy','comedy','history'].forEach(g => {
+    document.getElementById('slots-' + g).innerHTML = '';
+    document.getElementById('bucket-' + g).classList.remove('ready');
+  });
+}
+
+function selectPlay(key) {
+  if (placed[key]) return;
+  selectedPlay = key;
+  document.querySelectorAll('.pool-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('pool-' + key).classList.add('selected');
+  setInstruction('Now click a genre to place it');
+  setFeedback('');
+  document.querySelectorAll('.genre-bucket').forEach(b => b.classList.add('ready'));
+}
+
+function assignGenre(genre) {
+  if (!selectedPlay) return;
+  const key = selectedPlay;
+  const d = sortData[key];
+  document.querySelectorAll('.genre-bucket').forEach(b => b.classList.remove('ready'));
+
+  if (genre === d.genre) {
+    // Correct
+    const card = document.getElementById('pool-' + key);
+    card.classList.remove('selected');
+    card.style.display = 'none';
+    placed[key] = genre;
+    selectedPlay = null;
+
+    const slot = document.createElement('div');
+    slot.className = 'placed-card';
+    slot.id = 'placed-' + key;
+    slot.innerHTML = '<span class="pf-title">' + d.title + '</span><span class="pf-hint">click to reveal</span>';
+    slot.onclick = () => showReveal(key);
+    document.getElementById('slots-' + genre).appendChild(slot);
+
+    const remaining = Object.keys(sortData).filter(k => !placed[k]);
+    if (remaining.length === 0) {
+      setInstruction('All sorted! Click any card to reveal its quote and themes.');
+      setFeedback('Well done, all six plays correctly sorted.', 'correct');
+    } else {
+      setInstruction('Click a play to select it');
+      setFeedback('Correct!', 'correct');
+    }
+  } else {
+    // Wrong
+    const card = document.getElementById('pool-' + key);
+    card.classList.remove('selected');
+    card.classList.add('wrong-anim');
+    setTimeout(() => card.classList.remove('wrong-anim'), 420);
+    selectedPlay = null;
+    setInstruction('Click a play to select it');
+    setFeedback(d.wrongs[genre], 'wrong');
+  }
+}
+
+function setInstruction(txt) {
+  document.getElementById('g-instruction').innerHTML = '<span>' + txt + '</span>';
+}
+function setFeedback(txt, cls) {
+  const el = document.getElementById('g-feedback');
+  el.className = 'genre-feedback' + (cls ? ' ' + cls : '');
+  el.textContent = txt || '\u00a0';
+}
+
+function showReveal(key) {
+  const d = sortData[key];
+  document.querySelectorAll('.placed-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('placed-' + key).classList.add('active');
+  const panel = document.getElementById('reveal-panel');
+  panel.className = 'reveal-panel show';
+  panel.innerHTML =
+    '<div class="reveal-title">' + d.title + '</div>' +
+    '<div class="reveal-quote">' + d.quote + '</div>' +
+    '<div class="reveal-modern">→ ' + d.modern + '</div>' +
+    '<div class="reveal-themes">' + d.themes.map(t => '<span class="reveal-tag">'+t+'</span>').join('') + '</div>';
+}
+
+function resetSorter() {
+  document.getElementById('reveal-panel').className = 'reveal-panel';
+  tab3ready = false;
+  initSorter();
+}
+
+// Hook into switchTab
+const _origSwitch = switchTab;
+switchTab = function(n) {
+  _origSwitch(n);
+  if (n === 2) initSorter();
+  if (n === 3 && !window._tn4ready) { initThenNow(); window._tn4ready = true; }
+};
+
+
+/* ── TAB SWITCHING ── */
+const playOrder = ['romeo','macbeth','othello','hamlet','dream','henry','muchado','richard'];
+function goToPlay(key) {
+  switchTab(1);
+  const idx = playOrder.indexOf(key);
+  document.querySelectorAll('.ps-btn').forEach((b,i) => b.classList.toggle('on', i===idx));
+  renderPlay(key);
+  window._tab2ready = true;
+}
+function switchTab(n) {
+  document.querySelectorAll('.tab-pane').forEach((p,i) => p.classList.toggle('active', i===n));
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===n));
+  if (n===1 && !window._tab2ready) { renderPlay('romeo'); window._tab2ready=true; }
+}
+
+/* ── PLAY DATA ── */
+const plays = {
+  romeo: {
+    title:'Romeo & Juliet', genre:'tragedy', year:'c. 1595',
+    summary:'Two young lovers from <em>rival families</em> in Verona fall desperately in love, but their relationship is secret and forbidden. A series of misunderstandings, a sleeping potion, and a message that arrives too late lead to both their deaths. It is one of the most famous love stories ever written, but it is also a play about how <em>hatred between families</em> destroys the people they love most.',
+    characters:[
+      {id:'romeo',  name:'Romeo',         x:190,y:185, role:'Hero',             key:true,
+       desc:'A young man from the <em>Montague</em> family, one of two rival families locked in a bitter <em>feud</em>. He falls deeply in love with Juliet at a party, not knowing she is from the enemy family. Romeo is <em>passionate</em> and <em>impulsive</em>: he acts on his feelings without stopping to think about the consequences. His decision to fight Tybalt seals their fate, and he is exiled from Verona as a result.'},
+      {id:'juliet', name:'Juliet',         x:390,y:185, role:'Heroine',          key:true,
+       desc:'A thirteen-year-old girl from the <em>Capulet</em> family, rivals of the Montagues. She is intelligent and brave, arguably more clear-headed than Romeo. She secretly marries Romeo and refuses to give him up, even when her family arranges another marriage for her. Her <em>loyalty</em> and courage in impossible circumstances make her one of Shakespeare\'s most compelling heroines.'},
+      {id:'mercutio',name:'Mercutio',      x:95, y:95,  role:"Romeo's friend",
+       desc:"Romeo's closest friend. He is <em>witty</em>, energetic, and always making jokes. He is not a Montague or a Capulet, but he gets caught up in the feud anyway, with fatal results. His death is the <em>turning point</em> of the play: it transforms Romeo from a lover into a killer."},
+      {id:'tybalt', name:'Tybalt',         x:490,y:95,  role:"Juliet's cousin",
+       desc:"Juliet's proud and <em>aggressive</em> cousin. He hates the Montague family and is always looking for a fight. He kills Mercutio during a street brawl, which leads Romeo to take revenge. His <em>hot temper</em> is one of the main causes of the tragedy; without Tybalt, the lovers might have survived."},
+      {id:'friar',  name:'Friar Lawrence', x:110,y:315, role:'Priest',
+       desc:'A kind priest who secretly marries Romeo and Juliet, hoping their union will end the <em>feud</em> between the two families. He creates a plan involving a <em>sleeping potion</em> to help Juliet fake her death so the two lovers can escape together. But a crucial message fails to arrive in time, and the plan goes terribly wrong.'},
+      {id:'nurse',  name:'The Nurse',      x:475,y:315, role:"Juliet's nurse",
+       desc:'Juliet\'s closest companion since birth, who raised her almost like a daughter. She helps carry messages between the two lovers and genuinely wants Juliet to be happy. She is warm and funny, but when things get dangerous, she lets Juliet down by telling her to forget Romeo and <em>obey</em> her family instead.'}
+    ],
+    edges:[
+      {from:'romeo',   to:'juliet',    label:'loves',  type:'support', curve:44},
+      {from:'juliet',  to:'romeo',     label:'loves',  type:'support', curve:44},
+      {from:'romeo',   to:'mercutio',  label:'friends',type:'support'},
+      {from:'tybalt',  to:'mercutio',  label:'kills',  type:'hostile'},
+      {from:'romeo',   to:'tybalt',    label:'kills',  type:'hostile'},
+      {from:'friar',   to:'romeo',     label:'helps',  type:'support'},
+      {from:'nurse',   to:'juliet',    label:'serves', type:'support'}
+    ]
+  },
+  macbeth: {
+    title:'Macbeth', genre:'tragedy', year:'c. 1606',
+    summary:'A Scottish general receives a <em>prophecy</em> from three witches: he will become king. Encouraged by his ambitious wife, he murders the king to take the throne; but the crime does not bring happiness. <em>Guilt</em>, paranoia, and increasing violence consume them both. Macbeth is Shakespeare\'s shortest tragedy, and arguably his darkest exploration of what <em>unchecked ambition</em> does to a person.',
+    characters:[
+      {id:'macbeth', name:'Macbeth',      x:240,y:220, role:'Protagonist',       key:true,
+       desc:'A brave Scottish general who becomes <em>obsessed with power</em> after hearing a prophecy that he will be king. He is ambitious but weak-willed, easily manipulated by his wife and the witches. He murders the king, then kills again and again to protect his throne. His crimes lead to his <em>downfall</em>, and he ends the play a broken and isolated man.'},
+      {id:'lady',    name:'Lady Macbeth', x:110,y:115,  role:"Macbeth's wife",    key:true,
+       desc:'One of Shakespeare\'s most powerful characters. She is <em>ruthless</em> and ambitious, pushing Macbeth to murder the king by questioning his courage and manhood. But after the deed is done, <em>guilt</em> slowly destroys her sanity. She sleepwalks, compulsively trying to wash invisible blood from her hands, and eventually dies.'},
+      {id:'duncan',  name:'King Duncan',  x:410,y:100,  role:'King of Scotland',
+       desc:'The kind and respected King of Scotland. He trusts Macbeth completely and rewards him generously for his bravery in battle. His murder by Macbeth is the <em>central crime</em> of the play; the act that sets everything else in motion. He represents the <em>legitimate order</em> that Macbeth destroys when he seizes power.'},
+      {id:'banquo',  name:'Banquo',       x:100,y:345, role:"Macbeth's friend",
+       desc:"A noble general and Macbeth's friend. The witches prophesied that his children would become kings. Macbeth sees him as a threat and has him killed, but Banquo's <em>ghost</em> returns to haunt the banquet, visible only to Macbeth. He represents the <em>conscience</em> that Macbeth cannot silence."},
+      {id:'macduff', name:'Macduff',      x:475,y:230, role:'Scottish nobleman',
+       desc:'A loyal nobleman who suspects Macbeth of murder. He flees to England and returns with an army to overthrow him. He is the one who kills Macbeth at the end. His personal <em>motivation</em> is powerful: Macbeth ordered the murder of Macduff\'s wife and children while he was away, making this a story of both justice and <em>revenge</em>.'},
+      {id:'witches', name:'The Witches',  x:370,y:350, role:'The three witches',
+       desc:"Three mysterious witches whose <em>prophecies</em> set the plot in motion. They tell Macbeth he will be king. Their predictions are always true, but dangerously misleading; they give him just enough information to make him act, but hide the consequences. They represent the <em>temptation</em> of power and the danger of believing what you want to hear."}
+    ],
+    edges:[
+      {from:'lady',    to:'macbeth',  label:'controls', type:'power'},
+      {from:'duncan',  to:'macbeth',  label:'trusts',   type:'support', curve:46},
+      {from:'macbeth', to:'duncan',   label:'kills',    type:'hostile', curve:46},
+      {from:'macbeth', to:'banquo',   label:'kills',    type:'hostile'},
+      {from:'macduff', to:'macbeth',  label:'kills',    type:'hostile'},
+      {from:'witches', to:'macbeth',  label:'deceives', type:'hostile'}
+    ]
+  },
+  othello: {
+    title:'Othello', genre:'tragedy', year:'c. 1603',
+    summary:"A Moorish general in Venice is manipulated by his <em>envious</em> ensign Iago into believing his wife Desdemona has been unfaithful. Consumed by <em>jealousy</em>, Othello kills her before discovering the terrible truth. The play is a devastating study of how <em>trust</em> can be destroyed by lies, and how prejudice and insecurity make a good man capable of a terrible crime.",
+    characters:[
+      {id:'othello',   name:'Othello',    x:300,y:190, role:'Moorish general',     key:true,
+       desc:'A respected military general serving Venice. He is noble, trusting, and deeply in love with Desdemona. His <em>fatal flaw</em> is insecurity: Iago exploits this to make him believe Desdemona has been unfaithful. He kills her before discovering the truth, then takes his own life in grief. He is one of Shakespeare\'s most <em>tragic</em> heroes.'},
+      {id:'desdemona', name:'Desdemona',  x:300,y:340, role:"Othello's wife",      key:true,
+       desc:'A Venetian noblewoman who defied her father to marry Othello out of genuine love. She is completely faithful, gentle, and loyal to the end. She is murdered by her own husband despite being entirely <em>innocent</em>. Even as she is dying, she refuses to blame Othello, which makes her one of Shakespeare\'s most <em>sympathetic</em> characters.'},
+      {id:'iago',      name:'Iago',       x:100,y:190, role:'Villain',
+       desc:"One of Shakespeare's greatest <em>villains</em>. He pretends to be Othello's loyal friend while secretly plotting his destruction. His motive is partly <em>jealousy</em>: Othello promoted Cassio instead of him. Iago engineers the entire tragedy using words, false evidence, and the stolen <em>handkerchief</em>."},
+      {id:'cassio',    name:'Cassio',     x:480,y:110, role:"Othello's lieutenant",
+       desc:"A charming and loyal officer. Iago frames Cassio as Desdemona's lover by planting a <em>handkerchief</em> (Othello's love token) in his possession. He is completely innocent and survives to reveal the truth at the end. His easy manner and good looks make him the perfect target for Iago's scheme."},
+      {id:'emilia',    name:'Emilia',     x:100,y:340, role:"Iago's wife",
+       desc:"Iago's wife and Desdemona's attendant. She is practical and loyal, though she unknowingly helps Iago by handing him the stolen <em>handkerchief</em>. At the end, she bravely reveals Iago's lies, even at the cost of her own life. Her final act of <em>courage</em> is one of the most powerful moments in the play."}
+    ],
+    edges:[
+      {from:'othello',   to:'desdemona', label:'loves',   type:'support', curve:-42},
+      {from:'othello',   to:'desdemona', label:'kills',   type:'hostile', curve:42},
+      {from:'iago',      to:'othello',   label:'betrays', type:'hostile'},
+      {from:'iago',      to:'emilia',    label:'married', type:'power'},
+      {from:'iago',      to:'cassio',    label:'frames',  type:'hostile'},
+      {from:'emilia',    to:'desdemona', label:'serves',  type:'support'},
+      {from:'cassio',    to:'othello',   label:'serves',  type:'support'}
+    ]
+  },
+  hamlet: {
+    title:'Hamlet', genre:'tragedy', year:'c. 1600',
+    summary:'The Prince of Denmark discovers that his father was <em>murdered</em> by his uncle Claudius, who has married his mother and taken the throne. Hamlet struggles with doubt, grief, and the question of revenge, but cannot bring himself to act. It is Shakespeare\'s longest play, and his deepest exploration of <em>indecision</em>, mortality, and what it means to be human. The line <em>\'To be or not to be\'</em> is probably the most famous in all of English literature.',
+    characters:[
+      {id:'hamlet',   name:'Hamlet',     x:290,y:210, role:'Prince of Denmark',  key:true,
+       desc:"The Prince of Denmark. <em>Intelligent</em>, philosophical, and deeply indecisive. He is disturbed by his father's murder and his mother's quick remarriage. He cannot decide whether to take revenge; he questions everything, including whether the Ghost is telling the truth. This <em>hesitation</em> is his tragedy and the central mystery of the play."},
+      {id:'claudius', name:'Claudius',   x:150,y:110, role:'King of Denmark',    key:true,
+       desc:"Hamlet's uncle and the villain. He murdered his own brother to take the <em>throne</em> and marry Gertrude. On the surface he appears calm and reasonable, but he is ruthless and calculating. He prays for forgiveness but cannot give up what he has gained, making him a more <em>complex</em> villain than he first appears."},
+      {id:'gertrude', name:'Gertrude',   x:430,y:110, role:"Hamlet's mother",
+       desc:"Hamlet's mother and Queen of Denmark. She married Claudius very quickly after her first husband died; a fact that disturbs Hamlet deeply. It is unclear how much she knew about Claudius's <em>crime</em>. She loves Hamlet deeply and tries to protect him. She dies accidentally, drinking the <em>poisoned wine</em> that Claudius intended for Hamlet."},
+      {id:'ophelia',  name:'Ophelia',    x:430,y:330, role:"Hamlet's love",
+       desc:"A young noblewoman who loves Hamlet. She is gentle and obedient to her father and brother. When Hamlet rejects her and then kills her father Polonius, she loses her mind and drowns; whether by accident or <em>suicide</em> is left ambiguous. Her <em>madness</em> is one of the most haunting scenes in all of Shakespeare."},
+      {id:'horatio',  name:'Horatio',    x:150,y:330, role:"Hamlet's friend",
+       desc:"Hamlet's most loyal and trusted friend. He is <em>calm</em> and rational where Hamlet is emotional and unstable. He is the only major character to survive the final scene. Hamlet's dying words ask Horatio to tell his story to the world, making Horatio the <em>witness</em> and keeper of the truth."},
+      {id:'ghost',    name:'The Ghost',  x:290,y:65,  role:"Hamlet's father",
+       desc:"The ghost of Hamlet's murdered father. He appears to Hamlet and reveals that Claudius killed him by pouring <em>poison</em> into his ear while he slept. He demands <em>revenge</em>. His existence raises the question: is he a real spirit, a demon sent to trick Hamlet, or a product of Hamlet's grief? This <em>ambiguity</em> haunts the whole play."}
+    ],
+    edges:[
+      {from:'ghost',    to:'hamlet',   label:'haunts',   type:'power'},
+      {from:'claudius', to:'ghost',    label:'murdered', type:'hostile'},
+      {from:'claudius', to:'gertrude', label:'married',  type:'power'},
+      {from:'hamlet',   to:'claudius', label:'kills',    type:'hostile'},
+      {from:'gertrude', to:'hamlet',   label:'loves',    type:'support'},
+      {from:'hamlet',   to:'ophelia',  label:'loves',    type:'support'},
+      {from:'horatio',  to:'hamlet',   label:'serves',   type:'support'}
+    ]
+  },
+  dream: {
+    title:"A Midsummer Night's Dream", genre:'comedy', year:'c. 1595',
+    summary:'In an <em>enchanted forest</em> outside Athens, four young lovers flee into the night; and stumble into a world of fairies, magic, and mischief. The fairy king Oberon uses a <em>love potion</em> to manipulate his queen Titania, but his servant Puck applies it to the wrong people, causing comic chaos. It is one of Shakespeare\'s most joyful plays, full of <em>wordplay</em>, music, and the idea that love makes fools of us all.',
+    characters:[
+      {id:'oberon',  name:'Oberon',  x:150,y:110, role:'King of the fairies',  key:true,
+       desc:'The King of the Fairies. He is powerful and proud, and is having a <em>quarrel</em> with his queen Titania over a boy they both want to look after. He uses Puck to cast a <em>love spell</em> on Titania to humiliate her into giving up the boy. He also intervenes in the mortal lovers\' chaos, though Puck\'s mistakes make things considerably worse before they get better.'},
+      {id:'titania', name:'Titania', x:420,y:115, role:'Queen of the fairies', key:true,
+       desc:'The Queen of the Fairies. She is beautiful and stubborn in her quarrel with Oberon. Under a <em>magical spell</em>, she falls in love with Bottom, who has been given a donkey\'s head by Puck. The comedy comes from her absolute sincerity; she genuinely adores him, completely unaware of how <em>ridiculous</em> the situation is.'},
+      {id:'puck',    name:'Puck',    x:285,y:225, role:"Oberon's servant",
+       desc:"Oberon's <em>mischievous</em> servant and the most famous fairy in the play. He loves pranks and jokes. He causes most of the chaos in the forest, sometimes by accident and sometimes on purpose; he applies the <em>love potion</em> to the wrong Athenian man, making everything worse. His final speech, asking the audience to treat the whole story as a <em>dream</em>, is one of the most famous in Shakespeare."},
+      {id:'bottom',  name:'Bottom',  x:420,y:340, role:'Weaver',
+       desc:"A weaver from Athens rehearsing a play in the forest. Puck gives him a <em>donkey's head</em> as a prank. He is funny because he takes everything completely seriously and has no idea how ridiculous he looks. He is <em>good-natured</em> and enthusiastic; even surrounded by fairies, his main concern is whether the audience will be frightened by the actor playing the lion."},
+      {id:'hermia',  name:'Hermia',  x:150,y:340, role:'Young Athenian woman',
+       desc:'A young woman who is in love with <em>Lysander</em>, but her father wants her to marry Demetrius instead. She bravely runs away into the forest with Lysander, refusing to accept the <em>arranged marriage</em> her father has planned. The fairy magic causes even more confusion, but she is determined and fiercely loyal to the man she loves.'}
+    ],
+    edges:[
+      {from:'oberon', to:'puck',    label:'commands',   type:'power'},
+      {from:'puck',   to:'titania', label:'enchants',   type:'power'},
+      {from:'oberon', to:'titania', label:'quarrels',   type:'hostile'},
+      {from:'titania',to:'bottom',  label:'loves',      type:'support'},
+      {from:'puck',   to:'bottom',  label:'transforms', type:'power'},
+      {from:'puck',   to:'hermia',  label:'confuses',   type:'power'}
+    ]
+  },
+  henry: {
+    title:'Henry V', genre:'history', year:'c. 1599',
+    summary:'The young King Henry V leads a tired, outnumbered English army to war against France. His famous <em>St Crispin\'s Day</em> speech inspires his men before the <em>Battle of Agincourt</em>, where they defeat a much larger French force. The play explores what makes a great leader, the cost of war, and the gap between <em>glory</em> and the brutal reality of battle.',
+    characters:[
+      {id:'henry',      name:'Henry V',    x:290,y:185, role:'King of England',          key:true,
+       desc:"The young King of England. He is brave, inspiring, and a natural <em>leader</em>. In his famous <em>St Crispin's Day</em> speech before the Battle of Agincourt, he motivates his small, exhausted army to fight a much larger French force. He wins and earns the right to marry Katherine. He is also shown as a <em>thoughtful</em> king who walks among his soldiers in disguise the night before battle."},
+      {id:'katherine',  name:'Katherine',  x:455,y:295, role:'French princess',          key:true,
+       desc:'The Princess of France. She appears in a famous <em>comic scene</em> where she tries to learn English with her attendant Alice, accidentally saying some rude words without realising it. At the end, Henry courts her in a charming but clumsy way; he admits he is a soldier, not a poet. Their <em>marriage</em> seals the peace treaty between England and France.'},
+      {id:'archbishop', name:'Archbishop', x:120,y:105, role:'Archbishop of Canterbury',
+       desc:"A senior religious leader who advises Henry that he has a <em>legal right</em> to the French throne through his ancestry. He supports the war partly for political and religious reasons, and partly to distract Henry from taxing church lands. His long, complicated speech about Henry's claim is famously difficult to follow."},
+      {id:'dauphin',    name:'The Dauphin',x:460,y:100, role:'Crown Prince of France',
+       desc:'The arrogant Crown Prince of France. He is <em>dismissive</em> of Henry, sending him a gift of tennis balls as an insult; suggesting Henry is just a boy who should be playing games, not making war. He underestimates Henry completely and pays for it at <em>Agincourt</em>. He represents the pride and arrogance that Henry\'s victory defeats.'},
+      {id:'fluellen',   name:'Fluellen',   x:120,y:295, role:'Welsh captain',
+       desc:"A brave and loyal Welsh captain in Henry's army. He is funny because he is <em>extremely serious</em> and always quoting military history at the wrong moment. He forces the cowardly soldier Pistol to eat a leek as punishment for mocking the Welsh. He represents the <em>ordinary soldiers</em> whose courage and loyalty make Henry's victory possible."}
+    ],
+    edges:[
+      {from:'henry',      to:'katherine', label:'courts',  type:'support'},
+      {from:'archbishop', to:'henry',     label:'advises', type:'support'},
+      {from:'dauphin',    to:'henry',     label:'opposes', type:'hostile', curve:44},
+      {from:'henry',      to:'dauphin',   label:'defeats', type:'hostile', curve:44},
+      {from:'fluellen',   to:'henry',     label:'serves',  type:'support'}
+    ]
+  },
+  muchado: {
+    title:"Much Ado About Nothing", genre:'comedy', year:'c. 1598–99',
+    summary:"Two pairs of lovers: Beatrice and Benedick, who argue brilliantly and deny they are in love, and Hero and Claudio, whose relationship is nearly destroyed by a scheming villain. The play shows that love can survive deception, and that wit is its own kind of romance.",
+    characters:[
+      {id:'beatrice', name:'Beatrice',  x:130,y:185, role:'Heroine',            key:true,
+       desc:'Witty, sharp-tongued, and fiercely <em>independent</em>. She and Benedick have a long history of clever arguing, and she insists she will never marry. When her friends trick her into thinking Benedick loves her, she discovers that she loves him too. She is one of Shakespeare\'s most beloved <em>comic heroines</em>.'},
+      {id:'benedick', name:'Benedick',  x:450,y:185, role:'Hero',               key:true,
+       desc:'A soldier who returns from war swearing he will never fall in love. He and Beatrice argue brilliantly whenever they meet. When his friends trick him into thinking Beatrice loves him, he quickly changes his mind. He is charming, funny, and completely unable to resist Beatrice. His name became the word <em>benedict</em>; a confirmed bachelor who finally marries.'},
+      {id:'hero',     name:'Hero',      x:230,y:330, role:"Beatrice\'s cousin",
+       desc:'Beatrice\'s gentle and loving cousin. She agrees to marry Claudio, but Don John tricks Claudio into thinking she has been <em>unfaithful</em>. He publicly humiliates her at the altar, and she is so devastated that she pretends to die. When the truth comes out, she forgives Claudio; showing extraordinary <em>grace</em>.'},
+      {id:'claudio',  name:'Claudio',   x:450,y:330, role:"Hero\'s fiancé",
+       desc:"A young soldier who genuinely loves Hero but proves dangerously easy to deceive. When Don John tricks him, he publicly accuses and abandons Hero without questioning the evidence. He learns a painful lesson about <em>jumping to conclusions</em> and the damage that false accusations can cause."},
+      {id:'donjohn',  name:'Don John',  x:290,y:95,  role:'The villain',
+       desc:"The illegitimate brother of Don Pedro. He is bitter, sullen, and motivated by pure <em>malice</em>. He schemes to ruin Hero and Claudio\'s happiness simply because he enjoys causing harm. He is one of Shakespeare\'s simpler villains; evil without much explanation; which makes him all the more unsettling."}
+    ],
+    edges:[
+      {from:'benedick', to:'beatrice', label:'loves',    type:'support', curve:44},
+      {from:'beatrice', to:'benedick', label:'loves',    type:'support', curve:44},
+      {from:'beatrice', to:'hero',     label:'guards',   type:'support'},
+      {from:'claudio',  to:'hero',     label:'loves',    type:'support'},
+      {from:'donjohn',  to:'hero',     label:'slanders', type:'hostile'},
+      {from:'donjohn',  to:'claudio',  label:'deceives', type:'hostile', curve:-40}
+    ]
+  },
+  richard: {
+    title:'Richard III', genre:'history', year:'c. 1592–93',
+    summary:"Richard, Duke of Gloucester, schemes and murders his way to the English throne. He is physically deformed, darkly funny, and utterly ruthless, yet so charming that he takes the audience along with him. Eventually his crimes catch up with him at the Battle of Bosworth Field.",
+    characters:[
+      {id:'richard3',  name:'Richard III',     x:290,y:200, role:'Protagonist / villain', key:true,
+       desc:'The Duke of Gloucester, who becomes King Richard III through <em>murder and manipulation</em>. He is physically deformed and uses his intelligence as a weapon. He speaks directly to the audience, making us his reluctant accomplices. He is one of Shakespeare\'s greatest and most <em>fascinating villains</em>.'},
+      {id:'ladyanne',  name:'Lady Anne',        x:130,y:100, role:"Richard\'s wife",      key:true,
+       desc:'A noblewoman whose husband Richard has killed. In one of Shakespeare\'s most remarkable scenes, Richard woos her over her dead husband\'s coffin; and she accepts him. Her <em>capitulation</em> shows Richard\'s terrifying power of persuasion. She later comes to regret it bitterly.'},
+      {id:'buckingham',name:'Buckingham',       x:450,y:100, role:"Richard\'s ally",
+       desc:"Richard\'s closest supporter. He helps Richard eliminate enemies and claim the throne. But when Richard orders the murder of the young princes, Buckingham hesitates. Richard turns on him immediately; showing that <em>loyalty</em> means nothing to Richard once someone is no longer useful."},
+      {id:'qelizabeth',name:'Queen Elizabeth',  x:130,y:330, role:'Mother of the princes',
+       desc:"The widow of King Edward IV and mother of the young princes in the Tower. She is one of the few characters who sees through Richard clearly. She fights to protect her children but is ultimately <em>powerless</em> against his ambition. Her grief and fury are some of the most powerful moments in the play."},
+      {id:'richmond',  name:'Richmond',         x:450,y:330, role:'Henry Tudor',
+       desc:"Henry Tudor, Earl of Richmond. He leads the rebellion against Richard and defeats him at the <em>Battle of Bosworth Field</em> in 1485. He kills Richard in combat and becomes King Henry VII, founding the Tudor dynasty. His victory ends the Wars of the Roses and restores <em>legitimate order</em>."}
+    ],
+    edges:[
+      {from:'richard3',   to:'ladyanne',   label:'woos',     type:'power'},
+      {from:'richard3',   to:'buckingham', label:'uses',     type:'power',   curve:44},
+      {from:'buckingham', to:'richard3',   label:'betrays',  type:'hostile', curve:44},
+      {from:'richard3',   to:'qelizabeth', label:'threatens',type:'hostile'},
+      {from:'richmond',   to:'richard3',   label:'defeats',  type:'hostile'}
+    ]
+  }
+};
+
+/* ── RENDER ── */
+const EC = { support:'#c9a84c', hostile:'#b05050', power:'#8878c0' };
+const NR = 26;
+let currentPlay = null;
+
+
+function renderPlay(key) {
+  const play = plays[key];
+  currentPlay = key;
+  document.getElementById('web-title').textContent = play.title;
+  document.getElementById('play-intro').innerHTML =
+    '<span class="play-year">' + play.year + '</span>' + play.summary;
+  document.getElementById('char-panel').innerHTML = '<p class="cp-empty">&#8592; Click a character<br>to learn more</p>';
+
+  const svg = document.getElementById('char-web');
+  const cmap = {};
+  play.characters.forEach(c => cmap[c.id] = c);
+
+  const genreGlow = { tragedy:'#c04040', comedy:'#40a060', history:'#4a90c8' };
+  const glowCol   = genreGlow[play.genre] || '#c9a84c';
+
+  const keyChars   = play.characters.filter(c => c.key);
+  const otherChars = play.characters.filter(c => !c.key);
+  const animOrder  = [...keyChars, ...otherChars];
+
+  let html = '<defs>';
+  html += '<filter id="glow-blur" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="5"/></filter>';
+  ['support','hostile','power'].forEach(t => {
+    html += '<marker id="arr-'+t+'" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">'
+          + '<path d="M2 1.5L8.5 5L2 8.5" fill="none" stroke="'+EC[t]+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>';
+  });
+  html += '</defs>';
+  // Genre-tinted radial wash: transparent centre, genre colour at edges
+  html += '<defs><radialGradient id="genre-wash" cx="50%" cy="50%" r="72%">'
+        + '<stop offset="0%" stop-color="'+glowCol+'" stop-opacity="0"/>'
+        + '<stop offset="100%" stop-color="'+glowCol+'" stop-opacity="0.22"/>'
+        + '</radialGradient></defs>';
+  html += '<rect width="580" height="430" fill="url(#genre-wash)"/>';
+
+  const dashConf = {
+    support: {da:'6 3',  anim:'edgeFlowSupport 3.4s linear infinite'},
+    hostile: {da:'5 3',  anim:'edgeFlowHostile 1.6s linear infinite'},
+    power:   {da:'10 6', anim:'edgeFlowPower   5.2s linear infinite'}
+  };
+  const edgeDelay = (keyChars.length*0.12 + otherChars.length*0.09 + 0.15).toFixed(2);
+  html += '<g style="animation:edgeIn 0.4s ease '+edgeDelay+'s both">';
+  play.edges.forEach(edge => {
+    const A = cmap[edge.from], B = cmap[edge.to];
+    const dx = B.x - A.x, dy = B.y - A.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const col = EC[edge.type];
+
+    if (edge.curve) {
+      // Perpendicular offset so opposite-direction pairs bow apart cleanly
+      const px = -dy/dist, py = dx/dist;
+      const cx = (A.x+B.x)/2 + edge.curve*px;
+      const cy = (A.y+B.y)/2 + edge.curve*py;
+      const ox = edge.curve*px*0.22, oy = edge.curve*py*0.22;
+      const x1 = A.x + NR*dx/dist + ox;
+      const y1 = A.y + NR*dy/dist + oy;
+      const x2 = B.x - (NR+9)*dx/dist + ox;
+      const y2 = B.y - (NR+9)*dy/dist + oy;
+      const lx = cx, ly = cy;
+      const bw = edge.label.length * 6 + 10;
+      html += '<path d="M'+x1.toFixed(1)+' '+y1.toFixed(1)+' Q'+cx.toFixed(1)+' '+cy.toFixed(1)+' '+x2.toFixed(1)+' '+y2.toFixed(1)+'"'
+            + ' fill="none" stroke="'+col+'" stroke-width="1.2" opacity="0.75" stroke-dasharray="'+dashConf[edge.type].da+'" style="animation:'+dashConf[edge.type].anim+'" marker-end="url(#arr-'+edge.type+')"/>';
+      html += '<rect x="'+(lx-bw/2).toFixed(1)+'" y="'+(ly-8).toFixed(1)+'" width="'+bw+'" height="15" rx="3" fill="#090f1a" opacity="0.9"/>';
+      html += '<text x="'+lx.toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" font-family="Lora,Georgia,serif" font-style="italic" font-size="10" fill="'+col+'" text-anchor="middle" opacity="0.95">'+edge.label+'</text>';
+    } else {
+      const x1 = A.x + NR*dx/dist, y1 = A.y + NR*dy/dist;
+      const x2 = B.x - (NR+9)*dx/dist, y2 = B.y - (NR+9)*dy/dist;
+      const mx = (x1+x2)/2, my = (y1+y2)/2;
+      const bw = edge.label.length * 6 + 10;
+      html += '<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'"'
+            + ' stroke="'+col+'" stroke-width="1.2" opacity="0.75" stroke-dasharray="'+dashConf[edge.type].da+'" style="animation:'+dashConf[edge.type].anim+'" marker-end="url(#arr-'+edge.type+')"/>';
+      html += '<rect x="'+(mx-bw/2).toFixed(1)+'" y="'+(my-8).toFixed(1)+'" width="'+bw+'" height="15" rx="3" fill="#090f1a" opacity="0.9"/>';
+      html += '<text x="'+mx.toFixed(1)+'" y="'+(my+4).toFixed(1)+'" font-family="Lora,Georgia,serif" font-style="italic" font-size="10" fill="'+col+'" text-anchor="middle" opacity="0.95">'+edge.label+'</text>';
+    }
+  });
+
+  html += '</g>';
+  play.characters.forEach(char => {
+    const sk = char.key ? '#e8c96d' : '#c9a84c';
+    const sw = char.key ? '2' : '1.2';
+    const init = char.name.split(' ').map(w=>w[0]).join('').slice(0,2);
+    const fs = char.name.length > 12 ? '10' : '11';
+    const animIdx = animOrder.indexOf(char);
+    const delay   = char.key
+      ? (animIdx * 0.1).toFixed(2)
+      : (keyChars.length * 0.12 + (animIdx - keyChars.length) * 0.09).toFixed(2);
+    const spring  = char.key ? 'cubic-bezier(0.34,1.56,0.64,1)' : 'cubic-bezier(0.25,0.46,0.45,0.94)';
+    html += '<g id="nd-'+char.id+'" class="char-node" onclick="selectChar(\''+char.id+'\')" style="cursor:pointer;transition:opacity 0.2s;animation:nodeIn 0.45s '+spring+' '+delay+'s both">';
+    if (char.key) {
+      html += '<circle cx="'+char.x+'" cy="'+char.y+'" r="'+(NR+7)+'" fill="#e8c96d" opacity="0.13" filter="url(#glow-blur)"/>';
+      html += '<circle cx="'+char.x+'" cy="'+char.y+'" r="'+(NR+2)+'" fill="none" stroke="#e8c96d" stroke-width="0.7" opacity="0.3"/>';
+    }
+    html += '<circle cx="'+char.x+'" cy="'+char.y+'" r="'+NR+'" fill="#0d1421" stroke="'+sk+'" stroke-width="'+sw+'"/>';
+    html += '<text x="'+char.x+'" y="'+(char.y+5)+'" font-family="Playfair Display,serif" font-size="13" fill="'+sk+'" text-anchor="middle" font-weight="700">'+init+'</text>';
+    html += '<text x="'+char.x+'" y="'+(char.y+NR+16)+'" font-family="Lora,Georgia,serif" font-size="'+fs+'" fill="#e0d8cc" text-anchor="middle">'+char.name+'</text>';
+    html += '<text x="'+char.x+'" y="'+(char.y+NR+29)+'" font-family="Lora,Georgia,serif" font-size="9" fill="#8a8070" text-anchor="middle" font-style="italic">'+char.role+'</text>';
+    html += '</g>';
+  });
+
+  svg.innerHTML = html;
+}
+
+function selectChar(charId) {
+  const play = plays[currentPlay];
+  const char = play.characters.find(c => c.id === charId);
+  document.querySelectorAll('.char-node').forEach(g => g.style.opacity = '0.35');
+  document.getElementById('nd-'+charId).style.opacity = '1';
+  document.getElementById('char-panel').innerHTML =
+    '<p class="cp-name">'+char.name+'</p>'
+    +'<p class="cp-role">'+char.role+'</p>'
+    +'<p class="cp-text">'+char.desc+'</p>';
+}
+
+function loadPlay(key, btn) {
+  document.querySelectorAll('.ps-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderPlay(key);
+}
+
+const details = {
+  theatre: {
+    icon: '🎭', title: 'The Theatre',
+    html: `<p>In Shakespeare's time, going to the theatre was popular and affordable, much like watching a film today. The <strong>Globe Theatre</strong>, built in 1599 on the south bank of the Thames, could hold up to <strong>3,000 people</strong>.</p>
+<p>The cheapest tickets cost just <strong>one penny</strong>. These audience members (called <em>groundlings</em>) stood in the open area in front of the stage. Wealthier people paid more to sit in covered galleries above.</p>
+<p>Plays were performed in the <strong>afternoon, in daylight</strong>; there was no electricity. All actors were men or boys. Women were not allowed on stage in England until 1660.</p>`,
+    vocab: [
+      { t:'groundling', d:'a person who paid the cheapest price and stood to watch the play' },
+      { t:'gallery', d:'a covered balcony with seats, above and around the stage' },
+      { t:'patron', d:'a rich or powerful person who gives money to support artists' }
+    ]
+  },
+  monarch: {
+    icon: '👑', title: 'The Monarch',
+    html: `<p>Shakespeare lived under two monarchs. <strong>Queen Elizabeth I</strong> ruled England from 1558 to 1603. She loved the theatre and gave royal protection to Shakespeare's company, the <strong>Lord Chamberlain's Men</strong>.</p>
+<p>When Elizabeth died, <strong>King James I</strong> took the throne. He was an even bigger fan; he renamed the company the <strong>King's Men</strong> and invited them to perform at the royal court many times each year.</p>
+<p>This <em>royal patronage</em> was essential. Without a monarch's support, the city authorities could shut down theatres whenever they wanted to.</p>`,
+    vocab: [
+      { t:'monarch', d:'a king or queen who rules a country' },
+      { t:'reign', d:'the period of time that a monarch rules' },
+      { t:'patronage', d:'financial and social support given by a powerful person' }
+    ]
+  },
+  plague: {
+    icon: '☠️', title: 'The Plague',
+    html: `<p>The <strong>bubonic plague</strong>, the same disease as the medieval Black Death, still threatened London in Shakespeare's time. It returned again and again, killing thousands of people each time.</p>
+<p>When plague deaths reached a certain number per week, the authorities <strong>closed all theatres</strong> to stop large crowds spreading the disease. These closures could last for months or even years.</p>
+<p>During these difficult times, Shakespeare <strong>wrote poetry and new plays</strong>. The <strong>1603 plague</strong> was especially severe, killing over 30,000 people in London. Some historians believe the isolation helped him write some of his greatest works.</p>`,
+    vocab: [
+      { t:'plague', d:'a serious infectious disease that spreads quickly and kills many people' },
+      { t:'outbreak', d:'a sudden start or increase of a disease in a place' },
+      { t:'quarantine', d:'keeping infected people separate to stop spreading disease' }
+    ]
+  },
+  language: {
+    icon: '📜', title: 'The Language',
+    html: `<p>Shakespeare wrote in <strong>Early Modern English</strong>, the form of English spoken between about 1450 and 1700. It can look very difficult at first, but many words are exactly the same as modern English.</p>
+<p>Shakespeare is famous for <strong>inventing words</strong> that we still use today, including: <em>bedroom, lonely, generous, excitement, swagger</em>, and more than 1,700 others.</p>
+<p>Key differences from modern English: <em>thou / thee</em> = "you", <em>dost</em> = "do you", <em>hath</em> = "has", <em>'tis</em> = "it is", <em>art</em> = "are", and <em>wherefore</em> = "why" (not "where"!).</p>`,
+    vocab: [
+      { t:'thou / thee', d:'old English word for "you"' },
+      { t:'hath / doth', d:'old forms of "has" and "does"' },
+      { t:'wherefore', d:'old word meaning "why", not "where"!' }
+    ]
+  }
+};
+
+const locations = {
+  globe: {
+    name: 'The Globe Theatre',
+    date: 'Built 1599 · South Bank, Southwark',
+    text: "Shakespeare's most famous theatre. It held up to 3,000 people; the groundlings stood around the stage, which jutted into the crowd on three sides. In 1613, a cannon fired during a performance set the thatched roof alight and burned the theatre to the ground. A modern reconstruction stands nearby today.",
+    vocab: "Key word: thatched roof: a roof made from layers of dried straw or grass"
+  },
+  whitehall: {
+    name: 'Whitehall Palace',
+    date: 'Royal Court · Westminster',
+    text: "The main royal palace during Shakespeare's time. Both Elizabeth I and James I held court here. Shakespeare's company performed many plays in the palace's great hall, especially at Christmas. Royal performances paid much better than public shows, and royal approval protected the company from the city authorities.",
+    vocab: "Key word: censorship: controlling or banning what people are allowed to say or show"
+  },
+  stpauls: {
+    name: "St Paul's Cathedral",
+    date: 'Centre of London life (old building)',
+    text: "The original St Paul's (destroyed in the Great Fire of 1666) was the beating heart of the city. Booksellers gathered in the churchyard, selling printed copies of plays and poems, including Shakespeare's. Citizens met here to exchange news, gossip, and conduct business.",
+    vocab: "Key word: pamphlet: a small printed booklet, usually on a single topic"
+  },
+  tower: {
+    name: 'The Tower of London',
+    date: 'Royal fortress and prison · East London',
+    text: "The Tower was a royal fortress, palace, and prison. Many real people that Shakespeare wrote about in his history plays were imprisoned or executed here, including the princes from Richard III and Anne Boleyn from Henry VIII. It was also home to the royal menagerie: lions, a polar bear, and even an elephant.",
+    vocab: "Key word: execute: to kill someone as a legal punishment, ordered by the state"
+  },
+  bridge: {
+    name: 'London Bridge',
+    date: 'The only crossing of the Thames',
+    text: "In 1600, London Bridge was the only way to cross the River Thames. It was covered with shops and houses, almost like a small high street built on a bridge. At the south gate, the severed heads of executed traitors were displayed on spikes as a public warning. The bridge was demolished in the 19th century.",
+    vocab: "Key word: traitor: a person who betrays their own country, king, or companions"
+  },
+  blackfriars: {
+    name: 'Blackfriars Theatre',
+    date: 'Indoor theatre · Built 1609',
+    text: "Shakespeare's second venue was an indoor theatre in a former monastery. Unlike the open-air Globe, it had a roof and used candles for lighting, allowing performances in winter and in the evenings. Tickets cost six times more than at the Globe, attracting a smaller, wealthier audience.",
+    vocab: "Key word: venue: the place where a performance or event takes place"
+  }
+};
+
+let activeDetail = null;
+
+function showDetail(key, el) {
+  const panel = document.getElementById('detail');
+  const d = details[key];
+
+  if (activeDetail === key) {
+    panel.classList.remove('show');
+    el.classList.remove('on');
+    activeDetail = null;
+    return;
+  }
+
+  document.querySelectorAll('.ctx-card').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  activeDetail = key;
+
+  const vocabHTML = d.vocab.map(v =>
+    `<span class="vocab-pill"><b>${v.t}</b>: ${v.d}</span>`
+  ).join('');
+
+  panel.innerHTML = `
+    <div class="detail-hd">
+      <span class="detail-hd-icon">${d.icon}</span>
+      <span class="detail-hd-title">${d.title}</span>
+    </div>
+    <div class="detail-body">${d.html}</div>
+    <div class="vocab-row">${vocabHTML}</div>
+  `;
+
+  panel.classList.remove('show');
+  void panel.offsetWidth;
+  panel.classList.add('show');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function selectLoc(key) {
+  const loc = locations[key];
+  document.getElementById('map-panel').innerHTML = `
+    <p class="mp-name">${loc.name}</p>
+    <p class="mp-date">${loc.date}</p>
+    <p class="mp-text">${loc.text}</p>
+    <p class="mp-vocab">${loc.vocab}</p>
+  `;
+}
+</script>
+</body>
+</html>
