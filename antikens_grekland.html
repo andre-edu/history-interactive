@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<title>Antikens Grekland — Lärarverktyg</title>
+<!--
+  BILDNAMN OCH FORMAT
+  ═══════════════════
+  Hookbilder (landscape, valfri storlek):
+    knossos_fresk.webp        era 0
+    moerka_tidsaldern.webp    era 1
+    kolonier_karta.webp       era 2
+    parthenon.webp            era 3
+    alexander_mosaik.webp     era 4
+    arvet_hook.webp           era 5
+
+  Porträttbilder (280 × 350 px WebP, lowercase ASCII):
+    sokrates.webp
+    platon.webp
+    aristoteles.webp
+    perikles.webp
+    alexander.webp
+
+  NAVIGATION
+  ══════════
+  Klick / → = nästa steg
+  ←         = ett steg tillbaka
+  1–6       = hoppa direkt till era
+  Klick på porträtt = öppna/stäng info (stegar ej)
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Lora:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   DESIGN-TOKENS
+   ══════════════════════════════════════════ */
+:root {
+  --bg:          #07091a;
+  --surface:     #0f1526;
+  --surface-2:   #18213a;
+  --surface-3:   #222e4a;
+  --gold:        #c9a052;
+  --gold-dim:    #614e28;
+  --gold-glow:   rgba(201,160,82,.22);
+  --text:        #e4d9c4;
+  --text-dim:    #8a8070;
+  --loss:        #b85050;
+  --gain:        #5a9e6a;
+  --star:        #f0d060;
+  --footer-h:    68px;
+  --pad-x:       2.6rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ══════════════════════════════════════════
+   LAYOUT
+   ══════════════════════════════════════════ */
+#app { display: flex; flex-direction: column; height: 100vh; }
+
+#era-container { flex: 1; position: relative; overflow: hidden; }
+
+.era-section {
+  position: absolute; inset: 0;
+  display: none; flex-direction: column;
+  padding: 1.5rem var(--pad-x) 0.8rem;
+}
+.era-section.active { display: flex; }
+
+/* ══════════════════════════════════════════
+   ERA-HEADER
+   ══════════════════════════════════════════ */
+.era-header {
+  display: flex; align-items: baseline; gap: 1rem;
+  border-bottom: 1px solid var(--gold-dim);
+  padding-bottom: 0.65rem; margin-bottom: 1.3rem;
+  flex-shrink: 0;
+}
+.era-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem; font-weight: 700; color: var(--gold);
+}
+.era-dates { font-size: 0.92rem; color: var(--text-dim); font-style: italic; }
+
+/* ══════════════════════════════════════════
+   HOOK
+   ══════════════════════════════════════════ */
+.hook-container {
+  flex: 1; display: flex; align-items: center; gap: 2.5rem;
+  transition: opacity .4s ease;
+}
+.hook-container.fade-out { opacity: 0; pointer-events: none; }
+
+.hook-img-wrap {
+  flex-shrink: 0; width: 240px;
+  aspect-ratio: 4/5;
+  border-radius: 3px; overflow: hidden;
+  border: 1px solid var(--surface-3);
+}
+.hook-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.img-placeholder {
+  width: 100%; height: 100%;
+  background: var(--surface-2);
+  border: 2px dashed var(--gold-dim);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: .5rem;
+}
+.ph-icon  { font-size: 1.8rem; opacity: .28; }
+.ph-file  { font-family: monospace; font-size: .76rem; color: var(--gold-dim); text-align: center; padding: 0 .4rem; }
+.ph-size  { font-size: .68rem; color: var(--text-dim); opacity: .6; }
+
+.hook-text { flex: 1; display: flex; flex-direction: column; gap: 1rem; }
+.hook-tag  { font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
+.hook-q    { font-family: 'Playfair Display', serif; font-size: 1.95rem; line-height: 1.3; font-style: italic; }
+.hook-hint { font-size: .78rem; color: var(--text-dim); display: flex; align-items: center; gap: .5rem; margin-top: .5rem; }
+.hook-hint::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold); animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .15; } }
+
+/* ══════════════════════════════════════════
+   CONTENT CONTAINER
+   ══════════════════════════════════════════ */
+.content-container {
+  flex: 1; display: none; flex-direction: column; gap: 1.1rem;
+  opacity: 0; transition: opacity .45s ease;
+}
+
+/* ══════════════════════════════════════════
+   REVEAL / HIDE SYSTEM
+   ══════════════════════════════════════════ */
+[data-reveal-at] {
+  opacity: 0; transform: translateY(10px);
+  transition: opacity .45s ease, transform .45s ease;
+}
+[data-reveal-at].revealed { opacity: 1; transform: none; }
+[data-reveal-at].hidden   { opacity: 0 !important; transform: translateY(-8px) !important; pointer-events: none !important; }
+
+.content-label {
+  font-size: .7rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--gold); font-weight: 500;
+}
+
+/* ══════════════════════════════════════════
+   COMPARISON PAIR
+   ══════════════════════════════════════════ */
+.comparison-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.8rem; flex: 1;
+}
+.compare-col {
+  background: var(--surface);
+  border: 1px solid var(--surface-3);
+  border-radius: 5px; padding: 1.25rem 1.4rem;
+  display: flex; flex-direction: column; gap: .65rem;
+}
+.compare-col h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem; color: var(--gold);
+  padding-bottom: .45rem; border-bottom: 1px solid var(--gold-dim);
+}
+.compare-col ul { list-style: none; display: flex; flex-direction: column; gap: .42rem; }
+.compare-col li { font-size: .96rem; padding-left: 1rem; position: relative; line-height: 1.45; }
+.compare-col li::before {
+  content: '◆'; position: absolute; left: 0;
+  font-size: .42rem; top: .58em; color: var(--gold);
+}
+.geo-tag {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .72rem; font-weight: 400;
+  font-style: italic; color: var(--text-dim);
+  margin-left: .35rem;
+}
+
+/* ══════════════════════════════════════════
+   LOSS / GAIN PANELS
+   ══════════════════════════════════════════ */
+.two-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; flex: 1; }
+.info-panel {
+  background: var(--surface); border-radius: 5px;
+  padding: 1.25rem 1.4rem; border: 1px solid var(--surface-3);
+}
+.info-panel h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: .65rem; }
+.info-panel.loss { border-top: 3px solid var(--loss); }
+.info-panel.loss h3 { color: var(--loss); }
+.info-panel.gain { border-top: 3px solid var(--gain); }
+.info-panel.gain h3 { color: var(--gain); }
+.info-panel ul  { list-style: none; display: flex; flex-direction: column; gap: .38rem; }
+.info-panel li  { font-size: .94rem; padding-left: 1rem; position: relative; line-height: 1.4; }
+.info-panel.loss li::before { content: '−'; position: absolute; left: 0; color: var(--loss); font-weight: 700; }
+.info-panel.gain li::before { content: '+'; position: absolute; left: 0; color: var(--gain); font-weight: 700; }
+
+/* ══════════════════════════════════════════
+   KOLLAPS-FRAMING (era 1)
+   ══════════════════════════════════════════ */
+.collapse-banner {
+  font-size: .82rem; font-style: italic;
+  color: var(--text-dim);
+  border-left: 3px solid var(--gold-dim);
+  padding: .4rem .85rem;
+  background: var(--surface);
+  border-radius: 0 4px 4px 0;
+}
+
+.collapse-timeline {
+  display: flex; height: 38px;
+  border-radius: 4px; overflow: hidden; flex-shrink: 0;
+}
+.ctp-phase {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0 .6rem; gap: 1px;
+}
+.ctp-label { font-size: .6rem; font-weight: 500; color: rgba(255,255,255,.65); white-space: nowrap; }
+.ctp-years { font-size: .54rem; color: rgba(255,255,255,.38); white-space: nowrap; }
+.ctp-collapse  { flex: 1; background: #5a1c1c; }
+.ctp-dark      { flex: 3; background: #10101c; border-left: 1px solid rgba(255,255,255,.06); border-right: 1px solid rgba(255,255,255,.06); }
+.ctp-recovery  { flex: 2; background: #1a3325; }
+
+/* ══════════════════════════════════════════
+   ALFABETSPANEL (era 2)
+   ══════════════════════════════════════════ */
+.alphabet-panel {
+  background: var(--surface);
+  border-radius: 5px;
+  padding: 1rem 1.4rem;
+  flex: 1; display: flex; flex-direction: column; gap: .7rem;
+}
+.alph-intro {
+  font-size: .8rem; color: var(--text-dim); font-style: italic; line-height: 1.5;
+}
+.alph-intro strong { color: var(--text); font-style: normal; }
+
+.alph-header-row,
+.alph-row {
+  display: grid;
+  grid-template-columns: 3fr 18px 2.5fr 18px 1.2fr;
+  align-items: center; gap: .3rem;
+}
+.alph-header-row {
+  padding-bottom: .45rem;
+  border-bottom: 1px solid var(--gold-dim);
+}
+.alph-col-title {
+  font-size: .62rem; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--gold); font-weight: 500;
+}
+.alph-year {
+  font-weight: 400; color: var(--text-dim);
+  text-transform: none; letter-spacing: 0; margin-left: .3rem;
+}
+
+.alph-rows { display: flex; flex-direction: column; gap: 0; flex: 1; }
+.alph-row {
+  padding: .22rem 0;
+  border-bottom: 1px solid var(--surface-3);
+}
+.alph-row:last-child { border-bottom: none; }
+
+.alph-phoen { display: flex; align-items: baseline; gap: .55rem; }
+.alph-pname {
+  font-size: .75rem; font-weight: 600;
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em;
+}
+.alph-pmean {
+  font-size: .66rem; color: var(--text-dim); opacity: .5; font-style: italic;
+}
+
+.alph-arr { color: var(--gold-dim); font-size: .68rem; text-align: center; }
+
+.alph-greek { display: flex; align-items: center; gap: .55rem; }
+.alph-gletter {
+  font-size: 1.4rem; color: var(--gold); line-height: 1;
+  font-family: 'Playfair Display', serif;
+}
+.alph-gname { font-size: .7rem; color: var(--text-dim); }
+
+.alph-modern {
+  font-size: 1.9rem; font-weight: 700;
+  color: var(--text); font-family: 'Playfair Display', serif; line-height: 1;
+}
+
+/* ══════════════════════════════════════════
+   PARALLAX LAGER + NEBULOSA
+   ══════════════════════════════════════════ */
+.stars-far, .stars-mid, .stars-hero { will-change: transform; }
+.nebula-layer { pointer-events: none; }
+.constellation-bg { cursor: crosshair; }
+
+/* Meteorstjärnor */
+.shooting-star {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.92) 55%, transparent);
+  transform: rotate(150deg);
+  transform-origin: left center;
+  pointer-events: none; z-index: 5;
+  animation: shoot .75s ease-out forwards;
+}
+@keyframes shoot {
+  0%   { opacity: 0; transform: rotate(150deg) translateX(0); }
+  18%  { opacity: 1; }
+  100% { opacity: 0; transform: rotate(150deg) translateX(110px); }
+}
+
+/* Era 2: vertikal stapel med begränsad konstellationshöjd */
+#cc-2 .constellation-bg { height: 230px; }
+#cc-2 .constellation-bg svg { width: 100%; height: 100%; }
+#cc-2 .alph-card-grid { grid-template-columns: repeat(10, 1fr); }
+
+.alph-compact {
+  flex: 2; background: var(--surface);
+  border-radius: 5px; padding: .9rem 1rem;
+  display: flex; flex-direction: column; gap: .65rem;
+}
+.alph-note {
+  font-size: .75rem; font-style: italic;
+  color: var(--text-dim); line-height: 1.45;
+}
+.alph-note strong { color: var(--text); font-style: normal; }
+
+.alph-card-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: .4rem; flex: 1;
+}
+.alph-card {
+  background: var(--surface-2);
+  border: 1px solid var(--surface-3);
+  border-radius: 4px; padding: .5rem .25rem;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px;
+  text-align: center;
+}
+.alph-card-m {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.55rem; font-weight: 700; color: var(--text); line-height: 1;
+}
+.alph-card-g {
+  font-family: 'Playfair Display', serif;
+  font-size: .82rem; color: var(--gold); line-height: 1;
+}
+.alph-card-p {
+  font-size: .54rem; color: var(--text-dim);
+  opacity: .55; font-style: italic; line-height: 1.25;
+}
+
+/* ══════════════════════════════════════════
+   ERÖVRINGSKARTA (era 4)
+   ══════════════════════════════════════════ */
+.conquest-map-wrap {
+  height: 240px;
+  flex-shrink: 0;
+  position: relative;
+  border-radius: 5px; overflow: hidden;
+  border: 1px solid var(--surface-3);
+}
+#conquest-map { width: 100%; height: 240px; }
+
+/* Override Leaflet defaults for dark theme */
+.leaflet-container { background: #06090f !important; font-family: 'DM Sans', sans-serif !important; }
+.leaflet-tile-pane { opacity: .85; }
+
+.conquest-phase-lbl {
+  position: absolute; bottom: 10px; left: 12px;
+  background: rgba(7,9,26,.88);
+  color: var(--gold); font-size: .72rem; font-weight: 500;
+  padding: 3px 10px; border-radius: 3px;
+  border: 1px solid var(--gold-dim);
+  z-index: 1000; pointer-events: none;
+  opacity: 0; transition: opacity .35s ease;
+}
+.conquest-phase-lbl.visible { opacity: 1; }
+
+#cc-4 .comparison-grid { flex: 0 0 auto; }
+
+/* Era 4: komprimering så allt ryms utan scroll */
+#cc-4 { gap: .7rem; }
+#cc-4 .conquest-map-wrap { height: 185px; }
+#cc-4 #conquest-map        { height: 185px; }
+#cc-4 .compare-col         { padding: .7rem 1rem; gap: .4rem; }
+#cc-4 .compare-col li      { font-size: .88rem; }
+#cc-4 .solo-row            { gap: 1.2rem; }
+#cc-4 .solo-info ul li     { font-size: .88rem; }
+#cc-4 .source-block        { padding: .7rem 1.2rem; }
+#cc-4 .source-q            { font-size: .96rem; }
+
+.item-date {
+  font-size: .64rem; font-style: italic;
+  color: var(--text-dim); opacity: .62;
+  margin-left: .3rem;
+}
+
+/* ══════════════════════════════════════════
+   CONSTELLATION
+   ══════════════════════════════════════════ */
+.constellation-wrap { display: flex; flex-direction: column; }
+.constellation-bg {
+  background: #04060f;
+  border-radius: 6px; border: 1px solid var(--surface-3); overflow: hidden;
+}
+.constellation-bg svg { width: 100%; height: auto; display: block; }
+
+/* Stars */
+.star-group { opacity: 0; transition: opacity .35s ease; }
+.star-group.visible { opacity: 1; }
+
+.star-dot {
+  fill: var(--star);
+  filter: drop-shadow(0 0 5px rgba(240,208,96,.75)) drop-shadow(0 0 14px rgba(240,208,96,.3));
+  transform-box: fill-box; transform-origin: 50% 50%;
+  transform: scale(0);
+}
+.star-group.visible .star-dot {
+  transform: scale(1);
+  transition: transform .5s cubic-bezier(.175,.885,.32,1.275);
+}
+
+.star-label { fill: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; }
+.star-sub   { fill: var(--text-dim); font-family: 'DM Sans', sans-serif; font-size: 11px; }
+
+/* Lines */
+.star-line {
+  stroke: var(--gold); stroke-width: 1.5; fill: none; opacity: .5;
+  stroke-dasharray: 600; stroke-dashoffset: 600;
+  transition: stroke-dashoffset 1.1s ease;
+}
+.star-line.visible { stroke-dashoffset: 0; }
+
+/* ══════════════════════════════════════════
+   PORTRAIT GRID (era 3)
+   ══════════════════════════════════════════ */
+.portrait-grid {
+  display: flex; gap: 1.4rem;
+  justify-content: center; align-items: flex-start;
+}
+.portrait-card {
+  width: 168px; flex-shrink: 0;
+  border-radius: 4px; overflow: hidden;
+  border: 2px solid var(--surface-3); cursor: pointer; position: relative;
+  transition: border-color .3s ease, box-shadow .3s ease, opacity .3s ease, transform .3s ease;
+}
+.portrait-card:hover   { border-color: var(--gold); }
+.portrait-card.active  { border-color: var(--gold); box-shadow: 0 0 20px var(--gold-glow); }
+.portrait-card.dimmed  { opacity: .28; transform: scale(.97); }
+
+.portrait-img-wrap { width: 100%; aspect-ratio: 4/5; overflow: hidden; }
+.portrait-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.portrait-ph {
+  width: 100%; height: 100%;
+  background: var(--surface-2);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: .3rem;
+}
+
+.portrait-strip {
+  background: var(--surface);
+  padding: .38rem .6rem;
+  font-size: .78rem; font-weight: 500; color: var(--text-dim);
+  text-align: center; border-top: 1px solid var(--surface-3);
+  transition: color .3s ease;
+}
+.portrait-card.active .portrait-strip { color: var(--gold); }
+
+.portrait-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(7,9,26,.97) 22%);
+  padding: 2rem .75rem .75rem;
+  transform: translateY(100%); transition: transform .35s ease;
+}
+.portrait-card.active .portrait-overlay { transform: none; }
+
+.p-name  { font-family: 'Playfair Display', serif; font-size: .9rem; font-weight: 700; color: var(--gold); margin-bottom: .3rem; }
+.p-facts { list-style: none; font-size: .7rem; line-height: 1.4; color: var(--text); }
+.p-facts li { padding-left: .7rem; position: relative; margin-bottom: .15rem; }
+.p-facts li::before { content: '·'; position: absolute; left: 0; color: var(--gold); }
+
+/* ══════════════════════════════════════════
+   SOLO PORTRAIT + INFO (era 4)
+   ══════════════════════════════════════════ */
+.solo-row { display: flex; gap: 2rem; align-items: flex-start; }
+.solo-row .portrait-card { width: 195px; }
+
+.solo-info { flex: 1; display: flex; flex-direction: column; gap: .65rem; }
+.solo-info h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold); }
+.solo-info ul  { list-style: none; display: flex; flex-direction: column; gap: .4rem; }
+.solo-info li  { font-size: .95rem; padding-left: 1rem; position: relative; line-height: 1.42; }
+.solo-info li::before { content: '◆'; position: absolute; left: 0; font-size: .42rem; top: .58em; color: var(--gold); }
+
+/* ══════════════════════════════════════════
+   PRIMARY SOURCE
+   ══════════════════════════════════════════ */
+.source-block {
+  background: var(--surface);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 5px 5px 0;
+  padding: 1rem 1.4rem;
+}
+.source-tag  { font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: .45rem; }
+.source-q    { font-family: 'Lora', serif; font-style: italic; font-size: 1.05rem; line-height: 1.62; color: var(--text); margin-bottom: .4rem; }
+.source-attr { font-size: .77rem; color: var(--text-dim); margin-bottom: .55rem; }
+.source-prompt { font-size: .88rem; color: var(--gold); font-weight: 500; }
+.source-prompt::before { content: '⟶ '; }
+
+/* ══════════════════════════════════════════
+   FOOTER TIMELINE
+   ══════════════════════════════════════════ */
+#timeline {
+  height: var(--footer-h); background: var(--surface);
+  border-top: 1px solid var(--surface-3);
+  display: flex; flex-shrink: 0;
+}
+.era-node {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px;
+  background: none; border: none; border-bottom: 3px solid transparent;
+  cursor: pointer; color: var(--text-dim); font-family: 'DM Sans', sans-serif;
+  padding: .3rem .4rem; position: relative;
+  transition: color .25s ease, border-color .25s ease;
+}
+.era-node:hover { color: var(--text); }
+.era-node.active { color: var(--gold); border-bottom-color: var(--gold); }
+.node-name  { font-size: .72rem; font-weight: 500; white-space: nowrap; }
+.node-dates { font-size: .59rem; opacity: .7; }
+.node-dots  { display: flex; gap: 3px; margin-top: 2px; }
+.ndot       { width: 5px; height: 5px; border-radius: 50%; background: var(--surface-3); }
+.ndot.done  { background: var(--gold-dim); }
+.ndot.cur   { background: var(--gold); box-shadow: 0 0 5px var(--gold); }
+.era-node + .era-node::before {
+  content: ''; position: absolute; left: 0; top: 18%; height: 64%;
+  width: 1px; background: var(--surface-3);
+}
+
+/* ══════════════════════════════════════════
+   HINT
+   ══════════════════════════════════════════ */
+#nav-hint {
+  position: fixed; bottom: calc(var(--footer-h) + .55rem); right: 1.2rem;
+  font-size: .68rem; color: var(--text-dim); pointer-events: none;
+}
+
+/* ══════════════════════════════════════════
+   CHRONO-BAR (övre tidsöversikt)
+   ══════════════════════════════════════════ */
+#chrono-bar {
+  display: flex; align-items: stretch;
+  background: var(--surface);
+  border-bottom: 1px solid var(--gold-dim);
+  flex-shrink: 0; height: 80px;
+}
+.cn-node {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer; padding: .4rem .5rem;
+  border-bottom: 3px solid transparent;
+  position: relative;
+  transition: border-color .3s ease;
+}
+.cn-node + .cn-node::before {
+  content: '→'; position: absolute; left: 0; top: 50%;
+  transform: translateY(-50%);
+  font-size: .65rem; color: var(--gold-dim);
+  pointer-events: none;
+}
+.cn-name {
+  font-family: 'Playfair Display', serif;
+  font-size: .82rem; color: var(--text-dim); font-weight: 600;
+  text-align: center; line-height: 1.15;
+  transition: font-size .3s ease, color .3s ease;
+}
+.cn-dates {
+  font-size: .6rem; color: var(--text-dim); opacity: .5;
+  text-align: center; white-space: nowrap;
+  transition: opacity .3s ease, color .3s ease, font-size .3s ease;
+}
+.cn-node.cn-active {
+  border-bottom-color: var(--gold);
+}
+.cn-node.cn-active .cn-name {
+  font-size: 1.5rem; color: var(--gold);
+}
+.cn-node.cn-active .cn-dates {
+  opacity: 1; font-size: .72rem; color: var(--gold-dim);
+}
+
+/* ══════════════════════════════════════════
+   ERA-TIDSLINJE (minimalistisk, animerad)
+   ══════════════════════════════════════════ */
+#era-timeline {
+  height: 44px;
+  padding: 0 var(--pad-x);
+  background: var(--bg);
+  border-bottom: 1px solid var(--surface-3);
+  display: flex; align-items: center;
+  flex-shrink: 0;
+}
+.etl-inner {
+  position: relative; width: 100%; height: 26px;
+}
+/* Bakgrundslinje */
+.etl-inner::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; top: 9px;
+  height: 1px;
+  background: var(--surface-3);
+}
+/* Animerat markeringsblock */
+#etl-hl {
+  position: absolute;
+  top: 0; height: 18px;
+  background: rgba(201,160,82,.10);
+  border-left:  2px solid rgba(201,160,82,.55);
+  border-right: 2px solid rgba(201,160,82,.55);
+  border-radius: 1px;
+  transition: left .65s cubic-bezier(.4,0,.2,1),
+              width .65s cubic-bezier(.4,0,.2,1);
+}
+/* Tick-märken */
+.etl-tick {
+  position: absolute; top: 0;
+  display: flex; flex-direction: column; align-items: center;
+  transform: translateX(-50%);
+}
+.etl-tick::before {
+  content: '';
+  width: 1px; height: 14px;
+  background: var(--surface-3);
+  display: block;
+}
+.etl-yr {
+  font-size: .56rem; color: var(--text-dim); opacity: .45;
+  white-space: nowrap; margin-top: 1px;
+  font-family: 'DM Sans', sans-serif;
+  transition: opacity .3s ease, color .3s ease;
+}
+/* Aktiva ticks (kantåren för aktiv era) */
+.etl-tick.etl-active::before { background: rgba(201,160,82,.6); }
+.etl-tick.etl-active .etl-yr { opacity: .85; color: var(--gold-dim); }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ÖVRE TIDSLINJE / KRONOLOGISK ÖVERSIKT -->
+<div id="chrono-bar">
+  <div class="cn-node cn-active" data-era="0">
+    <span class="cn-name">Bronsåldern</span>
+    <span class="cn-dates">ca 2000–1100 f.Kr.</span>
+  </div>
+  <div class="cn-node" data-era="1">
+    <span class="cn-name">Mörka tidsåldern</span>
+    <span class="cn-dates">ca 1100–800 f.Kr.</span>
+  </div>
+  <div class="cn-node" data-era="2">
+    <span class="cn-name">Arkaisk tid</span>
+    <span class="cn-dates">ca 800–480 f.Kr.</span>
+  </div>
+  <div class="cn-node" data-era="3">
+    <span class="cn-name">Klassisk tid</span>
+    <span class="cn-dates">ca 480–323 f.Kr.</span>
+  </div>
+  <div class="cn-node" data-era="4">
+    <span class="cn-name">Hellenismen</span>
+    <span class="cn-dates">ca 323–30 f.Kr.</span>
+  </div>
+  <div class="cn-node" data-era="5">
+    <span class="cn-name">Det grekiska arvet</span>
+    <span class="cn-dates">30 f.Kr. och framåt</span>
+  </div>
+</div>
+
+<!-- ANIMERAD TIDSLINJE -->
+<div id="era-timeline">
+  <div class="etl-inner">
+    <div id="etl-hl" style="left:0%;width:36%"></div>
+    <div class="etl-tick etl-active" style="left:0%;transform:none">
+      <span class="etl-yr">2000 f.Kr.</span>
+    </div>
+    <div class="etl-tick etl-active" style="left:36%">
+      <span class="etl-yr">1100</span>
+    </div>
+    <div class="etl-tick" style="left:48%">
+      <span class="etl-yr">800</span>
+    </div>
+    <div class="etl-tick" style="left:60.8%">
+      <span class="etl-yr">480</span>
+    </div>
+    <div class="etl-tick" style="left:67.1%">
+      <span class="etl-yr">323</span>
+    </div>
+    <div class="etl-tick" style="left:78.8%">
+      <span class="etl-yr">30 f.Kr.</span>
+    </div>
+    <div class="etl-tick" style="left:100%;transform:translateX(-100%)">
+      <span class="etl-yr">500 e.Kr. →</span>
+    </div>
+  </div>
+</div>
+
+<div id="era-container">
+
+<!-- ══════════════════════════════════════════
+     ERA 0: BRONSÅLDERN
+     Steg: 1=jämförelse vänster, 2=höger, 3=källa
+     ══════════════════════════════════════════ -->
+<section class="era-section active" id="era-0">
+  <div class="hook-container">
+    <div class="hook-img-wrap">
+      <img src="knossos_fresk.webp" alt="Fresk från Knossos"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="img-placeholder" style="display:none">
+        <span class="ph-icon">🖼</span>
+        <span class="ph-file">knossos_fresk.webp</span>
+        <span class="ph-size">landscape, valfri storlek</span>
+      </div>
+    </div>
+    <div class="hook-text">
+      <span class="hook-tag">Startfråga</span>
+      <p class="hook-q">"Mykenerna var Greklands första storkultur. Varför vet vi mer om hur de lagrade spannmål än om vad de trodde på?"</p>
+      <p class="hook-hint">Klicka eller tryck → för att fortsätta</p>
+    </div>
+  </div>
+
+  <div class="content-container" id="cc-0">
+    <span class="content-label" data-reveal-at="1">Minoer kontra Mykener</span>
+    <div class="comparison-grid">
+      <div class="compare-col" data-reveal-at="1">
+        <h3>Minoerna <span class="geo-tag">Kreta</span></h3>
+        <ul>
+          <li>Palatset i Knossos: regionens maktcentrum</li>
+          <li>Linear A: ett skriftsystem vi fortfarande inte kan läsa</li>
+          <li>Kända för freskkonst och tjurhoppning</li>
+          <li>Handelsfolk snarare än militärmakt</li>
+          <li>Försvann plötsligt ca 1450 f.Kr., orsaken är okänd</li>
+        </ul>
+      </div>
+      <div class="compare-col" data-reveal-at="2">
+        <h3>Mykenerna <span class="geo-tag">fastlandet</span></h3>
+        <ul>
+          <li>Befästa palats: Mykene, Tiryns, Pylos</li>
+          <li>Linear B: en tidig form av grekiska som har tolkats</li>
+          <li>Krigaradel med hierarkisk palatsadministration</li>
+          <li>Trojakriget skildrat i Homeros epos</li>
+          <li>Kollapsade ca 1100 f.Kr. i "bronsålderns kollaps"</li>
+        </ul>
+      </div>
+    </div>
+    <div class="source-block" data-reveal-at="3">
+      <div class="source-tag">Primärkälla</div>
+      <p class="source-q">"Ta upp det rätta priset i skeppen med oxhudarna, som kungen gav oss som förläning."</p>
+      <p class="source-attr">Administrativ tabletttext i Linear B, Pylos (ca 1200 f.Kr.). Ett av de sista dokumenten från den mykenska världen.</p>
+      <p class="source-prompt">Vad berättar det om en civilisation att vi bara känner till den via lagerlistor?</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     ERA 1: MÖRKA TIDSÅLDERN
+     Steg: 1=förlust-panel, 2=återkomst-panel, 3=källa
+     ══════════════════════════════════════════ -->
+<section class="era-section" id="era-1">
+  <div class="hook-container">
+    <div class="hook-img-wrap">
+      <img src="moerka_tidsaldern.webp" alt="Mörka tidsåldern"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="img-placeholder" style="display:none">
+        <span class="ph-icon">🖼</span>
+        <span class="ph-file">moerka_tidsaldern.webp</span>
+        <span class="ph-size">landscape, valfri storlek</span>
+      </div>
+    </div>
+    <div class="hook-text">
+      <span class="hook-tag">Startfråga</span>
+      <p class="hook-q">"Hur kan en civilisation förlora förmågan att läsa och skriva på en enda generation?"</p>
+      <p class="hook-hint">Klicka eller tryck → för att fortsätta</p>
+    </div>
+  </div>
+
+  <div class="content-container" id="cc-1">
+    <span class="content-label" data-reveal-at="1">Kollaps och återhämtning</span>
+
+    <p class="collapse-banner" data-reveal-at="1">Befolkningen levde kvar. Det var samhällets strukturer som bröt samman.</p>
+
+    <div class="collapse-timeline" data-reveal-at="1">
+      <div class="ctp-phase ctp-collapse">
+        <span class="ctp-label">Omedelbar kollaps</span>
+        <span class="ctp-years">1100–1050 f.Kr.</span>
+      </div>
+      <div class="ctp-phase ctp-dark">
+        <span class="ctp-label">Mörkaste perioden</span>
+        <span class="ctp-years">1050–900 f.Kr.</span>
+      </div>
+      <div class="ctp-phase ctp-recovery">
+        <span class="ctp-label">Gradvis återhämtning</span>
+        <span class="ctp-years">900–800 f.Kr.</span>
+      </div>
+    </div>
+
+    <div class="two-panel">
+      <div class="info-panel loss" data-reveal-at="1">
+        <h3>Vad bröt samman?</h3>
+        <ul>
+          <li>Palatsadministrationen och byråkratin <span class="item-date">1100 f.Kr.</span></li>
+          <li>Förmågan att läsa och skriva <span class="item-date">1100 f.Kr.</span></li>
+          <li>Internationell handel och sjöfart <span class="item-date">ca 1050 f.Kr.</span></li>
+          <li>Storskalig arkitektur och konst <span class="item-date">1100 f.Kr.</span></li>
+          <li>Befolkningstäthet minskade kraftigt <span class="item-date">1100–900 f.Kr.</span></li>
+          <li>Det avancerade metallhantverket <span class="item-date">ca 1050 f.Kr.</span></li>
+        </ul>
+      </div>
+      <div class="info-panel gain" data-reveal-at="2">
+        <h3>Vad återuppstod?</h3>
+        <ul>
+          <li>Handelskontakter med orienten <span class="item-date">ca 900 f.Kr.</span></li>
+          <li>Befolkningstillväxt och expansion <span class="item-date">ca 850 f.Kr.</span></li>
+          <li>Greker tar upp det feniciska alfabetet <span class="item-date">ca 800 f.Kr.</span></li>
+          <li>Homeros epos nedtecknas <span class="item-date">ca 750 f.Kr.</span></li>
+          <li>De första polis-staterna formas <span class="item-date">ca 800 f.Kr.</span></li>
+          <li>En ny, gemensam grekisk identitet <span class="item-date">ca 800 f.Kr.</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="source-block" data-reveal-at="3">
+      <div class="source-tag">Primärkälla</div>
+      <p class="source-q">"Berätta om mannen, gudinna, den listige som flackade vida sedan han hade förstört Trojas heliga stad..."</p>
+      <p class="source-attr">Homeros, Odysséen (inledningsraderna), nedtecknad ca 750 f.Kr. Berättar om händelser 500 år tidigare.</p>
+      <p class="source-prompt">Hur förändras en historia när den berättas muntligt i 500 år innan den skrivs ner?</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     ERA 2: ARKAISK TID
+     Steg: 1–5=konstellationsnoder, 6=källa
+     ══════════════════════════════════════════ -->
+<section class="era-section" id="era-2">
+  <div class="hook-container">
+    <div class="hook-img-wrap">
+      <img src="kolonier_karta.webp" alt="Karta över kolonier"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="img-placeholder" style="display:none">
+        <span class="ph-icon">🖼</span>
+        <span class="ph-file">kolonier_karta.webp</span>
+        <span class="ph-size">landscape, valfri storlek</span>
+      </div>
+    </div>
+    <div class="hook-text">
+      <span class="hook-tag">Startfråga</span>
+      <p class="hook-q">"Varför grundade greker städer i hela Medelhavet i stället för att reformera jordägandet hemma?"</p>
+      <p class="hook-hint">Klicka eller tryck → för att fortsätta</p>
+    </div>
+  </div>
+
+  <div class="content-container" id="cc-2">
+    <span class="content-label" data-reveal-at="1">Kausalkedja: arkaisk blomstring</span>
+
+    <div class="constellation-wrap" data-reveal-at="1">
+      <div class="constellation-bg">
+        <svg viewBox="0 0 900 270" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <radialGradient id="sky2" cx="50%" cy="50%" r="55%">
+              <stop offset="0%" stop-color="#0a0f20"/>
+              <stop offset="100%" stop-color="#020408"/>
+            </radialGradient>
+            <filter id="nf2" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="22"/>
+            </filter>
+          </defs>
+          <rect width="900" height="270" fill="url(#sky2)"/>
+          <rect width="900" height="270" fill="#1a3888" opacity=".06"/>
+          <!-- Heart Nebula (IC 1805) — blå glöd kring Kassiopeias mitt -->
+          <g class="nebula-layer">
+            <ellipse cx="445" cy="138" rx="148" ry="74" fill="#0d2060" opacity=".38" filter="url(#nf2)"/>
+            <ellipse cx="445" cy="138" rx="66"  ry="33" fill="#1c3e90" opacity=".28" filter="url(#nf2)"/>
+          </g>
+          <!-- Djup 1 — längst bort (rör sig snabbast i parallax) -->
+          <g class="stars-far">
+            <circle cx="42"  cy="18"  r="1" fill="white" opacity=".22"/>
+            <circle cx="198" cy="12"  r="1" fill="white" opacity=".20"/>
+            <circle cx="280" cy="38"  r="1" fill="white" opacity=".25"/>
+            <circle cx="448" cy="32"  r="1" fill="white" opacity=".22"/>
+            <circle cx="535" cy="10"  r="1" fill="white" opacity=".20"/>
+            <circle cx="700" cy="18"  r="1" fill="white" opacity=".18"/>
+            <circle cx="778" cy="36"  r="1" fill="white" opacity=".22"/>
+            <circle cx="68"  cy="120" r="1" fill="white" opacity=".12"/>
+            <circle cx="252" cy="122" r="1" fill="white" opacity=".14"/>
+            <circle cx="348" cy="140" r="1" fill="white" opacity=".12"/>
+            <circle cx="612" cy="120" r="1" fill="white" opacity=".15"/>
+            <circle cx="708" cy="135" r="1" fill="white" opacity=".12"/>
+            <circle cx="292" cy="248" r="1" fill="white" opacity=".12"/>
+            <circle cx="452" cy="240" r="1" fill="white" opacity=".14"/>
+            <circle cx="762" cy="238" r="1" fill="white" opacity=".12"/>
+          </g>
+          <!-- Djup 2 — mellanlager -->
+          <g class="stars-mid">
+            <circle cx="120" cy="32"  r="1.5" fill="white" opacity=".18"/>
+            <circle cx="365" cy="15"  r="1.5" fill="white" opacity=".18"/>
+            <circle cx="618" cy="35"  r="1.5" fill="white" opacity=".25"/>
+            <circle cx="858" cy="14"  r="1.5" fill="white" opacity=".18"/>
+            <circle cx="162" cy="138" r="1.5" fill="white" opacity=".10"/>
+            <circle cx="520" cy="132" r="1.5" fill="white" opacity=".14"/>
+            <circle cx="798" cy="122" r="1.5" fill="white" opacity=".14"/>
+            <circle cx="105" cy="238" r="1.5" fill="white" opacity=".10"/>
+            <circle cx="608" cy="252" r="1.5" fill="white" opacity=".10"/>
+            <circle cx="848" cy="255" r="1.5" fill="white" opacity=".10"/>
+          </g>
+          <!-- Kassiopeia W — stjärntecknet (rör sig långsammast) -->
+          <g class="stars-hero">
+            <text x="882" y="262" text-anchor="end" font-size="9" fill="rgba(255,255,255,0.10)" font-family="DM Sans,sans-serif" font-style="italic">Kassiopeia</text>
+            <line class="star-line" data-line="0" x1="78"  y1="82"  x2="245" y2="195"/>
+            <line class="star-line" data-line="1" x1="245" y1="195" x2="435" y2="76"/>
+            <line class="star-line" data-line="2" x1="435" y1="76"  x2="635" y2="195"/>
+            <line class="star-line" data-line="3" x1="635" y1="195" x2="815" y2="80"/>
+            <g class="star-group" data-node="0">
+              <circle class="star-dot" cx="78" cy="82" r="8"/>
+              <text class="star-label" x="78" y="62" text-anchor="middle">Resursbrist</text>
+            </g>
+            <g class="star-group" data-node="1">
+              <circle class="star-dot" cx="245" cy="195" r="8"/>
+              <text class="star-label" x="245" y="216" text-anchor="middle">Kolonisering</text>
+            </g>
+            <g class="star-group" data-node="2">
+              <circle class="star-dot" cx="435" cy="76" r="8"/>
+              <text class="star-label" x="435" y="56" text-anchor="middle">Feniciskt alfabet adopteras</text>
+            </g>
+            <g class="star-group" data-node="3">
+              <circle class="star-dot" cx="635" cy="195" r="8"/>
+              <text class="star-label" x="635" y="216" text-anchor="middle">Homeros nedtecknas</text>
+            </g>
+            <g class="star-group" data-node="4">
+              <circle class="star-dot" cx="815" cy="80" r="8"/>
+              <text class="star-label" x="815" y="60" text-anchor="middle">Polis-staten formas</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="alph-compact" data-reveal-at="6">
+      <p class="alph-note">A var från början ett oxhuvud, vänt upp och ned. <strong>Varje bokstav var ursprungligen en bild.</strong></p>
+      <div class="alph-card-grid">
+        <div class="alph-card"><span class="alph-card-m">A</span><span class="alph-card-g">Α</span><span class="alph-card-p">Aleph · oxe</span></div>
+        <div class="alph-card"><span class="alph-card-m">B</span><span class="alph-card-g">Β</span><span class="alph-card-p">Beth · hus</span></div>
+        <div class="alph-card"><span class="alph-card-m">G</span><span class="alph-card-g">Γ</span><span class="alph-card-p">Gimel · kastpinne</span></div>
+        <div class="alph-card"><span class="alph-card-m">D</span><span class="alph-card-g">Δ</span><span class="alph-card-p">Daleth · dörr</span></div>
+        <div class="alph-card"><span class="alph-card-m">E</span><span class="alph-card-g">Ε</span><span class="alph-card-p">He · man</span></div>
+        <div class="alph-card"><span class="alph-card-m">M</span><span class="alph-card-g">Μ</span><span class="alph-card-p">Mem · vatten</span></div>
+        <div class="alph-card"><span class="alph-card-m">N</span><span class="alph-card-g">Ν</span><span class="alph-card-p">Nun · orm</span></div>
+        <div class="alph-card"><span class="alph-card-m">O</span><span class="alph-card-g">Ο</span><span class="alph-card-p">Ayin · öga</span></div>
+        <div class="alph-card"><span class="alph-card-m">P</span><span class="alph-card-g">Π</span><span class="alph-card-p">Pe · mun</span></div>
+        <div class="alph-card"><span class="alph-card-m">R</span><span class="alph-card-g">Ρ</span><span class="alph-card-p">Resh · huvud</span></div>
+      </div>
+    </div><!-- alph-compact -->
+
+    <div class="source-block" data-reveal-at="7">
+      <div class="source-tag">Primärkälla</div>
+      <p class="source-q">"Jag gav folket den makt som tillkommer det, inte mer och inte mindre."</p>
+      <p class="source-attr">Solon av Aten, fragment 5 (parafraserat), lagstiftare och poet, ca 594 f.Kr.</p>
+      <p class="source-prompt">Är det möjligt att reformera ett orättvist system inifrån, utan revolution?</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     ERA 3: KLASSISK TID
+     Steg: 1–5=konstellation, 6=porträtt, 7=källa
+     Konstellationen gömmer sig vid steg 6
+     ══════════════════════════════════════════ -->
+<section class="era-section" id="era-3">
+  <div class="hook-container">
+    <div class="hook-img-wrap">
+      <img src="parthenon.webp" alt="Parthenon"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="img-placeholder" style="display:none">
+        <span class="ph-icon">🖼</span>
+        <span class="ph-file">parthenon.webp</span>
+        <span class="ph-size">landscape, valfri storlek</span>
+      </div>
+    </div>
+    <div class="hook-text">
+      <span class="hook-tag">Startfråga</span>
+      <p class="hook-q">"Slavarna byggde Parthenon. Varför räknas det ändå som demokratins guldålder?"</p>
+      <p class="hook-hint">Klicka eller tryck → för att fortsätta</p>
+    </div>
+  </div>
+
+  <div class="content-container" id="cc-3">
+    <!-- Label byter vid steg 6 -->
+    <span class="content-label" data-reveal-at="1" data-hide-at="6">Kausalkedja: klassikens drivkrafter</span>
+    <span class="content-label" data-reveal-at="6">Filosoferna och statsmännen</span>
+
+    <!-- Konstellation gömmer sig vid steg 6 -->
+    <div class="constellation-wrap" data-reveal-at="1" data-hide-at="6">
+      <div class="constellation-bg">
+        <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <radialGradient id="sky3" cx="50%" cy="50%" r="55%">
+              <stop offset="0%" stop-color="#0a0f20"/>
+              <stop offset="100%" stop-color="#020408"/>
+            </radialGradient>
+            <filter id="nf3" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="16"/>
+            </filter>
+          </defs>
+          <rect width="900" height="250" fill="url(#sky3)"/>
+          <rect width="900" height="250" fill="#882210" opacity=".06"/>
+          <!-- Orionnebulosan (M42) — röd/rosa glöd under bältet, i Orions svärd -->
+          <g class="nebula-layer">
+            <ellipse cx="445" cy="218" rx="75" ry="52" fill="#5c1008" opacity=".42" filter="url(#nf3)"/>
+            <ellipse cx="445" cy="212" rx="32" ry="22" fill="#8a2515" opacity=".35" filter="url(#nf3)"/>
+            <ellipse cx="445" cy="210" rx="12" ry="8"  fill="#b84020" opacity=".22" filter="url(#nf3)"/>
+          </g>
+          <!-- Djup 1 — längst bort -->
+          <g class="stars-far">
+            <circle cx="38"  cy="25"  r="1" fill="white" opacity=".18"/>
+            <circle cx="198" cy="38"  r="1" fill="white" opacity=".20"/>
+            <circle cx="288" cy="18"  r="1" fill="white" opacity=".16"/>
+            <circle cx="462" cy="25"  r="1" fill="white" opacity=".18"/>
+            <circle cx="548" cy="12"  r="1" fill="white" opacity=".16"/>
+            <circle cx="718" cy="20"  r="1" fill="white" opacity=".16"/>
+            <circle cx="798" cy="42"  r="1" fill="white" opacity=".18"/>
+            <circle cx="80"  cy="108" r="1" fill="white" opacity=".16"/>
+            <circle cx="355" cy="112" r="1" fill="white" opacity=".17"/>
+            <circle cx="505" cy="98"  r="1" fill="white" opacity=".15"/>
+            <circle cx="800" cy="100" r="1" fill="white" opacity=".14"/>
+            <circle cx="168" cy="152" r="1" fill="white" opacity=".12"/>
+            <circle cx="500" cy="148" r="1" fill="white" opacity=".13"/>
+            <circle cx="668" cy="155" r="1" fill="white" opacity=".11"/>
+            <circle cx="275" cy="232" r="1" fill="white" opacity=".12"/>
+            <circle cx="438" cy="228" r="1" fill="white" opacity=".14"/>
+            <circle cx="758" cy="225" r="1" fill="white" opacity=".12"/>
+          </g>
+          <!-- Djup 2 — mellanlager -->
+          <g class="stars-mid">
+            <circle cx="118" cy="12"  r="1.5" fill="white" opacity=".14"/>
+            <circle cx="375" cy="42"  r="1.5" fill="white" opacity=".14"/>
+            <circle cx="632" cy="38"  r="1.5" fill="white" opacity=".20"/>
+            <circle cx="862" cy="25"  r="1.5" fill="white" opacity=".14"/>
+            <circle cx="200" cy="95"  r="1.5" fill="white" opacity=".13"/>
+            <circle cx="660" cy="108" r="1.5" fill="white" opacity=".17"/>
+            <circle cx="338" cy="158" r="1.5" fill="white" opacity=".10"/>
+            <circle cx="92"  cy="225" r="1.5" fill="white" opacity=".10"/>
+            <circle cx="602" cy="235" r="1.5" fill="white" opacity=".10"/>
+            <circle cx="845" cy="234" r="1.5" fill="white" opacity=".10"/>
+          </g>
+          <!-- Orion — stjärntecknet -->
+          <g class="stars-hero">
+            <text x="882" y="242" text-anchor="end" font-size="9" fill="rgba(255,255,255,0.10)" font-family="DM Sans,sans-serif" font-style="italic">Orion</text>
+            <line class="star-line" data-line="0" x1="140" y1="88"  x2="295" y2="175"/>
+            <line class="star-line" data-line="1" x1="295" y1="175" x2="445" y2="188"/>
+            <line class="star-line" data-line="2" x1="445" y1="188" x2="598" y2="175"/>
+            <line class="star-line" data-line="3" x1="598" y1="175" x2="755" y2="85"/>
+            <g class="star-group" data-node="0">
+              <circle class="star-dot" cx="140" cy="88" r="9"/>
+              <text class="star-label" x="140" y="68" text-anchor="middle">Perserkrigen</text>
+              <text class="star-sub"   x="140" y="80" text-anchor="middle">499–479 f.Kr.</text>
+            </g>
+            <g class="star-group" data-node="1">
+              <circle class="star-dot" cx="295" cy="175" r="8"/>
+              <text class="star-label" x="295" y="196" text-anchor="middle">Atens självförtroende</text>
+            </g>
+            <g class="star-group" data-node="2">
+              <circle class="star-dot" cx="445" cy="188" r="8"/>
+              <text class="star-label" x="445" y="208" text-anchor="middle">Demokratin under Perikles</text>
+            </g>
+            <g class="star-group" data-node="3">
+              <circle class="star-dot" cx="598" cy="175" r="8"/>
+              <text class="star-label" x="598" y="196" text-anchor="middle">Filosofisk blomstring</text>
+            </g>
+            <g class="star-group" data-node="4">
+              <circle class="star-dot" cx="755" cy="85" r="9"/>
+              <text class="star-label" x="755" y="65" text-anchor="middle">Peloponnesiska kriget</text>
+              <text class="star-sub"   x="755" y="77" text-anchor="middle">Atens fall, 404 f.Kr.</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Porträttgrid — visas vid steg 6 -->
+    <div class="portrait-grid" data-reveal-at="6">
+      <div class="portrait-card" data-person="sokrates">
+        <div class="portrait-img-wrap">
+          <img src="sokrates.webp" alt="Sokrates"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="portrait-ph" style="display:none">
+            <span class="ph-icon" style="font-size:1.5rem">👤</span>
+            <span class="ph-file">sokrates.webp</span>
+            <span class="ph-size">280 × 350 px</span>
+          </div>
+        </div>
+        <div class="portrait-strip">Sokrates</div>
+        <div class="portrait-overlay">
+          <div class="p-name">Sokrates (ca 470–399 f.Kr.)</div>
+          <ul class="p-facts">
+            <li>Grundade den sokratiska dialektiken: konsten att ställa frågor</li>
+            <li>Dömdes till döden för att ha fördärvat ungdomen</li>
+            <li>Skrev inget; vi känner honom via Platon</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="portrait-card" data-person="platon">
+        <div class="portrait-img-wrap">
+          <img src="platon.webp" alt="Platon"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="portrait-ph" style="display:none">
+            <span class="ph-icon" style="font-size:1.5rem">👤</span>
+            <span class="ph-file">platon.webp</span>
+            <span class="ph-size">280 × 350 px</span>
+          </div>
+        </div>
+        <div class="portrait-strip">Platon</div>
+        <div class="portrait-overlay">
+          <div class="p-name">Platon (ca 428–348 f.Kr.)</div>
+          <ul class="p-facts">
+            <li>Idéläran: det verkliga är det osynliga och perfekta</li>
+            <li>Grundade Akademin i Aten</li>
+            <li>Beskrev den ideala staten i Republiken</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="portrait-card" data-person="aristoteles">
+        <div class="portrait-img-wrap">
+          <img src="aristoteles.webp" alt="Aristoteles"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="portrait-ph" style="display:none">
+            <span class="ph-icon" style="font-size:1.5rem">👤</span>
+            <span class="ph-file">aristoteles.webp</span>
+            <span class="ph-size">280 × 350 px</span>
+          </div>
+        </div>
+        <div class="portrait-strip">Aristoteles</div>
+        <div class="portrait-overlay">
+          <div class="p-name">Aristoteles (384–322 f.Kr.)</div>
+          <ul class="p-facts">
+            <li>Grundade empirisk vetenskap och formell logik</li>
+            <li>Var Alexanders d. stores lärare</li>
+            <li>Systematiserade nästan all dåtida kunskap</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="portrait-card" data-person="perikles">
+        <div class="portrait-img-wrap">
+          <img src="perikles.webp" alt="Perikles"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="portrait-ph" style="display:none">
+            <span class="ph-icon" style="font-size:1.5rem">👤</span>
+            <span class="ph-file">perikles.webp</span>
+            <span class="ph-size">280 × 350 px</span>
+          </div>
+        </div>
+        <div class="portrait-strip">Perikles</div>
+        <div class="portrait-overlay">
+          <div class="p-name">Perikles (ca 495–429 f.Kr.)</div>
+          <ul class="p-facts">
+            <li>Ledde Aten under dess storhetstid</li>
+            <li>Lät bygga Parthenon på Akropolis</li>
+            <li>Formulerade demokratins principer i sitt liktal</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="source-block" data-reveal-at="7">
+      <div class="source-tag">Primärkälla</div>
+      <p class="source-q">"Vår styrelseform kallas demokrati, ty makten är icke i händerna på ett fåtal utan på de många. Var och en av oss kan tjäna samhället. Vi ser inte på klass, utan på förmåga."</p>
+      <p class="source-attr">Thukydides, Det peloponnesiska kriget II:37, Perikles' liktal, 430 f.Kr. (parafraserat)</p>
+      <p class="source-prompt">Vilka grupper räknades inte som en del av "de många"?</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     ERA 4: HELLENISMEN
+     Steg: 1=vänster, 2=höger, 3=solo-porträtt+info, 4=källa
+     ══════════════════════════════════════════ -->
+<section class="era-section" id="era-4">
+  <div class="hook-container">
+    <div class="hook-img-wrap">
+      <img src="alexander_mosaik.webp" alt="Alexandermosaiken"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="img-placeholder" style="display:none">
+        <span class="ph-icon">🖼</span>
+        <span class="ph-file">alexander_mosaik.webp</span>
+        <span class="ph-size">landscape, valfri storlek</span>
+      </div>
+    </div>
+    <div class="hook-text">
+      <span class="hook-tag">Startfråga</span>
+      <p class="hook-q">"Alexander lärde sig persiska och gifte sig med en persisk prinsessa. Var det strategi eller kärlek?"</p>
+      <p class="hook-hint">Klicka eller tryck → för att fortsätta</p>
+    </div>
+  </div>
+
+  <div class="content-container" id="cc-4">
+    <span class="content-label" data-reveal-at="1">Alexanders erövringskampanjer 334–323 f.Kr.</span>
+
+    <div class="conquest-map-wrap" data-reveal-at="1">
+      <div id="conquest-map"></div>
+      <div id="conquest-phase-label" class="conquest-phase-lbl"></div>
+    </div>
+
+    <span class="content-label" data-reveal-at="5">Kulturell syntes</span>
+    <div class="comparison-grid" style="flex:0 0 auto">
+      <div class="compare-col" data-reveal-at="5">
+        <h3>Det grekiska arvet</h3>
+        <ul>
+          <li>Rationell filosofi och demokratiska idéer</li>
+          <li>Olympiska gudar och mytologin</li>
+          <li>Koine-grekiska som gemensamt språk</li>
+          <li>Realistisk skulptur och stadsplanering</li>
+        </ul>
+      </div>
+      <div class="compare-col" data-reveal-at="5">
+        <h3>Orientens traditioner</h3>
+        <ul>
+          <li>Kungadyrkan och gudomlig kungamakt (Persien, Egypten)</li>
+          <li>Rik dekorativ och symbolisk konst</li>
+          <li>Astrologisk vetenskap och mysticism</li>
+          <li>Lokala styrelsesystem och hierarkier</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="solo-row" data-reveal-at="6">
+      <div class="portrait-card" data-person="alexander">
+        <div class="portrait-img-wrap">
+          <img src="alexander.webp" alt="Alexander den store"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="portrait-ph" style="display:none">
+            <span class="ph-icon" style="font-size:1.5rem">👤</span>
+            <span class="ph-file">alexander.webp</span>
+            <span class="ph-size">280 × 350 px</span>
+          </div>
+        </div>
+        <div class="portrait-strip">Alexander d. store</div>
+        <div class="portrait-overlay">
+          <div class="p-name">Alexander (356–323 f.Kr.)</div>
+          <ul class="p-facts">
+            <li>Erövrade Persien, Egypten; nådde Indien</li>
+            <li>Grundade ~70 städer kallade Alexandria</li>
+            <li>Dog 32 år gammal; riket splittrades</li>
+          </ul>
+        </div>
+      </div>
+      <div class="solo-info">
+        <h3>Resultatet: hellenistisk syntes</h3>
+        <ul>
+          <li>Kosmopolitisk kultur med Alexandria i Egypten som centrum</li>
+          <li>Världens största bibliotek med tänkare som Euklides, Eratosthenes och Arkimedes</li>
+          <li>Koine-grekiska, ett gemensamt språk från Spanien till Indien</li>
+          <li>Kulturell mångfald under ett gemensamt politiskt tak</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="source-block" data-reveal-at="7">
+      <div class="source-tag">Primärkälla</div>
+      <p class="source-q">"Alexander ville inte bara erövra länder. Han ville samla världens folk under gemensamma lagar och ett gemensamt liv."</p>
+      <p class="source-attr">Plutarchos, Om Alexanders lycka och dygd (parafraserat), skriven ca 100 e.Kr.</p>
+      <p class="source-prompt">Vad händer med de kulturer som smälter samman med en annan?</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     ERA 5: ARVET
+     Steg: 1–5=konstellation, 6=källa
+     ══════════════════════════════════════════ -->
+<section class="era-section" id="era-5">
+  <div class="hook-container">
+    <div class="hook-img-wrap">
+      <img src="arvet_hook.webp" alt="Arvet från antiken"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="img-placeholder" style="display:none">
+        <span class="ph-icon">🖼</span>
+        <span class="ph-file">arvet_hook.webp</span>
+        <span class="ph-size">landscape, valfri storlek</span>
+      </div>
+    </div>
+    <div class="hook-text">
+      <span class="hook-tag">Startfråga</span>
+      <p class="hook-q">"Är vår demokrati fortfarande grekisk?"</p>
+      <p class="hook-hint">Klicka eller tryck → för att fortsätta</p>
+    </div>
+  </div>
+
+  <div class="content-container" id="cc-5">
+    <span class="content-label" data-reveal-at="1">Kausalkedja — idéernas resa</span>
+    <div class="constellation-wrap" data-reveal-at="1">
+      <div class="constellation-bg">
+        <svg viewBox="0 0 900 270" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <radialGradient id="sky5" cx="50%" cy="50%" r="55%">
+              <stop offset="0%" stop-color="#0a0f20"/>
+              <stop offset="100%" stop-color="#020408"/>
+            </radialGradient>
+            <filter id="nf5r" x="-150%" y="-150%" width="400%" height="400%">
+              <feGaussianBlur stdDeviation="9"/>
+            </filter>
+            <filter id="nf5v" x="-150%" y="-150%" width="400%" height="400%">
+              <feGaussianBlur stdDeviation="18"/>
+            </filter>
+          </defs>
+          <rect width="900" height="270" fill="url(#sky5)"/>
+          <rect width="900" height="270" fill="#441888" opacity=".06"/>
+          <!-- Ringnebulosan (M57) — blågrön ring nära lyrans bas; Vega-glöd uppe -->
+          <g class="nebula-layer">
+            <circle cx="447" cy="218" r="28" fill="none" stroke="#0d7858" stroke-width="14" opacity=".22" filter="url(#nf5r)"/>
+            <circle cx="447" cy="218" r="8"  fill="#0d5840" opacity=".20" filter="url(#nf5r)"/>
+            <circle cx="445" cy="62"  r="55" fill="#1a1455" opacity=".25" filter="url(#nf5v)"/>
+          </g>
+          <!-- Djup 1 — längst bort -->
+          <g class="stars-far">
+            <circle cx="392" cy="48"  r="1" fill="white" opacity=".20"/>
+            <circle cx="498" cy="42"  r="1" fill="white" opacity=".22"/>
+            <circle cx="48"  cy="22"  r="1" fill="white" opacity=".16"/>
+            <circle cx="218" cy="38"  r="1" fill="white" opacity=".18"/>
+            <circle cx="308" cy="20"  r="1" fill="white" opacity=".14"/>
+            <circle cx="638" cy="38"  r="1" fill="white" opacity=".18"/>
+            <circle cx="718" cy="18"  r="1" fill="white" opacity=".16"/>
+            <circle cx="858" cy="25"  r="1" fill="white" opacity=".14"/>
+            <circle cx="62"  cy="120" r="1" fill="white" opacity=".12"/>
+            <circle cx="342" cy="128" r="1" fill="white" opacity=".14"/>
+            <circle cx="548" cy="118" r="1" fill="white" opacity=".12"/>
+            <circle cx="782" cy="115" r="1" fill="white" opacity=".12"/>
+            <circle cx="285" cy="252" r="1" fill="white" opacity=".12"/>
+            <circle cx="452" cy="245" r="1" fill="white" opacity=".14"/>
+            <circle cx="748" cy="240" r="1" fill="white" opacity=".12"/>
+          </g>
+          <!-- Djup 2 — mellanlager (lite ljusare nära Vega) -->
+          <g class="stars-mid">
+            <circle cx="418" cy="30"  r="1.5" fill="white" opacity=".28"/>
+            <circle cx="468" cy="25"  r="1.5" fill="white" opacity=".22"/>
+            <circle cx="138" cy="15"  r="1.5" fill="white" opacity=".12"/>
+            <circle cx="558" cy="20"  r="1.5" fill="white" opacity=".14"/>
+            <circle cx="795" cy="42"  r="1.5" fill="white" opacity=".18"/>
+            <circle cx="158" cy="108" r="1.5" fill="white" opacity=".10"/>
+            <circle cx="698" cy="130" r="1.5" fill="white" opacity=".14"/>
+            <circle cx="112" cy="242" r="1.5" fill="white" opacity=".10"/>
+            <circle cx="600" cy="250" r="1.5" fill="white" opacity=".10"/>
+            <circle cx="845" cy="252" r="1.5" fill="white" opacity=".10"/>
+          </g>
+          <!-- Lyran — stjärntecknet -->
+          <g class="stars-hero">
+            <text x="882" y="262" text-anchor="end" font-size="9" fill="rgba(255,255,255,0.10)" font-family="DM Sans,sans-serif" font-style="italic">Lyran</text>
+            <line class="star-line" data-line="0" x1="445" y1="62"  x2="268" y2="152"/>
+            <line class="star-line" data-line="1" x1="268" y1="152" x2="215" y2="218"/>
+            <line class="star-line" data-line="2" x1="215" y1="218" x2="680" y2="218"/>
+            <line class="star-line" data-line="3" x1="680" y1="218" x2="728" y2="152"/>
+            <line class="star-line" data-line="close" x1="728" y1="152" x2="445" y2="62"/>
+            <g class="star-group" data-node="0">
+              <circle class="star-dot" cx="445" cy="62" r="10"/>
+              <text class="star-label" x="445" y="42" text-anchor="middle">Antikens Aten</text>
+            </g>
+            <g class="star-group" data-node="1">
+              <circle class="star-dot" cx="268" cy="152" r="8"/>
+              <text class="star-label" x="268" y="172" text-anchor="middle">Romarriket</text>
+              <text class="star-sub"   x="268" y="185" text-anchor="middle">tar upp och sprider</text>
+            </g>
+            <g class="star-group" data-node="2">
+              <circle class="star-dot" cx="215" cy="218" r="8"/>
+              <text class="star-label" x="215" y="200" text-anchor="middle">Bysantinska riket</text>
+              <text class="star-sub"   x="215" y="212" text-anchor="middle">bevarar texterna</text>
+            </g>
+            <g class="star-group" data-node="3">
+              <circle class="star-dot" cx="680" cy="218" r="8"/>
+              <text class="star-label" x="680" y="200" text-anchor="middle">Renässansen</text>
+              <text class="star-sub"   x="680" y="212" text-anchor="middle">återupptäcker Aten</text>
+            </g>
+            <g class="star-group" data-node="4">
+              <circle class="star-dot" cx="728" cy="152" r="8"/>
+              <text class="star-label" x="728" y="172" text-anchor="middle">Modern Europa</text>
+              <text class="star-sub"   x="728" y="185" text-anchor="middle">demokrati · vetenskap · humanism</text>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="source-block" data-reveal-at="6">
+      <div class="source-tag">Primärkälla</div>
+      <p class="source-q">"Människan är av naturen ett politiskt djur. Den som kan leva utanför samhällets gemenskap är antingen ett odjur eller en gud."</p>
+      <p class="source-attr">Aristoteles, Politiken 1253a (parafraserat), skriven ca 350 f.Kr.</p>
+      <p class="source-prompt">Aristoteles kallade den som lever utanför gemenskapen för ett odjur eller en gud. Vem passar in på det idag?</p>
+    </div>
+  </div>
+</section>
+
+</div><!-- #era-container -->
+
+<!-- ══════════════════════════════════════════
+     FOOTER TIDSLINJE
+     ══════════════════════════════════════════ -->
+<footer id="timeline">
+  <button class="era-node active" data-era="0">
+    <span class="node-name">Bronsåldern</span>
+    <span class="node-dates">2000–1100 f.Kr.</span>
+    <div class="node-dots" id="dots-0"></div>
+  </button>
+  <button class="era-node" data-era="1">
+    <span class="node-name">Mörka tidsåldern</span>
+    <span class="node-dates">1100–800 f.Kr.</span>
+    <div class="node-dots" id="dots-1"></div>
+  </button>
+  <button class="era-node" data-era="2">
+    <span class="node-name">Arkaisk tid</span>
+    <span class="node-dates">800–480 f.Kr.</span>
+    <div class="node-dots" id="dots-2"></div>
+  </button>
+  <button class="era-node" data-era="3">
+    <span class="node-name">Klassisk tid</span>
+    <span class="node-dates">480–323 f.Kr.</span>
+    <div class="node-dots" id="dots-3"></div>
+  </button>
+  <button class="era-node" data-era="4">
+    <span class="node-name">Hellenismen</span>
+    <span class="node-dates">323–30 f.Kr.</span>
+    <div class="node-dots" id="dots-4"></div>
+  </button>
+  <button class="era-node" data-era="5">
+    <span class="node-name">Arvet</span>
+    <span class="node-dates">30 f.Kr. →</span>
+    <div class="node-dots" id="dots-5"></div>
+  </button>
+</footer>
+</div><!-- #app -->
+
+<div id="nav-hint">← → navigera &nbsp;|&nbsp; 1–6 hoppa era</div>
+
+<script>
+/* ══════════════════════════════════════════
+   KONFIGURATION
+   ══════════════════════════════════════════ */
+const ERA_STEPS         = [3, 3, 7, 7, 7, 6]; // max steg per era
+const CONSTELLATION_ERAS = new Set([2, 3, 5]);
+const CONSTELLATION_NODES = 5;
+
+// Tidslinjens positioner (left%, width%) — span 2000 f.Kr.→500 e.Kr. = 2500 år
+const ERA_TIMELINE = [
+  { left: 0,    width: 36,   ticks: [0, 36]   },  // Bronsåldern   2000–1100
+  { left: 36,   width: 12,   ticks: [36, 48]  },  // Mörka         1100–800
+  { left: 48,   width: 12.8, ticks: [48, 60.8]},  // Arkaisk        800–480
+  { left: 60.8, width: 6.3,  ticks: [60.8,67.1]}, // Klassisk       480–323
+  { left: 67.1, width: 11.7, ticks: [67.1,78.8]}, // Hellenismen    323–30
+  { left: 78.8, width: 21.2, ticks: [78.8,100]},  // Arvet          30 f.Kr.→
+];
+
+// data-hide-at: definieras i HTML, hanteras av JS
+
+/* ══════════════════════════════════════════
+   TILLSTÅND
+   ══════════════════════════════════════════ */
+let era   = 0;
+let step  = 0; // 0 = hook
+let busy  = false;
+
+/* ══════════════════════════════════════════
+   TIDSLINJE
+   ══════════════════════════════════════════ */
+// Tick-positioner (left% som sträng) → DOM-element
+const TICK_MAP = {};
+document.querySelectorAll('.etl-tick').forEach(el => {
+  const pct = parseFloat(el.style.left).toFixed(1);
+  TICK_MAP[pct] = el;
+});
+
+function updateTimeline(n) {
+  const hl = document.getElementById('etl-hl');
+  if (!hl) return;
+  const { left, width, ticks } = ERA_TIMELINE[n];
+  hl.style.left  = left  + '%';
+  hl.style.width = width + '%';
+
+  // Uppdatera aktiva ticks
+  document.querySelectorAll('.etl-tick').forEach(el => el.classList.remove('etl-active'));
+  ticks.forEach(t => {
+    const key = t.toFixed(1);
+    if (TICK_MAP[key]) TICK_MAP[key].classList.add('etl-active');
+  });
+}
+
+/* ══════════════════════════════════════════
+   ERÖVRINGSKARTA — DATA
+   ══════════════════════════════════════════ */
+const CONQUEST_CITIES = {
+  makedonien: { latlng: [40.6, 22.9],  label: 'Makedonien',      start: true  },
+  gordion:    { latlng: [39.7, 32.0],  label: 'Gordion'                        },
+  issos:      { latlng: [36.6, 36.1],  label: 'Issos'                          },
+  egypten:    { latlng: [31.2, 29.9],  label: 'Egypten'                        },
+  babylon:    { latlng: [32.5, 44.4],  label: 'Babylon'                        },
+  persepolis: { latlng: [29.9, 52.9],  label: 'Persepolis'                     },
+  baktra:     { latlng: [36.7, 66.9],  label: 'Baktrien'                       },
+  indien:     { latlng: [33.7, 72.8],  label: 'Indien'                         }
+};
+
+const CONQUEST_PHASES = [
+  {
+    label: '334–331 f.Kr. · Väst',
+    coords: [[40.6,22.9],[39.7,32.0],[36.6,36.1],[33.3,35.2],[31.2,29.9]],
+    cities: ['gordion','issos','egypten']
+  },
+  {
+    label: '331–330 f.Kr. · Persien',
+    coords: [[31.2,29.9],[32.5,44.4],[29.9,52.9]],
+    cities: ['babylon','persepolis']
+  },
+  {
+    label: '330–323 f.Kr. · Öst (dör i Babylon)',
+    coords: [[29.9,52.9],[36.7,66.9],[33.7,72.8],[32.5,44.4]],
+    cities: ['baktra','indien']
+  }
+];
+
+let _alexMap  = null;
+let _alexDots = {};   // city id → L.circleMarker
+let _alexLines = [];  // one per phase
+
+/* ══════════════════════════════════════════
+   ERÖVRINGSKARTA — FUNKTIONER
+   ══════════════════════════════════════════ */
+function initAlexanderMap() {
+  if (_alexMap) { setTimeout(() => _alexMap.invalidateSize(), 80); return; }
+  if (typeof L === 'undefined') return;
+
+  const TILE = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png';
+
+  _alexMap = L.map('conquest-map', {
+    center: [35, 47], zoom: 3,
+    zoomControl: false, attributionControl: false,
+    dragging: false, scrollWheelZoom: false,
+    doubleClickZoom: false, touchZoom: false, keyboard: false
+  });
+
+  L.tileLayer(TILE, { subdomains: 'abcd', maxZoom: 8 }).addTo(_alexMap);
+
+  /* City dots — initially dim, Makedonien lit */
+  Object.entries(CONQUEST_CITIES).forEach(([id, c]) => {
+    const isStart = !!c.start;
+    const dot = L.circleMarker(c.latlng, {
+      radius: isStart ? 8 : 5,
+      fillColor: isStart ? '#c9a052' : '#2a2a3a',
+      color:     isStart ? '#f0d060' : '#3a3a4a',
+      weight: 1.5,
+      fillOpacity: isStart ? 0.85 : 0.3,
+      opacity: isStart ? 1 : 0.5
+    }).addTo(_alexMap);
+
+    const lbl = L.divIcon({
+      className: '',
+      html: `<div style="
+        font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;
+        color:${isStart ? '#f0d060' : '#555'};
+        white-space:nowrap;
+        text-shadow:0 1px 4px #000,0 0 8px #000;
+        pointer-events:none;padding-left:5px;">
+        ${c.label}</div>`,
+      iconAnchor: [0, 7]
+    });
+    L.marker(c.latlng, { icon: lbl, interactive: false }).addTo(_alexMap);
+
+    _alexDots[id] = dot;
+  });
+
+  /* Add Leaflet CSS overrides */
+  const s = document.createElement('style');
+  s.textContent = '.leaflet-attribution-flag{display:none!important}';
+  document.head.appendChild(s);
+
+  setTimeout(() => _alexMap && _alexMap.invalidateSize(), 150);
+  setTimeout(() => _alexMap && _alexMap.invalidateSize(), 500);
+  setTimeout(() => _alexMap && _alexMap.invalidateSize(), 1200);
+}
+
+function revealConquestPhase(phase) {
+  if (!_alexMap) return;
+  const p = CONQUEST_PHASES[phase - 1];
+  if (!p) return;
+
+  const line = L.polyline(p.coords, {
+    color: '#c9a052', weight: 2.5, opacity: 0.8
+  }).addTo(_alexMap);
+  _alexLines[phase - 1] = line;
+
+  /* Light up destination cities */
+  p.cities.forEach(id => {
+    const d = _alexDots[id];
+    if (d) d.setStyle({ fillColor: '#c9a052', color: '#f0d060', fillOpacity: 0.8, opacity: 1, radius: 7 });
+  });
+
+  /* Phase label overlay */
+  const lbl = document.getElementById('conquest-phase-label');
+  if (lbl) { lbl.textContent = p.label; lbl.classList.add('visible'); }
+}
+
+function undoConquestPhase(phase) {
+  if (!_alexMap) return;
+  const p = CONQUEST_PHASES[phase - 1];
+  const line = _alexLines[phase - 1];
+  if (line) { try { _alexMap.removeLayer(line); } catch(e){} _alexLines[phase - 1] = null; }
+
+  /* Dim cities again */
+  if (p) p.cities.forEach(id => {
+    const d = _alexDots[id];
+    if (d) d.setStyle({ fillColor: '#2a2a3a', color: '#3a3a4a', fillOpacity: 0.3, opacity: 0.5, radius: 5 });
+  });
+
+  /* Update label */
+  const lbl = document.getElementById('conquest-phase-label');
+  if (lbl) {
+    if (phase > 1) lbl.textContent = CONQUEST_PHASES[phase - 2].label;
+    else lbl.classList.remove('visible');
+  }
+}
+
+function resetAlexanderMap() {
+  if (!_alexMap) return;
+  _alexLines.forEach(l => { if (l) try { _alexMap.removeLayer(l); } catch(e){} });
+  _alexLines = [];
+  Object.entries(_alexDots).forEach(([id, d]) => {
+    if (!d) return;
+    const isStart = id === 'makedonien';
+    d.setStyle({
+      fillColor: isStart ? '#c9a052' : '#2a2a3a',
+      color:     isStart ? '#f0d060' : '#3a3a4a',
+      fillOpacity: isStart ? 0.85 : 0.3,
+      opacity: isStart ? 1 : 0.5,
+      radius: isStart ? 8 : 5
+    });
+  });
+  const lbl = document.getElementById('conquest-phase-label');
+  if (lbl) lbl.classList.remove('visible');
+}
+
+/* ══════════════════════════════════════════
+   STJÄRNFÄRGER — konstellationsspecifika
+   ══════════════════════════════════════════ */
+function applyConstellationColors() {
+  // Kassiopeia: kallt blått (nära Vintergatans arm)
+  // Orion:      varmt bärnsten (Betelgeuse + nebulosa)
+  // Lyran:      lavendel (Vega, blå-vit jättestjärna)
+  const palette = { 'era-2': '#b8d0ff', 'era-3': '#ffd4aa', 'era-5': '#d4c4ff' };
+  Object.entries(palette).forEach(([id, col]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.querySelectorAll('.stars-far circle, .stars-mid circle').forEach(c => {
+      c.setAttribute('fill', col);
+    });
+  });
+}
+
+/* ══════════════════════════════════════════
+   METEORSTJÄRNOR
+   ══════════════════════════════════════════ */
+function spawnShootingStar(container) {
+  const s = document.createElement('div');
+  s.className = 'shooting-star';
+  const len = 48 + Math.random() * 64;
+  s.style.cssText = `left:${8 + Math.random() * 60}%;top:${4 + Math.random() * 44}%;width:${len}px`;
+  container.appendChild(s);
+  setTimeout(() => s.remove(), 800);
+}
+
+function initShootingStars() {
+  document.querySelectorAll('.constellation-bg').forEach((container, i) => {
+    function schedule() {
+      setTimeout(() => { spawnShootingStar(container); schedule(); },
+        9000 + Math.random() * 12000);
+    }
+    setTimeout(schedule, i * 2800 + Math.random() * 3500);
+  });
+}
+
+/* ══════════════════════════════════════════
+   PARALLAX STJÄRNFÄLT
+   ══════════════════════════════════════════ */
+function initParallax() {
+  document.querySelectorAll('.constellation-bg').forEach(container => {
+    const farGroup  = container.querySelector('.stars-far');
+    const midGroup  = container.querySelector('.stars-mid');
+    const heroGroup = container.querySelector('.stars-hero');
+    if (!farGroup && !midGroup) return;
+
+    let tx = 0, ty = 0;
+    let mx = 0, my = 0;
+    let raf = null;
+    let hovering = false;
+
+    function tick() {
+      tx += (mx - tx) * 0.10;
+      ty += (my - ty) * 0.10;
+
+      if (farGroup)  farGroup.style.transform  = `translate(${tx * 50}px, ${ty * 24}px)`;
+      if (midGroup)  midGroup.style.transform  = `translate(${tx * 30}px, ${ty * 14}px)`;
+      if (heroGroup) heroGroup.style.transform = `translate(${tx * 10}px, ${ty * 5}px)`;
+
+      const settling = Math.abs(mx - tx) > 0.001 || Math.abs(my - ty) > 0.001;
+      raf = (hovering || settling) ? requestAnimationFrame(tick) : null;
+    }
+
+    container.addEventListener('mousemove', e => {
+      const r = container.getBoundingClientRect();
+      mx = (e.clientX - r.left  - r.width  * 0.5) / r.width;
+      my = (e.clientY - r.top   - r.height * 0.5) / r.height;
+      hovering = true;
+      if (!raf) raf = requestAnimationFrame(tick);
+    });
+
+    container.addEventListener('mouseleave', () => {
+      mx = 0; my = 0;
+      hovering = false;
+      if (!raf) raf = requestAnimationFrame(tick);
+    });
+  });
+}
+
+/* ══════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════ */
+function init() {
+  ERA_STEPS.forEach((max, i) => {
+    const wrap = document.getElementById(`dots-${i}`);
+    for (let d = 0; d < max; d++) {
+      const dot = document.createElement('span');
+      dot.className = 'ndot';
+      dot.dataset.step = d + 1;
+      wrap.appendChild(dot);
+    }
+  });
+  updateFooter();
+}
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+   ══════════════════════════════════════════ */
+function advance() {
+  if (busy) return;
+  if (step >= ERA_STEPS[era]) return;
+  step++;
+  applyStep(era, step, true);
+  updateFooter();
+}
+
+function goBack() {
+  if (busy) return;
+  if (step <= 0) return;
+  undoStep(era, step);
+  step--;
+  updateFooter();
+}
+
+function jumpToEra(n) {
+  if (busy || n === era) return;
+  const old = document.getElementById(`era-${era}`);
+  busy = true;
+  old.style.transition = 'opacity .28s ease';
+  old.style.opacity = '0';
+  setTimeout(() => {
+    old.style.opacity = '';
+    old.style.transition = '';
+    old.classList.remove('active');
+    fullReset(era);
+    era  = n;
+    step = 0;
+    const neu = document.getElementById(`era-${n}`);
+    neu.style.opacity = '0';
+    neu.classList.add('active');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      neu.style.transition = 'opacity .28s ease';
+      neu.style.opacity = '1';
+      setTimeout(() => { neu.style.transition = ''; busy = false; }, 280);
+    }));
+    updateFooter();
+  }, 280);
+}
+
+/* ══════════════════════════════════════════
+   STEG-LOGIK
+   ══════════════════════════════════════════ */
+function applyStep(e, s, animate) {
+  const el = document.getElementById(`era-${e}`);
+
+  if (s === 1) { hookToContent(el, e, animate); return; }
+
+  // Reveal
+  el.querySelectorAll(`[data-reveal-at="${s}"]`).forEach(n => {
+    n.classList.add('revealed');
+    n.classList.remove('hidden');
+    n.style.display = '';
+  });
+
+  // Hide
+  el.querySelectorAll(`[data-hide-at="${s}"]`).forEach(n => {
+    n.classList.add('hidden');
+    n.style.display = 'none';
+  });
+
+  // Konstellation
+  if (CONSTELLATION_ERAS.has(e) && s >= 1 && s <= CONSTELLATION_NODES) {
+    revealNode(el, s - 1, animate);
+  }
+  // Erövringskarta
+  if (e === 4 && s >= 2 && s <= 4) revealConquestPhase(s - 1);
+}
+
+function undoStep(e, s) {
+  const el = document.getElementById(`era-${e}`);
+
+  if (s === 1) { contentToHook(el, e); return; }
+
+  // Un-reveal
+  el.querySelectorAll(`[data-reveal-at="${s}"]`).forEach(n => {
+    n.classList.remove('revealed');
+  });
+
+  // Un-hide
+  el.querySelectorAll(`[data-hide-at="${s}"]`).forEach(n => {
+    n.classList.remove('hidden');
+    n.style.display = '';
+  });
+
+  // Konstellation
+  if (CONSTELLATION_ERAS.has(e) && s >= 1 && s <= CONSTELLATION_NODES) {
+    hideNode(el, s - 1);
+  }
+  // Erövringskarta
+  if (e === 4 && s >= 2 && s <= 4) undoConquestPhase(s - 1);
+}
+
+/* ══════════════════════════════════════════
+   HOOK ↔ CONTENT
+   ══════════════════════════════════════════ */
+function hookToContent(el, e, animate) {
+  const hook    = el.querySelector('.hook-container');
+  const content = el.querySelector('.content-container');
+
+  if (!animate) {
+    hook.style.display = 'none';
+    content.style.display = 'flex';
+    content.style.opacity = '1';
+    el.querySelectorAll('[data-reveal-at="1"]').forEach(n => n.classList.add('revealed'));
+    if (CONSTELLATION_ERAS.has(e)) revealNode(el, 0, false);
+    return;
+  }
+
+  busy = true;
+  hook.classList.add('fade-out');
+  setTimeout(() => {
+    hook.style.display = 'none';
+    content.style.display = 'flex';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      content.style.opacity = '1';
+      el.querySelectorAll('[data-reveal-at="1"]').forEach(n => n.classList.add('revealed'));
+      if (CONSTELLATION_ERAS.has(e)) revealNode(el, 0, true);
+      if (e === 4) setTimeout(initAlexanderMap, 50);
+      busy = false;
+    }));
+  }, 420);
+}
+
+function contentToHook(el, e) {
+  const hook    = el.querySelector('.hook-container');
+  const content = el.querySelector('.content-container');
+
+  busy = true;
+  content.style.opacity = '0';
+  setTimeout(() => {
+    content.style.display = 'none';
+    hook.style.display    = '';
+    hook.classList.remove('fade-out');
+    // Rensa steg-1-reveals
+    el.querySelectorAll('[data-reveal-at="1"]').forEach(n => n.classList.remove('revealed'));
+    if (CONSTELLATION_ERAS.has(e)) hideNode(el, 0);
+    busy = false;
+  }, 420);
+}
+
+/* ══════════════════════════════════════════
+   KONSTELLATION
+   ══════════════════════════════════════════ */
+function revealNode(el, nodeIdx, animate) {
+  const star = el.querySelector(`.star-group[data-node="${nodeIdx}"]`);
+  if (star) star.classList.add('visible');
+  if (nodeIdx > 0) {
+    const line = el.querySelector(`.star-line[data-line="${nodeIdx - 1}"]`);
+    if (line) {
+      if (animate) setTimeout(() => line.classList.add('visible'), 160);
+      else line.classList.add('visible');
+    }
+  }
+  // Lyrans slutlinje stänger formen när sista noden avslöjas
+  if (el.id === 'era-5' && nodeIdx === 4) {
+    const close = el.querySelector('.star-line[data-line="close"]');
+    if (close) {
+      if (animate) setTimeout(() => close.classList.add('visible'), 700);
+      else close.classList.add('visible');
+    }
+  }
+}
+
+function hideNode(el, nodeIdx) {
+  const star = el.querySelector(`.star-group[data-node="${nodeIdx}"]`);
+  if (star) star.classList.remove('visible');
+  if (nodeIdx > 0) {
+    const line = el.querySelector(`.star-line[data-line="${nodeIdx - 1}"]`);
+    if (line) line.classList.remove('visible');
+  }
+  if (el.id === 'era-5' && nodeIdx === 4) {
+    const close = el.querySelector('.star-line[data-line="close"]');
+    if (close) close.classList.remove('visible');
+  }
+}
+
+/* ══════════════════════════════════════════
+   FULL RESET (vid era-byte)
+   ══════════════════════════════════════════ */
+function fullReset(e) {
+  const el      = document.getElementById(`era-${e}`);
+  const hook    = el.querySelector('.hook-container');
+  const content = el.querySelector('.content-container');
+
+  hook.style.display    = '';
+  hook.classList.remove('fade-out');
+  content.style.display  = 'none';
+  content.style.opacity  = '0';
+
+  el.querySelectorAll('[data-reveal-at]').forEach(n => {
+    n.classList.remove('revealed', 'hidden');
+    n.style.display = '';
+  });
+  el.querySelectorAll('[data-hide-at]').forEach(n => {
+    n.classList.remove('hidden');
+    n.style.display = '';
+  });
+  el.querySelectorAll('.star-group').forEach(n => n.classList.remove('visible'));
+  el.querySelectorAll('.star-line').forEach(n => n.classList.remove('visible'));
+  el.querySelectorAll('.portrait-card').forEach(n => n.classList.remove('active','dimmed'));
+  if (era === 4) resetAlexanderMap();
+}
+
+/* ══════════════════════════════════════════
+   PORTRÄTT
+   ══════════════════════════════════════════ */
+function handlePortrait(card) {
+  const el     = card.closest('.era-section');
+  const wasOn  = card.classList.contains('active');
+  el.querySelectorAll('.portrait-card').forEach(c => c.classList.remove('active','dimmed'));
+  if (!wasOn) {
+    card.classList.add('active');
+    el.querySelectorAll('.portrait-card').forEach(c => {
+      if (c !== card) c.classList.add('dimmed');
+    });
+  }
+}
+
+/* ══════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════ */
+function updateFooter() {
+  // Footer-noder
+  document.querySelectorAll('.era-node').forEach((node, i) => {
+    node.classList.toggle('active', i === era);
+  });
+  // Chrono-bar
+  document.querySelectorAll('.cn-node').forEach((node, i) => {
+    node.classList.toggle('cn-active', i === era);
+  });
+  // Tidslinje
+  updateTimeline(era);
+  ERA_STEPS.forEach((_, i) => {
+    const wrap = document.getElementById(`dots-${i}`);
+    if (!wrap) return;
+    wrap.querySelectorAll('.ndot').forEach((dot, di) => {
+      const sn = di + 1;
+      dot.classList.remove('done','cur');
+      if (i === era) {
+        if (sn < step)      dot.classList.add('done');
+        else if (sn === step) dot.classList.add('cur');
+      }
+    });
+  });
+}
+
+/* ══════════════════════════════════════════
+   EVENTS
+   ══════════════════════════════════════════ */
+document.addEventListener('click', e => {
+  const card = e.target.closest('.portrait-card');
+  if (card) { handlePortrait(card); return; }
+
+  const cnNode = e.target.closest('.cn-node');
+  if (cnNode) { jumpToEra(parseInt(cnNode.dataset.era)); return; }
+
+  const node = e.target.closest('.era-node');
+  if (node) { jumpToEra(parseInt(node.dataset.era)); return; }
+
+  advance();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); advance(); }
+  else if (e.key === 'ArrowLeft')               { e.preventDefault(); goBack(); }
+  else if (e.key >= '1' && e.key <= '6')        { jumpToEra(parseInt(e.key) - 1); }
+});
+
+init();
+applyConstellationColors();
+initShootingStars();
+initParallax();
+</script>
+</body>
+</html>
