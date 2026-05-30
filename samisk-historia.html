@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samisk historia i Sverige</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & base ── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:'DM Sans',sans-serif;font-weight:400;line-height:1.65;background:#F4F1EB;color:#1a1a1a;min-height:100vh}
+
+/* ── Samiska flaggfärger ── */
+:root{
+  --blue:#1A3F8F;
+  --blue-l:#D6E0F5;
+  --blue-m:#4A6DB5;
+  --red:#B91C1C;
+  --red-l:#FDE8E8;
+  --red-m:#D94444;
+  --green:#1A5C2A;
+  --green-l:#D6EDD9;
+  --green-m:#2E8B42;
+  --gold:#C17B00;
+  --gold-l:#FDF3D6;
+  --gold-m:#E5A220;
+  --dark:#0F1E35;
+  --surface:#F7F5F0;
+  --border:#DDD8CE;
+  --text:#1C1C1C;
+  --text-s:#555;
+  --text-t:#888;
+}
+
+/* ── Header ── */
+.site-header{background:var(--dark);padding:1.1rem 1.5rem;display:flex;align-items:center;gap:1rem}
+.flag-stripe{display:flex;border-radius:3px;overflow:hidden;flex-shrink:0;height:36px;width:36px;position:relative}
+.flag-stripe svg{width:36px;height:36px}
+.header-text{}
+.site-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#fff;line-height:1.05;letter-spacing:.01em}
+.site-sub{font-family:'DM Sans',sans-serif;font-size:10.5px;color:rgba(255,255,255,.45);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+
+/* ── Tab navigation ── */
+.tab-nav{background:#fff;border-bottom:1px solid var(--border);display:flex;overflow-x:auto}
+.tab-btn{padding:.65rem 1.25rem;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;color:var(--text-s);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s}
+.tab-btn:hover{color:var(--blue)}
+.tab-btn.active{color:var(--blue);font-weight:500;border-bottom-color:var(--blue)}
+
+/* ── Tab panels ── */
+.tab-panel{display:none;padding:1.5rem}
+.tab-panel.active{display:block}
+
+/* ── Översikt: two-col layout ── */
+.overview-grid{display:grid;grid-template-columns:200px 1fr;gap:1.5rem;align-items:start}
+@media(max-width:640px){.overview-grid{grid-template-columns:1fr}}
+
+/* ── Timeline ── */
+.tl-wrap{position:relative}
+.tl-heading{font-family:'DM Sans',sans-serif;font-size:10px;color:var(--text-t);letter-spacing:.07em;text-transform:uppercase;font-weight:500;margin-bottom:.75rem}
+.tl-rail{position:relative;padding-left:20px}
+.tl-rail::before{content:'';position:absolute;left:4px;top:6px;bottom:6px;width:1.5px;background:var(--border)}
+.tl-epoch{display:flex;align-items:flex-start;gap:10px;padding:.4rem .5rem;cursor:pointer;position:relative;transition:background .2s;border-radius:6px;margin:0 -.5rem}
+.tl-epoch:hover{background:rgba(26,63,143,.06)}
+.tl-epoch:hover .tl-label{color:var(--blue)}
+.tl-dot{width:10px;height:10px;border-radius:50%;border:2px solid #F4F1EB;flex-shrink:0;margin-top:3px;position:relative;z-index:1;transition:background .2s}
+.tl-label{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--text);line-height:1.25;transition:color .15s}
+.tl-year{font-family:'DM Sans',sans-serif;font-size:10.5px;color:var(--text-t)}
+.tl-epoch.active{background:var(--blue-l)}
+.tl-epoch.active .tl-label{color:var(--blue);font-weight:500}
+.tl-epoch.active .tl-year{color:var(--blue-m)}
+.tl-epoch.active .tl-dot{background:var(--blue);border-color:var(--blue-l)}
+.tl-divider{border:none;border-top:.5px solid var(--border);margin:.75rem 0}
+.tl-events{display:flex;flex-direction:column;gap:5px;padding-left:0}
+.tl-event{display:flex;align-items:flex-start;gap:8px}
+.tl-ev-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.tl-ev-text{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--text-s);line-height:1.4}
+.tl-ev-year{font-weight:500}
+
+/* ── Epoch panel ── */
+.epoch-panel{display:flex;flex-direction:column;gap:1rem}
+.diag-box{background:var(--blue-l);border-left:2.5px solid var(--blue);padding:.7rem .9rem}
+.diag-label{font-family:'DM Sans',sans-serif;font-size:10.5px;font-weight:500;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem}
+.diag-q{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:var(--dark)}
+.diag-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:.5rem}
+.diag-chip{font-family:'DM Sans',sans-serif;font-size:11px;padding:3px 10px;border-radius:20px;border:.5px solid var(--blue);color:var(--blue);cursor:pointer;background:#fff;transition:background .15s}
+.diag-chip:hover{background:var(--blue-l)}
+
+.ep-header{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap}
+.ep-badge{font-family:'DM Sans',sans-serif;font-size:10.5px;font-weight:500;padding:2px 9px;border-radius:20px;background:var(--blue-l);color:var(--blue)}
+.ep-title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:600;color:var(--dark);line-height:1.1}
+.ep-dates{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--text-t);margin-left:auto}
+.ep-body{font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--text-s);line-height:1.7}
+.concept-box{background:var(--surface);border-left:2.5px solid var(--blue);padding:.65rem .9rem}
+.concept-label{font-family:'DM Sans',sans-serif;font-size:10.5px;font-weight:500;color:var(--text);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
+.concept-pills{display:flex;gap:5px;flex-wrap:wrap}
+.concept-pill{font-family:'DM Sans',sans-serif;font-size:11px;padding:2px 9px;border-radius:20px;background:#fff;border:.5px solid var(--border);color:var(--text-s)}
+.theme-row{display:flex;flex-direction:column;gap:.3rem}
+.theme-label-sm{font-family:'DM Sans',sans-serif;font-size:10.5px;color:var(--text-t);margin-bottom:.3rem}
+.theme-chips{display:flex;gap:5px;flex-wrap:wrap}
+.theme-chip{font-family:'DM Sans',sans-serif;font-size:11px;padding:3px 10px 3px 8px;border-radius:20px;font-weight:500;cursor:pointer;transition:opacity .15s;border:none;border-left:3px solid rgba(0,0,0,.15)}
+.theme-chip:hover{opacity:.8}
+.ep-nav{border-top:.5px solid var(--border);padding-top:.85rem;display:flex;justify-content:space-between;align-items:center}
+.ep-progress{font-family:'DM Sans',sans-serif;font-size:11px;color:var(--text-t)}
+.ep-btns{display:flex;gap:6px}
+.ep-btn{font-family:'DM Sans',sans-serif;font-size:12px;padding:5px 13px;border:.5px solid var(--border);border-radius:6px;background:#fff;color:var(--text-s);cursor:pointer;transition:border-color .15s,color .15s}
+.ep-btn:hover{border-color:var(--blue);color:var(--blue)}
+.ep-btn.primary{border-color:var(--blue);color:var(--blue);font-weight:500}
+
+/* ── Teman-flik ── */
+.themes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.85rem;margin-bottom:1.5rem}
+.theme-card{border:.5px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .15s}
+.theme-card:hover{border-color:var(--blue);transform:translateY(-1px)}
+.theme-card-head{padding:.75rem 1rem;display:flex;align-items:center;gap:.6rem}
+.theme-card-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.theme-card-name{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500}
+.theme-card-body{padding:.5rem 1rem .85rem;border-top:.5px solid var(--border);position:relative}
+.theme-card-kw{font-family:'DM Sans',sans-serif;font-size:11.5px;color:var(--text-s);line-height:1.5;margin-bottom:.5rem}
+.theme-card-epoch{font-family:'DM Sans',sans-serif;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500;display:inline-block}
+.theme-card-arrow{position:absolute;bottom:.75rem;right:.85rem;font-size:14px;color:var(--blue);opacity:0;transition:opacity .2s;font-family:'DM Sans',sans-serif;font-weight:500}
+.theme-card:hover .theme-card-arrow{opacity:1}
+
+.theme-detail{background:#fff;border:.5px solid var(--border);border-radius:10px;padding:1.25rem;display:none}
+.theme-detail.active{display:block}
+.theme-detail-head{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem}
+.theme-detail-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.theme-detail-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--dark)}
+.theme-detail-body{font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--text-s);line-height:1.7;margin-bottom:1rem}
+.factbox{border-radius:0;padding:.7rem .9rem;margin-bottom:.75rem}
+.factbox-label{font-family:'DM Sans',sans-serif;font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
+.factbox-text{font-family:'DM Sans',sans-serif;font-size:13px;line-height:1.6}
+.timeline-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:.5rem}
+.tl-pill{font-family:'DM Sans',sans-serif;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500}
+
+/* ── Begrepp-flik ── */
+.begrip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.85rem}
+.begrip-card{background:#fff;border:.5px solid var(--border);border-radius:10px;overflow:hidden}
+.begrip-head{padding:.65rem 1rem;border-bottom:.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.begrip-term{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--dark)}
+.begrip-badge{font-family:'DM Sans',sans-serif;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:500}
+.begrip-def{font-family:'DM Sans',sans-serif;font-size:12.5px;color:var(--text-s);line-height:1.6;padding:.7rem 1rem}
+.begrip-q{padding:.85rem 1rem 1rem;background:var(--surface);border-top:2px solid var(--blue-l);position:relative}
+.begrip-q-tag{font-family:'DM Sans',sans-serif;font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--blue);background:var(--blue-l);padding:2px 8px;border-radius:20px;display:inline-block;margin-bottom:.6rem}
+.begrip-q-label{font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:var(--dark);margin-bottom:.65rem;line-height:1.4;display:block}
+.begrip-opts{display:flex;flex-direction:column;gap:4px}
+.begrip-opt{font-family:'DM Sans',sans-serif;font-size:11.5px;padding:5px 9px;border:.5px solid var(--border);border-radius:5px;cursor:pointer;background:#fff;text-align:left;transition:background .15s,border-color .15s;color:var(--text)}
+.begrip-opt:hover:not(.answered){background:var(--blue-l);border-color:var(--blue)}
+.begrip-opt.correct{background:var(--green-l);border-color:var(--green);color:var(--green)}
+.begrip-opt.wrong{background:var(--red-l);border-color:var(--red);color:var(--red)}
+.begrip-fb{font-family:'DM Sans',sans-serif;font-size:11.5px;padding:.4rem .5rem;border-radius:5px;margin-top:.35rem;display:none}
+
+/* ── Quiz-flik ── */
+.quiz-progress-bar{background:var(--border);border-radius:4px;height:4px;margin-bottom:1.25rem;overflow:hidden}
+.quiz-progress-fill{height:100%;background:var(--blue);border-radius:4px;transition:width .3s}
+.quiz-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.quiz-counter{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-t)}
+.quiz-score-display{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-t)}
+.quiz-theme-badge{font-family:'DM Sans',sans-serif;font-size:10.5px;padding:2px 9px;border-radius:20px;font-weight:500}
+
+.quiz-q-box{background:#fff;border:.5px solid var(--border);border-radius:10px;padding:1.1rem 1.25rem;margin-bottom:.85rem;transition:opacity .25s}
+.quiz-q-box.dimmed{opacity:.55}
+.quiz-q-text{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--dark);line-height:1.3;margin-bottom:1rem}
+.quiz-opts{display:flex;flex-direction:column;gap:.5rem}
+.quiz-opt{display:flex;align-items:flex-start;gap:.75rem;padding:.65rem .85rem;border:.5px solid var(--border);border-radius:7px;cursor:pointer;background:#fff;text-align:left;transition:border-color .15s,background .15s;width:100%}
+.quiz-opt:hover:not(.answered){border-color:var(--blue);background:var(--blue-l)}
+.quiz-opt-letter{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--text-t);flex-shrink:0;width:16px;margin-top:1px}
+.quiz-opt-text{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);line-height:1.45;flex:1}
+.quiz-opt.correct{background:var(--green-l);border-color:var(--green)}
+.quiz-opt.correct .quiz-opt-letter,.quiz-opt.correct .quiz-opt-text{color:var(--green)}
+.quiz-opt.wrong{background:var(--red-l);border-color:var(--red)}
+.quiz-opt.wrong .quiz-opt-letter,.quiz-opt.wrong .quiz-opt-text{color:var(--red)}
+
+@keyframes epochFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.epoch-fade{animation:epochFadeIn .18s ease-out both}
+
+.quiz-feedback{background:var(--surface);border-radius:0;border-left:3px solid var(--border);padding:.75rem 1rem;display:none;margin-bottom:.85rem}
+.quiz-fb-mis{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--text);margin-bottom:.25rem}
+.quiz-fb-desc{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-s);line-height:1.6}
+.quiz-next-btn{font-family:'DM Sans',sans-serif;font-size:13px;padding:.55rem 1.25rem;border:.5px solid var(--blue);border-radius:7px;background:var(--blue);color:#fff;cursor:pointer;font-weight:500;transition:opacity .15s;display:none}
+.quiz-next-btn:hover{opacity:.88}
+
+.quiz-result{text-align:center;padding:2rem 1rem;background:#fff;border:.5px solid var(--border);border-radius:10px;display:none}
+.quiz-result-stars{display:flex;justify-content:center;gap:6px;margin-bottom:.75rem}
+.quiz-star{width:28px;height:28px}
+.quiz-result-score{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:600;color:var(--blue);line-height:1}
+.quiz-result-label{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-s);margin-top:.35rem;margin-bottom:1.25rem}
+.quiz-restart-btn{font-family:'DM Sans',sans-serif;font-size:13px;padding:.55rem 1.25rem;border:.5px solid var(--blue);border-radius:7px;background:#fff;color:var(--blue);cursor:pointer;font-weight:500}
+
+/* ── Shared helpers ── */
+.section-heading{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--dark);margin-bottom:1rem}
+.back-btn{font-family:'DM Sans',sans-serif;font-size:12px;padding:4px 11px;border:.5px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text-s);cursor:pointer;margin-bottom:1rem;display:inline-flex;align-items:center;gap:5px;transition:border-color .15s}
+.back-btn:hover{border-color:var(--blue);color:var(--blue)}
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="site-header">
+  <div class="flag-stripe">
+    <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+      <rect width="16" height="36" fill="#B91C1C"/>
+      <rect x="16" width="4" height="36" fill="#1A5C2A"/>
+      <rect x="20" width="4" height="36" fill="#C17B00"/>
+      <rect x="24" width="4" height="36" fill="#1A5C2A"/>
+      <rect x="28" width="8" height="36" fill="#1A3F8F"/>
+      <circle cx="18" cy="18" r="9" fill="none" stroke="#B91C1C" stroke-width="2.5"/>
+      <circle cx="18" cy="18" r="9" fill="none" stroke="#1A3F8F" stroke-width="1.2"/>
+    </svg>
+  </div>
+  <div class="header-text">
+    <div class="site-title">Samisk historia i Sverige</div>
+    <div class="site-sub">Historia · urfolk · minoritetsrättigheter</div>
+  </div>
+</header>
+
+<!-- ── Tab nav ── -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('oversikt')">Översikt</button>
+  <button class="tab-btn" onclick="showTab('teman')">Teman</button>
+  <button class="tab-btn" onclick="showTab('begrepp')">Begrepp</button>
+  <button class="tab-btn" onclick="showTab('quiz')">Quiz</button>
+</nav>
+
+<!-- ══════════════════════════════════════
+     FLIK 1: ÖVERSIKT
+══════════════════════════════════════ -->
+<div id="tab-oversikt" class="tab-panel active">
+  <div class="overview-grid">
+
+    <!-- Tidslinje vänster -->
+    <div class="tl-wrap">
+      <div class="tl-heading">Epoker</div>
+      <div class="tl-rail">
+        <div class="tl-epoch active" onclick="selectEpoch(0)">
+          <div class="tl-dot"></div>
+          <div><div class="tl-label">Förhistoria</div><div class="tl-year">–1050</div></div>
+        </div>
+        <div class="tl-epoch" onclick="selectEpoch(1)">
+          <div class="tl-dot" style="background:var(--border)"></div>
+          <div><div class="tl-label">Medeltid</div><div class="tl-year">1050–1520</div></div>
+        </div>
+        <div class="tl-epoch" onclick="selectEpoch(2)">
+          <div class="tl-dot" style="background:var(--border)"></div>
+          <div><div class="tl-label">Vasatid & kolonisering</div><div class="tl-year">1520–1800</div></div>
+        </div>
+        <div class="tl-epoch" onclick="selectEpoch(3)">
+          <div class="tl-dot" style="background:var(--border)"></div>
+          <div><div class="tl-label">Assimilering & rasbiologi</div><div class="tl-year">1800–1970</div></div>
+        </div>
+        <div class="tl-epoch" onclick="selectEpoch(4)">
+          <div class="tl-dot" style="background:var(--border)"></div>
+          <div><div class="tl-label">Rättighetsrörelse</div><div class="tl-year">1970–idag</div></div>
+        </div>
+      </div>
+
+      <hr class="tl-divider">
+      <div class="tl-heading">Viktiga år</div>
+      <div class="tl-events">
+        <div class="tl-event">
+          <div class="tl-ev-dot" style="background:var(--blue)"></div>
+          <div class="tl-ev-text"><span class="tl-ev-year" style="color:var(--blue)">1751</span> <span style="color:var(--blue);font-weight:500">+</span> Lappkodicillen</div>
+        </div>
+        <div class="tl-event">
+          <div class="tl-ev-dot" style="background:var(--red)"></div>
+          <div class="tl-ev-text"><span class="tl-ev-year" style="color:var(--red)">1913</span> <span style="color:var(--red);font-weight:500">−</span> Nomadskolan</div>
+        </div>
+        <div class="tl-event">
+          <div class="tl-ev-dot" style="background:var(--red)"></div>
+          <div class="tl-ev-text"><span class="tl-ev-year" style="color:var(--red)">1922</span> <span style="color:var(--red);font-weight:500">−</span> Rasbiologiska inst.</div>
+        </div>
+        <div class="tl-event">
+          <div class="tl-ev-dot" style="background:var(--blue)"></div>
+          <div class="tl-ev-text"><span class="tl-ev-year" style="color:var(--blue)">1971</span> <span style="color:var(--text-t)">·</span> Rennäringslagen</div>
+        </div>
+        <div class="tl-event">
+          <div class="tl-ev-dot" style="background:var(--blue)"></div>
+          <div class="tl-ev-text"><span class="tl-ev-year" style="color:var(--blue)">1993</span> <span style="color:var(--green);font-weight:500">+</span> Sametinget bildas</div>
+        </div>
+        <div class="tl-event">
+          <div class="tl-ev-dot" style="background:var(--green)"></div>
+          <div class="tl-ev-text"><span class="tl-ev-year" style="color:var(--green)">2011</span> <span style="color:var(--green);font-weight:500">+</span> Urfolk i grundlagen</div>
+        </div>
+        <div class="tl-event">
+          <div class="tl-ev-dot" style="background:var(--green)"></div>
+          <div class="tl-ev-text"><span class="tl-ev-year" style="color:var(--green)">2020</span> <span style="color:var(--green);font-weight:500">+</span> Girjasdomen</div>
+        </div>
+      </div>
+      <div style="margin-top:.6rem;display:flex;gap:.75rem">
+        <span style="font-family:'DM Sans',sans-serif;font-size:10px;color:var(--green);display:flex;align-items:center;gap:3px"><span style="font-weight:500">+</span> framsteg</span>
+        <span style="font-family:'DM Sans',sans-serif;font-size:10px;color:var(--red);display:flex;align-items:center;gap:3px"><span style="font-weight:500">−</span> övergrepp</span>
+        <span style="font-family:'DM Sans',sans-serif;font-size:10px;color:var(--text-t);display:flex;align-items:center;gap:3px"><span style="font-weight:500">·</span> neutral</span>
+      </div>
+    </div>
+
+    <!-- Epok-panel höger -->
+    <div class="epoch-panel">
+
+      <!-- Diagnostisk startfråga -->
+      <div class="diag-box">
+        <div class="diag-label">Diagnostisk startfråga</div>
+        <div class="diag-q">Vad vet du redan om samerna som folk? Vilka ord dyker upp i ditt huvud?</div>
+        <div class="diag-chips">
+          <span class="diag-chip">Renskötsel</span>
+          <span class="diag-chip">Norra Sverige</span>
+          <span class="diag-chip">Urfolk</span>
+          <span class="diag-chip">Joik</span>
+          <span class="diag-chip">Annat...</span>
+        </div>
+      </div>
+
+      <!-- Epok-innehåll (dynamiskt) -->
+      <div id="epoch-content">
+        <!-- fylls av JS -->
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FLIK 2: TEMAN
+══════════════════════════════════════ -->
+<div id="tab-teman" class="tab-panel">
+
+  <div id="themes-hub">
+    <div class="section-heading">Fem teman att utforska</div>
+    <div class="themes-grid">
+
+      <div class="theme-card" onclick="showTheme('assimilering')">
+        <div class="theme-card-head" style="background:var(--blue-l)">
+          <div class="theme-card-icon" style="background:var(--blue-l);border:.5px solid var(--blue)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A3F8F" stroke-width="1.8" stroke-linecap="round"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+          </div>
+          <span class="theme-card-name" style="color:var(--blue)">Assimilering & nomadskolorna</span>
+        </div>
+        <div class="theme-card-body">
+          <div class="theme-card-kw">Nomadskolan · Internat · Lapp ska vara lapp · Språkbyte</div>
+          <span class="theme-card-epoch" style="background:var(--blue-l);color:var(--blue)">Epok: 1800–1970</span>
+          <span class="theme-card-arrow">Utforska →</span>
+        </div>
+      </div>
+
+      <div class="theme-card" onclick="showTheme('mark')">
+        <div class="theme-card-head" style="background:var(--green-l)">
+          <div class="theme-card-icon" style="background:var(--green-l);border:.5px solid var(--green)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A5C2A" stroke-width="1.8" stroke-linecap="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          </div>
+          <span class="theme-card-name" style="color:var(--green)">Rennäring & markrättigheter</span>
+        </div>
+        <div class="theme-card-body">
+          <div class="theme-card-kw">Girjasdomen · Rennäringslagen · Gállok · Urminnes hävd</div>
+          <span class="theme-card-epoch" style="background:var(--green-l);color:var(--green)">Epok: 1970–idag</span>
+          <span class="theme-card-arrow" style="color:var(--green)">Utforska →</span>
+        </div>
+      </div>
+
+      <div class="theme-card" onclick="showTheme('sametinget')">
+        <div class="theme-card-head" style="background:var(--blue-l)">
+          <div class="theme-card-icon" style="background:var(--blue-l);border:.5px solid var(--blue)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1A3F8F" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+          </div>
+          <span class="theme-card-name" style="color:var(--blue)">Sametinget & självstyre</span>
+        </div>
+        <div class="theme-card-body">
+          <div class="theme-card-kw">1993 · ILO 169 · Rådgivande organ · Självbestämmande</div>
+          <span class="theme-card-epoch" style="background:var(--blue-l);color:var(--blue)">Epok: 1970–idag</span>
+          <span class="theme-card-arrow">Utforska →</span>
+        </div>
+      </div>
+
+      <div class="theme-card" onclick="showTheme('rasbiologi')">
+        <div class="theme-card-head" style="background:var(--red-l)">
+          <div class="theme-card-icon" style="background:var(--red-l);border:.5px solid var(--red)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <span class="theme-card-name" style="color:var(--red)">Rasbiologi & forskning</span>
+        </div>
+        <div class="theme-card-body">
+          <div class="theme-card-kw">Uppsala · Lundborg · Kraniometri · Repatriering</div>
+          <span class="theme-card-epoch" style="background:var(--red-l);color:var(--red)">Epok: 1900–1970</span>
+          <span class="theme-card-arrow" style="color:var(--red)">Utforska →</span>
+        </div>
+      </div>
+
+      <div class="theme-card" onclick="showTheme('sprak')">
+        <div class="theme-card-head" style="background:var(--gold-l)">
+          <div class="theme-card-icon" style="background:var(--gold-l);border:.5px solid var(--gold)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C17B00" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </div>
+          <span class="theme-card-name" style="color:var(--gold)">Språk & kulturbevarande</span>
+        </div>
+        <div class="theme-card-body">
+          <div class="theme-card-kw">Nordsamiska · Duodji · Joik · Revitalisering</div>
+          <span class="theme-card-epoch" style="background:var(--gold-l);color:var(--gold)">Epok: alla perioder</span>
+          <span class="theme-card-arrow" style="color:var(--gold)">Utforska →</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Temadetalj (dold tills klick) -->
+  <div id="theme-detail-view" style="display:none">
+    <button class="back-btn" onclick="backToHub()">← Alla teman</button>
+    <div id="theme-detail-content"></div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     FLIK 3: BEGREPP
+══════════════════════════════════════ -->
+<div id="tab-begrepp" class="tab-panel">
+  <div class="section-heading">Nyckelbegrepp</div>
+  <div class="begrip-grid">
+
+    <div class="begrip-card">
+      <div class="begrip-head">
+        <span class="begrip-term">Urfolk</span>
+        <span class="begrip-badge" style="background:var(--blue-l);color:var(--blue)">Internationell rätt</span>
+      </div>
+      <div class="begrip-def">Befolkning som levt i ett område sedan före nuvarande riksgränser och som bevarat egna kulturella och sociala institutioner. Samerna är EU:s enda erkända urfolk.</div>
+      <div class="begrip-q">
+        <span class="begrip-q-tag">Testa dig själv</span>
+        <div class="begrip-q-label">Vad är den avgörande skillnaden mellan ett urfolk och en nationell minoritet?</div>
+        <div class="begrip-opts">
+          <button class="begrip-opt" onclick="checkBegrip(this,'wrong','A','Fel — storlek avgör inte kategorin. Romer är en stor nationell minoritet i Europa utan urfolksstatus.')">Urfolk är alltid en större grupp än nationella minoriteter</button>
+          <button class="begrip-opt" onclick="checkBegrip(this,'correct','B','Rätt — urfolksstatus grundas på ursprunglig territoriell närvaro och bevarade egna institutioner, inte på att gruppen har ett eget land.')">Urfolk har territoriella rättigheter kopplade till ursprunglig närvaro i området</button>
+          <button class="begrip-opt" onclick="checkBegrip(this,'wrong','C','Fel — urfolk behöver inte ha ett eget land. Samerna är urfolk trots att de lever i fyra stater.')">Urfolk har alltid ett eget självständigt land</button>
+        </div>
+        <div class="begrip-fb"></div>
+      </div>
+    </div>
+
+    <div class="begrip-card">
+      <div class="begrip-head">
+        <span class="begrip-term">Urminnes hävd</span>
+        <span class="begrip-badge" style="background:var(--green-l);color:var(--green)">Juridik</span>
+      </div>
+      <div class="begrip-def">Rättslig princip om att långvarigt och ostört bruk av mark ger rättigheter, oberoende av skriftliga tillstånd. Bekräftades som grund för samiska rättigheter i Girjasdomen 2020.</div>
+      <div class="begrip-q">
+        <span class="begrip-q-tag">Testa dig själv</span>
+        <div class="begrip-q-label">Vad är det avgörande villkoret för att urminnes hävd ska ge rättigheter?</div>
+        <div class="begrip-opts">
+          <button class="begrip-opt" onclick="checkBegrip(this,'correct','A','Rätt — lång tids ostört och sammanhängande bruk är grunden, oavsett om det finns skriftliga dokument eller statliga tillstånd.')">Att marken brukats länge och utan avbrott</button>
+          <button class="begrip-opt" onclick="checkBegrip(this,'wrong','B','Fel — urminnes hävd är en inhemsk rättslig princip, äldre än FN-systemet. Det krävs inga internationella beslut.')">Att FN formellt erkänt bruket av marken</button>
+          <button class="begrip-opt" onclick="checkBegrip(this,'wrong','C','Fel — principens poäng är just att skriftliga tillstånd inte krävs. Långvarigt faktiskt bruk räcker.')">Att det finns ett skriftligt avtal med staten om markanvändningen</button>
+        </div>
+        <div class="begrip-fb"></div>
+      </div>
+    </div>
+
+    <div class="begrip-card">
+      <div class="begrip-head">
+        <span class="begrip-term">Girjasdomen</span>
+        <span class="begrip-badge" style="background:var(--green-l);color:var(--green)">2020</span>
+      </div>
+      <div class="begrip-def">Högsta domstolens dom 2020 som gav Girjas sameby ensamrätt att upplåta jakt och fiske inom sitt område, grundat på urminnes hävd. Historiskt genombrott för samiska markrättigheter.</div>
+      <div class="begrip-q">
+        <span class="begrip-q-tag">Testa dig själv</span>
+        <div class="begrip-q-label">Varför räknas Girjasdomen som ett juridiskt genombrott — och inte bara en vanlig tvist om jakttillstånd?</div>
+        <div class="begrip-opts">
+          <button class="begrip-opt" onclick="checkBegrip(this,'wrong','A','Fel — domen gäller nyttjanderätt (förvaltning av jakt och fiske), inte äganderätt till marken. Det är en viktig juridisk skillnad.')">Domen gav samerna full äganderätt till sina traditionella marker</button>
+          <button class="begrip-opt" onclick="checkBegrip(this,'correct','B','Rätt — domen fastslog att urminnes hävd kan grunda rättigheter mot staten. Det öppnar för liknande processer i andra samebyar.')">Domen fastslog att urminnes hävd kan ge rättigheter mot staten utan skriftliga tillstånd</button>
+          <button class="begrip-opt" onclick="checkBegrip(this,'wrong','C','Fel — en domstolsdom kan inte tvinga fram ratificering av en internationell konvention. Det kräver politiskt beslut i riksdagen.')">Domen förpliktigade Sverige att omedelbart ratificera ILO 169</button>
+        </div>
+        <div class="begrip-fb"></div>
+      </div>
+    </div>
+
+    <div class="begrip-card">
+      <div class="begrip-head">
+        <span class="begrip-term">ILO 169</span>
+        <span class="begrip-badge" style="background:var(--blue-l);color:var(--blue)">Internationell rätt</span>
+      </div>
+      <div class="begrip-def">Internationell konvention som stärker ursprungsfolks rätt till självbestämmande och territorium. Norge ratificerade 1990. Sverige har ännu inte ratificerat, på grund av oenighet om hur mark- och vattenrättigheter ska definieras juridiskt.</div>
+      <div class="begrip-q">
+        <span class="begrip-q-tag">Testa dig själv</span>
+        <div class="begrip-q-label">Vad är den huvudsakliga anledningen till att Sverige inte ratificerat ILO 169?</div>
+        <div class="begrip-opts">
+          <button class="begrip-opt" onclick="checkBegrip(this,'wrong','A','Fel — Sametinget förespråkar aktivt ratificering. Det är inte Sametinget som blockerar.')">Sametinget anser att konventionen ger för lite självbestämmande</button>
+          <button class="begrip-opt" onclick="checkBegrip(this,'wrong','B','Fel — Sverige erkände samerna som urfolk i grundlagen 2011 och är EU:s enda land med ett erkänt urfolk.')">Sverige erkänner inte samerna som urfolk enligt FN:s definition</button>
+          <button class="begrip-opt" onclick="checkBegrip(this,'correct','C','Rätt — oenigheten handlar om vad ratificering skulle innebära juridiskt för mark- och vattenrättigheter, inte om principen i sig.')">Politisk oenighet om hur samiska mark- och vattenrättigheter ska definieras juridiskt</button>
+        </div>
+        <div class="begrip-fb"></div>
+      </div>
+    </div>
+
+    <div class="begrip-card">
+      <div class="begrip-head">
+        <span class="begrip-term">Siida</span>
+        <span class="begrip-badge" style="background:var(--gold-l);color:var(--gold)">Kulturhistoria</span>
+      </div>
+      <div class="begrip-def">Traditionell samisk byenhet som organiserade det gemensamma livet — jakt, fiske och renskötsel. Siida-systemet var den grundläggande sociala strukturen fram till koloniseringen.</div>
+      <div class="begrip-q">
+        <span class="begrip-q-tag">Testa dig själv</span>
+        <div class="begrip-q-label">Vilken funktion hade siida-systemet i det förkoloniala samiska samhället?</div>
+        <div class="begrip-opts">
+          <button class="begrip-opt" onclick="checkBegrip(this,'correct','A','Rätt — siida var den grundläggande sociala och ekonomiska enheten: en grupp hushåll som delade mark och organiserade jakt, fiske och renskötsel gemensamt.')">Det organiserade gemensamt liv, markbruk och försörjning för en grupp hushåll</button>
+          <button class="begrip-opt" onclick="checkBegrip(this,'wrong','B','Fel — siida var en lokal social enhet, inte ett politiskt styrningsorgan för ett helt folk. Det liknar mer en by än ett parlament.')">Det var samernas övergripande politiska styrelseorgan</button>
+          <button class="begrip-opt" onclick="checkBegrip(this,'wrong','C','Fel — siida existerade som social struktur långt innan svenska staten började beskatta samerna. Det är inte ett skattesystem.')">Det var ett system för att betala skatt till den svenska kronan</button>
+        </div>
+        <div class="begrip-fb"></div>
+      </div>
+    </div>
+
+    <div class="begrip-card">
+      <div class="begrip-head">
+        <span class="begrip-term">Duodji</span>
+        <span class="begrip-badge" style="background:var(--gold-l);color:var(--gold)">Kultur</span>
+      </div>
+      <div class="begrip-def">Traditionellt samiskt hantverk — kläder, redskap och konstföremål i läder, horn, trä och textil. Duodji bär nedärvd kunskap (árbediehtu) och är ett viktigt uttryck för samisk identitet.</div>
+      <div class="begrip-q">
+        <span class="begrip-q-tag">Testa dig själv</span>
+        <div class="begrip-q-label">Duodji beskrivs som mer än bara hantverk — vad gör det till ett kulturellt bärande fenomen?</div>
+        <div class="begrip-opts">
+          <button class="begrip-opt" onclick="checkBegrip(this,'wrong','A','Fel — duodji är hantverk i material som läder, horn och textil. Det är joiken som är samernas sångform.')">Det är samernas traditionella sång- och berättartradition</button>
+          <button class="begrip-opt" onclick="checkBegrip(this,'wrong','B','Fel — duodji är kulturellt hantverk med djup identitetsmässig betydelse, inte primärt ett exporthantverk eller en inkomstkälla.')">Det genererade historiskt samernas viktigaste handelsinkomst</button>
+          <button class="begrip-opt" onclick="checkBegrip(this,'correct','C','Rätt — duodji bär árbediehtu (traditionell kunskap) inbäddad i material, mönster och teknik. Det är ett sätt att föra vidare historia och identitet utan skriftspråk.')">Det bär traditionell kunskap och identitet inbäddad i material och hantverksteknik</button>
+        </div>
+        <div class="begrip-fb"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FLIK 4: QUIZ
+══════════════════════════════════════ -->
+<div id="tab-quiz" class="tab-panel">
+  <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-bar" style="width:0%"></div></div>
+  <div class="quiz-meta">
+    <div class="quiz-counter" id="quiz-counter">Fråga 1 av 10</div>
+    <div class="quiz-score-display" id="quiz-score">Poäng: 0</div>
+  </div>
+
+  <div id="quiz-question-area">
+    <div class="quiz-q-box">
+      <div id="quiz-theme-badge" class="quiz-theme-badge" style="margin-bottom:.65rem;display:inline-block"></div>
+      <div class="quiz-q-text" id="quiz-q-text"></div>
+      <div class="quiz-opts" id="quiz-opts"></div>
+    </div>
+    <div class="quiz-feedback" id="quiz-feedback">
+      <div class="quiz-fb-mis" id="quiz-fb-mis"></div>
+      <div class="quiz-fb-desc" id="quiz-fb-desc"></div>
+    </div>
+    <button class="quiz-next-btn" id="quiz-next-btn" onclick="nextQuestion()">Nästa fråga →</button>
+  </div>
+
+  <div class="quiz-result" id="quiz-result">
+    <div class="quiz-result-stars" id="quiz-result-stars"></div>
+    <div class="quiz-result-score" id="quiz-result-score"></div>
+    <div class="quiz-result-label" id="quiz-result-label"></div>
+    <button class="quiz-restart-btn" onclick="restartQuiz()">Gör om quizet</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+/* ── Tab logic ── */
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+/* ── Epoch data ── */
+var epochs=[
+  {
+    title:'Förhistoria',dates:'–1050',
+    body:'Arkeologiska och lingvistiska rön tyder på att en specifik samisk etnisk identitet började formas senast under förromersk järnålder. Det finns kontinuitet från stenålderns och bronsålderns skiffer- och metallkulturer i norra Skandinavien. Samerna levde av jakt, fiske och samlande, organiserade i siida-enheter (bygemenskaper).',
+    concepts:['Siida-systemet','Skifferkultur','Samisk etnogenesis','Jägar-fiskarkultur'],
+    themes:[
+      {label:'Markrättigheter',color:'var(--green)',bg:'var(--green-l)',id:'mark'},
+      {label:'Språk & kultur',color:'var(--gold)',bg:'var(--gold-l)',id:'sprak'}
+    ]
+  },
+  {
+    title:'Medeltid',dates:'1050–1520',
+    body:'Under medeltiden levde samerna i ett siida-system och betalade "finneskatt" till lokala hövdingar. Samerna spelade en viktig roll i handelsnätverk: pälsverk, torkad fisk och renprodukter var eftertraktade varor. Vid 1500-talets början sträckte sig det samiska bosättningsområdet söderut till 61:a breddgraden.',
+    concepts:['Finneskatt','Handelsnätverk','Siida','Lappby'],
+    themes:[
+      {label:'Markrättigheter',color:'var(--green)',bg:'var(--green-l)',id:'mark'}
+    ]
+  },
+  {
+    title:'Vasatid & kolonisering',dates:'1520–1800',
+    body:'Den svenska staten visade ökande intresse för Norrland av ekonomiska och politiska skäl. Under 1600-talet drev bergsbrukets framväxt på koloniseringen av samiska marker. År 1751 antogs Lappkodicillen, ett historiskt dokument som erkände samernas sedvänjor och garanterade rätten att följa renarna över riksgränsen. Under 1800-talets slut drogs lappmarksgränsen, men nybyggare trängde ständigt längre in med statligt stöd.',
+    concepts:['Lappkodicillen 1751','Lappmarksgränsen','Odlingsgränsen','Bergsbruk'],
+    themes:[
+      {label:'Markrättigheter',color:'var(--green)',bg:'var(--green-l)',id:'mark'},
+      {label:'Assimilering',color:'var(--blue)',bg:'var(--blue-l)',id:'assimilering'}
+    ]
+  },
+  {
+    title:'Assimilering & rasbiologi',dates:'1800–1970',
+    body:'Perioden präglades av en nedlåtande statlig inställning till samerna. Riktlinjen "lapp ska vara lapp" syftade till att hålla renskötande samer separerade och i en underordnad "naturlig" roll. Nomadskolan inrättades 1913 med lägre utbildningsnivå: internaten skiljde barn från familjer och ledde till ett massivt språkbyte. Statens institut för rasbiologi i Uppsala, grundat 1922 under Herman Lundborg, använde samer som studieobjekt för att bevisa rasmässiga hierarkier genom kraniometri och nakenfoton.',
+    concepts:['Lapp ska vara lapp','Nomadskolan 1913','Rasbiologiska institutet 1922','Kraniometri','Internatsystem'],
+    themes:[
+      {label:'Assimilering',color:'var(--blue)',bg:'var(--blue-l)',id:'assimilering'},
+      {label:'Rasbiologi',color:'var(--red)',bg:'var(--red-l)',id:'rasbiologi'}
+    ]
+  },
+  {
+    title:'Rättighetsrörelse',dates:'1970–idag',
+    body:'En samisk politisk väckelse tog fart under 1960- och 70-talen. Rennäringslagen 1971 slog fast renskötselrättigheterna men omvandlade äganderätt till nyttjanderätt knuten till samebymedlemskap. Sametinget bildades 1993. År 2011 erkändes samerna i grundlagen. Girjasdomen 2020 fastslog att Girjas sameby har ensamrätt att förvalta jakt och fiske grundat på urminnes hävd, ett historiskt juridiskt genombrott. Sverige har ännu inte ratificerat ILO 169.',
+    concepts:['Sametinget 1993','Rennäringslagen 1971','Girjasdomen 2020','ILO 169','Urminnes hävd'],
+    themes:[
+      {label:'Sametinget',color:'var(--blue)',bg:'var(--blue-l)',id:'sametinget'},
+      {label:'Markrättigheter',color:'var(--green)',bg:'var(--green-l)',id:'mark'},
+      {label:'Språk & kultur',color:'var(--gold)',bg:'var(--gold-l)',id:'sprak'}
+    ]
+  }
+];
+
+var currentEpoch=0;
+
+function selectEpoch(i){
+  currentEpoch=i;
+  document.querySelectorAll('.tl-epoch').forEach((el,j)=>{
+    el.classList.toggle('active',j===i);
+    el.querySelector('.tl-dot').style.background=j===i?'var(--blue)':'var(--border)';
+  });
+  renderEpoch(i);
+}
+
+function renderEpoch(i){
+  var e=epochs[i];
+  var themeHTML=e.themes.map(t=>`<button class="theme-chip" style="background:${t.bg};color:${t.color};border-left-color:${t.color}" onclick="goToTheme('${t.id}')">${t.label} →</button>`).join('');
+  var pillHTML=e.concepts.map(c=>`<span class="concept-pill">${c}</span>`).join('');
+  var el=document.getElementById('epoch-content');
+  el.classList.remove('epoch-fade');
+  void el.offsetWidth;
+  el.classList.add('epoch-fade');
+  el.innerHTML=`
+    <div style="display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap">
+      <span class="ep-badge">Vald epok</span>
+      <span class="ep-title">${e.title}</span>
+      <span class="ep-dates">${e.dates}</span>
+    </div>
+    <div class="ep-body">${e.body}</div>
+    <div class="concept-box">
+      <div class="concept-label">Nyckelbegrepp</div>
+      <div class="concept-pills">${pillHTML}</div>
+    </div>
+    <div class="theme-row">
+      <div class="theme-label-sm">Kopplade teman — klicka för att gå dit</div>
+      <div class="theme-chips">${themeHTML}</div>
+    </div>
+    <div class="ep-nav">
+      <span class="ep-progress">Epok ${i+1} av 5</span>
+      <div class="ep-btns">
+        ${i>0?`<button class="ep-btn" onclick="selectEpoch(${i-1})">← ${epochs[i-1].title}</button>`:'<button class="ep-btn" style="opacity:.35" disabled>← Föregående</button>'}
+        ${i<4?`<button class="ep-btn primary" onclick="selectEpoch(${i+1})">${epochs[i+1].title} →</button>`:'<button class="ep-btn" style="opacity:.35" disabled>Nästa →</button>'}
+      </div>
+    </div>
+  `;
+}
+
+function goToTheme(id){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn')[1].classList.add('active');
+  document.getElementById('tab-teman').classList.add('active');
+  showTheme(id);
+}
+
+/* ── Theme detail data ── */
+var themes={
+  assimilering:{
+    color:'var(--blue)',bg:'var(--blue-l)',border:'var(--blue-m)',
+    icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A3F8F" stroke-width="1.8" stroke-linecap="round"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>',
+    title:'Assimilering & nomadskolorna',
+    body:`<p style="margin-bottom:.85rem">Statens utbildningspolitik för samer under 1900-talet var ett verktyg för både segregation och tvångsanpassning. Riktlinjen "lapp ska vara lapp" byggde på föreställningen att samer var naturligt lämpade enbart för renskötsel och inte klarade av det moderna samhällets krav.</p>
+    <p style="margin-bottom:.85rem">Från 1913 infördes ett särskilt skolsystem med lägre utbildningsnivå för renskötande samers barn. Syftet var att bevara en "autentisk" men underordnad samisk kultur utan att barnen "fördärvades" av svensk civilisation. De samer som inte bedrev renskötsel förväntades smälta in i den svenska befolkningen.</p>
+    <p>Internatsystemet innebar att barn skildes från sina familjer, vilket ledde till ett omfattande språkbyte och djupa kollektiva sår. I Norge drevs en ännu hårdare förnorskningspolitik där samiska var helt förbjudet i skolan.</p>`,
+    facts:[
+      {bg:'var(--blue-l)',border:'var(--blue)',labelColor:'var(--blue)',textColor:'#1A3F8F',label:'Faktaruta: Lapp ska vara lapp',text:'Statlig riktlinje som byggde på synen att renskötande samer var naturligt lämpade för en enda livsform, och att modernisering utgjorde ett hot mot deras "äkthet". Riktlinjen motiverade skilda skolor och lägre utbildningsnivå.'}
+    ],
+    pills:[
+      {label:'1913 – Nomadskolan inrättas',bg:'var(--blue-l)',color:'var(--blue)'},
+      {label:'1970-tal – Nomadskolan avvecklas',bg:'var(--blue-l)',color:'var(--blue)'}
+    ]
+  },
+  mark:{
+    color:'var(--green)',bg:'var(--green-l)',border:'var(--green-m)',
+    icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A5C2A" stroke-width="1.8" stroke-linecap="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>',
+    title:'Rennäring & markrättigheter',
+    body:`<p style="margin-bottom:.85rem">Rennäringslagen från 1971 har sina rötter i 1886 års renbeteslag, som omvandlade samernas äganderätt till en nyttjanderätt knuten till samebymedlemskap. Det skapade en "kategoriklyvning" där fiske- och skogssamer utan renhjord hamnade utanför det rättsliga skyddet.</p>
+    <p style="margin-bottom:.85rem">Modern industriell utvinning genom skogsbruk, gruvdrift (t.ex. Gállok i Jokkmokk) och planerad infrastruktur hotar löpande betesmarker och renens traditionella flyttningsvägar.</p>
+    <p>Girjasdomen 2020 är en juridisk milstolpe. Högsta domstolen fastslog att Girjas sameby har ensamrätt att upplåta jakt och fiske grundat på urminnes hävd, inte statliga tillstånd. Domen öppnar för fler rättsliga prövningar.</p>`,
+    facts:[
+      {bg:'var(--green-l)',border:'var(--green)',labelColor:'var(--green)',textColor:'var(--green)',label:'Faktaruta: Girjasdomen 2020',text:'Högsta domstolens dom som fastslog att Girjas sameby genom urminnes hävd (långvarigt ostört bruk) har ensamrätt att förvalta jakt och fiske inom sitt område. Samebyn vann mot svenska staten i det hittills starkaste juridiska erkännandet av samiska markrättigheter.'}
+    ],
+    pills:[
+      {label:'1886 – Renbeteslagen',bg:'var(--green-l)',color:'var(--green)'},
+      {label:'1971 – Rennäringslagen',bg:'var(--green-l)',color:'var(--green)'},
+      {label:'2020 – Girjasdomen',bg:'var(--green-l)',color:'var(--green)'}
+    ]
+  },
+  sametinget:{
+    color:'var(--blue)',bg:'var(--blue-l)',border:'var(--blue-m)',
+    icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A3F8F" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>',
+    title:'Sametinget & självstyre',
+    body:`<p style="margin-bottom:.85rem">Efter årtionden av samisk kamp inrättades Sametinget 1993. Det är en unik konstruktion: samtidigt ett folkvalt samiskt organ och en statlig förvaltningsmyndighet. Det innebär att Sametinget dels representerar samerna, dels lyder under svenska lagar och regleringsbrev.</p>
+    <p style="margin-bottom:.85rem">Sametingets inflytande är i praktiken begränsat. Det fungerar som rådgivande organ utan lagstiftande makt. Till skillnad från norska Sametinget, som har större anslag och formella samrådsavtal, är det svenska Sametinget tydligt bundet av sin myndighetsfunktion.</p>
+    <p>En central pågående debatt rör ratificeringen av ILO-konventionen nr 169. Sverige har ännu inte ratificerat, främst på grund av politisk oenighet om hur samers rätt till mark och vatten ska definieras juridiskt, trots att samerna erkändes i grundlagen 2011.</p>`,
+    facts:[
+      {bg:'var(--blue-l)',border:'var(--blue)',labelColor:'var(--blue)',textColor:'var(--blue)',label:'Faktaruta: ILO 169',text:'Internationella arbetsorganisationens konvention nr 169 om ursprungsfolks och stamfolks rättigheter. Stärker rätten till självbestämmande, mark och kulturell frihet. Norge ratificerade 1990, Sverige har ännu inte gjort det.'}
+    ],
+    pills:[
+      {label:'1993 – Sametinget bildas',bg:'var(--blue-l)',color:'var(--blue)'},
+      {label:'2011 – Erkänt i grundlagen',bg:'var(--blue-l)',color:'var(--blue)'}
+    ]
+  },
+  rasbiologi:{
+    color:'var(--red)',bg:'var(--red-l)',border:'var(--red-m)',
+    icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B91C1C" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+    title:'Rasbiologi & forskning',
+    body:`<p style="margin-bottom:.85rem">Sverige var under 1900-talets första decennier ledande inom rasbiologisk forskning riktad mot bland annat samer. Statens institut för rasbiologi i Uppsala, grundat 1922 och lett av Herman Lundborg, genomförde systematiska studier i Lappmarken.</p>
+    <p style="margin-bottom:.85rem">Samer mättes och fotograferades nakna för att "bevisa" rasmässiga hierarkier. Kraniometri, mätning av skallar, användes för att skilja på "långskallar" och "kortskallar". Forskningen varnade för "rasblandning" och användes för att motivera steriliseringspolitik och särlagstiftning.</p>
+    <p>Den här historien har skapat djup och befogad misstro mot akademisk forskning i det samiska samhället. I dag pågår arbete med att återlämna mänskliga kvarlevor som samlades in under den här perioden.</p>`,
+    facts:[
+      {bg:'var(--red-l)',border:'var(--red)',labelColor:'var(--red)',textColor:'var(--red)',label:'Faktaruta: Återlämnande av kvarlevor',text:'Processen att lämna tillbaka mänskliga kvarlevor och föremål till deras ursprungliga folk. Samiska kvarlevor som samlades in av rasbiologiska institutet diskuteras fortfarande avseende återlämnande, ett etiskt och juridiskt arbete som ännu pågår.'}
+    ],
+    pills:[
+      {label:'1922 – Inst. grundas i Uppsala',bg:'var(--red-l)',color:'var(--red)'},
+      {label:'1958 – Inst. läggs ned',bg:'var(--red-l)',color:'var(--red)'}
+    ]
+  },
+  sprak:{
+    color:'var(--gold)',bg:'var(--gold-l)',border:'var(--gold-m)',
+    icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C17B00" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
+    title:'Språk & kulturbevarande',
+    body:`<p style="margin-bottom:.85rem">Samtliga samiska språk räknas i dag som hotade. Nordsamiska är det största med cirka 20 000 talare globalt, medan sydsamiska och lulesamiska har betydligt färre användare i Sverige. Lagen om nationella minoriteter (2010) ger formellt skydd.</p>
+    <p style="margin-bottom:.85rem">Arbetet med att stärka språken sker bland annat genom förvaltningsområden, till exempel Stockholm sedan 2019, där medborgare har rätt till samhällsservice på samiska. Behovet av språkkunnig personal inom skola och omsorg är stort och växer.</p>
+    <p>Slöjden (duodji) och klädedräkten (gákti) är viktiga bärare av identitet och nedärvd kunskap (árbediehtu). Joiken, en personlig sångform knuten till plats och minne, har under de senaste decennierna fått en ny roll som konstform och politiskt uttryck.</p>`,
+    facts:[
+      {bg:'var(--gold-l)',border:'var(--gold)',labelColor:'var(--gold)',textColor:'var(--gold)',label:'Faktaruta: Árbediehtu',text:'Samiskt begrepp för nedärvd kunskap och minne, den samlade erfarenhet som förs vidare genom berättande, hantverk och naturbruk. Árbediehtu är kärnan i samisk kultur och hotas direkt när språken försvinner.'}
+    ],
+    pills:[
+      {label:'2010 – Minoritetslagen',bg:'var(--gold-l)',color:'var(--gold)'},
+      {label:'2019 – Stockholm förvaltningsområde',bg:'var(--gold-l)',color:'var(--gold)'}
+    ]
+  }
+};
+
+function showTheme(id){
+  var t=themes[id];
+  var factHTML=t.facts.map(f=>`
+    <div class="factbox" style="background:${f.bg};border-left:2.5px solid ${f.border}">
+      <div class="factbox-label" style="color:${f.labelColor}">${f.label}</div>
+      <div class="factbox-text" style="color:${f.textColor}">${f.text}</div>
+    </div>`).join('');
+  var pillHTML=t.pills.map(p=>`<span class="tl-pill" style="background:${p.bg};color:${p.color}">${p.label}</span>`).join('');
+  document.getElementById('theme-detail-content').innerHTML=`
+    <div class="theme-detail-head">
+      <div class="theme-detail-icon" style="background:${t.bg};border:.5px solid ${t.border}">${t.icon}</div>
+      <div class="theme-detail-title" style="color:${t.color}">${t.title}</div>
+    </div>
+    <div class="theme-detail-body">${t.body}</div>
+    ${factHTML}
+    <div style="margin-top:.75rem">
+      <div class="theme-label-sm" style="font-family:'DM Sans';font-size:10.5px;color:var(--text-t);margin-bottom:.4rem">Tidslinje</div>
+      <div class="timeline-pills">${pillHTML}</div>
+    </div>
+  `;
+  document.getElementById('themes-hub').style.display='none';
+  document.getElementById('theme-detail-view').style.display='block';
+}
+
+function backToHub(){
+  document.getElementById('themes-hub').style.display='block';
+  document.getElementById('theme-detail-view').style.display='none';
+}
+
+/* ── Begrepp quiz ── */
+function checkBegrip(btn,result,correctLetter,feedback){
+  var card=btn.closest('.begrip-q');
+  if(card.classList.contains('answered'))return;
+  card.classList.add('answered');
+  card.querySelectorAll('.begrip-opt').forEach(b=>{
+    if(b===btn){
+      b.classList.add(result==='correct'?'correct':'wrong');
+    }
+    if(result==='wrong'&&b!==btn){
+      var txt=b.getAttribute('onclick')||'';
+      if(txt.includes("'correct'"))b.classList.add('correct');
+    }
+  });
+  var fb=card.querySelector('.begrip-fb');
+  fb.style.display='block';
+  fb.style.background=result==='correct'?'var(--green-l)':'var(--red-l)';
+  fb.style.color=result==='correct'?'var(--green)':'var(--red)';
+  fb.style.borderLeft=result==='correct'?'3px solid var(--green)':'3px solid var(--red)';
+  fb.style.padding='.5rem .75rem';
+  fb.style.borderRadius='0';
+  fb.style.fontSize='12px';
+  fb.style.lineHeight='1.5';
+  fb.textContent=feedback;
+}
+
+/* ── Quiz data ── */
+var questions=[
+  {
+    theme:'Kronologi',themeColor:'var(--blue)',themeBg:'var(--blue-l)',
+    q:'Vilket år inrättades det särskilda nomadskolsystemet för renskötande samers barn?',
+    opts:['1886','1913','1922','1971'],
+    correct:1,
+    misname:'Lagstiftningskonfusion',
+    misdesc:'A: Förväxlar med renbeteslagen 1886. C: Förväxlar med rasbiologiska institutets grundande. D: Förväxlar med rennäringslagen 1971.'
+  },
+  {
+    theme:'Kronologi',themeColor:'var(--blue)',themeBg:'var(--blue-l)',
+    q:'När bildades det svenska Sametinget?',
+    opts:['1971','1986','1993','2011'],
+    correct:2,
+    misname:'Periodkonfusion',
+    misdesc:'A: Rennäringslagen 1971 — annan reform. B: Norska Sametinget bildades 1989 — länderförväxling. D: 2011 erkändes samerna i grundlagen — annan händelse.'
+  },
+  {
+    theme:'Kausalitet',themeColor:'var(--blue)',themeBg:'var(--blue-l)',
+    q:'Vad var det uttalade syftet med riktlinjen "lapp ska vara lapp"?',
+    opts:[
+      'Att tvinga samer att ge upp renskötseln och bosätta sig permanent',
+      'Att ge samiska barn tillgång till samma utbildning som svenska barn',
+      'Att hålla renskötande samer separerade från det svenska samhället och bevara dem i en "naturlig" roll',
+      'Att stärka samiska språk och kulturella traditioner'
+    ],
+    correct:2,
+    misname:'Assimileringsriktning omvänd',
+    misdesc:'A: Riktlinjen syftade till att hålla kvar i renskötseln, inte driva bort från den. B: Välvilje-antagandet döljer den segregerande logiken. D: Projicerar dagens kulturbevarandetanke på 1900-talets kontrollpolitik.'
+  },
+  {
+    theme:'Kausalitet',themeColor:'var(--red)',themeBg:'var(--red-l)',
+    q:'Hur användes samer i Statens institut för rasbiologis forskning under 1920–30-talen?',
+    opts:[
+      'Som kontrollgrupp för att mäta "nordisk" rasrenhet hos den svenska befolkningen',
+      'Som studieobjekt vars kroppsliga mått användes för att bevisa rasmässiga hierarkier',
+      'Som frivilliga informanter i kulturgeografiska studier',
+      'Som representanter för "urbefolkningen" som skulle skyddas från rasblandning'
+    ],
+    correct:1,
+    misname:'Hierarkiriktning omvänd',
+    misdesc:'A: Samer var studieobjektet, inte referensgruppen. C: Underskattar tvångsdimensionen. D: Samer placerades i en underlägsen, inte skyddad, kategori.'
+  },
+  {
+    theme:'Kausalitet',themeColor:'var(--green)',themeBg:'var(--green-l)',
+    q:'Vad var det juridiskt avgörande i Girjasdomen 2020?',
+    opts:[
+      'Girjas sameby tilldelades äganderätt till renbetesmarker ovan odlingsgränsen',
+      'Sverige förklarades skyldigt att ratificera ILO-konvention 169',
+      'Girjas sameby fick ensamrätt att upplåta jakt och fiske grundat på urminnes hävd',
+      'Rennäringslagen från 1971 förklarades grundlagsstridig'
+    ],
+    correct:2,
+    misname:'Rättighetsinflation / Dom kontra lagstiftning',
+    misdesc:'A: Nyttjanderätt och äganderätt är juridiskt olika. B: En dom kan inte tvinga fram ratificering av en konvention. D: Domens fokus var förvaltningsrätt, inte lagprövning.'
+  },
+  {
+    theme:'Begrepp',themeColor:'var(--blue)',themeBg:'var(--blue-l)',
+    q:'Vad utmärker det svenska Sametingets roll jämfört med ett vanligt folkvalt parlament?',
+    opts:[
+      'Det har lagstiftande makt i frågor som rör rennäring',
+      'Det är ett internationellt organ under FN:s urfolksorgan',
+      'Det finansieras av samebyarna, inte av staten',
+      'Det är samtidigt en folkvald samisk församling och en statlig förvaltningsmyndighet'
+    ],
+    correct:3,
+    misname:'Parlamentsöverföring',
+    misdesc:'A: Sametinget är rådgivande, inte lagstiftande. B: Det är ett nationellt, inte internationellt organ. C: Det är statligt finansierat.'
+  },
+  {
+    theme:'Begrepp',themeColor:'var(--green)',themeBg:'var(--green-l)',
+    q:'Vad innebär begreppet "urminnes hävd" i samisk rättslig kontext?',
+    opts:[
+      'En statlig garanti som skrevs in i rennäringslagen 1971',
+      'En FN-deklaration om ursprungsfolks rätt till mark',
+      'En samisk sedvänja erkänd av Sametinget men inte av svenska domstolar',
+      'En rättslig princip om att långvarigt och ostört bruk av mark ger rättigheter'
+    ],
+    correct:3,
+    misname:'Lagstiftningsursprung',
+    misdesc:'A: Det är en äldre sedvanerättslig princip, inte skapad av 1971 års lag. B: Det är ett nationellt rättsligt begrepp, inte ett FN-instrument. C: Girjasdomen visade att svenska domstolar erkänner principen.'
+  },
+  {
+    theme:'Begrepp',themeColor:'var(--gold)',themeBg:'var(--gold-l)',
+    q:'Vilket samiskt språk har flest talare och räknas som det största?',
+    opts:['Sydsamiska','Lulesamiska','Nordsamiska','Umesamiska'],
+    correct:2,
+    misname:'Geografisk intuition / Lule-igenkänning',
+    misdesc:'A: Sydsamiska är ett av de minsta, inte det största. B: Lulesamiska är ett av de större men inte störst. D: Umesamiska är ett litet utdöende språk.'
+  },
+  {
+    theme:'Jämförelse',themeColor:'var(--blue)',themeBg:'var(--blue-l)',
+    q:'Hur skiljde sig den svenska assimileringspolitiken mot samer från den norska under 1900-talets första hälft?',
+    opts:[
+      'Sverige förbjöd samiska i skolan, Norge tillät det',
+      'Båda länderna hade identisk politik utan nationella skillnader',
+      'Norge drev en hårdare förnorskningspolitik med förbud mot samiska i skolan, Sverige segregerade men förbjöd inte språket',
+      'Sverige hade ingen formell assimileringspolitik, det skedde spontant'
+    ],
+    correct:2,
+    misname:'Länderväxling / Homogeniseringsfel',
+    misdesc:'A: Det var Norge, inte Sverige, som förbjöd samiska i skolan. B: Länderna hade tydligt olika intensitet och metoder. D: Sverige hade en aktiv och formell statlig assimileringspolitik.'
+  },
+  {
+    theme:'Nutid',themeColor:'var(--blue)',themeBg:'var(--blue-l)',
+    q:'Varför har Sverige ännu inte ratificerat ILO-konvention 169 om ursprungsfolks rättigheter?',
+    opts:[
+      'Sametinget har motsatt sig ratificering för att bevara sin nuvarande autonomi',
+      'Sverige anser att samerna inte uppfyller FN:s definition av urfolk',
+      'Konventionen är föråldrad och har ersatts av nyare FN-instrument',
+      'Oenighet om hur samers rätt till land och vatten ska definieras juridiskt har blockerat ratificeringen'
+    ],
+    correct:3,
+    misname:'Självbestämmandeparadox / Statusförnekelse',
+    misdesc:'A: Sametinget förespråkar ratificering. B: Samerna erkändes i grundlagen 2011 och är EU:s enda erkända urfolk. C: ILO 169 är fortfarande det viktigaste instrumentet i sitt slag.'
+  }
+];
+
+var currentQ=0,score=0,answered=false;
+
+function renderQuestion(){
+  var q=questions[currentQ];
+  document.getElementById('quiz-bar').style.width=(currentQ/questions.length*100)+'%';
+  document.getElementById('quiz-counter').textContent='Fråga '+(currentQ+1)+' av '+questions.length;
+  document.getElementById('quiz-score').textContent='Poäng: '+score;
+  var badge=document.getElementById('quiz-theme-badge');
+  badge.textContent=q.theme;
+  badge.style.background=q.themeBg;
+  badge.style.color=q.themeColor;
+  document.getElementById('quiz-q-text').textContent=q.q;
+  var optsEl=document.getElementById('quiz-opts');
+  optsEl.innerHTML='';
+  var letters=['A','B','C','D'];
+  q.opts.forEach(function(opt,i){
+    var btn=document.createElement('button');
+    btn.className='quiz-opt';
+    btn.innerHTML='<span class="quiz-opt-letter">'+letters[i]+'</span><span class="quiz-opt-text">'+opt+'</span>';
+    btn.onclick=function(){selectAnswer(i)};
+    optsEl.appendChild(btn);
+  });
+  document.getElementById('quiz-feedback').style.display='none';
+  document.getElementById('quiz-next-btn').style.display='none';
+  var qbox=document.querySelector('.quiz-q-box');
+  if(qbox)qbox.classList.remove('dimmed');
+  answered=false;
+}
+
+function selectAnswer(i){
+  if(answered)return;
+  answered=true;
+  var q=questions[currentQ];
+  var opts=document.querySelectorAll('.quiz-opt');
+  opts.forEach(function(btn,j){
+    if(j===q.correct)btn.classList.add('correct');
+    else if(j===i)btn.classList.add('wrong');
+  });
+  if(i===q.correct)score++;
+  document.getElementById('quiz-score').textContent='Poäng: '+score;
+  document.querySelector('.quiz-q-box').classList.add('dimmed');
+  var fb=document.getElementById('quiz-feedback');
+  fb.style.display='block';
+  fb.style.borderLeftColor=i===q.correct?'var(--green)':'var(--red)';
+  fb.style.background=i===q.correct?'var(--green-l)':'var(--red-l)';
+  document.getElementById('quiz-fb-mis').textContent=i===q.correct?'Rätt svar!':'Misconception: '+q.misname;
+  document.getElementById('quiz-fb-desc').textContent=q.misdesc;
+  document.getElementById('quiz-next-btn').style.display='inline-block';
+  document.getElementById('quiz-next-btn').textContent=currentQ<questions.length-1?'Nästa fråga →':'Se resultat';
+}
+
+function nextQuestion(){
+  currentQ++;
+  if(currentQ>=questions.length){
+    showResult();
+  }else{
+    renderQuestion();
+  }
+}
+
+function showResult(){
+  document.getElementById('quiz-question-area').style.display='none';
+  var res=document.getElementById('quiz-result');
+  res.style.display='block';
+  document.getElementById('quiz-result-score').textContent=score+'/'+questions.length;
+  document.getElementById('quiz-bar').style.width='100%';
+  var pct=score/questions.length;
+  var filledStars=pct>=0.9?3:pct>=0.6?2:pct>=0.3?1:0;
+  var starColor=pct>=0.9?'var(--gold)':pct>=0.6?'var(--blue)':'var(--border)';
+  var starsHTML='';
+  for(var s=0;s<3;s++){
+    var filled=s<filledStars;
+    var col=filled?(s===2&&pct>=0.9?'var(--gold)':pct>=0.6?'var(--blue)':'var(--blue)'):'var(--border)';
+    starsHTML+='<svg class="quiz-star" viewBox="0 0 24 24" fill="'+(filled?col:'none')+'" stroke="'+(filled?col:'var(--border)')+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  }
+  document.getElementById('quiz-result-stars').innerHTML=starsHTML;
+  var label=pct>=0.9?'Utmärkt! Du behärskar samisk historia väl.':pct>=0.7?'Bra jobbat — gå igenom teman du missat.':pct>=0.5?'Halvvägs — gå igenom Teman-fliken och försök igen.':pct>=0.3?'Gå igenom materialet noggrant och gör om quizet.':'Börja med Översikt-fliken och läs igenom alla teman.';
+  document.getElementById('quiz-result-label').textContent=score+' rätt av '+questions.length+' frågor. '+label;
+}
+
+function restartQuiz(){
+  currentQ=0;score=0;answered=false;
+  document.getElementById('quiz-question-area').style.display='block';
+  document.getElementById('quiz-result').style.display='none';
+  renderQuestion();
+}
+
+/* ── Init ── */
+renderEpoch(0);
+renderQuestion();
+</script>
+</body>
+</html>
