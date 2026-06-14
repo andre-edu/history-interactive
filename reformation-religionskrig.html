@@ -266,6 +266,18 @@
   .march-stop .ms-tag{font-size:.74rem;color:var(--muted)}
   .march-stop.win .ms-num{background:#4caf7d}
   .march-stop.loss .ms-num{background:#b8474a}
+  /* trosträd */
+  #trad .act-num{color:var(--gold)} #trad .act-num::before{background:var(--gold)}
+  .tree-wrap{margin:1.5rem 0 .5rem;overflow-x:auto}
+  #treeSvg{width:100%;height:auto;min-width:580px;display:block}
+  .tree-branch{fill:none;stroke-linecap:round}
+  .tree-node-grp{cursor:pointer}
+  .tree-node-grp .tn-dot{transition:filter .2s}
+  .tree-node-grp:hover .tn-dot,.tree-node-grp:focus-visible .tn-dot{filter:brightness(1.3)}
+  .tree-node-grp.active .tn-dot{stroke:#fff;stroke-width:3}
+  .tree-node-grp .tn-label{font-family:'Playfair Display',serif;fill:#e8edf3;font-size:14px;pointer-events:none}
+  .tree-node-grp .tn-year{fill:var(--muted);font-size:10px;letter-spacing:.06em;pointer-events:none}
+  .tree-node-grp.dim{opacity:.38}
   .map-btn{background:var(--navy-3);border:1px solid var(--line);color:#e8edf3;border-radius:99px;padding:.4rem .9rem;font-family:'Lora',serif;font-size:.84rem;cursor:pointer;transition:border-color .15s,background .15s}
   .map-btn:hover,.map-btn:focus-visible{border-color:var(--gold-soft);outline:none}
   .map-btn.active{background:var(--gold);color:var(--navy);border-color:var(--gold);font-weight:600}
@@ -557,6 +569,22 @@
       <p class="lead">Klicka på ett porträtt för att läsa vem personen var och varför hen spelade roll.</p>
     </div>
     <div class="people" id="people"></div>
+  </div>
+</section>
+
+<!-- ===================== TROSTRÄD ===================== -->
+<section id="trad" class="anchor-offset" style="background:linear-gradient(180deg,#0d1b2a,#0a151f)">
+  <div class="wrap">
+    <div class="act-head">
+      <div class="act-num">Begreppen</div>
+      <h2>Trons grenar</h2>
+      <p class="lead">Hugenott, kalvinist, protestant, katolik – orden glider lätt ihop. Här växer de fram som grenar på samma träd. Klicka på en gren för att läsa vad den var.</p>
+    </div>
+    <div class="tree-wrap">
+      <svg id="treeSvg" viewBox="0 0 760 560" role="img" aria-label="Träd över kristendomens grenar från tidig kristendom till hugenotterna"></svg>
+    </div>
+    <div class="phase-detail" id="treeDetail" aria-live="polite"></div>
+    <div class="map-note">Trädet är förenklat. Det visar huvudgrenarna och de stora delningarna, inte alla riktningar inom kristendomen.</div>
   </div>
 </section>
 
@@ -864,6 +892,89 @@ people.forEach(p=>{
   card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
   peopleEl.appendChild(card);
 });
+
+/* ---------- Trosträd (organiskt förgreningsträd) ---------- */
+(function buildTree(){
+  const svg=document.getElementById('treeSvg');
+  if(!svg) return;
+  const NS='http://www.w3.org/2000/svg';
+  // noder: x,y i viewBox 0..760 / 0..560. parent = index, c = färg
+  const nodes=[
+    {id:0,x:380,y:40,  c:'#e8e0cc',label:'Tidig kristendom',year:'',
+     d:'Den enade kyrkan under de första århundradena efter Kristus, innan de stora delningarna.'},
+    {id:1,parent:0,x:200,y:165,c:'#7a9bbf',label:'Ortodoxa kyrkan',year:'1054 · öst',
+     d:'Den östliga kyrkan, med tyngdpunkt i Konstantinopel och den grekiska och slaviska världen. Bröt med Rom i den stora schismen 1054, främst om påvens makt.'},
+    {id:2,parent:0,x:540,y:165,c:'#c9a227',label:'Katolska kyrkan',year:'1054 · väst',
+     d:'Den västliga kyrkan under påven i Rom. Fram till reformationen var i princip hela Västeuropa katolskt.'},
+    {id:3,parent:2,x:470,y:300,c:'#caa12f',label:'Katoliker',year:'efter 1517',
+     d:'De som förblev trogna Rom och påven när protestanterna bröt sig loss. Motreformationen stärkte och förnyade den katolska kyrkan.'},
+    {id:4,parent:2,x:610,y:300,c:'#b8474a',label:'Protestanter',year:'1517',
+     d:'Samlingsnamn för alla som bröt med Rom under reformationen. Inte en enskild kyrka utan ett paraply över flera riktningar. Namnet kommer av furstar som protesterade vid en riksdag 1529.'},
+    {id:5,parent:4,x:505,y:445,c:'#c46a2e',label:'Lutheraner',year:'',
+     d:'Följer Martin Luther. Den protestantism som dominerar i Tyskland och Norden, och som blev Sveriges statskyrka.'},
+    {id:6,parent:4,x:625,y:445,c:'#b8553a',label:'Kalvinister',year:'',
+     d:'Följer Jean Calvin, med tyngdpunkt i Schweiz, Nederländerna och Frankrike. Skiljer sig från lutheraner bland annat i läran om predestination.'},
+    {id:7,parent:4,x:715,y:440,c:'#9c6b3a',label:'Anglikaner',year:'1534',
+     d:'Engelska kyrkan, som bröt med Rom under Henrik VIII av mer politiska än teologiska skäl.'},
+    {id:8,parent:6,x:660,y:520,c:'#d08a4a',label:'Hugenotter',year:'',
+     d:'Det franska namnet på kalvinisterna. En hugenott är alltså en fransk kalvinist – inte en egen tredje grupp. Det var dem Bartolomeinatten och Nantesediktet handlade om.'}
+  ];
+  const byId={};nodes.forEach(n=>byId[n.id]=n);
+
+  // rita böjda grenar förälder -> barn (tjocklek avtar nedåt)
+  nodes.forEach(n=>{
+    if(n.parent===undefined) return;
+    const p=byId[n.parent];
+    const midY=(p.y+n.y)/2;
+    const d=`M ${p.x} ${p.y} C ${p.x} ${midY}, ${n.x} ${midY}, ${n.x} ${n.y}`;
+    const depth=(n.year&&n.year.indexOf('1054')>=0)?9:(n.parent===4?5:7);
+    const path=document.createElementNS(NS,'path');
+    path.setAttribute('d',d);path.setAttribute('class','tree-branch');
+    path.setAttribute('stroke',n.c);path.setAttribute('stroke-width',depth);
+    path.setAttribute('opacity','0.55');
+    svg.appendChild(path);
+  });
+
+  // rita noder (cirkel + etikett) som klickbara grupper
+  const detail=document.getElementById('treeDetail');
+  let active=-1;
+  const grps=[];
+  function selectNode(i){
+    const n=nodes[i];
+    if(active===i){active=-1;grps.forEach(g=>g.classList.remove('active','dim'));detail.classList.remove('show');return;}
+    active=i;
+    grps.forEach((g,j)=>{g.classList.toggle('active',j===i);g.classList.toggle('dim',j!==i);});
+    detail.innerHTML=`<div class="pd-head"><span class="pd-badge" style="background:${n.c};color:#1a1208">${n.year||'kyrkohistoria'}</span><span class="pd-name">${n.label}</span></div><div class="pd-body">${n.d}</div>`;
+    detail.classList.add('show');
+  }
+  nodes.forEach((n,i)=>{
+    const g=document.createElementNS(NS,'g');
+    g.setAttribute('class','tree-node-grp');g.setAttribute('tabindex','0');
+    g.setAttribute('role','button');g.setAttribute('aria-label',n.label);
+    const dot=document.createElementNS(NS,'circle');
+    dot.setAttribute('cx',n.x);dot.setAttribute('cy',n.y);
+    dot.setAttribute('r',n.parent===undefined?11:9);
+    dot.setAttribute('fill',n.c);dot.setAttribute('class','tn-dot');
+    dot.setAttribute('stroke','rgba(255,255,255,.5)');dot.setAttribute('stroke-width','1.5');
+    g.appendChild(dot);
+    // etikett: under noten, utom rot som får ovanför
+    const above=n.parent===undefined;
+    const ly=above?n.y-20:n.y+24;
+    const lbl=document.createElementNS(NS,'text');
+    lbl.setAttribute('x',n.x);lbl.setAttribute('y',ly);
+    lbl.setAttribute('text-anchor','middle');lbl.setAttribute('class','tn-label');
+    lbl.textContent=n.label;g.appendChild(lbl);
+    if(n.year){
+      const yr=document.createElementNS(NS,'text');
+      yr.setAttribute('x',n.x);yr.setAttribute('y',ly+15);
+      yr.setAttribute('text-anchor','middle');yr.setAttribute('class','tn-year');
+      yr.textContent=n.year;g.appendChild(yr);
+    }
+    g.addEventListener('click',()=>selectNode(i));
+    g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectNode(i);}});
+    svg.appendChild(g);grps.push(g);
+  });
+})();
 
 /* ---------- Leaflet map (tre flikar) ---------- */
 function initMap(){
