@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antikens Rom · 753 f.Kr. – 476 e.Kr.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --marble:#EDE5D3;
+  --marble-deep:#E2D7BF;
+  --marble-line:#CDBFA0;
+  --ink:#2A211A;
+  --ink-soft:#4A3C2F;
+  --pompeii:#7C2A1E;
+  --pompeii-bright:#9C3A28;
+  --bronze:#8C6A2F;
+  --gold:#C19A3D;
+  --gold-bright:#D9B85C;
+  --laurel:#55613B;
+  --laurel-bright:#6B7A4C;
+  --basalt:#241B13;
+  --basalt-soft:#332619;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:1.18rem;
+  line-height:1.65;
+  color:var(--ink);
+  background:var(--marble);
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(255,255,255,.35), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 85% 90%, rgba(140,106,47,.06), transparent 60%);
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* ---------- HERO: inskriptionen ---------- */
+.hero{
+  background:var(--pompeii);
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.05) 0 2px, transparent 2px 5px),
+    radial-gradient(ellipse 120% 90% at 50% -20%, rgba(255,210,140,.13), transparent 60%);
+  padding:72px 24px 88px;
+  border-bottom:6px solid var(--bronze);
+}
+.inscription{
+  max-width:860px;margin:0 auto;
+  background:linear-gradient(175deg,#F2EBDB 0%,#E6DCC4 55%,#DDD0B2 100%);
+  border:1px solid #C7B78F;
+  box-shadow:0 18px 50px rgba(0,0,0,.4), inset 0 0 0 10px rgba(255,255,255,.25), inset 0 0 60px rgba(140,106,47,.12);
+  padding:56px 40px 48px;
+  text-align:center;
+  position:relative;
+}
+.inscription::before,.inscription::after{
+  content:"";position:absolute;left:24px;right:24px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--bronze),transparent);opacity:.55;
+}
+.inscription::before{top:20px}
+.inscription::after{bottom:20px}
+.hero-eyebrow{
+  font-family:'Cinzel',serif;font-weight:600;font-size:.95rem;
+  letter-spacing:.5em;text-indent:.5em;color:var(--pompeii);margin-bottom:18px;
+}
+h1{
+  font-family:'Cinzel',serif;font-weight:900;
+  font-size:clamp(3.2rem,9vw,6.4rem);
+  letter-spacing:.14em;text-indent:.14em;line-height:1;
+  color:var(--ink);
+  text-shadow:1px 1px 0 rgba(255,255,255,.7), -1px -1px 1px rgba(74,50,20,.35);
+}
+.hero-sub{
+  font-family:'Cinzel',serif;font-weight:600;font-size:clamp(1rem,2.6vw,1.35rem);
+  letter-spacing:.28em;text-indent:.28em;color:var(--bronze);margin-top:16px;
+}
+.hero-years{
+  display:inline-block;margin-top:22px;padding:8px 26px;
+  border-top:1px solid var(--bronze);border-bottom:1px solid var(--bronze);
+  font-family:'Cinzel',serif;font-size:1rem;letter-spacing:.2em;text-indent:.2em;color:var(--ink-soft);
+}
+.hero-laurel{width:120px;margin:26px auto 0;display:block;opacity:.8}
+.hero-ingress{
+  max-width:760px;margin:40px auto 0;color:#F3E4CE;
+  font-size:1.28rem;line-height:1.7;text-align:center;font-style:italic;
+}
+.hero-ingress strong{color:var(--gold-bright);font-style:normal}
+
+/* ---------- STICKY EPOK-LINJE ---------- */
+.stickybar{
+  position:sticky;top:0;z-index:200;
+  background:linear-gradient(180deg,#EAE1CB,#E0D4B8);
+  border-bottom:2px solid var(--bronze);
+  box-shadow:0 4px 18px rgba(42,33,26,.15);
+}
+.epochs{display:flex;position:relative;height:54px}
+.ep{
+  position:relative;height:100%;
+  border-right:1px solid var(--marble-line);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-weight:600;font-size:.72rem;
+  letter-spacing:.08em;color:var(--ink-soft);
+  text-decoration:none;text-align:center;padding:0 6px;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+  transition:background .25s,color .25s;
+}
+.ep:hover{background:rgba(193,154,61,.18)}
+.ep.active{background:rgba(124,42,30,.12);color:var(--pompeii);box-shadow:inset 0 -4px 0 var(--pompeii)}
+.ep small{display:block;font-family:'Cormorant Garamond',serif;font-size:.72rem;font-weight:500;letter-spacing:.02em}
+.ep-inner{line-height:1.25}
+#marker{
+  position:absolute;top:0;bottom:0;width:3px;background:var(--gold);
+  box-shadow:0 0 8px rgba(193,154,61,.9);pointer-events:none;transition:left .1s linear;
+}
+.pdot{
+  position:absolute;top:4px;width:10px;height:10px;border-radius:50%;
+  background:var(--gold);border:2px solid #8C6A2F;cursor:pointer;z-index:5;
+  animation:pulse 2.4s ease-in-out infinite;
+}
+.pdot:hover{transform:scale(1.4)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(193,154,61,.7)}50%{box-shadow:0 0 0 7px rgba(193,154,61,0)}}
+.filters{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  padding:8px 16px;background:rgba(226,215,191,.6);
+}
+.filters span.flabel{font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;letter-spacing:.14em;color:var(--ink-soft)}
+.chip{
+  font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;letter-spacing:.1em;
+  padding:5px 14px;border-radius:2px;cursor:pointer;border:1px solid;
+  background:transparent;transition:opacity .2s, background .2s;color:#fff;
+}
+.chip[data-tag="politik"]{background:var(--bronze);border-color:var(--bronze)}
+.chip[data-tag="militar"]{background:var(--pompeii);border-color:var(--pompeii)}
+.chip[data-tag="liv"]{background:var(--laurel);border-color:var(--laurel)}
+.chip.off{opacity:.3}
+.chip:focus-visible,.pdot:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* ---------- SEKTIONSRUBRIKER ---------- */
+.section-head{scroll-margin-top:110px;text-align:center;padding:70px 24px 10px}
+.section-head h2{
+  font-family:'Cinzel',serif;font-weight:700;font-size:clamp(1.8rem,4.5vw,2.7rem);
+  letter-spacing:.12em;color:var(--pompeii);
+}
+.section-head .rule{
+  width:140px;height:2px;margin:16px auto 0;
+  background:linear-gradient(90deg,transparent,var(--bronze),transparent);position:relative;
+}
+.section-head .rule::after{
+  content:"";position:absolute;left:50%;top:-4px;transform:translateX(-50%) rotate(45deg);
+  width:9px;height:9px;background:var(--gold);
+}
+.section-intro{max-width:720px;margin:22px auto 0;text-align:center;color:var(--ink-soft);font-size:1.22rem}
+
+/* ---------- VERTIKAL TIDSLINJE ---------- */
+.timeline{position:relative;padding:30px 0 60px}
+.timeline::before{
+  content:"";position:absolute;top:0;bottom:0;left:50%;width:3px;transform:translateX(-50%);
+  background:linear-gradient(180deg,var(--bronze),var(--marble-line) 8px,var(--marble-line) calc(100% - 8px),var(--bronze));
+}
+.epoch-title{
+  scroll-margin-top:120px;
+  position:relative;z-index:2;text-align:center;margin:56px auto 30px;max-width:520px;
+  background:var(--basalt);color:var(--gold-bright);
+  font-family:'Cinzel',serif;font-weight:700;font-size:1.15rem;letter-spacing:.14em;
+  padding:14px 18px;border:1px solid var(--gold);box-shadow:0 6px 20px rgba(36,27,19,.3);
+}
+.epoch-title small{display:block;font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:500;letter-spacing:.04em;color:#D8C79E;font-style:italic}
+.tcard{
+  scroll-margin-top:140px;
+  position:relative;width:calc(50% - 46px);
+  background:#F4EEDF;border:1px solid var(--marble-line);
+  box-shadow:0 4px 14px rgba(42,33,26,.1);
+  padding:22px 24px 20px;margin-bottom:34px;
+  border-top:4px solid var(--bronze);
+}
+.tcard[data-tag="militar"]{border-top-color:var(--pompeii)}
+.tcard[data-tag="liv"]{border-top-color:var(--laurel)}
+.tcard.left{margin-right:auto}
+.tcard.right{margin-left:auto}
+.tcard::after{ /* nod på linjen */
+  content:"";position:absolute;top:26px;width:14px;height:14px;border-radius:50%;
+  background:var(--bronze);border:3px solid var(--marble);box-shadow:0 0 0 2px var(--bronze);
+}
+.tcard[data-tag="militar"]::after{background:var(--pompeii);box-shadow:0 0 0 2px var(--pompeii)}
+.tcard[data-tag="liv"]::after{background:var(--laurel);box-shadow:0 0 0 2px var(--laurel)}
+.tcard.left::after{right:-55px}
+.tcard.right::after{left:-55px}
+.tcard::before{ /* liten arm mot linjen */
+  content:"";position:absolute;top:32px;width:34px;height:2px;background:var(--marble-line);
+}
+.tcard.left::before{right:-34px}
+.tcard.right::before{left:-34px}
+.tyear{
+  font-family:'Cinzel',serif;font-weight:900;font-size:1.3rem;color:var(--ink);
+  letter-spacing:.04em;
+}
+.ttag{
+  display:inline-block;font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;
+  letter-spacing:.16em;color:#fff;padding:3px 10px;margin-left:10px;vertical-align:3px;
+  background:var(--bronze);border-radius:2px;
+}
+.tcard[data-tag="militar"] .ttag{background:var(--pompeii)}
+.tcard[data-tag="liv"] .ttag{background:var(--laurel)}
+.tcard h3{
+  font-family:'Cinzel',serif;font-weight:600;font-size:1.18rem;letter-spacing:.03em;
+  margin:8px 0 10px;color:var(--pompeii);
+}
+.tcard p{font-size:1.1rem}
+.tcard p + p{margin-top:8px}
+.historio{
+  margin-top:12px;padding:10px 14px;background:rgba(193,154,61,.12);
+  border-left:3px solid var(--gold);font-size:1rem;font-style:italic;color:var(--ink-soft);
+}
+.historio b{font-family:'Cinzel',serif;font-size:.68rem;font-weight:700;letter-spacing:.14em;font-style:normal;color:var(--bronze);display:block;margin-bottom:2px}
+.plink{
+  display:inline-block;margin-top:10px;margin-right:10px;
+  font-family:'Cinzel',serif;font-size:.72rem;font-weight:600;letter-spacing:.1em;
+  color:var(--pompeii);text-decoration:none;border:1px solid var(--pompeii);
+  padding:4px 12px;border-radius:2px;background:transparent;cursor:pointer;transition:all .2s;
+}
+.plink:hover{background:var(--pompeii);color:#F4EEDF}
+.term{
+  font-family:inherit;font-size:inherit;font-style:italic;color:var(--bronze);
+  background:none;border:none;border-bottom:1px dotted var(--bronze);
+  cursor:pointer;padding:0 1px;font-weight:600;
+}
+.term:hover{color:var(--pompeii);border-bottom-color:var(--pompeii)}
+.term:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+#tip{
+  position:absolute;z-index:400;max-width:320px;display:none;
+  background:var(--basalt);color:#EFE4CC;padding:14px 16px;font-size:1rem;line-height:1.5;
+  border:1px solid var(--gold);box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+#tip b{font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.1em;color:var(--gold-bright);display:block;margin-bottom:4px}
+#tip a{color:var(--gold-bright);font-style:italic}
+
+/* ---------- PARADOX-IKONER I TIDSLINJEN ---------- */
+.pitem{
+  position:relative;z-index:3;width:150px;margin:10px auto 44px;text-align:center;
+  cursor:pointer;background:none;border:none;
+}
+.pitem .pring{
+  width:96px;height:96px;margin:0 auto;border-radius:50%;
+  background:var(--basalt);border:3px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 6px var(--marble), 0 0 24px rgba(193,154,61,.55);
+  transition:transform .25s;
+}
+.pitem:hover .pring{transform:scale(1.08)}
+.pitem:focus-visible .pring{outline:3px solid var(--gold);outline-offset:3px}
+.pitem .plabel{
+  margin-top:10px;font-family:'Cinzel',serif;font-weight:700;font-size:.72rem;
+  letter-spacing:.14em;color:var(--pompeii);line-height:1.4;
+}
+.pitem svg{width:56px;height:56px}
+
+/* ---------- PARADOX-SEKTIONEN ---------- */
+.paradoxes{background:var(--basalt);color:#EDE2C8;padding-bottom:80px;
+  background-image:radial-gradient(ellipse 90% 60% at 50% 0%, rgba(124,42,30,.25), transparent 60%);}
+.paradoxes .section-head h2{color:var(--gold-bright)}
+.paradoxes .section-intro{color:#CBBD9C}
+.pxpanel{
+  max-width:960px;margin:56px auto 0;border:1px solid rgba(193,154,61,.4);
+  background:rgba(51,38,25,.55);scroll-margin-top:130px;
+}
+.pxhead{
+  display:flex;align-items:center;gap:20px;padding:20px 56px 20px 26px;
+  border-bottom:1px solid rgba(193,154,61,.4);
+  cursor:pointer;position:relative;user-select:none;
+  transition:background .2s;
+}
+.pxhead:hover{background:rgba(193,154,61,.08)}
+.pxhead:focus-visible{outline:2px solid var(--gold);outline-offset:-3px}
+.pxtoggle{
+  position:absolute;top:50%;right:20px;transform:translateY(-50%);
+  width:34px;height:34px;border:1px solid rgba(193,154,61,.5);border-radius:50%;
+  background:rgba(51,38,25,.6);color:var(--gold-bright);
+  display:flex;align-items:center;justify-content:center;pointer-events:none;
+}
+.pxtoggle svg{width:16px;height:16px;transition:transform .3s ease}
+.pxpanel.collapsed .pxtoggle svg{transform:rotate(180deg)}
+.pxpanel.collapsed .pxhead{border-bottom-color:transparent}
+.pxcontent{
+  overflow:hidden;transition:max-height .35s ease, opacity .25s ease;
+  max-height:1200px;opacity:1;
+}
+.pxpanel.collapsed .pxcontent{max-height:0;opacity:0}
+@media (prefers-reduced-motion: reduce){
+  .pxcontent{transition:none}
+  .pxtoggle svg{transition:none}
+}
+.pxhead svg{width:64px;height:64px;flex-shrink:0}
+.pxhead h3{
+  font-family:'Cinzel',serif;font-weight:700;font-size:clamp(1.1rem,3vw,1.5rem);
+  letter-spacing:.1em;color:var(--gold-bright);
+}
+.pxhead .pxyears{font-family:'Cinzel',serif;font-size:.85rem;letter-spacing:.15em;color:#B49B62;margin-top:4px}
+.pxbody{display:grid;grid-template-columns:1fr 1fr;position:relative}
+.pxbody::before{
+  content:"";position:absolute;top:18px;bottom:18px;left:50%;width:2px;transform:translateX(-50%);
+  background:linear-gradient(180deg,transparent,var(--gold),transparent);
+}
+.pxside{padding:26px 30px}
+.pxside h4{
+  font-family:'Cinzel',serif;font-weight:600;font-size:1rem;letter-spacing:.14em;
+  margin-bottom:12px;
+}
+.pxside.a h4{color:var(--gold-bright)}
+.pxside.b h4{color:#D98A6B}
+.pxside p{font-size:1.08rem;color:#DCD0B2}
+.pxside p + p{margin-top:10px}
+.pxq{
+  padding:20px 26px;border-top:1px solid rgba(193,154,61,.4);
+  font-size:1.05rem;color:#CBBD9C;
+}
+.pxq b{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.16em;color:var(--gold-bright);display:block;margin-bottom:6px}
+
+/* ---------- PERSONGALLERI ---------- */
+.gallery{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:22px;padding:22px 0 20px;
+}
+.gclass{padding-top:26px}
+.gclass-head{
+  display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+  padding:0 2px 4px;margin-top:18px;
+  border-bottom:2px solid var(--gc);
+}
+.gclass-head h3{
+  font-family:'Cinzel',serif;font-weight:700;font-size:1.35rem;letter-spacing:.12em;
+  color:var(--gc);
+}
+.gclass-head .gc-latin{
+  font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.2em;color:var(--gc);opacity:.7;
+}
+.gclass-head .gc-count{
+  margin-left:auto;font-family:'Cinzel',serif;font-size:.72rem;font-weight:700;
+  letter-spacing:.14em;color:#fff;background:var(--gc);padding:4px 12px;border-radius:2px;
+}
+.gclass-head .gc-desc{
+  flex-basis:100%;font-size:1.06rem;font-style:italic;color:var(--ink-soft);
+  margin-top:6px;padding-right:20px;
+}
+/* färgband per grupp — romerska pigment */
+.gclass.makten{--gc:var(--pompeii)}
+.gclass.utmanarna{--gc:var(--laurel)}
+.gclass.berattarna{--gc:var(--bronze)}
+.gclass .pimg{background:linear-gradient(160deg, var(--gc-l1), var(--gc-l2))}
+.gclass.makten{--gc-l1:#C99B84;--gc-l2:#A85E48}
+.gclass.utmanarna{--gc-l1:#AEB088;--gc-l2:#7E8757}
+.gclass.berattarna{--gc-l1:#D8C79E;--gc-l2:#B79A63}
+.gclass .pcard{border-top:4px solid var(--gc)}
+.gclass .pinitial{color:rgba(42,33,26,.34)}
+.gclass .pcard.open .pdetail{border-left-color:var(--gc)}
+.gclass .pcard.open .pclose{background:var(--gc)}
+.gclass .pdetail h3{color:var(--gc)}
+.pcard{
+  background:#F4EEDF;border:1px solid var(--marble-line);cursor:pointer;
+  box-shadow:0 4px 14px rgba(42,33,26,.1);transition:transform .2s, box-shadow .2s;
+  overflow:hidden;scroll-margin-top:150px;border:none;text-align:left;padding:0;
+  font-family:inherit;display:block;width:100%;
+}
+.pcard:hover{transform:translateY(-4px);box-shadow:0 10px 26px rgba(42,33,26,.2)}
+.pcard:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.pimg{
+  height:210px;position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#D8CBA9,#BCA97E);
+  display:flex;align-items:center;justify-content:center;
+}
+.pimg img{width:100%;height:100%;object-fit:cover;display:block}
+.pinitial{
+  font-family:'Cinzel',serif;font-weight:900;font-size:4rem;color:rgba(124,42,30,.45);
+  text-shadow:1px 1px 0 rgba(255,255,255,.5);
+}
+.pimg::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 90% 80% at 50% 20%, transparent 50%, rgba(42,33,26,.22));
+}
+.pname{
+  font-family:'Cinzel',serif;font-weight:700;font-size:1rem;letter-spacing:.06em;
+  color:var(--ink);padding:12px 14px 3px;
+}
+.prole{
+  font-size:.95rem;font-style:italic;color:var(--ink-soft);padding:0 14px 14px;line-height:1.4;
+}
+.pcard.open{grid-column:1 / -1;cursor:default;display:grid;grid-template-columns:230px 1fr;transform:none}
+.pcard.open .pimg{height:100%;min-height:260px}
+.pcard.open .pcard-front{display:contents}
+.pdetail{display:none;padding:20px 26px;position:relative;border-left:4px solid var(--pompeii)}
+.pcard.open .pdetail{display:block}
+.pcard.open .pname,.pcard.open .prole{display:none}
+.pdetail h3{font-family:'Cinzel',serif;font-weight:700;font-size:1.4rem;letter-spacing:.05em;color:var(--pompeii)}
+.pdetail .pdrole{font-style:italic;color:var(--ink-soft);margin:2px 0 12px;font-size:1.05rem}
+.pdetail p{font-size:1.08rem}
+.pdetail p + p{margin-top:8px}
+.pclose{
+  position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;
+  background:var(--pompeii);color:#F4EEDF;border:none;cursor:pointer;
+  font-family:'Cinzel',serif;font-size:1rem;font-weight:700;line-height:1;
+}
+.pclose:hover{background:var(--pompeii-bright)}
+.pclose:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* ---------- ORDLISTA ---------- */
+.glossary-tools{max-width:560px;margin:30px auto 10px;padding:0 24px}
+#gsearch{
+  width:100%;padding:12px 18px;font-family:'Cormorant Garamond',serif;font-size:1.15rem;
+  border:1px solid var(--bronze);background:#F4EEDF;color:var(--ink);
+}
+#gsearch:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
+.glist{
+  columns:2;column-gap:34px;padding:26px 0 70px;
+}
+.gentry{
+  break-inside:avoid;background:#F4EEDF;border:1px solid var(--marble-line);
+  border-left:4px solid var(--bronze);padding:14px 18px;margin-bottom:16px;
+}
+.gentry[data-tag="militar"]{border-left-color:var(--pompeii)}
+.gentry[data-tag="liv"]{border-left-color:var(--laurel)}
+.gentry dt{
+  font-family:'Cinzel',serif;font-weight:700;font-size:1rem;letter-spacing:.05em;color:var(--ink);
+}
+.gentry dd{font-size:1.05rem;margin-top:4px}
+.gentry a{
+  display:inline-block;margin-top:6px;font-size:.92rem;font-style:italic;
+  color:var(--pompeii);text-decoration:none;border-bottom:1px dotted var(--pompeii);
+}
+.gentry a:hover{color:var(--pompeii-bright)}
+
+/* ---------- KÄLLOR & SIDFOT ---------- */
+.sources{background:var(--marble-deep);border-top:2px solid var(--bronze);padding-bottom:60px}
+.sources ul{max-width:640px;margin:26px auto 0;list-style:none}
+.sources li{
+  font-style:italic;font-size:1.12rem;padding:8px 0 8px 26px;position:relative;
+  border-bottom:1px dotted var(--marble-line);
+}
+.sources li::before{content:"—";position:absolute;left:0;color:var(--bronze)}
+footer{
+  background:var(--basalt);color:#B49B62;text-align:center;
+  padding:34px 24px;font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:.2em;
+}
+footer .spqr{font-size:1.4rem;font-weight:900;color:var(--gold-bright);letter-spacing:.4em;text-indent:.4em;margin-bottom:8px}
+
+/* ---------- SVG-ANIMATIONER ---------- */
+.anim-chain .link-open{animation:chainOpen 3.2s ease-in-out infinite}
+@keyframes chainOpen{0%,45%,100%{transform:translateX(0) rotate(0)}60%,80%{transform:translateX(6px) rotate(14deg)}}
+.anim-scale .beam{transform-origin:32px 18px;animation:scaleTip 4s ease-in-out infinite}
+@keyframes scaleTip{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg)}}
+.anim-flame .fl{transform-origin:32px 44px;animation:flick 1.6s ease-in-out infinite}
+.anim-flame .fl2{animation-delay:.4s}
+@keyframes flick{0%,100%{transform:scale(1) skewX(0)}30%{transform:scale(1.12) skewX(-5deg)}65%{transform:scale(.92) skewX(4deg)}}
+.anim-column .col-stand{animation:colFade 5s ease-in-out infinite}
+.anim-column .col-arch{animation:archFade 5s ease-in-out infinite}
+@keyframes colFade{0%,38%{opacity:1}55%,82%{opacity:0}100%{opacity:1}}
+@keyframes archFade{0%,38%{opacity:0}55%,82%{opacity:1}100%{opacity:0}}
+.anim-fasces .fa-fasces{animation:fascFade 5s ease-in-out infinite}
+.anim-fasces .fa-crown{animation:crownFade 5s ease-in-out infinite}
+@keyframes fascFade{0%,38%{opacity:1}55%,82%{opacity:0}100%{opacity:1}}
+@keyframes crownFade{0%,38%{opacity:0}55%,82%{opacity:1}100%{opacity:0}}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .pdot,.anim-chain .link-open,.anim-scale .beam,.anim-flame .fl,
+  .anim-column .col-stand,.anim-column .col-arch,
+  .anim-fasces .fa-fasces,.anim-fasces .fa-crown{animation:none}
+}
+
+/* ---------- MOBIL ---------- */
+@media (max-width: 780px){
+  body{font-size:1.08rem}
+  .timeline::before{left:16px;transform:none}
+  .tcard,.tcard.left,.tcard.right{width:calc(100% - 54px);margin-left:54px;margin-right:0}
+  .tcard.left::after,.tcard.right::after{left:-46px;right:auto}
+  .tcard.left::before,.tcard.right::before{left:-32px;right:auto;width:30px}
+  .pitem{margin-left:54px}
+  .epoch-title{margin-left:54px;margin-right:12px}
+  .pxbody{grid-template-columns:1fr}
+  .pxbody::before{display:none}
+  .pxside.b{border-top:1px solid rgba(193,154,61,.4)}
+  .glist{columns:1}
+  .pcard.open{grid-template-columns:1fr}
+  .pcard.open .pimg{height:210px}
+  .ep small{display:none}
+  .ep{font-size:.58rem}
+}
+</style>
+</head>
+<body>
+<!-- ==================== HERO ==================== -->
+<header class="hero">
+  <div class="inscription">
+    <div class="hero-eyebrow">SENATVS·POPVLVSQVE·ROMANVS</div>
+    <h1>ANTIKENS ROM</h1>
+    <div class="hero-sub">FRÅN BY VID TIBERN TILL VÄRLDSVÄLDE</div>
+    <div class="hero-years">753 F.KR. — 476 E.KR.</div>
+    <svg class="hero-laurel" viewBox="0 0 120 34" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g fill="none" stroke="#8C6A2F" stroke-width="1.6">
+        <path d="M10 28 Q40 6 58 4"/>
+        <path d="M110 28 Q80 6 62 4"/>
+      </g>
+      <g fill="#8C6A2F">
+        <ellipse cx="18" cy="24" rx="6" ry="2.6" transform="rotate(-38 18 24)"/>
+        <ellipse cx="28" cy="17" rx="6" ry="2.6" transform="rotate(-32 28 17)"/>
+        <ellipse cx="39" cy="11" rx="6" ry="2.6" transform="rotate(-24 39 11)"/>
+        <ellipse cx="50" cy="7" rx="6" ry="2.6" transform="rotate(-14 50 7)"/>
+        <ellipse cx="102" cy="24" rx="6" ry="2.6" transform="rotate(38 102 24)"/>
+        <ellipse cx="92" cy="17" rx="6" ry="2.6" transform="rotate(32 92 17)"/>
+        <ellipse cx="81" cy="11" rx="6" ry="2.6" transform="rotate(24 81 11)"/>
+        <ellipse cx="70" cy="7" rx="6" ry="2.6" transform="rotate(14 70 7)"/>
+      </g>
+    </svg>
+  </div>
+  <p class="hero-ingress">En by av herdar på Palatinen växte till en storstad med en miljon invånare och ett rike med
+  <strong>50–100 miljoner människor</strong>, från Skottland till Eufrat. Rom byggde vägar, lagar och legioner, men bar
+  också på inre motsättningar som till slut blev dess undergång. Följ hela förloppet i tidslinjen, möt personerna i galleriet
+  och undersök de fem <strong>paradoxer</strong> som löper genom Roms historia.</p>
+</header>
+
+<!-- ==================== STICKY EPOK-LINJE ==================== -->
+<nav class="stickybar" aria-label="Epoker och filter">
+  <div class="epochs" id="epochbar">
+    <a class="ep" href="#ep1" style="flex-basis:19.8%" data-ep="1"><span class="ep-inner">Kungadömet<small>753–510 f.Kr.</small></span></a>
+    <a class="ep" href="#ep2" style="flex-basis:20%" data-ep="2"><span class="ep-inner">Republiken &amp; ståndskampen<small>510–264 f.Kr.</small></span></a>
+    <a class="ep" href="#ep3" style="flex-basis:9.6%" data-ep="3"><span class="ep-inner">Expansionen<small>264–146</small></span></a>
+    <a class="ep" href="#ep4" style="flex-basis:9.7%" data-ep="4"><span class="ep-inner">Krisen<small>146–27</small></span></a>
+    <a class="ep" href="#ep5" style="flex-basis:16.8%" data-ep="5"><span class="ep-inner">Pax Romana<small>27 f.Kr.–180 e.Kr.</small></span></a>
+    <a class="ep" href="#ep6" style="flex-basis:24.1%" data-ep="6"><span class="ep-inner">Kris, dominat &amp; fall<small>180–476 e.Kr.</small></span></a>
+    <div id="marker" style="left:0%"></div>
+    <button class="pdot" style="left:49.4%" data-px="px1" title="Paradox: Frihet och slaveri" aria-label="Paradox: Frihet och slaveri"></button>
+    <button class="pdot" style="left:57.7%" data-px="px2" title="Paradox: Res publica och envälde" aria-label="Paradox: Res publica och envälde"></button>
+    <button class="pdot" style="left:63.5%" data-px="px3" title="Paradox: Pax Romana och erövringsfred" aria-label="Paradox: Pax Romana och erövringsfred"></button>
+    <button class="pdot" style="left:75.9%" data-px="px4" title="Paradox: Tolerans och förföljelse" aria-label="Paradox: Tolerans och förföljelse"></button>
+    <button class="pdot" style="left:92%" data-px="px5" title="Paradox: Fall och transformation" aria-label="Paradox: Fall och transformation"></button>
+  </div>
+  <div class="filters">
+    <span class="flabel">VISA:</span>
+    <button class="chip" data-tag="politik">Politik</button>
+    <button class="chip" data-tag="militar">Militär &amp; expansion</button>
+    <button class="chip" data-tag="liv">Liv &amp; ekonomi</button>
+  </div>
+</nav>
+
+<!-- ==================== TIDSLINJE ==================== -->
+<div class="section-head">
+  <h2>Tidslinjen</h2>
+  <div class="rule"></div>
+  <p class="section-intro">Varje händelse bär en av tre färger: brons för <b>politik</b>, rött för <b>militär &amp; expansion</b>,
+  lager för <b>liv &amp; ekonomi</b>. Kursiverade ord med prickad linje är begrepp: tryck på dem för en förklaring.
+  De gyllene ikonerna markerar Roms fem paradoxer.</p>
+</div>
+
+<main class="wrap">
+<div class="timeline" id="tl">
+
+<!-- ============ EPOK 1: KUNGADÖMET ============ -->
+<div class="epoch-title" id="ep1" data-ep="1">I · KUNGADÖMET<small>753–510 f.Kr. · myternas och kungarnas Rom</small></div>
+
+<article class="tcard left" data-tag="politik" id="t-grundandet">
+  <span class="tyear">753 f.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Rom grundas: myt möter arkeologi</h3>
+  <p>Enligt sägnen grundade Romulus staden på Palatinen, en av Roms kullar. Utgrävningar visar att platsen
+  verkligen var bebodd vid den här tiden. Men själva berättelsen, där Romulus dödar sin egen bror Remus, tror
+  forskare idag inte är sann. Den handlar snarare om något romarna bar med sig långt senare: rädslan för
+  inbördeskrig, bror mot bror.</p>
+  <div class="historio"><b>KÄLLORNA ÄR OENSE</b>Forskare är oeniga om hur Rom uppstod. Utgrävningarna säger en sak, de romerska författarna en annan, och författarna skrev ofta in sin egen tids idéer i det förflutna. Romarna gjorde faktiskt om sin historia hela tiden, som ett bygge som aldrig blev färdigt.</div>
+  <button class="plink" data-person="romulus">Romulus i galleriet →</button>
+</article>
+
+<article class="tcard right" data-tag="politik" id="t-kungatiden">
+  <span class="tyear">ca 753–510 f.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Kungarnas Rom</h3>
+  <p>I mer än 200 år styrdes Rom av kungar (<em>reges</em>). Vid kungens sida fanns ett råd av äldre män
+  (<em>senex</em>), som blev början till <button class="term" data-term="senatus-consulta">senaten</button>. De sista
+  kungarna var etrusker, ett folk norr om Rom, och mycket av stadens tidiga religion och byggnadskonst kom därifrån.</p>
+</article>
+
+<article class="tcard left" data-tag="politik" id="t-lucretia">
+  <span class="tyear">ca 510 f.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Lucretia och monarkins fall</h3>
+  <p>Den siste kungen, Tarquinius Superbus (”den högmodige”), beskrivs som en typisk tyrann. Enligt legenden
+  våldtar en av hans söner adelskvinnan Lucretia, och det blir droppen. Kungen drivs bort och romarna skapar
+  <button class="term" data-term="res-publica">res publica</button>, ”det gemensamma” – en stat som tillhör alla
+  medborgare, inte en enda kung.</p>
+  <div class="historio"><b>KÄLLORNA ÄR OENSE</b>Romarna själva berättade om ett hjältemodigt uppror lett av Brutus. Men andra, äldre spår pekar åt ett annat håll: att det snarare var en maktkamp mellan etruskiska städer, där kungen Lars Porsenna kan ha varit den som egentligen avgjorde saken.</div>
+  <button class="plink" data-person="lucretia">Lucretia i galleriet →</button>
+  <button class="plink" data-person="tarquinius">Tarquinius i galleriet →</button>
+</article>
+
+<!-- ============ EPOK 2: REPUBLIKEN & STÅNDSKAMPEN ============ -->
+<div class="epoch-title" id="ep2" data-ep="2">II · REPUBLIKEN &amp; STÅNDSKAMPEN<small>510–264 f.Kr. · statens grundregler byggs för att hindra envälde</small></div>
+
+<article class="tcard right" data-tag="politik" id="t-institutioner">
+  <span class="tyear">509 f.Kr. →</span><span class="ttag">POLITIK</span>
+  <h3>Republikens grundregler</h3>
+  <p>Allt byggdes så att ingen kung skulle kunna komma tillbaka. I stället för en kung valdes två ledare, konsuler,
+  och bara för ett år i taget. De hade <button class="term" data-term="imperium">imperium</button>, rätten att
+  leda armén, och gick genom staden med tolv vakter som bar <button class="term" data-term="fasces">fasces</button>,
+  ett knippe spön som visade deras makt. Senaten, ett råd av tidigare ledare, kunde formellt bara ge råd, men i
+  praktiken följdes deras beslut nästan alltid som lag.</p>
+  <p>På folkförsamlingens möten röstade man efter förmögenhet. De rikaste röstade först, och ofta var saken redan
+  avgjord innan de fattiga ens fick säga sitt.</p>
+</article>
+
+<article class="tcard left" data-tag="politik" id="t-standskampen">
+  <span class="tyear">494–287 f.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Ståndskampen</h3>
+  <p>Rom var delat i två grupper. <button class="term" data-term="patricier">Patricierna</button> var en liten
+  överklass som höll all makt för sig själva. <button class="term" data-term="plebejer">Plebejerna</button> var
+  alla andra, allt från rika köpmän till fattiga bönder. När plebejerna fick nog använde de sitt starkaste vapen:
+  de <button class="term" data-term="secession">lämnade helt enkelt staden</button> i massor och vägrade arbeta
+  och slåss förrän de fick sin vilja igenom.</p>
+  <p>Det gav resultat. Plebejerna fick egna ledare, <button class="term" data-term="folktribun">folktribuner</button>,
+  som ingen fick röra (<button class="term" data-term="sacrosanctitas">sacrosanctitas</button>) och som kunde stoppa
+  beslut de ogillade. Till slut kunde även plebejer bli konsuler.</p>
+</article>
+
+<article class="tcard right" data-tag="politik" id="t-tolvtavlor">
+  <span class="tyear">ca 450 f.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>De tolv tavlornas lag</h3>
+  <p>För första gången skrevs Roms lagar ner och sattes upp offentligt så att alla kunde se dem. Innan dess kunde
+  domarna, som var patricier, döma lite som de ville. Nu fanns reglerna svart på vitt. Det var en seger för
+  plebejerna, och starten på den romerska rätt som fortfarande påverkar Europas lagar idag.</p>
+</article>
+
+<article class="tcard left" data-tag="liv" id="t-familjen">
+  <span class="tyear">Republikens vardag</span><span class="ttag">LIV &amp; EKONOMI</span>
+  <h3>Paterfamilias och klientväsendet</h3>
+  <p>Familjen var samhällets minsta byggsten, och i den bestämde fadern allt. Som
+  <button class="term" data-term="paterfamilias">paterfamilias</button> hade han enligt lagen
+  (<button class="term" data-term="patria-potestas">patria potestas</button>) nästan total makt över fru och barn.
+  Samhället hölls också ihop av <button class="term" data-term="klientvasen">klientsystemet</button>: rika och mäktiga
+  personer skyddade och hjälpte fattigare, som i gengäld var lojala och röstade på dem.</p>
+  <p>Romerska kvinnor var ändå mycket friare än grekiska. De kunde röra sig ute, äga egendom, driva rättegångar och
+  arbeta som till exempel läkare eller lärare.</p>
+</article>
+
+<!-- ============ EPOK 3: EXPANSIONEN ============ -->
+<div class="epoch-title" id="ep3" data-ep="3">III · EXPANSIONEN<small>264–146 f.Kr. · Medelhavet blir ett romerskt innanhav</small></div>
+
+<article class="tcard right" data-tag="militar" id="t-legionen">
+  <span class="tyear">300-talet f.Kr. →</span><span class="ttag">MILITÄR</span>
+  <h3>Manipular-legionen tar form</h3>
+  <p>Först stred romarna i en tät, orörlig formation som grekerna, men den var klumpig i kuperad terräng. De gick
+  över till <button class="term" data-term="manipular-legion">manipel-legionen</button>, där armén delades i mindre
+  grupper som kunde röra sig fritt och smart. Alla soldater fick samma utrustning: kastspjutet
+  <button class="term" data-term="pilum">pilum</button> och det korta svärdet
+  <button class="term" data-term="gladius">gladius</button>. Träningen var stenhård, och varje kväll på marsch
+  byggde soldaterna ett befäst läger.</p>
+</article>
+
+<article class="tcard left" data-tag="militar" id="t-hannibal">
+  <span class="tyear">264–216 f.Kr.</span><span class="ttag">MILITÄR</span>
+  <h3>Puniska krigen och Hannibal vid Cannae</h3>
+  <p>Kriget mot handelsstaden Karthago handlade om överlevnad. Fältherren Hannibal tog sin armé över Alperna och
+  krossade romarna vid Cannae 216 f.Kr. i ett fruktansvärt blodbad. Men Rom gav aldrig upp. Tack
+  vare sin envishet och sina enorma reserver av soldater orkade Rom vinna till slut.</p>
+  <div class="historio"><b>KÄLLORNA ÄR OENSE</b>Varför växte Rom så mycket? Vissa forskare menar att Rom mest försvarade sig och sina vänner, och drogs in i krig mot sin vilja. Andra menar tvärtom att romarna var aggressiva och giriga och krigade för makt och pengar.</div>
+  <button class="plink" data-person="hannibal">Hannibal i galleriet →</button>
+</article>
+
+<article class="tcard right" data-tag="militar" id="t-karthago">
+  <span class="tyear">146 f.Kr.</span><span class="ttag">MILITÄR</span>
+  <h3>Karthago faller, Rom härskar över Medelhavet</h3>
+  <p>I det sista kriget mot Karthago brändes staden till grunden. Samma år förstördes den grekiska staden Korinth.
+  Nu var Rom ensam herre över hela Medelhavet. Men segern förändrade Rom inifrån: alla rikedomar och krigsfångar som
+  strömmade in skulle snart skapa nya, farliga problem.</p>
+</article>
+
+<article class="tcard left" data-tag="liv" id="t-latifundia">
+  <span class="tyear">100-talet f.Kr.</span><span class="ttag">LIV &amp; EKONOMI</span>
+  <h3>Latifundia: slavekonomins genombrott</h3>
+  <p>Vinsterna från krigen gick till överklassen, som köpte upp mängder av jord och drev enorma gods med slavar,
+  så kallade <button class="term" data-term="latifundia">latifundia</button>. Hundratusentals krigsfångar slet i
+  gruvor och på gårdarna; en enda rik senator kunde äga 400 slavar bara i sitt stadshus. Samtidigt slogs de vanliga
+  bönderna ut, de som hade varit ryggraden i Roms armé, och tvingades flytta in till staden utan arbete.</p>
+</article>
+
+<button class="pitem" data-px="px1" aria-label="Öppna paradoxen Frihet och slaveri">
+  <span class="pring">
+    <svg class="anim-chain" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g fill="none" stroke="#C19A3D" stroke-width="3.4">
+        <ellipse cx="14" cy="32" rx="8" ry="11"/>
+        <ellipse cx="30" cy="32" rx="8" ry="11"/>
+        <g class="link-open"><path d="M40 21 a8 11 0 0 1 8 11 a8 11 0 0 1 -8 11" /></g>
+      </g>
+    </svg>
+  </span>
+  <span class="plabel">PARADOX I<br>FRIHET ↔ SLAVERI</span>
+</button>
+
+<!-- ============ EPOK 4: REPUBLIKENS KRIS ============ -->
+<div class="epoch-title" id="ep4" data-ep="4">IV · REPUBLIKENS KRIS<small>133–27 f.Kr. · ”den romerska revolutionen”</small></div>
+
+<article class="tcard right" data-tag="politik" id="t-gracchus">
+  <span class="tyear">133–121 f.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Bröderna Gracchus: våldet bryter in i politiken</h3>
+  <p>Bröderna Tiberius och Gaius Gracchus försökte dela ut jord till de fattiga bönder som slagits ut. Det gjorde
+  överklassen rasande, och båda bröderna mördades. Nu var en osynlig gräns passerad: politik i Rom kunde numera
+  avgöras med våld. Det var början på slutet för republiken.</p>
+  <button class="plink" data-person="gracchus">Graccherna i galleriet →</button>
+</article>
+
+<article class="tcard left" data-tag="militar" id="t-marius">
+  <span class="tyear">107 f.Kr.</span><span class="ttag">MILITÄR</span>
+  <h3>Marius öppnar armén för de egendomslösa</h3>
+  <p>Tidigare måste en soldat äga jord för att få gå med i armén. Generalen Marius tog bort det kravet, så att även
+  fattiga kunde bli soldater. Det gav Rom en stark yrkesarmé, men med en farlig hake: soldaterna blev nu lojala mot
+  generalen som lovade dem lön och jord, inte mot staten. Snart skulle de vändas mot Rom självt.</p>
+  <button class="plink" data-person="marius">Marius i galleriet →</button>
+</article>
+
+<article class="tcard right" data-tag="politik" id="t-sulla">
+  <span class="tyear">82 f.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Sulla tågar mot Rom</h3>
+  <p>Det som ingen trott var möjligt hände: en romersk general marscherade med sin armé mot själva Rom. Sulla tog
+  makten som <button class="term" data-term="diktator">diktator</button> och införde
+  <button class="term" data-term="proskriptioner">proskriptioner</button>: listor med namn på fiender som fritt fick
+  dödas, medan staten tog deras egendom. Nu hade någon visat vägen, och nästa generation skulle följa den.</p>
+  <button class="plink" data-person="sulla">Sulla i galleriet →</button>
+</article>
+
+<article class="tcard left" data-tag="liv" id="t-spartacus">
+  <span class="tyear">73–71 f.Kr.</span><span class="ttag">LIV &amp; EKONOMI</span>
+  <h3>Spartacus och slavsamhällets uppror</h3>
+  <p>Gladiatorn Spartacus ledde det största slavupproret i Roms historia. När det slogs ner korsfästes 6 000 slavar
+  längs vägen Via Appia, mil efter mil, som en varning till andra. Ändå fanns det i samma samhälle en väg ut: genom
+  <button class="term" data-term="manumission">frigivning</button> kunde en slav bli fri
+  (<button class="term" data-term="libertus">libertus</button>) och till och med romersk medborgare. Något sådant
+  fanns inte i Grekland.</p>
+  <button class="plink" data-person="spartacus">Spartacus i galleriet →</button>
+</article>
+
+<article class="tcard right" data-tag="politik" id="t-triumvirat">
+  <span class="tyear">60 f.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Första triumviratet</h3>
+  <p>Tre av Roms mäktigaste män, fältherren Pompejus, den stenrike Crassus och den ambitiöse Julius Caesar, gick
+  ihop i en allians som kallas <button class="term" data-term="triumvirat">triumvirat</button>. Tillsammans styrde de
+  i praktiken Rom, förbi senaten. Republiken fanns kvar på pappret, men den verkliga makten låg nu hos dem.</p>
+  <button class="plink" data-person="pompejus">Pompejus i galleriet →</button>
+  <button class="plink" data-person="caesar">Caesar i galleriet →</button>
+</article>
+
+<article class="tcard left" data-tag="militar" id="t-gallien">
+  <span class="tyear">58–52 f.Kr.</span><span class="ttag">MILITÄR</span>
+  <h3>Caesar erövrar Gallien</h3>
+  <p>När Caesar erövrade Gallien (ungefär dagens Frankrike) vann han både ära och en armé som älskade honom. Han
+  skrev dessutom sin egen version av kriget i boken <em>Commentarii</em>, en skickligt gjord reklamskrift där han
+  själv förstås alltid är hjälten.</p>
+</article>
+
+<article class="tcard right" data-tag="politik" id="t-caesar">
+  <span class="tyear">49–44 f.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Inbördeskrig, diktatur och dolkarna</h3>
+  <p>Caesar gick över gränsfloden Rubicon med sin armé, vilket betydde krig mot Rom, besegrade Pompejus och blev
+  diktator på livstid. Den 15 mars år 44 f.Kr. knivhöggs han till döds av senatorer som ville rädda republiken.
+  Men morden räddade ingenting. De ledde bara till nya inbördeskrig, ännu blodigare än förut.</p>
+</article>
+
+<button class="pitem" data-px="px2" aria-label="Öppna paradoxen Res publica och envälde">
+  <span class="pring">
+    <svg class="anim-fasces" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g class="fa-fasces" stroke="#C19A3D" stroke-width="3" fill="none">
+        <line x1="26" y1="10" x2="26" y2="54"/><line x1="32" y1="8" x2="32" y2="56"/><line x1="38" y1="10" x2="38" y2="54"/>
+        <line x1="22" y1="20" x2="42" y2="16" stroke-width="2.4"/><line x1="22" y1="46" x2="42" y2="42" stroke-width="2.4"/>
+        <path d="M38 18 q10 -2 10 8" stroke-width="2.6"/>
+      </g>
+      <g class="fa-crown" stroke="#C19A3D" stroke-width="3" fill="none" opacity="0">
+        <path d="M14 44 L20 24 L28 38 L32 18 L36 38 L44 24 L50 44 Z"/>
+        <circle cx="32" cy="14" r="2.6" fill="#C19A3D"/>
+      </g>
+    </svg>
+  </span>
+  <span class="plabel">PARADOX II<br>RES PUBLICA ↔ ENVÄLDE</span>
+</button>
+
+<article class="tcard left" data-tag="politik" id="t-augustus">
+  <span class="tyear">31–27 f.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Actium och den augusteiska uppgörelsen</h3>
+  <p>Caesars adoptivson Octavianus vann slaget vid Actium och tog namnet Augustus. Nu hade han ett problem: han ville
+  härska ensam, men utan att mördas som Caesar. Lösningen var smart. Utåt ”återställde han republiken”, senaten fanns
+  kvar och val hölls. I hemlighet samlade han all verklig makt hos sig själv: befälet över armén, vetorätt i politiken
+  (<button class="term" data-term="tribunicia-potestas">tribunicia potestas</button>) och titeln
+  <button class="term" data-term="princeps">princeps</button>, ”den förste medborgaren”. Aldrig kung. Det ordet var för farligt.</p>
+  <div class="historio"><b>KÄLLORNA ÄR OENSE</b>I sin egen självbiografi skrev Augustus att han ”befriade republiken från tyranni”. Historikern Tacitus såg något helt annat: en fred som bara var möjlig för att alla var så utmattade av krig, köpt till priset av friheten.</div>
+  <button class="plink" data-person="augustus">Augustus i galleriet →</button>
+  <button class="plink" data-person="tacitus">Tacitus i galleriet →</button>
+</article>
+<!-- ============ EPOK 5: PRINCIPATET & PAX ROMANA ============ -->
+<div class="epoch-title" id="ep5" data-ep="5">V · PRINCIPATET &amp; PAX ROMANA<small>27 f.Kr.–180 e.Kr. · fredens och storhetens århundraden</small></div>
+
+<button class="pitem" data-px="px3" aria-label="Öppna paradoxen Pax Romana och erövringsfred">
+  <span class="pring">
+    <svg class="anim-scale" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g stroke="#C19A3D" stroke-width="3" fill="none">
+        <line x1="32" y1="12" x2="32" y2="54"/>
+        <line x1="24" y1="54" x2="40" y2="54" stroke-width="3.6"/>
+      </g>
+      <g class="beam">
+        <g stroke="#C19A3D" stroke-width="2.8" fill="none">
+          <line x1="10" y1="18" x2="54" y2="18"/>
+          <line x1="10" y1="18" x2="10" y2="26"/><path d="M4 30 a7 5 0 0 0 12 0" />
+          <line x1="54" y1="18" x2="54" y2="26"/><path d="M48 30 a7 5 0 0 0 12 0" />
+        </g>
+        <circle cx="32" cy="18" r="3" fill="#C19A3D"/>
+      </g>
+    </svg>
+  </span>
+  <span class="plabel">PARADOX III<br>PAX ROMANA ↔ ERÖVRINGSFRED</span>
+</button>
+
+<article class="tcard right" data-tag="liv" id="t-miljonstaden">
+  <span class="tyear">ca år 1</span><span class="ttag">LIV &amp; EKONOMI</span>
+  <h3>Miljonstaden: palats och hyreskaserner</h3>
+  <p>Rom hade nu över en miljon invånare, större än någon annan europeisk stad skulle bli förrän på 1800-talet.
+  Skillnaderna mellan rika och fattiga var enorma. De rika bodde i praktvillor på kullarna, medan de flesta trängdes i
+  <button class="term" data-term="insulae">hyreshus</button> (insulæ) av trä som lätt fattade eld och ofta saknade
+  både vatten och avlopp.</p>
+  <p>För att hålla folket lugnt delade staten ut gratis spannmål (<button class="term" data-term="annona">annona</button>)
+  och bjöd på storslagen underhållning. Romarna kallade det själva ”bröd och skådespel”
+  (<button class="term" data-term="panem">panem et circenses</button>).</p>
+</article>
+
+<article class="tcard left" data-tag="liv" id="t-colosseum">
+  <span class="tyear">80 e.Kr.</span><span class="ttag">LIV &amp; EKONOMI</span>
+  <h3>Colosseum invigs</h3>
+  <p>Den stora arenan öppnade med dödliga gladiatorspel och strider mot vilda djur som hämtats från hela riket.
+  På kapplöpningsbanan Circus Maximus fick hundratusentals åskådare plats. Och på de stora badhusen
+  (<button class="term" data-term="thermae">thermerna</button>) möttes alla samhällsklasser för att bada, umgås och
+  göra affärer.</p>
+</article>
+
+<article class="tcard right" data-tag="liv" id="t-handel">
+  <span class="tyear">ca 100 f.Kr. →</span><span class="ttag">LIV &amp; EKONOMI</span>
+  <h3>Betong, vägar och en globaliserad ekonomi</h3>
+  <p>När romarna uppfann betongen omkring 100 f.Kr. kunde de bygga vattenledningar, broar och valv i en skala som
+  aldrig setts förut. Över 80 000 kilometer stenlagda vägar band ihop riket från Skottland till Mellanöstern. Genom
+  hamnen Ostia kom siden från Kina, kryddor från Asien och elfenben från Afrika. Ett gemensamt mynt, silvermyntet
+  <button class="term" data-term="denar">denaren</button>, gjorde handeln enkel. Samma sorts keramik har hittats
+  ända från Spanien till Indien.</p>
+</article>
+
+<article class="tcard left" data-tag="militar" id="t-romanisering">
+  <span class="tyear">Provinserna</span><span class="ttag">MILITÄR</span>
+  <h3>Romaniseringen: tvång och lockelse</h3>
+  <p>Rom styrde sina provinser med en blandning av tvång och lockelse. Lokala ledare lockades med romerskt
+  medborgarskap, och gamla soldater fick mark i nya städer runt om i riket. Att provinserna blev mer romerska,
+  <button class="term" data-term="romanisering">romaniseringen</button>, kom sällan uppifrån som en order. Ofta tog
+  människorna själva till sig romerskt språk och romersk livsstil, för att det gav högre status.</p>
+</article>
+
+<article class="tcard right" data-tag="militar" id="t-trajanus">
+  <span class="tyear">98–117 e.Kr.</span><span class="ttag">MILITÄR</span>
+  <h3>Trajanus och rikets största utbredning</h3>
+  <p>Under kejsar Trajanus blev riket som allra störst. Han erövrade Dakien (dagens Rumänien) och förde krig långt
+  österut, ända bort mot dagens Irak. Där stötte Rom på det mäktiga Partherriket, en fiende i öster som skulle binda
+  romerska soldater i århundraden framåt.</p>
+  <button class="plink" data-person="trajanus">Trajanus i galleriet →</button>
+</article>
+
+<article class="tcard left" data-tag="liv" id="t-religion">
+  <span class="tyear">Religionens Rom</span><span class="ttag">LIV &amp; EKONOMI</span>
+  <h3>Pax deorum, och en ny tro från öst</h3>
+  <p>För romarna handlade religion mer om att göra rätt än om att tro rätt. Genom noggranna offer och riter höll man
+  gudarna nöjda och bevarade <button class="term" data-term="pax-deorum">gudarnas fred</button> (pax deorum). Staten
+  dyrkade guden Jupiter, och hemma vördade man förfäderna och husets skyddsgudar
+  (<button class="term" data-term="larer">larerna</button> och <button class="term" data-term="penater">penaterna</button>).
+  Riket tog hela tiden till sig nya gudar från andra folk, som Isis från Egypten. Bland dem fanns en liten judisk
+  grupp som kallades de kristna, och den spreds snabbt längs rikets vägar.</p>
+</article>
+
+<button class="pitem" data-px="px4" aria-label="Öppna paradoxen Tolerans och förföljelse">
+  <span class="pring">
+    <svg class="anim-flame" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g stroke="#C19A3D" stroke-width="3" fill="none">
+        <path d="M16 46 h32 l-4 8 h-24 Z"/>
+      </g>
+      <path class="fl" d="M32 14 C38 24 42 28 42 35 a10 10 0 0 1 -20 0 C22 28 27 22 32 14 Z" fill="none" stroke="#C19A3D" stroke-width="3"/>
+      <path class="fl fl2" d="M32 26 C35 30 37 32 37 36 a5 5 0 0 1 -10 0 C27 32 30 30 32 26 Z" fill="#C19A3D" opacity=".85"/>
+    </svg>
+  </span>
+  <span class="plabel">PARADOX IV<br>TOLERANS ↔ FÖRFÖLJELSE</span>
+</button>
+
+<article class="tcard right" data-tag="liv" id="t-pesten">
+  <span class="tyear">160-talet e.Kr.</span><span class="ttag">LIV &amp; EKONOMI</span>
+  <h3>Antoninska pesten</h3>
+  <p>En dödlig farsot, troligen hemförd av soldater från kriget i öster, spred sig genom hela riket och dödade upp
+  till en fjärdedel av befolkningen. Den långa fredstiden sedan Augustus, Pax Romana, närmade sig sitt slut. När
+  kejsar Marcus Aurelius dog år 180 e.Kr. började en mörkare tid.</p>
+</article>
+
+<!-- ============ EPOK 6: KRIS, DOMINAT & FALL ============ -->
+<div class="epoch-title" id="ep6" data-ep="6">VI · KRIS, DOMINAT &amp; FALL<small>180–476 e.Kr. · soldatkejsare, delning och slutet i väst</small></div>
+
+<article class="tcard left" data-tag="politik" id="t-caracalla">
+  <span class="tyear">212 e.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Caracallas edikt: alla blir romare</h3>
+  <p>Kejsar Caracalla gav romerskt medborgarskap till alla fria människor i hela riket. Med ett enda beslut
+  försvann den gamla gränsen mellan romare och provinsbor. Nu var alla romare.</p>
+  <div class="historio"><b>KÄLLORNA ÄR OENSE</b>Motiven är omdiskuterade. En förklaring är pengar: fler medborgare betydde fler som betalade skatt. En annan är att skillnaden mellan Rom och provinserna redan i praktiken hade suddats ut. Kanske låg det något i båda.</div>
+  <button class="plink" data-person="caracalla">Caracalla i galleriet →</button>
+</article>
+
+<article class="tcard right" data-tag="militar" id="t-soldatkejsare">
+  <span class="tyear">235–284 e.Kr.</span><span class="ttag">MILITÄR</span>
+  <h3>Soldatkejsarnas tid</h3>
+  <p>På bara hundra år kom och gick över sjuttio kejsare. Nästan alla sattes på tronen av soldater, och många
+  mördades av samma soldater. Att försörja en armé på över en halv miljon man blev för dyrt. Mynten blev sämre,
+  priserna skenade och ekonomin i väst gick allt sämre.</p>
+</article>
+
+<article class="tcard left" data-tag="politik" id="t-diocletianus">
+  <span class="tyear">284 e.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Diocletianus och tetrarkin</h3>
+  <p>Kejsar Diocletianus fick ordning på kaoset genom att bygga om staten helt. Riket blev för stort för en person,
+  så han delade upp styret på fyra kejsare, ett system som kallas <button class="term" data-term="tetrarki">tetrarki</button>.
+  Nu var det slut på leken att kejsaren bara var ”förste medborgare”. Under
+  <button class="term" data-term="dominat">dominatet</button> var han en öppet allsmäktig härskare, nästan som en gud.</p>
+  <button class="plink" data-person="diocletianus">Diocletianus i galleriet →</button>
+</article>
+
+<article class="tcard right" data-tag="politik" id="t-milano">
+  <span class="tyear">313 e.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Milano-ediktet: korset och kronan</h3>
+  <p>De kristna hade förföljts då och då, men inte egentligen för vad de trodde på. Problemet var att de vägrade
+  offra till kejsaren, och det sågs som svek mot staten. Konstantin den store ändrade på allt. Genom ediktet i Milano
+  blev kristendomen tillåten, och innan hundraåret var slut hade den blivit rikets officiella religion. Påven bär än
+  idag den gamla romerska titeln <em>pontifex maximus</em>.</p>
+  <button class="plink" data-person="konstantin">Konstantin i galleriet →</button>
+</article>
+
+<article class="tcard left" data-tag="militar" id="t-adrianopel">
+  <span class="tyear">378 e.Kr.</span><span class="ttag">MILITÄR</span>
+  <h3>Adrianopel: legionerna besegras</h3>
+  <p>När det fruktade ryttarfolket hunnerna kom västerut drev de framför sig en rad germanska folk, rakt in över
+  Roms gränser. Vid Adrianopel besegrade goterna den romerska armén och kejsar Valens dödades. Det var slutet på
+  Roms militära övertag. Allt fler soldater i armén var nu själva germaner, och deras lojalitet var osäker.</p>
+</article>
+
+<button class="pitem" data-px="px5" aria-label="Öppna paradoxen Fall och transformation">
+  <span class="pring">
+    <svg class="anim-column" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g class="col-stand" stroke="#C19A3D" stroke-width="3" fill="none">
+        <line x1="12" y1="54" x2="52" y2="54"/>
+        <rect x="24" y="14" width="16" height="34"/>
+        <line x1="20" y1="14" x2="44" y2="14"/><line x1="20" y1="10" x2="44" y2="10"/>
+        <line x1="29" y1="18" x2="29" y2="44"/><line x1="35" y1="18" x2="35" y2="44"/>
+      </g>
+      <g class="col-arch" stroke="#C19A3D" stroke-width="3" fill="none" opacity="0">
+        <line x1="12" y1="54" x2="52" y2="54"/>
+        <path d="M18 54 V30 a14 14 0 0 1 28 0 V54"/>
+        <path d="M24 54 V32 a8 8 0 0 1 16 0 V54"/>
+        <line x1="32" y1="10" x2="32" y2="18"/><line x1="28" y1="13" x2="36" y2="13"/>
+      </g>
+    </svg>
+  </span>
+  <span class="plabel">PARADOX V<br>FALL ↔ TRANSFORMATION</span>
+</button>
+
+<article class="tcard right" data-tag="politik" id="t-fallet">
+  <span class="tyear">395 &amp; 476 e.Kr.</span><span class="ttag">POLITIK</span>
+  <h3>Delningen och Västroms fall</h3>
+  <p>År 395 delades riket för gott i en östlig och en västlig del. År 476 avsattes den siste kejsaren i väst, och det
+  brukar räknas som slutet på antikens Rom. Men östra halvan levde vidare som det bysantinska riket i ytterligare
+  tusen år.</p>
+  <div class="historio"><b>KÄLLORNA ÄR OENSE</b>Föll Rom, eller förvandlades det bara? Historikern Demandt har samlat över 200 olika förklaringar till Roms fall, vilket kanske visar att ingen enda räcker. Nyare forskning påpekar att mycket romerskt levde vidare, både i de nya germanska rikena och i öst.</div>
+</article>
+
+<article class="tcard left" data-tag="liv" id="t-536">
+  <span class="tyear">Epilog · 536 e.Kr.</span><span class="ttag">LIV &amp; EKONOMI</span>
+  <h3>Året då solen slocknade</h3>
+  <p>En dramatisk klimatkatastrof mörklade solen över hela norra halvklotet, kanske lika förödande som digerdöden.
+  Den slog undan benen på det sista försöket att återerövra väst. I Norden minns man kanske katastrofen som myten om
+  Fimbulvintern. Här börjar folkvandringstidens värld, nästa kapitel i historien.</p>
+</article>
+
+</div><!-- /timeline -->
+</main>
+<!-- ==================== PARADOXERNA ==================== -->
+<section class="paradoxes" id="paradoxes">
+  <div class="section-head">
+    <h2>Paradoxernas Rom</h2>
+    <div class="rule"></div>
+    <p class="section-intro">Roms historia är byggd på motsatser. Fem spänningar löper genom hela förloppet, var och en markerad med sin ikon i tidslinjen. Tryck på en paradox för att fälla ut den och ställa sidorna mot varandra.</p>
+  </div>
+
+  <div class="pxpanel collapsed" id="px1">
+    <div class="pxhead" role="button" tabindex="0" aria-expanded="false" aria-controls="px1-content">
+      <svg class="anim-chain" viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke="#C19A3D" stroke-width="3.4"><ellipse cx="14" cy="32" rx="8" ry="11"/><ellipse cx="30" cy="32" rx="8" ry="11"/><g class="link-open"><path d="M40 21 a8 11 0 0 1 8 11 a8 11 0 0 1 -8 11"/></g></g></svg>
+      <div><h3>I · FRIHET ↔ SLAVERI</h3><div class="pxyears">ca 146–71 f.Kr., och hela rikets historia</div></div>
+      <span class="pxtoggle" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 6 L8 11 L13 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </div>
+    <div class="pxcontent" id="px1-content">
+    <div class="pxbody">
+      <div class="pxside a"><h4>VÄGEN TILL FRIHET</h4>
+        <p>Rom var faktiskt antikens mest öppna samhälle för den som var ofri. En slav som blev frigiven blev inte bara
+        fri, utan också romersk medborgare. Det var otänkbart i Grekland. Frigivna kunde driva affärer, och deras
+        barn kunde klättra i samhället.</p>
+        <p>Den här möjligheten att avancera var en av Roms styrkor: i stället för att bara stänga ute besegrade folk
+        tog Rom upp dem i gemenskapen.</p></div>
+      <div class="pxside b"><h4>SLAVSAMHÄLLETS BRUTALITET</h4>
+        <p>Samtidigt byggde hela ekonomin på slaveri. Hundratusentals krigsfångar slet i gruvor och på de stora godsen,
+        och en enda senator kunde äga 400 slavar. Enligt lagen var en slav inte en människa utan en ägodel.</p>
+        <p>När Spartacus uppror slogs ner år 71 f.Kr. korsfästes 6 000 människor längs en enda väg. Den frihet Rom
+        var så stolt över gällde alltså inte alla.</p></div>
+    </div>
+    <div class="pxq"><b>ATT DISKUTERA</b>Kan ett samhälle kallas ”fritt” om friheten bygger på att andra är ofria? Finns det något i vår egen tid där några få har det bra tack vare att andra har det dåligt?</div>
+    </div>
+  </div>
+
+  <div class="pxpanel collapsed" id="px2">
+    <div class="pxhead" role="button" tabindex="0" aria-expanded="false" aria-controls="px2-content">
+      <svg class="anim-fasces" viewBox="0 0 64 64" aria-hidden="true"><g class="fa-fasces" stroke="#C19A3D" stroke-width="3" fill="none"><line x1="26" y1="10" x2="26" y2="54"/><line x1="32" y1="8" x2="32" y2="56"/><line x1="38" y1="10" x2="38" y2="54"/><line x1="22" y1="20" x2="42" y2="16" stroke-width="2.4"/><line x1="22" y1="46" x2="42" y2="42" stroke-width="2.4"/><path d="M38 18 q10 -2 10 8" stroke-width="2.6"/></g><g class="fa-crown" stroke="#C19A3D" stroke-width="3" fill="none" opacity="0"><path d="M14 44 L20 24 L28 38 L32 18 L36 38 L44 24 L50 44 Z"/><circle cx="32" cy="14" r="2.6" fill="#C19A3D"/></g></svg>
+      <div><h3>II · RES PUBLICA ↔ ENVÄLDE</h3><div class="pxyears">133–27 f.Kr.</div></div>
+      <span class="pxtoggle" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 6 L8 11 L13 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </div>
+    <div class="pxcontent" id="px2-content">
+    <div class="pxbody">
+      <div class="pxside a"><h4>”REPUBLIKEN ÅTERSTÄLLD”</h4>
+        <p>Augustus kallade sig aldrig kung. Senaten fortsatte att mötas, val hölls, allt såg ut som förr. I sin egen
+        självbiografi skrev han att han hade ”befriat republiken från tyranni”. Han var ju bara <em>princeps</em>,
+        den förste bland medborgare.</p></div>
+      <div class="pxside b"><h4>ENVÄLDET BAKOM FASADEN</h4>
+        <p>Men i verkligheten hade Augustus samlat all makt hos sig själv: befälet över armén, vetorätt i politiken och
+        en propaganda som framställde honom som Roms räddare. Historikern Tacitus såg igenom det: freden var äkta, men
+        den byggde på att alla var för trötta för att göra motstånd. Republiken dog, utan att någon sa det högt.</p></div>
+    </div>
+    <div class="pxq"><b>ATT DISKUTERA</b>Spelar det någon roll om riksdag och val finns kvar, om en enda person ändå har all verklig makt? Känner du till länder i vår egen tid där det ser ut just så?</div>
+    </div>
+  </div>
+
+  <div class="pxpanel collapsed" id="px3">
+    <div class="pxhead" role="button" tabindex="0" aria-expanded="false" aria-controls="px3-content">
+      <svg class="anim-scale" viewBox="0 0 64 64" aria-hidden="true"><g stroke="#C19A3D" stroke-width="3" fill="none"><line x1="32" y1="12" x2="32" y2="54"/><line x1="24" y1="54" x2="40" y2="54" stroke-width="3.6"/></g><g class="beam"><g stroke="#C19A3D" stroke-width="2.8" fill="none"><line x1="10" y1="18" x2="54" y2="18"/><line x1="10" y1="18" x2="10" y2="26"/><path d="M4 30 a7 5 0 0 0 12 0"/><line x1="54" y1="18" x2="54" y2="26"/><path d="M48 30 a7 5 0 0 0 12 0"/></g><circle cx="32" cy="18" r="3" fill="#C19A3D"/></g></svg>
+      <div><h3>III · PAX ROMANA ↔ ERÖVRINGSFRED</h3><div class="pxyears">27 f.Kr.–117 e.Kr.</div></div>
+      <span class="pxtoggle" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 6 L8 11 L13 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </div>
+    <div class="pxcontent" id="px3-content">
+    <div class="pxbody">
+      <div class="pxside a"><h4>FREDENS ÅRHUNDRADEN</h4>
+        <p>I nästan 200 år rådde fred inom riket. Handeln blomstrade, städerna växte, och samma mynt och lagar gällde
+        från Skottland till Syrien. Aldrig förr hade så många människor fått leva i fred så länge. Augustus hyllades
+        som fredens väktare.</p></div>
+      <div class="pxside b"><h4>FRED GENOM SVÄRDET</h4>
+        <p>Men freden var byggd på erövring. Under samma tid kuvades Gallien blodigt, Dakien erövrades och gränskrigen
+        pågick hela tiden. Forskare är oeniga än idag: försvarade Rom bara sig självt och sina vänner, eller var
+        romarna helt enkelt giriga och maktlystna? Freden gällde <em>inuti</em> riket. Vid gränserna talade svärden.</p></div>
+    </div>
+    <div class="pxq"><b>ATT DISKUTERA</b>”De skapar en ödemark och kallar det fred”, lät Tacitus en fiende till Rom säga. Är det verklig fred, om den bygger på att man först har krossat alla motståndare?</div>
+    </div>
+  </div>
+
+  <div class="pxpanel collapsed" id="px4">
+    <div class="pxhead" role="button" tabindex="0" aria-expanded="false" aria-controls="px4-content">
+      <svg class="anim-flame" viewBox="0 0 64 64" aria-hidden="true"><g stroke="#C19A3D" stroke-width="3" fill="none"><path d="M16 46 h32 l-4 8 h-24 Z"/></g><path class="fl" d="M32 14 C38 24 42 28 42 35 a10 10 0 0 1 -20 0 C22 28 27 22 32 14 Z" fill="none" stroke="#C19A3D" stroke-width="3"/><path class="fl fl2" d="M32 26 C35 30 37 32 37 36 a5 5 0 0 1 -10 0 C27 32 30 30 32 26 Z" fill="#C19A3D" opacity=".85"/></svg>
+      <div><h3>IV · TOLERANS ↔ FÖRFÖLJELSE</h3><div class="pxyears">ca 60–313 e.Kr.</div></div>
+      <span class="pxtoggle" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 6 L8 11 L13 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </div>
+    <div class="pxcontent" id="px4-content">
+    <div class="pxbody">
+      <div class="pxside a"><h4>RIKET SOM ABSORBERADE GUDAR</h4>
+        <p>Rom var ovanligt öppet när det gällde religion. Gudar från Egypten, Mindre Asien och österut togs hela tiden
+        in i riket. Det viktiga var inte vad man trodde inne i huvudet, utan att man gjorde rätt offer. Så länge
+        gudarna hölls nöjda fick var och en dyrka vad de ville.</p></div>
+      <div class="pxside b"><h4>DE SOM VÄGRADE OFFRA</h4>
+        <p>Men de kristna vägrade offra till kejsaren, och det sågs inte som en trosfråga utan som svek mot staten.
+        Därför förföljdes de i omgångar. Sedan vände allt: Konstantin gjorde kristendomen tillåten år 313, och snart
+        var den statens egen religion. Nu var det i stället de gamla gudarna som trängdes undan.</p></div>
+    </div>
+    <div class="pxq"><b>ATT DISKUTERA</b>Rom förföljde inte de kristna för vad de trodde, utan för att de vägrade följa reglerna. Var Rom tolerant eller inte? Och varför blev det ofta mindre tolerant just när kristendomen väl hade vunnit?</div>
+    </div>
+  </div>
+
+  <div class="pxpanel collapsed" id="px5">
+    <div class="pxhead" role="button" tabindex="0" aria-expanded="false" aria-controls="px5-content">
+      <svg class="anim-column" viewBox="0 0 64 64" aria-hidden="true"><g class="col-stand" stroke="#C19A3D" stroke-width="3" fill="none"><line x1="12" y1="54" x2="52" y2="54"/><rect x="24" y="14" width="16" height="34"/><line x1="20" y1="14" x2="44" y2="14"/><line x1="20" y1="10" x2="44" y2="10"/><line x1="29" y1="18" x2="29" y2="44"/><line x1="35" y1="18" x2="35" y2="44"/></g><g class="col-arch" stroke="#C19A3D" stroke-width="3" fill="none" opacity="0"><line x1="12" y1="54" x2="52" y2="54"/><path d="M18 54 V30 a14 14 0 0 1 28 0 V54"/><path d="M24 54 V32 a8 8 0 0 1 16 0 V54"/><line x1="32" y1="10" x2="32" y2="18"/><line x1="28" y1="13" x2="36" y2="13"/></g></svg>
+      <div><h3>V · FALL ↔ TRANSFORMATION</h3><div class="pxyears">378–476 e.Kr., och därefter</div></div>
+      <span class="pxtoggle" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 6 L8 11 L13 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </div>
+    <div class="pxcontent" id="px5-content">
+    <div class="pxbody">
+      <div class="pxside a"><h4>KATASTROFEN</h4>
+        <p>Sett från väst ser det ut som ett fall: armén krossas vid Adrianopel 378, Rom plundras 410 och den siste
+        kejsaren avsätts 476. Ekonomin rasar, städerna krymper, vägarna förfaller. Forskaren Demandt har räknat till
+        över 200 föreslagna orsaker till fallet, vilket kanske betyder att ingen enda av dem räcker som förklaring.</p></div>
+      <div class="pxside b"><h4>FORTSÄTTNINGEN</h4>
+        <p>Men nyare forskning talar hellre om förvandling än om fall. Östra riket levde vidare i tusen år. De nya
+        germanska kungarna tog över romersk lag, latin och förvaltning. Kyrkan ärvde rikets uppbyggnad, och påven bär
+        än idag en gammal romersk titel. Latinet lever kvar i franskan, spanskan och italienskan. Föll Rom, eller
+        bytte det bara skepnad?</p></div>
+    </div>
+    <div class="pxq"><b>ATT DISKUTERA</b>Om romersk lag, latin och kyrka levde vidare långt efteråt, vad var det egentligen som ”föll” år 476? Och vem är det som bestämmer när en hel civilisation ska räknas som slut?</div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PERSONGALLERI ==================== -->
+<div class="section-head" id="galleri">
+  <h2>Persongalleriet</h2>
+  <div class="rule"></div>
+  <p class="section-intro">Sjutton personer i tre grupper: de som styrde, de som utmanade, och de genom vilka vi
+  känner Rom. Tryck på ett kort för att läsa mer; det förblir öppet tills du stänger det.</p>
+</div>
+
+<div class="wrap">
+<div class="gallery-groups" id="gallery">
+
+<!-- Byt ut varje platshållare mot en bild:
+     ersätt <div class="pinitial">X</div> med <img src="bilder/namn.jpg" alt="Namn"> -->
+
+<section class="gclass makten">
+  <div class="gclass-head">
+    <h3>MAKTEN</h3>
+    <span class="gc-latin">IMPERIVM</span>
+    <span class="gc-count">8 PERSONER</span>
+    <p class="gc-desc">De som styrde: kungar, diktatorer och kejsare.</p>
+  </div>
+  <div class="gallery">
+<div class="pcard" role="button" tabindex="0" id="p-tarquinius" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/tarquinius.jpg" alt="Tarquinius Superbus" loading="lazy" data-initial="T"></div>
+    <div class="pname">Tarquinius Superbus</div>
+    <div class="prole">Roms siste kung · d. ca 495 f.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Tarquinius Superbus</h3>
+    <div class="pdrole">Roms siste kung, ”den arrogante” · störtad ca 510 f.Kr.</div>
+    <p>Den etruskiske kungen beskrivs i de romerska berättelserna som en typisk grym tyrann. När en av hans söner
+    våldtog Lucretia fick folket nog: hela kungafamiljen drevs bort och republiken föddes. Men den bilden är skriven
+    av segrarna. Andra spår tyder på att det egentligen var maktkamper mellan etruskiska städer, med kung Lars
+    Porsenna i centrum, som avgjorde mest.</p>
+    <a class="plink" href="#t-lucretia">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-sulla" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/sulla.jpg" alt="Sulla" loading="lazy" data-initial="S"></div>
+    <div class="pname">Sulla</div>
+    <div class="prole">Diktator · 138–78 f.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Lucius Cornelius Sulla</h3>
+    <div class="pdrole">General och diktator · 138–78 f.Kr.</div>
+    <p>Sulla gjorde det ingen trott var möjligt: han marscherade mot Rom med sin egen armé, inte bara en gång utan två.
+    Som diktator införde han dödslistor där fiender fritt fick dödas och staten tog deras egendom. Konstigt nog såg
+    han sig själv som republikens räddare, stärkte senaten och lämnade sedan makten frivilligt. Men han hade visat en
+    sak: den som har armén kan ta makten. Caesar tog lärdomen på allvar.</p>
+    <a class="plink" href="#t-sulla">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-caesar" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/caesar.jpg" alt="Julius Caesar" loading="lazy" data-initial="J"></div>
+    <div class="pname">Julius Caesar</div>
+    <div class="prole">Erövrare, diktator · 100–44 f.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Gaius Julius Caesar</h3>
+    <div class="pdrole">General, författare, diktator på livstid · 100–44 f.Kr.</div>
+    <p>Caesar hade allt som gjorde republikens sista tid så farlig: enorm ärelystnad, stöd hos folket och en armé som
+    var lojal mot honom personligen. Han erövrade Gallien 58–52 f.Kr. och skrev sin egen version av kriget i boken
+    <em>Commentarii</em>, reklam förklädd till nykter rapport. Efter segern i inbördeskriget blev han diktator på
+    livstid, tills han knivhöggs den 15 mars 44 f.Kr. Mördarna ville rädda republiken, men gav den i stället
+    dödsstöten.</p>
+    <a class="plink" href="#t-caesar">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-augustus" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/augustus.jpg" alt="Augustus" loading="lazy" data-initial="A"></div>
+    <div class="pname">Augustus</div>
+    <div class="prole">Förste kejsaren · 63 f.Kr.–14 e.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Augustus (Octavianus)</h3>
+    <div class="pdrole">Caesars adoptivson, Roms förste kejsare · 63 f.Kr.–14 e.Kr.</div>
+    <p>Bara nitton år gammal kastade sig Octavianus in i kampen om makten efter Caesars död. Fjorton år senare, efter
+    segern vid Actium, var han ensam herre över Rom. Det smarta var formen: han ”återställde republiken” men behöll
+    i praktiken all makt själv. Propagandan gjorde honom till fredens väktare, Pax Romana. Han skrev sin egen
+    hyllande självbiografi, medan Tacitus skrev motbilden: en fred som kostade friheten.</p>
+    <a class="plink" href="#t-augustus">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-trajanus" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/trajanus.jpg" alt="Trajanus" loading="lazy" data-initial="T"></div>
+    <div class="pname">Trajanus</div>
+    <div class="prole">Kejsare, erövrare · 53–117 e.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Trajanus</h3>
+    <div class="pdrole">Kejsare 98–117 e.Kr., rikets största utbredning</div>
+    <p>Under Trajanus, den förste kejsaren född utanför Italien, blev riket som allra störst. Han erövrade Dakien
+    (dagens Rumänien), vars guld betalade stora byggen i Rom, och förde krig långt österut, ända bort mot Persiska
+    viken. Eftervärlden mindes honom som ”den bäste av kejsare”, men hans erövringar i öster gick aldrig att
+    behålla.</p>
+    <a class="plink" href="#t-trajanus">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-caracalla" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/caracalla.jpg" alt="Caracalla" loading="lazy" data-initial="C"></div>
+    <div class="pname">Caracalla</div>
+    <div class="prole">Kejsare, medborgarskapsediktet · 188–217 e.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Caracalla</h3>
+    <div class="pdrole">Kejsare 211–217 e.Kr. · ediktet år 212</div>
+    <p>Caracalla var en av de mest brutala kejsarna; han lät till och med mörda sin egen bror. Men hans beslut år 212
+    förändrade riket i grunden: romerskt medborgarskap gavs till alla fria invånare. Forskare är oeniga om varför.
+    Handlade det om pengar, alltså fler skattebetalare, eller om ett erkännande av att skillnaden mellan Rom och
+    provinserna ändå var borta? Hur som helst var ”romare” efter 212 inte längre en fråga om varifrån man kom.</p>
+    <a class="plink" href="#t-caracalla">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-diocletianus" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/diocletianus.jpg" alt="Diocletianus" loading="lazy" data-initial="D"></div>
+    <div class="pname">Diocletianus</div>
+    <div class="prole">Kejsare, tetrarkins skapare · 244–311 e.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Diocletianus</h3>
+    <div class="pdrole">Kejsare 284–305 e.Kr. · dominatets arkitekt</div>
+    <p>En vanlig soldat som arbetade sig ända upp till kejsartronen och gjorde slut på kaoset genom att bygga om staten
+    helt. Han delade upp styret på fyra kejsare (tetrarki), byggde ut förvaltningen och blev en öppet allsmäktig
+    härskare. Diocletianus fick ordning på riket, men lade också grunden till den delning i öst och väst som blev
+    permanent. Ovanligt nog lämnade han makten frivilligt och drog sig tillbaka för att, enligt legenden, odla kål.</p>
+    <a class="plink" href="#t-diocletianus">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-konstantin" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/konstantin.jpg" alt="Konstantin den store" loading="lazy" data-initial="K"></div>
+    <div class="pname">Konstantin den store</div>
+    <div class="prole">Kejsare, kristendomens vändpunkt · ca 272–337</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Konstantin den store</h3>
+    <div class="pdrole">Kejsare 306–337 e.Kr. · Milano-ediktet 313</div>
+    <p>Konstantin vann kampen om tronen och fattade två beslut som skulle prägla tusen år framåt. Han gjorde
+    kristendomen tillåten genom ediktet i Milano 313, och han grundade en ny huvudstad i öster, Konstantinopel. Med
+    det pekade han ut framtiden: ett kristet rike med tyngdpunkten i öst, den del som skulle överleva Västroms fall
+    med tusen år.</p>
+    <a class="plink" href="#t-milano">Visa i tidslinjen →</a>
+  </div>
+</div>
+  </div>
+</section>
+
+<section class="gclass utmanarna">
+  <div class="gclass-head">
+    <h3>UTMANARNA</h3>
+    <span class="gc-latin">DISCORDIA</span>
+    <span class="gc-count">6 PERSONER</span>
+    <p class="gc-desc">De som stred mot ordningen, eller om den.</p>
+  </div>
+  <div class="gallery">
+<div class="pcard" role="button" tabindex="0" id="p-hannibal" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/hannibal.jpg" alt="Hannibal" loading="lazy" data-initial="H"></div>
+    <div class="pname">Hannibal</div>
+    <div class="prole">Karthagos fältherre · 247–ca 183 f.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Hannibal Barkas</h3>
+    <div class="pdrole">Karthagisk fältherre, Roms farligaste fiende · 247–ca 183 f.Kr.</div>
+    <p>Hannibal tog kriget till Italien genom att gå över Alperna med sin armé och sina elefanter, och vid Cannae
+    216 f.Kr. tillfogade han Rom ett av dess värsta nederlag någonsin. Ändå vann han aldrig kriget. Rom vägrade
+    förhandla och nötte ner honom med sina enorma reserver av soldater. Minnet av Hannibal satt så djupt att romarna
+    till slut jämnade Karthago med marken år 146 f.Kr.</p>
+    <a class="plink" href="#t-hannibal">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-gracchus" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/gracchus.jpg" alt="Bröderna Gracchus" loading="lazy" data-initial="B"></div>
+    <div class="pname">Bröderna Gracchus</div>
+    <div class="prole">Reformatorer · d. 133 &amp; 121 f.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Tiberius &amp; Gaius Gracchus</h3>
+    <div class="pdrole">Folktribuner och jordreformatorer · mördade 133 resp. 121 f.Kr.</div>
+    <p>Bröderna försökte dela ut statens mark till de fattiga bönder som slagits ut av de stora godsen. Överklassen i
+    senaten svarade med våld: Tiberius slogs ihjäl 133 f.Kr. och Gaius dödades 121 f.Kr. Det var första gången
+    politiska strider i Rom avgjordes med mord, och det blev början på den kedja av våld som via Marius, Sulla och
+    Caesar till slut skulle förstöra republiken.</p>
+    <a class="plink" href="#t-gracchus">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-marius" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/marius.jpg" alt="Marius" loading="lazy" data-initial="M"></div>
+    <div class="pname">Marius</div>
+    <div class="prole">General, armereformator · 157–86 f.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Gaius Marius</h3>
+    <div class="pdrole">General och sjufaldig konsul · 157–86 f.Kr.</div>
+    <p>Marius räddade Rom militärt men skadade det politiskt. När han lät även fattiga bli soldater fick Rom en stark
+    yrkesarmé. Problemet var att soldaterna nu var lojala mot generalen som gav dem lön och jord, inte mot staten.
+    På så sätt blev arméerna generalernas privata vapen, vapen som Sulla och Caesar snart vände mot Rom självt.</p>
+    <a class="plink" href="#t-marius">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-pompejus" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/pompejus.jpg" alt="Pompejus" loading="lazy" data-initial="P"></div>
+    <div class="pname">Pompejus</div>
+    <div class="prole">Fältherre, triumvir · 106–48 f.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Gnaeus Pompejus Magnus</h3>
+    <div class="pdrole">Fältherre, ”den store” · 106–48 f.Kr.</div>
+    <p>Pompejus blev känd genom sina segrar i öster: han rensade Medelhavet från pirater och lade nya områden under
+    Rom. Tillsammans med Crassus och Caesar delade han makten i det första triumviratet, men alliansen sprack. I
+    inbördeskriget ställde han sig på senatens och den gamla ordningens sida, och förlorade. Efter nederlaget flydde
+    han till Egypten, där han mördades så fort han gått i land.</p>
+    <a class="plink" href="#t-triumvirat">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-spartacus" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/spartacus.jpg" alt="Spartacus" loading="lazy" data-initial="S"></div>
+    <div class="pname">Spartacus</div>
+    <div class="prole">Gladiator, upprorsledare · d. 71 f.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Spartacus</h3>
+    <div class="pdrole">Trakisk gladiator, ledare för det stora slavupproret · d. 71 f.Kr.</div>
+    <p>Spartacus flydde från en gladiatorskola och samlade en armé av förrymda slavar som i två år besegrade den ena
+    romerska styrkan efter den andra. Till slut krossades upproret, och 6 000 fångar korsfästes längs vägen Via
+    Appia, mil efter mil, som en varning. Spartacus visade slavsamhällets grundproblem: Roms rikedom vilade på
+    människor som hade allt att vinna på att riket föll.</p>
+    <a class="plink" href="#t-spartacus">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-lucretia" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/lucretia.jpg" alt="Lucretia" loading="lazy" data-initial="L"></div>
+    <div class="pname">Lucretia</div>
+    <div class="prole">Republikens katalysator · ca 510 f.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Lucretia</h3>
+    <div class="pdrole">Adelskvinna vars öde utlöste monarkins fall · ca 510 f.Kr.</div>
+    <p>I den romerska berättelsen står Lucretia för allt som är gott och rätt. Efter att ha våldtagits av kungasonen
+    berättar hon vad som hänt och tar sitt eget liv, och hennes död blir gnistan som störtar kungadömet. Hur mycket
+    som är sant vet vi inte, men berättelsen visar vad romarna tyckte att republiken byggde på: att ingen, inte ens
+    en kung, står över lag och heder.</p>
+    <a class="plink" href="#t-lucretia">Visa i tidslinjen →</a>
+  </div>
+</div>
+  </div>
+</section>
+
+<section class="gclass berattarna">
+  <div class="gclass-head">
+    <h3>BERÄTTARNA</h3>
+    <span class="gc-latin">MEMORIA</span>
+    <span class="gc-count">3 PERSONER</span>
+    <p class="gc-desc">De genom vilka vi känner Rom: författare och myt. Allt vi vet är förmedlat.</p>
+  </div>
+  <div class="gallery">
+<div class="pcard" role="button" tabindex="0" id="p-tacitus" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/tacitus.jpg" alt="Tacitus" loading="lazy" data-initial="T"></div>
+    <div class="pname">Tacitus</div>
+    <div class="prole">Historiker, kritiker · ca 56–120 e.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Publius Cornelius Tacitus</h3>
+    <div class="pdrole">Historiker och kejsardömets skarpaste kritiker · ca 56–120 e.Kr.</div>
+    <p>Tacitus skrev kejsartidens historia inifrån överklassen, och han skonade ingen. Där Augustus propaganda såg
+    fred såg Tacitus utmattning och förlorad frihet. Där andra såg civilisation ställde han de ”bortskämda” romarna
+    mot de ”starka” barbarerna i norr. Han påminner oss om två saker: att romarna själva kunde vara sina hårdaste
+    kritiker, och att all historieskrivning alltid är skriven ur någons synvinkel.</p>
+    <a class="plink" href="#t-augustus">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-virgilius" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/virgilius.jpg" alt="Virgilius" loading="lazy" data-initial="V"></div>
+    <div class="pname">Virgilius</div>
+    <div class="prole">Diktare, Aeneiden · 70–19 f.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Publius Vergilius Maro</h3>
+    <div class="pdrole">Augustus-tidens störste diktare · 70–19 f.Kr.</div>
+    <p>Virgilius gav Rom dess stora hjältedikt: <em>Aeneiden</em>, berättelsen om trojanen Aeneas som enligt gudarnas
+    vilja grundar det som ska bli Rom. Dikten gav romarna känslan av ett gudomligt uppdrag: att styra och civilisera
+    världen. Samtidigt var den den bästa reklamen Augustus kunde få. Litteraturen visar här sina två sidor: den
+    finaste konst, och samtidigt maktens vackraste språkrör.</p>
+    <a class="plink" href="#t-augustus">Visa i tidslinjen →</a>
+  </div>
+</div>
+<div class="pcard" role="button" tabindex="0" id="p-romulus" aria-expanded="false">
+  <div class="pcard-front">
+    <div class="pimg"><img src="images/romulus.jpg" alt="Romulus" loading="lazy" data-initial="R"></div>
+    <div class="pname">Romulus</div>
+    <div class="prole">Mytisk grundare · 753 f.Kr.</div>
+  </div>
+  <div class="pdetail">
+    <button class="pclose" aria-label="Stäng">✕</button>
+    <h3>Romulus</h3>
+    <div class="pdrole">Mytisk grundare av Rom · trad. 753 f.Kr.</div>
+    <p>Enligt legenden grundade Romulus staden på Palatinen och dödade sin bror Remus i ett gräl om var den skulle
+    ligga. Utgrävningar visar att platsen verkligen var bebodd då, men Romulus själv är en myt. Redan i berättelsen
+    om att en bror dödar en annan finns romarnas stora skräck: inbördeskriget. Att Augustus långt senare kallade sig
+    ”en andre Romulus” visar hur levande myten var.</p>
+    <a class="plink" href="#t-grundandet">Visa i tidslinjen →</a>
+  </div>
+</div>
+  </div>
+</section>
+
+</div><!-- /gallery -->
+</div>
+<!-- ==================== ORDLISTA ==================== -->
+<div class="section-head" id="ordlista">
+  <h2>Ordlistan</h2>
+  <div class="rule"></div>
+  <p class="section-intro">Alla begrepp från tidslinjen, A–Ö. Färgen visar tema, och varje begrepp länkar
+  tillbaka till sin plats i historien.</p>
+</div>
+<div class="glossary-tools">
+  <input type="search" id="gsearch" placeholder="Sök begrepp, t.ex. latifundia, princeps, annona …" aria-label="Sök i ordlistan">
+</div>
+<div class="wrap">
+  <dl class="glist" id="glist"></dl>
+</div>
+
+<!-- ==================== KÄLLOR ==================== -->
+<section class="sources">
+  <div class="section-head">
+    <h2>Källor</h2>
+    <div class="rule"></div>
+    <p class="section-intro">Sidan bygger på en tredelad rapport sammanställd ur följande verk.</p>
+  </div>
+  <ul>
+    <li>Beard, M., <em>SPQR: A History of Ancient Rome</em></li>
+    <li><em>A Concise Survey of Western Civilization</em></li>
+    <li><em>A Short History of the Ancient World</em></li>
+    <li><em>Ancient Civilizations</em></li>
+    <li><em>The Ancient World: A Social and Cultural History</em></li>
+    <li><em>The Oxford World History of Empire</em></li>
+    <li><em>Western Civilization: A Brief History</em></li>
+    <li><em>Western Civilization: A Concise History</em></li>
+    <li><em>Western Civilizations: Their History &amp; Their Culture, Vol. 1</em></li>
+    <li><em>Skånes historia, del 1</em> (klimathändelsen 536 e.Kr.)</li>
+  </ul>
+</section>
+
+<footer>
+  <div class="spqr">S·P·Q·R</div>
+  ROMA · 753 F.KR. — 476 E.KR.
+</footer>
+
+<div id="tip" role="tooltip"></div>
+
+<script>
+/* ==================== ORDLISTA / BEGREPP ==================== */
+const GLOSSARY = {
+  "annona":{t:"Annona",tag:"liv",def:"Statlig gratisutdelning av spannmål (senare även vin och olja) till Roms fattiga. Kärnan i politiken ”bröd och skådespel”.",card:"t-miljonstaden"},
+  "auctoritas":{t:"Auctoritas",tag:"politik",def:"Senatens (och senare kejsarens) informella auktoritet och tyngd: inte formell lagmakt, men i praktiken avgörande.",card:"t-institutioner"},
+  "collegia":{t:"Collegia",tag:"liv",def:"Branschorganisationer och föreningar där hantverkare och handlare, fria såväl som frigivna, organiserade sig.",card:"t-spartacus"},
+  "denar":{t:"Denar",tag:"liv",def:"Romerskt silvermynt och ryggraden i rikets gemensamma penningekonomi, som möjliggjorde handel och kredit över hela Medelhavsvärlden.",card:"t-handel"},
+  "diktator":{t:"Diktator",tag:"politik",def:"Ursprungligen ett tillfälligt krisämbete med all makt i sex månader. Sulla och Caesar sprängde tidsgränsen; Caesar blev diktator på livstid.",card:"t-sulla"},
+  "dominat":{t:"Dominat",tag:"politik",def:"Senantikens öppet enväldiga kejsardöme (av dominus, ”herre”), infört under Diocletianus, i kontrast till principatets republikanska fasad.",card:"t-diocletianus"},
+  "fasces":{t:"Fasces",tag:"politik",def:"Spöknippen (med bila) som bars av liktorerna framför konsulerna; symbolen för imperium, makten att straffa. Ordet ”fascism” kommer härifrån.",card:"t-institutioner"},
+  "folktribun":{t:"Folktribun",tag:"politik",def:"Plebejernas eget ämbete, framtvingat i ståndskampen: personligt okränkbar och med rätt att lägga veto mot magistraternas beslut.",card:"t-standskampen"},
+  "imperium":{t:"Imperium",tag:"politik",def:"Den formella rätten att föra befäl över arméer och rådfråga gudarna; konsulernas och senare kejsarnas maktkärna.",card:"t-institutioner"},
+  "insulae":{t:"Insulæ",tag:"liv",def:"Flervåningshyreshus av trä och tegel där Roms fattiga majoritet bodde: trånga, brandfarliga och ofta utan vatten och sanitet.",card:"t-miljonstaden"},
+  "klientvasen":{t:"Klientväsen",tag:"liv",def:"Systemet av ömsesidigt beroende där patroner gav skydd och fördelar åt klienter i utbyte mot politisk lojalitet och röster.",card:"t-familjen"},
+  "latifundia":{t:"Latifundia",tag:"liv",def:"Slavdrivna storgods som växte fram när expansionens vinster lät aristokratin köpa upp jorden, och ruinerade de fria bönderna.",card:"t-latifundia"},
+  "libertus":{t:"Libertus",tag:"liv",def:"Frigiven slav. Unikt för Rom: en libertus blev romersk medborgare och kunde driva affärer: en social rörlighet utan motstycke i antiken.",card:"t-spartacus"},
+  "manipular-legion":{t:"Manipel-legion",tag:"militar",def:"Roms armé indelad i mindre, rörliga grupper (manipler) i stället för en enda tät formation. Gav den flexibilitet i svår terräng.",card:"t-legionen"},
+  "manumission":{t:"Manumission",tag:"liv",def:"Frigivning av slav. Vägen från egendom till medborgare: den romerska slavekonomins märkligaste säkerhetsventil.",card:"t-spartacus"},
+  "panem":{t:"Panem et circenses",tag:"liv",def:"”Bröd och skådespel”: satirikern Juvenalis etikett på politiken att hålla massorna lugna med gratis spannmål och storslagen underhållning.",card:"t-miljonstaden"},
+  "paterfamilias":{t:"Paterfamilias",tag:"liv",def:"Familjefadern: den romerska samhällsordningens grundsten, med absolut makt över familjens alla medlemmar.",card:"t-familjen"},
+  "patria-potestas":{t:"Patria potestas",tag:"liv",def:"Faderns juridiskt absoluta makt över barn och hustru, i teorin ända till liv och död.",card:"t-familjen"},
+  "patricier":{t:"Patricier",tag:"politik",def:"Den lilla ärftliga elit som hävdade nedstigning från de ursprungliga senatorerna och först monopoliserade alla ämbeten.",card:"t-standskampen"},
+  "pax-deorum":{t:"Pax deorum",tag:"liv",def:"”Gudarnas fred”: det goda förhållandet till gudarna som upprätthölls genom exakta offerriter och spådomskonst. Religionens hela syfte.",card:"t-religion"},
+  "pax-romana":{t:"Pax Romana",tag:"militar",def:"Den inre fred som rådde i riket från Augustus till ca 180 e.Kr.: fredens århundraden, vunna och bevakade med svärdet.",card:"t-augustus"},
+  "penater":{t:"Penater",tag:"liv",def:"Hushållets skyddsgudar (förrådets och hemmets), dyrkade dagligen vid husaltaret tillsammans med larerna.",card:"t-religion"},
+  "larer":{t:"Larer",tag:"liv",def:"Husgudar och förfädersandar som vakade över hemmet; vardagsreligionens centrum vid sidan av statskulten.",card:"t-religion"},
+  "plebejer":{t:"Plebejer",tag:"politik",def:"Den stora massan av medborgare, från rika köpmän till fattiga bönder, som i ståndskampen tillkämpade sig politiska rättigheter.",card:"t-standskampen"},
+  "princeps":{t:"Princeps",tag:"politik",def:"”Förste medborgaren”: Augustus titel, vald för att tona ned enväldet. Har gett epoken dess namn: principatet.",card:"t-augustus"},
+  "proskriptioner":{t:"Proskriptioner",tag:"politik",def:"Sullas offentliga dödslistor: namngivna politiska fiender kunde dödas straffritt och deras egendom konfiskerades.",card:"t-sulla"},
+  "res-publica":{t:"Res publica",tag:"politik",def:"”Det offentliga tinget”: staten som allas angelägenhet, i motsats till kungens privata herravälde (res privata). Ursprunget till ordet republik.",card:"t-lucretia"},
+  "romanisering":{t:"Romanisering",tag:"militar",def:"Processen där provinserna tog till sig romersk livsstil, lag och språk, ofta driven underifrån av lokala eliter som ville vinna status.",card:"t-romanisering"},
+  "sacrosanctitas":{t:"Sacrosanctitas",tag:"politik",def:"Folktribunernas personliga okränkbarhet: att skada en tribun var ett brott mot gudarna själva.",card:"t-standskampen"},
+  "secession":{t:"Secession",tag:"politik",def:"När plebejerna i protest lämnade staden i massor och vägrade arbeta och slåss. Antikens variant av generalstrejk, och deras starkaste påtryckningsmedel.",card:"t-standskampen"},
+  "senatus-consulta":{t:"Senatus consulta",tag:"politik",def:"Senatens beslut: formellt bara råd, men genom senatens auctoritas i praktiken bindande som lag.",card:"t-institutioner"},
+  "tetrarki":{t:"Tetrarki",tag:"politik",def:"Diocletianus fyrkejsarvälde: riket styrs av två huvudkejsare (augusti) och två medkejsare (caesares); ett svar på att riket blivit för stort för en man.",card:"t-diocletianus"},
+  "thermae":{t:"Thermae",tag:"liv",def:"De offentliga badhusen: sociala centra där alla klasser möttes för bad, hygien, träning och nätverkande.",card:"t-colosseum"},
+  "tribunicia-potestas":{t:"Tribunicia potestas",tag:"politik",def:"Folktribunens makt (veto och lagförslag) som Augustus lät tilldela sig själv utan att inneha ämbetet. En hörnsten i kejsarmakten.",card:"t-augustus"},
+  "triumvirat":{t:"Triumvirat",tag:"politik",def:"”Tremannavälde”: informell maktdelning mellan tre män. Det första (Pompejus, Crassus, Caesar) styrde staten vid sidan av senaten.",card:"t-triumvirat"},
+  "gladius":{t:"Gladius",tag:"militar",def:"Legionärens korta huggsvärd: enkelt, dödligt effektivt i närstrid, och ursprunget till ordet gladiator.",card:"t-legionen"},
+  "pilum":{t:"Pilum",tag:"militar",def:"Det tunga kastspjutet som kastades innan närstriden, konstruerat för att böjas vid träff så att det inte kunde kastas tillbaka.",card:"t-legionen"}
+};
+const TAGNAME = {politik:"POLITIK", militar:"MILITÄR & EXPANSION", liv:"LIV & EKONOMI"};
+
+/* ---------- Bygg ordlistan ---------- */
+const glist = document.getElementById('glist');
+Object.keys(GLOSSARY).sort((a,b)=>GLOSSARY[a].t.localeCompare(GLOSSARY[b].t,'sv')).forEach(key=>{
+  const g = GLOSSARY[key];
+  const el = document.createElement('div');
+  el.className = 'gentry';
+  el.dataset.tag = g.tag;
+  el.dataset.key = key;
+  el.innerHTML = '<dt>'+g.t+'</dt><dd>'+g.def+'</dd>' +
+    (g.card ? '<a href="#'+g.card+'">Visa i tidslinjen →</a>' : '');
+  glist.appendChild(el);
+});
+
+/* ---------- Sök i ordlistan ---------- */
+document.getElementById('gsearch').addEventListener('input', e=>{
+  const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.gentry').forEach(el=>{
+    const hit = !q || el.textContent.toLowerCase().includes(q);
+    el.style.display = hit ? '' : 'none';
+  });
+});
+
+/* ---------- Begreppstooltips ---------- */
+const tip = document.getElementById('tip');
+let tipOpenFor = null;
+document.addEventListener('click', e=>{
+  const term = e.target.closest('.term');
+  if(term){
+    const key = term.dataset.term;
+    const g = GLOSSARY[key];
+    if(!g) return;
+    if(tipOpenFor === term){ hideTip(); return; }
+    tip.innerHTML = '<b>'+g.t+'</b>'+g.def+'<br><a href="#ordlista">Se hela ordlistan →</a>';
+    tip.style.display = 'block';
+    const r = term.getBoundingClientRect();
+    const tw = Math.min(320, window.innerWidth - 32);
+    tip.style.maxWidth = tw+'px';
+    let left = window.scrollX + r.left;
+    if(left + tw > window.scrollX + window.innerWidth - 16) left = window.scrollX + window.innerWidth - tw - 16;
+    tip.style.left = left+'px';
+    tip.style.top = (window.scrollY + r.bottom + 8)+'px';
+    tipOpenFor = term;
+  } else if(!e.target.closest('#tip')){
+    hideTip();
+  }
+});
+function hideTip(){ tip.style.display='none'; tipOpenFor=null; }
+window.addEventListener('scroll', ()=>{ if(tipOpenFor) hideTip(); }, {passive:true});
+
+/* ---------- Taggfilter ---------- */
+const activeTags = new Set(['politik','militar','liv']);
+document.querySelectorAll('.chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    const t = chip.dataset.tag;
+    if(activeTags.has(t) && activeTags.size===1){
+      // sista aktiva: slå på alla igen
+      ['politik','militar','liv'].forEach(x=>activeTags.add(x));
+    } else if(activeTags.has(t)){
+      activeTags.delete(t);
+    } else {
+      activeTags.add(t);
+    }
+    document.querySelectorAll('.chip').forEach(c=>{
+      c.classList.toggle('off', !activeTags.has(c.dataset.tag));
+    });
+    document.querySelectorAll('.tcard').forEach(card=>{
+      card.style.display = activeTags.has(card.dataset.tag) ? '' : 'none';
+    });
+  });
+});
+
+/* ---------- Paradoxpaneler: fäll ihop / ut ---------- */
+function setPanel(panel, collapsed){
+  panel.classList.toggle('collapsed', collapsed);
+  panel.querySelector('.pxhead').setAttribute('aria-expanded', String(!collapsed));
+}
+document.querySelectorAll('.pxpanel .pxhead').forEach(head=>{
+  const panel = head.closest('.pxpanel');
+  head.addEventListener('click', ()=> setPanel(panel, !panel.classList.contains('collapsed')));
+  head.addEventListener('keydown', e=>{
+    if(e.key==='Enter' || e.key===' '){ e.preventDefault(); head.click(); }
+  });
+});
+
+/* ---------- Paradoxikoner & pdots → öppna panelen och scrolla dit ---------- */
+document.querySelectorAll('[data-px]').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    const target = document.getElementById(el.dataset.px);
+    if(!target) return;
+    setPanel(target, false); // se till att den är utfälld
+    target.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+});
+
+/* ---------- Persongalleri: bild-fallback (visar initial om bild saknas) ---------- */
+document.querySelectorAll('.pimg img').forEach(img=>{
+  img.addEventListener('error', ()=>{
+    const init = img.getAttribute('data-initial') || '·';
+    const box = img.parentElement;
+    img.remove();
+    const d = document.createElement('div');
+    d.className = 'pinitial';
+    d.textContent = init;
+    box.appendChild(d);
+  });
+});
+
+/* ---------- Persongalleri: expandera/stäng ---------- */
+document.querySelectorAll('.pcard').forEach(card=>{
+  card.addEventListener('keydown', e=>{
+    if((e.key==='Enter'||e.key===' ') && e.target===card){
+      e.preventDefault(); card.click();
+    }
+  });
+});
+document.querySelectorAll('.pcard').forEach(card=>{
+  card.addEventListener('click', e=>{
+    if(e.target.closest('.pclose')){
+      card.classList.remove('open');
+      card.setAttribute('aria-expanded','false');
+      e.stopPropagation();
+      return;
+    }
+    if(e.target.closest('a')) return; // låt "visa i tidslinjen" fungera
+    if(!card.classList.contains('open')){
+      card.classList.add('open');
+      card.setAttribute('aria-expanded','true');
+    }
+  });
+});
+
+/* ---------- "X i galleriet"-knappar i tidslinjen ---------- */
+document.querySelectorAll('.plink[data-person]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const card = document.getElementById('p-'+btn.dataset.person);
+    if(!card) return;
+    card.classList.add('open');
+    card.setAttribute('aria-expanded','true');
+    card.scrollIntoView({behavior:'smooth', block:'center'});
+  });
+});
+
+/* ---------- Markören på den horisontella epok-linjen ---------- */
+const EPOCHS = [
+  {id:'ep1', start:0,    end:19.8},
+  {id:'ep2', start:19.8, end:39.8},
+  {id:'ep3', start:39.8, end:49.4},
+  {id:'ep4', start:49.4, end:59.1},
+  {id:'ep5', start:59.1, end:75.9},
+  {id:'ep6', start:75.9, end:100}
+].map(e=>({...e, el:document.getElementById(e.id)}));
+const marker = document.getElementById('marker');
+const tl = document.getElementById('tl');
+
+function epochBounds(i){
+  const startEl = EPOCHS[i].el;
+  const top = startEl.getBoundingClientRect().top + window.scrollY;
+  const nextEl = (i < EPOCHS.length-1) ? EPOCHS[i+1].el : null;
+  const bottom = nextEl
+    ? nextEl.getBoundingClientRect().top + window.scrollY
+    : tl.getBoundingClientRect().bottom + window.scrollY;
+  return {top, bottom};
+}
+
+function updateMarker(){
+  const probe = window.scrollY + window.innerHeight * 0.4;
+  const tlTop = tl.getBoundingClientRect().top + window.scrollY;
+  const tlBottom = tl.getBoundingClientRect().bottom + window.scrollY;
+  let pct = 0;
+  if(probe <= tlTop){ pct = 0; }
+  else if(probe >= tlBottom){ pct = 100; }
+  else {
+    for(let i=0;i<EPOCHS.length;i++){
+      const b = epochBounds(i);
+      if(probe >= b.top && probe < b.bottom){
+        const local = (probe - b.top) / Math.max(1,(b.bottom - b.top));
+        pct = EPOCHS[i].start + local * (EPOCHS[i].end - EPOCHS[i].start);
+        break;
+      }
+      if(i===0 && probe < b.top) pct = 0;
+    }
+  }
+  marker.style.left = pct + '%';
+  // aktiv epok i baren
+  document.querySelectorAll('.ep').forEach(ep=>{
+    const idx = +ep.dataset.ep - 1;
+    ep.classList.toggle('active', pct >= EPOCHS[idx].start && pct < EPOCHS[idx].end + 0.001);
+  });
+}
+let ticking = false;
+window.addEventListener('scroll', ()=>{
+  if(!ticking){
+    requestAnimationFrame(()=>{ updateMarker(); ticking=false; });
+    ticking = true;
+  }
+}, {passive:true});
+window.addEventListener('resize', updateMarker);
+updateMarker();
+</script>
+</body>
+</html>
