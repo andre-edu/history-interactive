@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plocka isär ett laddat ord</title>
+<style>
+  :root{
+    --bg:#191d21;
+    --ink:#ece6da;
+    --ink-dim:#a3a9b0;
+    --ink-faint:#6b727a;
+    --hot:#e0a03f;        /* nätladdning / retorik */
+    --cool:#7fb0d4;       /* historisk bakgrund */
+    --source:#8fc98a;     /* källkritik */
+    --hist:#c491d4;       /* historisk fördjupning (plommon) */
+    --core:#e6dfd2;
+    --line:#3a424a;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--ink);
+    font-family:var(--sans);-webkit-font-smoothing:antialiased}
+
+  .bar{
+    position:fixed;top:0;left:0;right:0;z-index:20;
+    display:flex;align-items:center;gap:14px;padding:12px 18px;
+    background:linear-gradient(180deg,var(--bg),rgba(25,29,33,.82) 70%,transparent);
+    pointer-events:none;
+  }
+  .kicker{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--source);font-weight:700}
+  .bar h1{font-family:var(--serif);font-weight:400;font-size:18px;line-height:1.1;color:var(--ink)}
+  .bar .hint{margin-left:auto;font-size:12px;color:var(--ink-faint)}
+  .reset{
+    pointer-events:auto;background:#242a30;border:1px solid var(--line);color:var(--ink-dim);
+    font-family:var(--sans);font-size:12px;padding:6px 12px;border-radius:8px;cursor:pointer;
+  }
+  .reset:hover{color:var(--ink);border-color:#4b535b}
+  .hint-toast{
+    position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-8px);
+    z-index:25;background:rgba(36,42,48,.94);backdrop-filter:blur(6px);
+    border:1px solid var(--hot);border-radius:20px;padding:9px 18px;
+    font-family:var(--sans);font-size:12.5px;color:var(--ink);
+    box-shadow:0 8px 30px -10px rgba(0,0,0,.6);
+    opacity:0;pointer-events:none;transition:opacity .4s, transform .4s;
+    max-width:90vw;text-align:center;
+  }
+  .hint-toast b{color:var(--hot);font-weight:600}
+  .hint-toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;cursor:pointer}
+
+  #stage{position:fixed;inset:0;cursor:grab;touch-action:none}
+  #stage.drag{cursor:grabbing}
+  #world{position:absolute;top:0;left:0;transform-origin:0 0;will-change:transform}
+  svg#links{position:absolute;top:0;left:0;overflow:visible;pointer-events:none;transform-origin:0 0}
+
+  .node{
+    position:absolute;transform:translate(-50%,-50%);
+    display:flex;flex-direction:column;align-items:center;
+    width:max-content;max-width:230px;
+  }
+
+  .bubble{
+    border:1.5px solid var(--nc,var(--line));
+    background:#20262c;border-radius:16px;padding:11px 15px;text-align:left;cursor:pointer;
+    transition:border-color .2s,transform .12s;
+    box-shadow:0 4px 20px -12px rgba(0,0,0,.7);position:relative;
+  }
+  .bubble:hover{transform:translateY(-1px)}
+  .node.leaf .bubble{cursor:pointer}
+
+  /* centre: Peterson */
+  .node.core{max-width:440px}
+  .node.core .bubble{
+    border:none;background:transparent;box-shadow:none;
+    padding:0;text-align:center;cursor:default;
+  }
+  .node.core .bubble:hover{transform:none}
+  .peterson{
+    width:190px;height:190px;border-radius:50%;margin:0 auto 20px;
+    border:3px solid var(--core);overflow:hidden;position:relative;
+    background:radial-gradient(circle at 50% 38%,#3a424a,#242a30);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 0 8px rgba(230,223,210,.05), 0 10px 40px -10px rgba(0,0,0,.7);
+  }
+  .peterson img{width:100%;height:100%;object-fit:cover;display:none}
+  .peterson.has-img img{display:block}
+  .peterson.has-img .ph-text{display:none}
+  .ph-text{font-size:11px;color:var(--ink-faint);text-align:center;line-height:1.4;padding:10px}
+  .core-quote{font-family:var(--serif);font-size:25px;font-style:italic;line-height:1.45;color:var(--ink);max-width:400px;margin:0 auto}
+  .core-src{font-family:var(--sans);font-size:12px;color:var(--ink-faint);margin-top:12px;letter-spacing:.02em}
+  .core-expand{
+    margin-top:18px;font-size:12px;color:var(--core);cursor:pointer;
+    border:1px solid var(--line);border-radius:20px;padding:6px 16px;display:inline-block;
+    background:rgba(36,42,48,.6);backdrop-filter:blur(4px);
+  }
+  .core-expand:hover{border-color:var(--core)}
+  .core-explain{
+    display:none;margin:16px auto 0;max-width:360px;padding:14px 16px;
+    background:rgba(36,42,48,.75);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:14px;
+    font-family:var(--serif);font-size:14px;line-height:1.6;text-align:left;color:var(--ink-dim);
+  }
+  .node.core.open .core-explain{display:block}
+
+  .core-trigger{cursor:pointer;transition:opacity .2s}
+  .core-trigger:hover{opacity:.82}
+  .peterson.core-trigger:hover{box-shadow:0 0 0 8px rgba(224,160,63,.12), 0 10px 40px -10px rgba(0,0,0,.7)}
+  .core-src a{color:var(--ink-dim);text-decoration:none;border-bottom:1px solid var(--line)}
+  .core-src a:hover{color:var(--ink)}
+  .core-source{
+    display:none;margin:14px auto 0;max-width:400px;padding:16px 18px;text-align:left;
+    background:rgba(36,42,48,.8);backdrop-filter:blur(6px);
+    border:1px solid var(--hot);border-radius:14px;
+    font-family:var(--serif);font-size:13.5px;line-height:1.6;color:var(--ink-dim);
+    animation:fade .4s ease;
+  }
+  .node.core.src-open .core-source{display:block}
+  .src-kind{font-family:var(--sans);font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--hot);margin-bottom:5px}
+  .src-title{font-family:var(--serif);font-size:17px;color:var(--ink);margin-bottom:10px}
+  .core-source b{color:#fff;font-weight:600}
+  .core-logic b{color:#fff;font-weight:600}
+  .core-source .ts a,.core-logic .ts a{color:var(--hot);text-decoration:none;font-family:var(--sans);font-size:12px;font-weight:600}
+  .core-source .ts a:hover,.core-logic .ts a:hover{text-decoration:underline}
+  .core-source .lesson,.core-logic .lesson{
+    display:block;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);
+    font-family:var(--sans);font-size:12.5px;color:var(--source);line-height:1.55;
+  }
+  .core-source .lesson a,.core-logic .lesson a{color:var(--source);font-weight:600}
+  .logic-btn{
+    margin-top:14px;width:100%;background:rgba(224,160,63,.10);color:var(--hot);
+    border:1px solid var(--hot);border-radius:10px;padding:9px 12px;cursor:pointer;
+    font-family:var(--sans);font-size:12.5px;font-weight:600;transition:background .2s;
+  }
+  .logic-btn:hover{background:rgba(224,160,63,.2)}
+  .core-logic{
+    display:none;margin:12px auto 0;max-width:400px;padding:16px 18px;text-align:left;
+    background:rgba(36,42,48,.82);backdrop-filter:blur(6px);
+    border:1px solid var(--hot);border-radius:14px;
+    font-family:var(--serif);font-size:13.5px;line-height:1.6;color:var(--ink-dim);
+    animation:fade .4s ease;
+  }
+  .node.core.logic-open .core-logic{display:block}
+
+  .n-kind{font-family:var(--sans);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+    font-weight:700;color:var(--nc);margin-bottom:4px}
+  .n-label{font-family:var(--serif);font-size:16px;line-height:1.2;color:var(--ink)}
+  .n-main .n-label{font-size:26px}
+  .n-q{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--ink-dim);margin-top:5px;line-height:1.35;max-width:200px}
+
+  .expander{
+    margin-top:7px;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-faint);
+    cursor:pointer;user-select:none;background:#20262c;border:1px solid var(--line);
+    border-radius:20px;padding:3px 11px;transition:color .2s,border-color .2s;
+  }
+  .expander:hover{color:var(--ink);border-color:var(--nc,#4b535b)}
+  .expander .plus{color:var(--nc);font-weight:700;font-size:13px;line-height:1}
+  .node.leaf > .expander{display:none}
+
+  .panel{margin-top:10px;text-align:left;max-width:220px;border-top:1px solid var(--line);padding-top:10px;display:none}
+  .node.showing .panel{display:block}
+  .guess-label{font-size:10.5px;color:var(--ink-faint);margin-bottom:6px}
+  .panel textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;
+    color:var(--ink);font-family:var(--sans);font-size:12.5px;padding:8px;resize:none;min-height:34px;outline:none;line-height:1.4}
+  .panel textarea:focus{border-color:var(--nc)}
+  .show-btn{margin-top:8px;width:100%;background:var(--nc);color:#191d21;border:none;border-radius:8px;
+    padding:7px;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;filter:saturate(.85)}
+  .show-btn:hover{filter:saturate(1.1)}
+  .answer{display:none;margin-top:10px;font-family:var(--serif);font-size:13.5px;line-height:1.55;color:var(--ink);animation:fade .4s ease}
+  .node.answered .answer{display:block}
+  .node.answered .guess-label,.node.answered .panel textarea,.node.answered .show-btn{display:none}
+  .quote-en{
+    display:block;font-style:italic;color:var(--ink);
+    background:#242a30;border-left:2px solid var(--nc);padding:7px 10px;border-radius:0 6px 6px 0;margin:2px 0 10px;
+  }
+  .answer .who{display:block;font-family:var(--sans);font-size:11px;color:var(--ink-dim);
+    background:#242a30;border-left:2px solid var(--nc);padding:5px 9px;border-radius:0 6px 6px 0;margin:8px 0;line-height:1.45}
+  .node-portrait{
+    width:70px;height:70px;border-radius:50%;float:right;margin:0 0 6px 10px;
+    border:1.5px solid var(--nc);overflow:hidden;position:relative;opacity:.9;
+    background:radial-gradient(circle at 50% 40%,#333b42,#242a30);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .node-portrait img{width:100%;height:100%;object-fit:cover;display:none}
+  .node-portrait.has-img img{display:block}
+  .node-portrait.has-img .npt{display:none}
+  .npt{font-size:8px;color:var(--ink-faint);text-align:center;line-height:1.25;padding:4px}
+  .portrait-node{cursor:grab}
+  .portrait-node.dragging{cursor:grabbing;z-index:30}
+  .sat-portrait{
+    width:160px;height:160px;border-radius:50%;
+    border:2.5px solid var(--cool);overflow:hidden;position:relative;
+    background:radial-gradient(circle at 50% 40%,#333b42,#242a30);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 0 6px rgba(127,176,212,.06), 0 10px 34px -10px rgba(0,0,0,.7);
+  }
+  .sat-portrait img{width:100%;height:100%;object-fit:cover;display:none}
+  .sat-portrait.has-img img{display:block}
+  .sat-portrait.has-img .sat-ph{display:none}
+  .sat-ph{font-size:11px;color:var(--ink-faint);text-align:center;line-height:1.4;padding:8px}
+  .sat-ph span{opacity:.6;font-size:9px}
+  .def{display:block;margin-top:11px;padding-top:9px;border-top:1px dashed var(--line);
+    font-family:var(--sans);font-size:11px;line-height:1.5;color:var(--ink-faint)}
+  .def b{color:var(--ink-dim);font-weight:600}
+  .def .star{color:var(--nc);font-weight:700}
+  @keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1}}
+  .node.reveal-pop{animation:pop .55s cubic-bezier(.2,1.3,.4,1)}
+  .node.dragging{cursor:grabbing;z-index:30;filter:brightness(1.08)}
+  .node.dragging .bubble{box-shadow:0 12px 40px -12px rgba(0,0,0,.8)}
+  .node:not(.core){cursor:grab}
+  @keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+
+  /* tension connector: big ? with side panel */
+  .tension-node{flex-direction:row;align-items:center;gap:0;max-width:none}
+  .qmark{
+    width:56px;height:56px;border-radius:50%;flex:0 0 auto;
+    background:#20262c;border:2px solid var(--hot);color:var(--hot);
+    font-family:var(--serif);font-size:32px;font-style:italic;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    box-shadow:0 0 0 6px rgba(224,160,63,.10),0 8px 30px -10px rgba(0,0,0,.7);
+    transition:transform .18s, background .2s;
+  }
+  .qmark:hover{transform:scale(1.08);background:#2b3138}
+  .tension-panel{
+    display:none;margin-left:14px;max-width:320px;
+    background:rgba(36,42,48,.9);backdrop-filter:blur(6px);
+    border:1px solid var(--hot);border-radius:14px;padding:15px 17px;text-align:left;
+    animation:fade .35s ease;
+  }
+  .tension-node.open .tension-panel{display:block}
+  .t-kind{font-family:var(--sans);font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--hot);margin-bottom:5px}
+  .t-q{font-family:var(--serif);font-size:16px;color:var(--ink);margin-bottom:9px;line-height:1.25}
+  .t-body{font-family:var(--serif);font-size:13.5px;line-height:1.6;color:var(--ink-dim)}
+  .t-body b{color:#fff;font-weight:600}
+  .t-body .tension-lesson{
+    display:block;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);
+    font-family:var(--sans);font-size:12.5px;color:var(--source);line-height:1.55;
+  }
+  .t-body .tension-lesson b{color:var(--source)}
+
+  .zoom{position:fixed;right:16px;bottom:16px;z-index:20;display:flex;flex-direction:column;gap:6px}
+  .zoom button{width:38px;height:38px;background:#242a30;border:1px solid var(--line);color:var(--ink);
+    border-radius:10px;font-size:19px;cursor:pointer;line-height:1}
+  .zoom button:hover{border-color:#4b535b}
+
+  .legend{position:fixed;left:16px;bottom:16px;z-index:20;display:flex;flex-direction:column;gap:5px;
+    font-size:11px;color:var(--ink-dim);background:rgba(32,38,44,.72);backdrop-filter:blur(6px);
+    padding:9px 12px;border-radius:10px;border:1px solid var(--line)}
+  .legend span{display:flex;align-items:center;gap:7px}
+  .legend i{width:8px;height:8px;border-radius:50%}
+  @media(max-width:600px){.legend{display:none}.bar h1{font-size:15px}.bar .hint{display:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+  :focus-visible{outline:2px solid var(--cool);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div>
+    <div class="kicker">Källkritik</div>
+    <h1>Plocka isär ett laddat ord</h1>
+  </div>
+  <div class="hint">Dra · zooma · tryck på en bubbla</div>
+  <button class="reset" id="reset">Återställ allt</button>
+</div>
+
+<div class="hint-toast" id="hintToast">
+  <span>Öppna <b>både</b> Marxism och Postmodernism för att se hur de påstås hänga ihop.</span>
+</div>
+
+<div id="stage">
+  <svg id="links"></svg>
+  <div id="world"></div>
+</div>
+
+<div class="zoom"><button id="zin">+</button><button id="zout">−</button></div>
+
+<div class="legend">
+  <span><i style="background:var(--hot)"></i> Så används ordet på nätet</span>
+  <span><i style="background:var(--cool)"></i> Var ordet kommer ifrån</span>
+  <span><i style="background:var(--hist)"></i> Historisk fördjupning</span>
+  <span><i style="background:var(--source)"></i> Tänk som en källkritiker</span>
+</div>
+
+<script>
+/* ============================================================
+   CONTENT. Two main branches: Marxism, Postmodernism.
+   Centre = Peterson portrait + real English quote.
+   Clicking the portrait/quote opens the "go to the source" node.
+   ============================================================ */
+const VIDEO='https://www.youtube.com/watch?v=wLoG9zBvvLQ';
+const CORE = {
+  quoteEN:'”Post-modernism … is the new skin that the old Marxism now inhabits.”',
+  src:'Jordan Peterson',
+  srcLink:VIDEO+'&t=8s',
+  explain:'Han säger att postmodernism och marxism egentligen är samma sak i ny förklädnad: att den ena ”bär” den andra som ett nytt skinn. Det är precis den <b>hopklistringen</b> vi ska plocka isär: är de verkligen samma sak? Tryck på de två delarna runt om.',
+  source:{
+    title:'Samma tal: olika temperatur',
+    body:'Citatet ovan kommer från en intervju på ungefär 43 minuter. Något intressant händer om man lyssnar på <b>hela</b>: Peterson säger nämligen olika saker beroende på var i talet man lyssnar.<br><br>'+
+         '<span class="ts">På <a href="'+VIDEO+'&t=1105s" target="_blank" rel="noopener">18:25 ↗</a> är han försiktig:</span> han säger att studenterna han oroar sig för <i>inte</i> är hängivna postmodernister (kanske bara 10%), och att det <b>inte</b> finns någon organiserad konspiration som planerar att störta väst.<br><br>'+
+         '<span class="ts">På <a href="'+VIDEO+'&t=1474s" target="_blank" rel="noopener">24:34 ↗</a> är han glödhet:</span> där säger han att de som utbildar lärare borde <b>ställas inför rätta för landsförräderi</b>.<br><br>'+
+         '<b>Samma person, samma tal.</b> Vill man måla honom som galen väljer man 24:34. Vill man måla honom som resonabel väljer man 18:25. Bara den som lyssnat på <b>hela</b> vet att båda finns.<br><br>'+
+         '<span class="lesson">Källkritik: lita aldrig blint på ett utplockat citat, inte ens ett äkta. Gå till källan och lyssna på helheten. <a href="'+VIDEO+'" target="_blank" rel="noopener">Se hela intervjun ↗</a></span>',
+    logic:{
+      kind:'Granska logiken',
+      title:'”De” och makten',
+      body:'<span class="ts">Lyssna på <a href="'+VIDEO+'&t=246s" target="_blank" rel="noopener">4:06 ↗</a>:</span> han säger att postmodernister ser allt som en kamp om <b>makt</b>, och att de därför är farliga, för <i>”det finns ingen logik, ingen förhandling, ingen dialog … bara makt”</i>.<br><br>'+
+           'Följ steget noga: han glider från <b>”de studerar makt”</b> till <b>”de tror bara på makt”</b> till <b>”alltså går det inte att prata med dem”</b>. Att <i>analysera</i> makt är inte samma sak som att <i>bara vilja ha</i> makt, men meningen halkar från det ena till det andra utan att stanna.<br><br>'+
+           'Och lägg märke till vad slutsatsen <b>gör</b>: den förklarar en hel grupp omöjlig att resonera med. Då behöver man aldrig bemöta deras argument, vilket i sig är samma sak han anklagar <i>dem</i> för.<br><br>'+
+           '<span class="lesson">Källkritik: även ett <b>äkta</b> citat kan ha ett trasigt argument inuti. Granska inte bara <i>om</i> något sades, utan <b>hur</b> det är byggt.</span>'
+    }
+  }
+};
+
+const BRANCHES = [
+  /* ---------------- MARXISM ---------------- */
+  {
+    id:"marx", color:"cool", kind:"Huvuddel", label:"Marxism", main:true,
+    q:"Vad betyder ordet i ett bråk på nätet?",
+    answer:"På nätet ofta bara ”vänster-grej jag inte gillar”.<br><br>Men ordet betyder faktiskt <b>flera olika saker</b> beroende på vem som säger det, och det är just det som gör att man kan bunta ihop det. Öppna delarna nedan så ser du.",
+    children:[
+      {id:"marx-who",color:"cool",kind:"Vem?",label:"Vem var Karl Marx?",
+       answer:"En tänkare på 1800-talet som skrev mitt i industrialiseringen, när fabrikerna var nya och arbetarna, även barn, slet hårt medan ägarna blev rika. Hans idéer var ett <b>svar på något han såg</b>, inte en fantasi.",
+       who:"Karl Marx, tysk filosof och samhällstänkare, 1818–1883.",children:[]},
+      {id:"marx-two",color:"source",kind:"Viktig skillnad",label:"Ordet betyder två olika saker",
+       answer:"Här är nyckeln. ”Marxism” kan betyda två olika saker:<br><br><b>1. En politisk åsikt:</b> att man <i>vill</i> förändra samhället och ta makt från de rika. Det här kopplas till kommunistiska partier och länder.<br><br><b>2. Ett sätt att förstå samhället:</b> att analysera* hur pengar, ägande och klass hänger ihop, utan att man vill starta en revolution.<br><br>Man kan göra det andra utan det första. Att analysera något är inte samma sak som att vilja störta det.<span class='def'><span class='star'>*</span> <b>analysera</b> = undersöka noga hur något funkar och hänger ihop</span>",
+       children:[
+         {id:"marx-words",color:"source",kind:"Ett knep proffsen använder",label:"”Marxist” vs. ”marxian”",
+          answer:"På engelska finns faktiskt <b>två olika ord</b> för de två sakerna:<br><br><span class='quote-en'>marxist = politisk (vill förändra)<br>marxian = analytisk (vill förstå)</span>Forskare säger ”marxian” för att visa: <i>jag lånar Marx sätt att analysera, men jag är ingen aktivist*.</i><br><br>Svenskan har inte de två orden, och den som buntar ihop allt utnyttjar det: de väljer alltid den <b>politiska</b>, läskigare betydelsen.<span class='def'><span class='star'>*</span> <b>aktivist</b> = någon som aktivt kämpar för att förändra samhället</span>",children:[]}
+       ]},
+      {id:"marx-research",color:"cool",kind:"På riktigt?",label:"Använder riktiga forskare det?",
+       answer:"Ja. Det finns <b>marxiansk nationalekonomi*</b>: forskare som använder Marx verktyg för att förstå pengar, kriser och ojämlikhet, med egna läroböcker och tidskrifter.<br><br>När finanskrisen slog till 2008 skrev till och med vanliga, borgerliga* tidningar att ”Marx är tillbaka”. Poängen: <b>det behöver inte vara politiskt</b>, det kan vara ett vanligt verktyg på universitetet.<span class='def'><span class='star'>*</span> <b>nationalekonomi</b> = läran om hur pengar och ekonomi funkar i ett samhälle<br><span class='star'>*</span> <b>borgerlig</b> = här: höger-/mittenlutande, alltså inte vänster</span>",children:[]},
+      {id:"marx-komm",color:"cool",kind:"Vad hände sen?",label:"Sovjet, Kina och de andra",
+       q:"Vilka länder byggde på Marx idéer?",
+       answer:"Marx idéer blev senare till verkliga länder: Sovjetunionen 1917, sedan flera andra.<br><br>Just <b>hur det gick där</b> (förtryck, köer, murar) är det de flesta ser framför sig vid ordet ”kommunism”. Och det fick många att säga: jag kan tycka illa om de <b>länderna</b> utan att slänga bort varje <b>fråga</b> Marx ställde. Land och idé är inte samma sak.",children:[]},
+      {id:"marx-hist",color:"hot",kind:"En sak att minnas",label:"Marx idé om historien",
+       q:"Vad driver historien framåt, tror du?",
+       answer:"En del av Marx idé handlar om historien: att den drivs framåt av <b>kamp mellan klasser</b> (fattiga mot rika, genom alla tider).<br><br>Lägg märke till att det är en <b>stor, tvärsäker* förklaring</b>: ”så här funkar historien, alltid”. Håll den tanken kvar till postmodernism-delen, för där blir den viktig.<span class='def'><span class='star'>*</span> <b>tvärsäker</b> = helt säker på att man har rätt, utan minsta tvivel</span>",children:[]}
+    ]
+  },
+
+  /* ---------------- POSTMODERNISM ---------------- */
+  {
+    id:"post", color:"cool", kind:"Huvuddel", label:"Postmodernism", main:true,
+    q:"Låter det bra eller dåligt?",
+    answer:"På nätet nästan alltid ett <b>skällsord</b>: ”flummigt, tror inte på nån sanning”.<br><br>Från början betyder det något enklare: att vara <b>misstänksam mot folk som säger sig ha svaret på allt</b>, mot de som säger ”så här funkar hela världen, punkt slut”.",
+    children:[
+      {id:"post-name",color:"cool",kind:"Varför heter det så?",label:"”Post” betyder efter",
+       q:"Efter vad, tror du?",
+       answer:"Ordet är byggt av två delar: <b>post</b> = ”efter”, och <b>modernism</b>. Alltså: <b>det som kom efter modernismen</b>.<br><br>Modernismen (tiden innan) trodde starkt på <b>framsteg och förnuft</b>: att vi med vetenskap och stora planer kunde göra världen bättre.<br><br>Postmodernismen är en <b>reaktion mot just det</b>: en misstänksamhet mot idén att vi vet bäst. Därför är den skeptisk mot tvärsäkra idéer. Det ligger i själva namnet.",
+       children:[
+         {id:"post-lost",color:"hist",kind:"Historisk fördjupning",label:"Därför tappade de tron",
+          q:"Vad hände som gjorde folk så besvikna?",
+          answer:"Modernismen lovade att <b>förnuft och vetenskap</b> skulle göra världen bättre. Sedan kom 1900-talet och visade baksidan:<br><br><b>Världskrigen:</b> för första gången användes tekniken till att döda människor på löpande band. Framsteg, fast åt fel håll.<br><br><b>Atombomben:</b> vetenskapens största landvinning blev ett vapen som kunde utplåna hela städer på en sekund.<br><br>Poängen: det var <b>inte okunskap</b> som skapade katastroferna, det var förnuftet och tekniken själva. <b>Därför tappade postmodernisterna tron</b> på att ”framsteg” alltid är något bra.",children:[]}
+       ]},
+      {id:"post-why",color:"cool",kind:"Varifrån?",label:"Varför litar man inte på tvärsäkra idéer?",
+       q:"Varför skulle man bli skeptisk mot någon som säger sig ha alla svar?",
+       answer:"Tänk på 1900-talet: flera rörelser sa att de visste exakt vart historien var på väg, och det slutade i krig och diktaturer.<br><br>Efteråt blev många försiktiga: <b>när någon säger att de har hela sanningen, var på din vakt.</b>",
+       who:"Idén fick sitt namn av Jean-François Lyotard, fransk filosof, på 1970-talet.",children:[]},
+      {id:"post-thinkers",color:"cool",kind:"Vilka då?",label:"Tänkare bakom idéerna",
+       q:"Vem kom på postmodernismen?",
+       answer:"Ingen enskild person, utan <b>flera olika tänkare</b> som ungefär samtidigt började ifrågasätta de stora, tvärsäkra idéerna.<br><br>En av dem var <b>Jacques Derrida</b>. Hans mest kända tanke: att en text kan <b>tolkas på nästan oändligt många sätt</b>, så det finns sällan bara en ”rätt” läsning.<br><br>Men han var <b>en av många</b>, inte ledaren för en rörelse. Det är värt att minnas när någon pekar ut en enda person som ”hjärnan bakom allt”.",children:[]}
+    ]
+  }
+];
+
+/* the "bundle" insight hangs off the centre as a fourth spoke */
+const BUNDLE = {
+  id:"bundle", color:"hot", kind:"Själva tricket", label:"Fyra ord → ett", main:true,
+  q:"Varför klistra ihop flera olika saker till ett ord?",
+  answer:"Vi har sett att delarna inte ens hänger ihop, en <b>motsäger</b> en annan. Ändå buntas de ihop.<br><br>Varför? En <b>enda stor fiende</b> är lättare att peka på och bli arg på än flera olika idéer som krånglar till det.",
+  children:[
+    {id:"bundle-who",color:"source",kind:"Tänk källkritiskt",label:"Vem tjänar på hopklistringen?",
+     answer:"Den bästa frågan till vilket laddat ord som helst:<br><br><b>Vem vinner på att jag ser det här som EN sak istället för flera?</b><br><br>Om svaret är ”den som vill att jag snabbt ska bli arg och välja sida”, då vet du vad ordet är byggt för.",children:[]}
+  ]
+};
+
+/* assemble a single tree */
+const TREE={id:"core",color:"core",core:true,children:[...BRANCHES,BUNDLE]};
+
+/* the tension connector: a line between Marxism & Postmodernism with a ? */
+const TENSION={
+  q:"Men han säger ju inte att de är samma sak?",
+  body:"Helt rätt, och det är just poängen. Peterson <b>vet</b> att idéerna är olika. Hans påstående är listigare:<br><br>att marxisterna <b>bytte skepnad</b> och blev postmodernister när ingen längre ville kallas marxist. Att den ena är den andra <i>i förklädnad</i>.<br><br>Då spelar det ingen roll att idéerna drar åt olika håll. Olikheten blir tvärtom ”bevis” för förklädnaden. Smart byggt. Men:<br><br><b>det är ett påstående om vad som faktiskt hände i historien.</b> Vilka marxister blev postmodernister? När? Var är kopplingen <i>visad</i>, inte bara påstådd? Han lägger aldrig fram några belägg.<br><br><span class=\"tension-lesson\">Källkritik: skilj ”de är <b>samma</b>” från ”den ena <b>blev</b> den andra”. Det andra är ett påstående om historien, och kräver <b>bevis</b>, hur självsäkert det än låter. Utan bevis är det bara en gissning. Därför får frågetecknet stå kvar.</span>"
+};
+
+/* ============================================================
+   RADIAL LAYOUT: star from the centre, children fan outward
+   along each spoke's direction.
+   ============================================================ */
+const world=document.getElementById('world');
+const svg=document.getElementById('links');
+const stage=document.getElementById('stage');
+const COLORS={hot:'var(--hot)',cool:'var(--cool)',source:'var(--source)',hist:'var(--hist)',core:'var(--core)'};
+const CHEX={hot:'#e0a03f',cool:'#7fb0d4',source:'#8fc98a',hist:'#c491d4',core:'#e6dfd2'};
+const CX=1600, CY=1400;
+
+let nodes=[];
+function layout(node,parent,depth,angle){
+  let x,y;
+  if(depth===0){x=CX;y=CY;}
+  else{
+    const R = depth===1 ? 540 : (depth===2 ? 330 : 280);
+    x=parent.x+Math.cos(angle)*R;
+    y=parent.y+Math.sin(angle)*R;
+  }
+  const rec={data:node,parent,depth,x,y,angle};
+  nodes.push(rec);
+  const kids=node.children||[];
+  if(kids.length){
+    if(depth===0){
+      // two main spokes opposed (embodying the tension) + bundle below
+      const SPOKE={
+        marx:-Math.PI*0.82,   // left, slightly up
+        post:-Math.PI*0.18,   // right, slightly up
+        bundle: Math.PI*0.5   // straight down
+      };
+      kids.forEach((k,i)=>{
+        const a = (k.id in SPOKE) ? SPOKE[k.id] : (-Math.PI*0.5 + i*(Math.PI*2/kids.length));
+        layout(k,rec,1,a);
+      });
+    }else{
+      // children fan outward, away from the core, so lines never fold back
+      // over the parent bubble toward the centre
+      const outAngle=Math.atan2(rec.y-CY, rec.x-CX); // core -> this node direction
+      const spread=Math.min(Math.PI*0.9, 0.5+kids.length*0.30);
+      const a0=outAngle-spread/2;
+      const step=kids.length>1?spread/(kids.length-1):0;
+      kids.forEach((k,i)=>{
+        const a=kids.length>1 ? a0+step*i : outAngle;
+        layout(k,rec,depth+1,a);
+      });
+    }
+  }
+}
+layout(TREE,null,0,0);
+// snapshot original positions so a full reset can restore them
+nodes.forEach(n=>{ n.homeX=n.x; n.homeY=n.y; });
+
+function linkPathD(p,n){
+  const dx=n.x-p.x, dy=n.y-p.y;
+  const dist=Math.hypot(dx,dy)||1;
+  const ux=dx/dist, uy=dy/dist;
+  const pOff = p.depth===0 ? 150 : 90;
+  const nOff = 80;
+  const x1=p.x+ux*pOff, y1=p.y+uy*pOff;
+  const x2=n.x-ux*nOff, y2=n.y-uy*nOff;
+  const bow=Math.min(38, dist*0.10);
+  const mx=(x1+x2)/2 - uy*bow, my=(y1+y2)/2 + ux*bow;
+  return `M ${x1} ${y1} Q ${mx} ${my}, ${x2} ${y2}`;
+}
+
+function drawLinks(){
+  svg.innerHTML='';
+  nodes.forEach(n=>{
+    if(!n.parent)return;
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',linkPathD(n.parent,n));
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke',CHEX[n.data.color]||'#3a424a');
+    path.setAttribute('stroke-width','1.6');path.setAttribute('stroke-opacity','.3');
+    path.dataset.child=n.data.id;
+    svg.appendChild(path);
+  });
+}
+
+/* redraw every link touching a given node (as parent or child) + tension line */
+function redrawLinksFor(rec){
+  // link where rec is the child
+  if(rec.parent){
+    const cp=svg.querySelector(`path[data-child="${rec.data.id}"]`);
+    if(cp) cp.setAttribute('d',linkPathD(rec.parent,rec));
+  }
+  // links where rec is the parent
+  nodes.filter(x=>x.parent===rec).forEach(ch=>{
+    const p=svg.querySelector(`path[data-child="${ch.data.id}"]`);
+    if(p) p.setAttribute('d',linkPathD(rec,ch));
+  });
+  // satellites whose parent is rec: follow the parent, keeping their offset
+  if(typeof satellites!=='undefined'){
+    satellites.forEach(s=>{
+      if(s.parent===rec){
+        s.x=rec.x+s.offX; s.y=rec.y+s.offY;
+        s.el.style.left=s.x+'px'; s.el.style.top=s.y+'px';
+        s.redraw();
+      }
+    });
+  }
+  // tension line if it involves a main node
+  if(typeof updateTensionLine==='function' &&
+     (rec.data.id==='marx'||rec.data.id==='post')) updateTensionLine();
+}
+
+function coreInner(){
+  return `<div class="bubble">
+    <div class="peterson core-trigger" id="peterson" title="Klicka för att gå till källan">
+      <img src="images/peterson.jpg" alt="Jordan Peterson" onload="this.parentNode.classList.add('has-img')" onerror="this.style.display='none'">
+      <div class="ph-text">Porträtt<br>(images/peterson.jpg,<br>640×640)</div>
+    </div>
+    <div class="core-quote core-trigger" title="Klicka för att gå till källan">${CORE.quoteEN}</div>
+    <div class="core-src"><a href="${CORE.srcLink}" target="_blank" rel="noopener">${CORE.src} ↗</a></div>
+    <div class="core-expand" id="coreExpand">Vad betyder det?</div>
+    <div class="core-explain">${CORE.explain}</div>
+    <div class="core-source" id="coreSource">
+      <div class="src-kind">Gå till källan</div>
+      <div class="src-title">${CORE.source.title}</div>
+      <div class="src-body">${CORE.source.body}</div>
+      <button class="logic-btn" id="logicBtn">Granska logiken: ”De” och makten →</button>
+    </div>
+    <div class="core-logic" id="coreLogic">
+      <div class="src-kind">${CORE.source.logic.kind}</div>
+      <div class="src-title">${CORE.source.logic.title}</div>
+      <div class="src-body">${CORE.source.logic.body}</div>
+    </div>
+  </div>`;
+}
+
+function nodeInner(d){
+  const kids=(d.children&&d.children.length);
+  const who=d.who?`<span class="who">${d.who}</span>`:'';
+  const qEN=d.answerQuote?`<span class="quote-en">${d.answerQuote}</span>`:'';
+  return `<div class="bubble">
+    <div class="n-kind">${d.kind||''}</div>
+    <div class="n-label">${d.label}</div>
+    ${d.q?`<div class="n-q">${d.q}</div>`:''}
+    <div class="panel">
+      <div class="guess-label">Vad tror du, innan du läser? (frivilligt)</div>
+      <textarea rows="1" placeholder="Din gissning…"></textarea>
+      <button class="show-btn">Visa svar</button>
+      <div class="answer">${qEN}${d.answer||''}${who}</div>
+    </div>
+  </div>
+  ${kids?`<div class="expander"><span class="plus">+</span> <span class="etxt">Vill du veta mer?</span></div>`:''}`;
+}
+
+nodes.forEach(n=>{
+  const el=document.createElement('div');
+  el.className='node'+(n.depth===0?' core':'')+(n.data.main?' n-main':'');
+  if(n.depth!==0 && !(n.data.children&&n.data.children.length)) el.classList.add('leaf');
+  el.style.left=n.x+'px';el.style.top=n.y+'px';
+  el.style.setProperty('--nc',COLORS[n.data.color]||'var(--line)');
+  el.innerHTML = n.depth===0 ? coreInner() : nodeInner(n.data);
+  world.appendChild(el);n.el=el;
+
+  if(n.depth===0){
+    const ce=el.querySelector('#coreExpand');
+    ce.addEventListener('click',()=>{
+      const o=el.classList.toggle('open');
+      ce.textContent=o?'Dölj':'Vad betyder det?';
+    });
+    // portrait / quote -> open "go to the source" node
+    const src=el.querySelector('#coreSource');
+    el.querySelectorAll('.core-trigger').forEach(t=>{
+      t.addEventListener('click',()=>{
+        el.classList.toggle('src-open');
+      });
+    });
+    // "Granska logiken" -> unfold the separate logic card
+    const lb=el.querySelector('#logicBtn');
+    if(lb) lb.addEventListener('click',ev=>{
+      ev.stopPropagation();
+      const o=el.classList.toggle('logic-open');
+      lb.textContent=o?'Dölj logikgranskningen':'Granska logiken: ”De” och makten →';
+    });
+    makeDraggable(el,n);
+    return;
+  }
+
+  el.style.display='none';
+  const bubble=el.querySelector('.bubble');
+  const ta=el.querySelector('textarea');
+  const showBtn=el.querySelector('.show-btn');
+  bubble.addEventListener('click',e=>{
+    if(e.target.closest('.answer'))return;
+    el.classList.add('showing');setTimeout(()=>ta&&ta.focus(),30);
+  });
+  if(ta)ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=ta.scrollHeight+'px'});
+  if(showBtn)showBtn.addEventListener('click',ev=>{ev.stopPropagation();el.classList.add('answered');});
+
+  const exp=el.querySelector('.expander');
+  if(exp){
+    exp.addEventListener('click',ev=>{
+      ev.stopPropagation();
+      const open=el.classList.toggle('opened');
+      exp.querySelector('.plus').textContent=open?'–':'+';
+      exp.querySelector('.etxt').textContent=open?'Fäll ihop':'Vill du veta mer?';
+      setChildrenVisible(n,open);
+      if(['marx','post'].includes(n.data.id)){
+        if(open) openedMains.add(n.data.id);
+        else openedMains.delete(n.data.id);
+        maybeRevealBundle();
+      }
+    });
+  }
+  makeDraggable(el,n);
+});
+
+/* --- gating: bundle spoke appears only after all three main parts opened --- */
+const openedMains=new Set();
+let bundleShown=false;
+const hintToast=document.getElementById('hintToast');
+let hintDismissed=false;
+function updateHint(){
+  if(hintDismissed || bundleShown){ hintToast.classList.remove('show'); return; }
+  const n=openedMains.size;
+  if(n===1) hintToast.classList.add('show');
+  else hintToast.classList.remove('show');
+}
+hintToast.addEventListener('click',()=>{ hintDismissed=true; hintToast.classList.remove('show'); });
+function maybeRevealBundle(){
+  if(bundleShown){ updateHint(); return; }
+  if(openedMains.has('marx')&&openedMains.has('post')){
+    bundleShown=true;
+    const b=nodes.find(x=>x.data.id==='bundle');
+    if(b){
+      b.el.style.display='flex';
+      b.el.classList.add('reveal-pop');
+      const path=svg.querySelector('path[data-child="bundle"]');
+      if(path) path.style.display='block';
+    }
+    revealTension();
+  }
+  updateHint();
+}
+
+function childrenOf(rec){return nodes.filter(x=>x.parent===rec)}
+function setChildrenVisible(rec,vis){
+  childrenOf(rec).forEach(c=>{
+    c.el.style.display=vis?'flex':'none';
+    const path=svg.querySelector(`path[data-child="${c.data.id}"]`);
+    if(path)path.style.display=vis?'block':'none';
+    if(!vis){
+      c.el.classList.remove('opened');
+      const exp=c.el.querySelector('.expander');
+      if(exp){exp.querySelector('.plus').textContent='+';exp.querySelector('.etxt').textContent='Vill du veta mer?';}
+      setChildrenVisible(c,false);
+    }
+  });
+  if(typeof refreshSatellites==='function') refreshSatellites();
+}
+
+drawLinks();
+svg.querySelectorAll('path').forEach(p=>p.style.display='none');
+// show the three MAIN spokes from the start; bundle stays hidden until gated
+const coreRec=nodes[0];
+childrenOf(coreRec).forEach(c=>{
+  if(c.data.id==='bundle'){ c.el.style.display='none'; return; }
+  c.el.style.display='flex';
+  const path=svg.querySelector(`path[data-child="${c.data.id}"]`);
+  if(path)path.style.display='block';
+});
+
+/* ---- tension connector: line between marx & post + a ? that unfolds ---- */
+const marxRec=nodes.find(x=>x.data.id==='marx');
+const postRec=nodes.find(x=>x.data.id==='post');
+let tensionShown=false;
+const tLine=document.createElementNS('http://www.w3.org/2000/svg','path');
+tLine.setAttribute('fill','none');
+tLine.setAttribute('stroke',CHEX.hot);
+tLine.setAttribute('stroke-width','2');
+tLine.setAttribute('stroke-dasharray','7 7');
+tLine.setAttribute('stroke-opacity','.55');
+tLine.style.display='none';
+svg.appendChild(tLine);
+// the ? node at the midpoint of the bowed line
+const tNode=document.createElement('div');
+tNode.className='node tension-node';
+tNode.style.display='none';
+tNode.innerHTML=`
+  <div class="qmark" title="${TENSION.q}">?</div>
+  <div class="tension-panel">
+    <div class="t-kind">Fundera</div>
+    <div class="t-q">${TENSION.q}</div>
+    <div class="t-body">${TENSION.body}</div>
+  </div>`;
+world.appendChild(tNode);
+// the whole Fundera-node (? + panel) can be dragged, like the other nodes
+(function makeTensionDraggable(){
+  const q=tNode.querySelector('.qmark');
+  let down=false,moved=false,sX=0,sY=0,oX=0,oY=0;
+  tNode.addEventListener('pointerdown',e=>{
+    if(e.target.closest('a')) return;          // let links work
+    down=true;moved=false;sX=e.clientX;sY=e.clientY;
+    oX=parseFloat(tNode.style.left)||0; oY=parseFloat(tNode.style.top)||0;
+  });
+  tNode.addEventListener('pointermove',e=>{
+    if(!down)return;
+    const dxs=e.clientX-sX,dys=e.clientY-sY;
+    if(!moved && Math.hypot(dxs,dys)<4) return;
+    if(!moved){ moved=true; qMoved=true; tNode.classList.add('dragging'); tNode.setPointerCapture(e.pointerId); }
+    tNode.style.left=(oX+dxs/scale)+'px';
+    tNode.style.top=(oY+dys/scale)+'px';
+    updateTensionLine();   // keep the dashed line attached to the ? as it moves
+  });
+  function end(){ if(!down)return; down=false; tNode.classList.remove('dragging');
+    // swallow the click after a real drag so the ? doesn't toggle the panel
+    if(moved) q.addEventListener('click',ev=>ev.stopPropagation(),{capture:true,once:true}); }
+  tNode.addEventListener('pointerup',end);
+  tNode.addEventListener('pointercancel',end);
+})();
+let qMoved=false;   // becomes true once the user drags the ? away from its auto centre
+function qmarkWorldPos(){
+  const q=tNode.querySelector('.qmark');
+  const r=q.getBoundingClientRect();
+  if(r.width===0){ // node hidden or not laid out yet → use stored left/top
+    return { x:parseFloat(tNode.style.left)||0, y:parseFloat(tNode.style.top)||0 };
+  }
+  const cxs=r.x+r.width/2, cys=r.y+r.height/2;
+  return { x:(cxs-tx)/scale, y:(cys-ty)/scale };
+}
+function updateTensionLine(){
+  const x1=marxRec.x,y1=marxRec.y,x2=postRec.x,y2=postRec.y;
+  const mx=(x1+x2)/2, my=(y1+y2)/2 - 40;
+  const autoX=0.25*x1+0.5*mx+0.25*x2, autoY=0.25*y1+0.5*my+0.25*y2;
+  if(!qMoved){
+    tNode.style.left=autoX+'px'; tNode.style.top=autoY+'px';
+  }
+  // where is the ? really? use its live position if visible, else the auto point
+  let qx, qy;
+  const r=tNode.querySelector('.qmark').getBoundingClientRect();
+  if(r.width>0){ qx=(r.x+r.width/2-tx)/scale; qy=(r.y+r.height/2-ty)/scale; }
+  else { qx=qMoved?(parseFloat(tNode.style.left)||autoX):autoX;
+         qy=qMoved?(parseFloat(tNode.style.top)||autoY):autoY; }
+  // Marx -> ? -> Post (two straight segments meeting at the ?)
+  tLine.setAttribute('d',`M ${x1} ${y1} L ${qx} ${qy} L ${x2} ${y2}`);
+}
+tNode.querySelector('.qmark').addEventListener('click',()=>{
+  tNode.classList.toggle('open');
+});
+function revealTension(){
+  if(tensionShown) return;
+  tensionShown=true;
+  tLine.style.display='block';
+  tNode.style.display='flex';
+  tNode.classList.add('reveal-pop');
+  // now that the node is laid out, redraw the line through the real ? position
+  requestAnimationFrame(updateTensionLine);
+}
+
+/* ---------------- PAN + ZOOM ---------------- */
+let scale=0.8,tx=0,ty=0;
+function apply(){
+  world.style.transform=`translate(${tx}px,${ty}px) scale(${scale})`;
+  svg.style.transform=`translate(${tx}px,${ty}px) scale(${scale})`;
+  svg.setAttribute('width',4000);svg.setAttribute('height',3200);
+}
+function centreOnCore(){
+  tx=window.innerWidth/2-CX*scale;
+  ty=window.innerHeight/2-CY*scale;
+  apply();
+}
+centreOnCore();
+updateTensionLine();
+
+/* ---------------- SATELLITE PORTRAIT NODES ---------------- */
+/* Big image-balls (like Peterson) that hang off a node as a satellite,
+   joined by a line, draggable and link-following like everything else. */
+const PORTRAITS=[
+  { parentId:"marx-who",  img:"images/marx.jpg",    alt:"Karl Marx",       ph:"Marx",    offX:-150, offY:-190 },
+  { parentId:"post-thinkers", img:"images/derrida.jpg", alt:"Jacques Derrida", ph:"Derrida", offX: 170, offY:-150 }
+];
+const satellites=[];
+PORTRAITS.forEach(cfg=>{
+  const parent=nodes.find(n=>n.data.id===cfg.parentId);
+  if(!parent) return;
+  const rec={ x:parent.x+cfg.offX, y:parent.y+cfg.offY, parent, cfg, offX:cfg.offX, offY:cfg.offY };
+  // connector line
+  const line=document.createElementNS('http://www.w3.org/2000/svg','path');
+  line.setAttribute('fill','none');
+  line.setAttribute('stroke',CHEX.cool);
+  line.setAttribute('stroke-width','1.6');
+  line.setAttribute('stroke-opacity','.3');
+  line.style.display='none';
+  svg.appendChild(line);
+  // portrait element
+  const el=document.createElement('div');
+  el.className='node portrait-node';
+  el.style.left=rec.x+'px'; el.style.top=rec.y+'px';
+  el.style.display='none';
+  el.innerHTML=`<div class="sat-portrait">
+      <img src="${cfg.img}" alt="${cfg.alt}" onload="this.parentNode.classList.add('has-img')" onerror="this.style.display='none'">
+      <div class="sat-ph">${cfg.ph}<br><span>${cfg.img}</span></div>
+    </div>`;
+  world.appendChild(el);
+  rec.el=el; rec.line=line;
+  satellites.push(rec);
+
+  function redrawSatLine(){
+    const p=rec.parent, s=rec;
+    const dx=s.x-p.x, dy=s.y-p.y, dist=Math.hypot(dx,dy)||1;
+    const ux=dx/dist, uy=dy/dist;
+    const x1=p.x+ux*80, y1=p.y+uy*70;   // leave parent edge
+    const x2=s.x-ux*82, y2=s.y-uy*82;   // stop at ball edge
+    line.setAttribute('d',`M ${x1} ${y1} L ${x2} ${y2}`);
+  }
+  rec.redraw=redrawSatLine;
+  redrawSatLine();
+
+  // dragging the ball moves it and redraws its own connector
+  let down=false,moved=false,sX=0,sY=0,oX=0,oY=0;
+  el.addEventListener('pointerdown',e=>{ down=true;moved=false;sX=e.clientX;sY=e.clientY;oX=rec.x;oY=rec.y; });
+  el.addEventListener('pointermove',e=>{
+    if(!down)return;
+    const dxs=e.clientX-sX,dys=e.clientY-sY;
+    if(!moved && Math.hypot(dxs,dys)<4) return;
+    if(!moved){ moved=true; el.classList.add('dragging'); el.setPointerCapture(e.pointerId); }
+    rec.x=oX+dxs/scale; rec.y=oY+dys/scale;
+    rec.offX=rec.x-rec.parent.x; rec.offY=rec.y-rec.parent.y;
+    el.style.left=rec.x+'px'; el.style.top=rec.y+'px';
+    redrawSatLine();
+  });
+  function end(){ if(!down)return; down=false; el.classList.remove('dragging'); }
+  el.addEventListener('pointerup',end);
+  el.addEventListener('pointercancel',end);
+});
+
+/* show a satellite when its parent node becomes visible; hook into setChildrenVisible */
+function refreshSatellites(){
+  satellites.forEach(s=>{
+    const visible = s.parent.el && s.parent.el.style.display!=='none';
+    s.el.style.display = visible?'flex':'none';
+    s.line.style.display = visible?'block':'none';
+    if(visible) s.redraw();
+  });
+}
+
+/* ---------------- NODE DRAG ---------------- */
+/* Drag any node; it stays where dropped. Screen movement is divided by
+   scale to get world movement. A small threshold distinguishes a click
+   (open/expand) from a drag (move). */
+function makeDraggable(el, rec){
+  let down=false, moved=false, startX=0, startY=0, origX=0, origY=0;
+  el.addEventListener('pointerdown',e=>{
+    // don't start a drag from interactive controls
+    if(e.target.closest('a,button,textarea,.expander,.core-expand,.logic-btn')) return;
+    down=true; moved=false;
+    startX=e.clientX; startY=e.clientY;
+    origX=rec.x; origY=rec.y;
+    // NOTE: do not capture the pointer here; that would swallow plain clicks.
+  });
+  el.addEventListener('pointermove',e=>{
+    if(!down) return;
+    const dxs=e.clientX-startX, dys=e.clientY-startY;
+    if(!moved && Math.hypot(dxs,dys) < 4) return;  // below threshold → still a click
+    if(!moved){ moved=true; el.classList.add('dragging'); el.setPointerCapture(e.pointerId); }
+    rec.x = origX + dxs/scale;
+    rec.y = origY + dys/scale;
+    el.style.left=rec.x+'px'; el.style.top=rec.y+'px';
+    redrawLinksFor(rec);
+  });
+  function endDrag(e){
+    if(!down) return;
+    down=false;
+    el.classList.remove('dragging');
+    if(moved){
+      // swallow the click that would otherwise open the node right after a drag
+      el.addEventListener('click',ev=>ev.stopPropagation(),{capture:true,once:true});
+    }
+  }
+  el.addEventListener('pointerup',endDrag);
+  el.addEventListener('pointercancel',endDrag);
+}
+
+let dragging=false,sx,sy;
+stage.addEventListener('pointerdown',e=>{
+  if(e.target.closest('.node'))return;   // clicks on any node pass through
+  dragging=true;sx=e.clientX-tx;sy=e.clientY-ty;stage.classList.add('drag');
+  stage.setPointerCapture(e.pointerId);
+});
+stage.addEventListener('pointermove',e=>{if(dragging){tx=e.clientX-sx;ty=e.clientY-sy;apply();}});
+stage.addEventListener('pointerup',()=>{dragging=false;stage.classList.remove('drag')});
+stage.addEventListener('pointercancel',()=>{dragging=false;stage.classList.remove('drag')});
+stage.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const f=e.deltaY<0?1.1:0.9;
+  const nx=(e.clientX-tx)/scale,ny=(e.clientY-ty)/scale;
+  scale=Math.min(1.8,Math.max(0.3,scale*f));
+  tx=e.clientX-nx*scale;ty=e.clientY-ny*scale;apply();
+},{passive:false});
+function resetAll(){
+  // restore every node to its original layout position
+  nodes.forEach(n=>{
+    n.x=n.homeX; n.y=n.homeY;
+    if(n.el){ n.el.style.left=n.x+'px'; n.el.style.top=n.y+'px'; }
+  });
+  // redraw all connector lines
+  drawLinks();
+  // re-apply which links are visible (only for currently-open branches)
+  svg.querySelectorAll('path').forEach(p=>p.style.display='none');
+  function showVisibleLinks(rec){
+    childrenOf(rec).forEach(c=>{
+      if(c.el && c.el.style.display!=='none'){
+        const path=svg.querySelector(`path[data-child="${c.data.id}"]`);
+        if(path) path.style.display='block';
+        showVisibleLinks(c);
+      }
+    });
+  }
+  showVisibleLinks(coreRec);
+  // bundle link if shown
+  if(bundleShown){ const bp=svg.querySelector('path[data-child="bundle"]'); if(bp) bp.style.display='block'; }
+  // satellites back to their default offsets
+  if(typeof satellites!=='undefined'){
+    satellites.forEach(s=>{
+      s.offX=s.cfg.offX; s.offY=s.cfg.offY;
+      s.x=s.parent.x+s.offX; s.y=s.parent.y+s.offY;
+      s.el.style.left=s.x+'px'; s.el.style.top=s.y+'px';
+      s.redraw();
+    });
+    refreshSatellites();
+  }
+  // tension ? back to auto-centre
+  if(typeof qMoved!=='undefined'){ qMoved=false; updateTensionLine(); }
+  // re-arm the hint
+  hintDismissed=false; updateHint();
+  // reset the view
+  scale=0.8; centreOnCore();
+  if(typeof updateTensionLine==='function') updateTensionLine();
+}
+document.getElementById('zin').onclick=()=>{scale=Math.min(1.8,scale*1.15);apply();};
+document.getElementById('zout').onclick=()=>{scale=Math.max(0.3,scale*0.87);apply();};
+document.getElementById('reset').onclick=resetAll;
+
+let pts=new Map(),pinch=0;
+stage.addEventListener('pointerdown',e=>pts.set(e.pointerId,e));
+stage.addEventListener('pointermove',e=>{
+  if(!pts.has(e.pointerId))return;pts.set(e.pointerId,e);
+  if(pts.size===2){
+    const [a,b]=[...pts.values()];
+    const d=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+    if(pinch){
+      const f=d/pinch,mx=(a.clientX+b.clientX)/2,my=(a.clientY+b.clientY)/2;
+      const nx=(mx-tx)/scale,ny=(my-ty)/scale;
+      scale=Math.min(1.8,Math.max(0.3,scale*f));
+      tx=mx-nx*scale;ty=my-ny*scale;apply();
+    }
+    pinch=d;dragging=false;
+  }
+});
+stage.addEventListener('pointerup',e=>{pts.delete(e.pointerId);if(pts.size<2)pinch=0;});
+</script>
+</body>
+</html>
