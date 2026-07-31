@@ -184,7 +184,7 @@
   .node-portrait.has-img img{display:block}
   .node-portrait.has-img .npt{display:none}
   .npt{font-size:8px;color:var(--ink-faint);text-align:center;line-height:1.25;padding:4px}
-  .portrait-node{cursor:grab}
+  .portrait-node{cursor:grab;width:160px;height:160px;max-width:160px}
   .portrait-node.dragging{cursor:grabbing;z-index:30}
   .sat-portrait{
     width:160px;height:160px;border-radius:50%;
@@ -322,19 +322,19 @@ const BRANCHES = [
        answer:"En tänkare på 1800-talet som skrev mitt i industrialiseringen, när fabrikerna var nya och arbetarna, även barn, slet hårt medan ägarna blev rika. Hans idéer var ett <b>svar på något han såg</b>, inte en fantasi.",
        who:"Karl Marx, tysk filosof och samhällstänkare, 1818–1883.",children:[]},
       {id:"marx-two",color:"source",kind:"Viktig skillnad",label:"Ordet betyder två olika saker",
-       answer:"Här är nyckeln. ”Marxism” kan betyda två olika saker:<br><br><b>1. En politisk åsikt:</b> att man <i>vill</i> förändra samhället och ta makt från de rika. Det här kopplas till kommunistiska partier och länder.<br><br><b>2. Ett sätt att förstå samhället:</b> att analysera* hur pengar, ägande och klass hänger ihop, utan att man vill starta en revolution.<br><br>Man kan göra det andra utan det första. Att analysera något är inte samma sak som att vilja störta det.<span class='def'><span class='star'>*</span> <b>analysera</b> = undersöka noga hur något funkar och hänger ihop</span>",
+       answer:"Här är nyckeln. ”Marxism” kan betyda två olika saker:<br><br><b>1. En politisk åsikt.</b> Att man <i>vill</i> förändra samhället och ta makt från de rika. Det här kopplas till kommunistiska partier och länder.<br><br><b>2. Ett sätt att förstå samhället.</b> Att analysera* hur pengar, ägande och klass hänger ihop. Utan att man vill starta en revolution.<br><br>Man kan göra det andra utan det första. Att analysera något är inte samma sak som att vilja störta det.<span class='def'><span class='star'>*</span> <b>analysera</b> = undersöka noga hur något funkar och hänger ihop</span>",
        children:[
          {id:"marx-words",color:"source",kind:"Ett knep proffsen använder",label:"”Marxist” vs. ”marxian”",
-          answer:"På engelska finns faktiskt <b>två olika ord</b> för de två sakerna:<br><br><span class='quote-en'>marxist = politisk (vill förändra)<br>marxian = analytisk (vill förstå)</span>Forskare säger ”marxian” för att visa: <i>jag lånar Marx sätt att analysera, men jag är ingen aktivist*.</i><br><br>Svenskan har inte de två orden, och den som buntar ihop allt utnyttjar det: de väljer alltid den <b>politiska</b>, läskigare betydelsen.<span class='def'><span class='star'>*</span> <b>aktivist</b> = någon som aktivt kämpar för att förändra samhället</span>",children:[]}
+          answer:"På engelska finns två olika ord för de två sakerna.<br><br><span class='quote-en'>marxist = politisk (vill förändra)<br>marxian = analytisk (vill förstå)</span>Forskare säger ”marxian” för att visa något: <i>jag lånar Marx sätt att analysera. Men jag är ingen aktivist*.</i><br><br>Svenskan har inte de två orden. Den som buntar ihop allt utnyttjar det, och väljer alltid den <b>politiska</b>, läskigare betydelsen.<span class='def'><span class='star'>*</span> <b>aktivist</b> = någon som aktivt kämpar för att förändra samhället</span>",children:[]}
        ]},
       {id:"marx-research",color:"cool",kind:"På riktigt?",label:"Använder riktiga forskare det?",
-       answer:"Ja. Det finns <b>marxiansk nationalekonomi*</b>: forskare som använder Marx verktyg för att förstå pengar, kriser och ojämlikhet, med egna läroböcker och tidskrifter.<br><br>När finanskrisen slog till 2008 skrev till och med vanliga, borgerliga* tidningar att ”Marx är tillbaka”. Poängen: <b>det behöver inte vara politiskt</b>, det kan vara ett vanligt verktyg på universitetet.<span class='def'><span class='star'>*</span> <b>nationalekonomi</b> = läran om hur pengar och ekonomi funkar i ett samhälle<br><span class='star'>*</span> <b>borgerlig</b> = här: höger-/mittenlutande, alltså inte vänster</span>",children:[]},
+       answer:"Ja. Det finns marxiansk nationalekonomi*: forskare som använder Marx verktyg för att förstå pengar, kriser och ojämlikhet. De har egna läroböcker och tidskrifter.<br><br>När finanskrisen slog till 2008 skrev till och med vanliga, borgerliga* tidningar att ”Marx är tillbaka”. Poängen: <b>det behöver inte vara politiskt</b>. Det kan vara ett vanligt verktyg på universitetet.<span class='def'><span class='star'>*</span> <b>nationalekonomi</b> = läran om hur pengar och ekonomi funkar i ett samhälle<br><span class='star'>*</span> <b>borgerlig</b> = här: höger-/mittenlutande, alltså inte vänster</span>",children:[]},
       {id:"marx-komm",color:"cool",kind:"Vad hände sen?",label:"Sovjet, Kina och de andra",
        q:"Vilka länder byggde på Marx idéer?",
-       answer:"Marx idéer blev senare till verkliga länder: Sovjetunionen 1917, sedan flera andra.<br><br>Just <b>hur det gick där</b> (förtryck, köer, murar) är det de flesta ser framför sig vid ordet ”kommunism”. Och det fick många att säga: jag kan tycka illa om de <b>länderna</b> utan att slänga bort varje <b>fråga</b> Marx ställde. Land och idé är inte samma sak.",children:[]},
+       answer:"Marx idéer blev senare till verkliga länder: Sovjetunionen 1917, sedan flera andra.<br><br>Just hur det gick där (förtryck, köer, murar) är det de flesta ser framför sig vid ordet ”kommunism”. Det fick många att säga: jag kan tycka illa om <b>länderna</b> utan att slänga bort varje <b>fråga</b> Marx ställde. Land och idé är inte samma sak.",children:[]},
       {id:"marx-hist",color:"hot",kind:"En sak att minnas",label:"Marx idé om historien",
        q:"Vad driver historien framåt, tror du?",
-       answer:"En del av Marx idé handlar om historien: att den drivs framåt av <b>kamp mellan klasser</b> (fattiga mot rika, genom alla tider).<br><br>Lägg märke till att det är en <b>stor, tvärsäker* förklaring</b>: ”så här funkar historien, alltid”. Håll den tanken kvar till postmodernism-delen, för där blir den viktig.<span class='def'><span class='star'>*</span> <b>tvärsäker</b> = helt säker på att man har rätt, utan minsta tvivel</span>",children:[]}
+       answer:"En del av Marx idé handlar om historien. Att den drivs framåt av <b>kamp mellan klasser</b> (fattiga mot rika, genom alla tider).<br><br>Lägg märke till att det är en stor, tvärsäker* förklaring: ”så här funkar historien, alltid”. Håll den tanken kvar till postmodernism-delen, för där blir den viktig.<span class='def'><span class='star'>*</span> <b>tvärsäker</b> = helt säker på att man har rätt, utan minsta tvivel</span>",children:[]}
     ]
   },
 
@@ -346,11 +346,11 @@ const BRANCHES = [
     children:[
       {id:"post-name",color:"cool",kind:"Varför heter det så?",label:"”Post” betyder efter",
        q:"Efter vad, tror du?",
-       answer:"Ordet är byggt av två delar: <b>post</b> = ”efter”, och <b>modernism</b>. Alltså: <b>det som kom efter modernismen</b>.<br><br>Modernismen (tiden innan) trodde starkt på <b>framsteg och förnuft</b>: att vi med vetenskap och stora planer kunde göra världen bättre.<br><br>Postmodernismen är en <b>reaktion mot just det</b>: en misstänksamhet mot idén att vi vet bäst. Därför är den skeptisk mot tvärsäkra idéer. Det ligger i själva namnet.",
+       answer:"Ordet är byggt av två delar: <b>post</b> = ”efter”, och <b>modernism</b>. Alltså: det som kom efter modernismen.<br><br>Modernismen var tiden innan. Den trodde starkt på framsteg och förnuft: att vi med vetenskap och stora planer kunde göra världen bättre.<br><br>Postmodernismen är en <b>reaktion mot just det</b>. En misstänksamhet mot idén att vi vet bäst. Därför är den skeptisk mot tvärsäkra idéer. Det ligger i själva namnet.",
        children:[
          {id:"post-lost",color:"hist",kind:"Historisk fördjupning",label:"Därför tappade de tron",
           q:"Vad hände som gjorde folk så besvikna?",
-          answer:"Modernismen lovade att <b>förnuft och vetenskap</b> skulle göra världen bättre. Sedan kom 1900-talet och visade baksidan:<br><br><b>Världskrigen:</b> för första gången användes tekniken till att döda människor på löpande band. Framsteg, fast åt fel håll.<br><br><b>Atombomben:</b> vetenskapens största landvinning blev ett vapen som kunde utplåna hela städer på en sekund.<br><br>Poängen: det var <b>inte okunskap</b> som skapade katastroferna, det var förnuftet och tekniken själva. <b>Därför tappade postmodernisterna tron</b> på att ”framsteg” alltid är något bra.",children:[]}
+          answer:"Modernismen lovade att förnuft och vetenskap skulle göra världen bättre. Sedan kom 1900-talet och visade baksidan.<br><br><b>Världskrigen:</b> för första gången användes tekniken till att döda människor på löpande band. Framsteg, fast åt fel håll.<br><br><b>Atombomben:</b> vetenskapens största landvinning blev ett vapen som kunde utplåna hela städer på en sekund.<br><br>Poängen: det var inte okunskap som skapade katastroferna. Det var förnuftet och tekniken själva. <b>Därför tappade postmodernisterna tron</b> på att framsteg alltid är något bra.",children:[]}
        ]},
       {id:"post-why",color:"cool",kind:"Varifrån?",label:"Varför litar man inte på tvärsäkra idéer?",
        q:"Varför skulle man bli skeptisk mot någon som säger sig ha alla svar?",
@@ -358,7 +358,7 @@ const BRANCHES = [
        who:"Idén fick sitt namn av Jean-François Lyotard, fransk filosof, på 1970-talet.",children:[]},
       {id:"post-thinkers",color:"cool",kind:"Vilka då?",label:"Tänkare bakom idéerna",
        q:"Vem kom på postmodernismen?",
-       answer:"Ingen enskild person, utan <b>flera olika tänkare</b> som ungefär samtidigt började ifrågasätta de stora, tvärsäkra idéerna.<br><br>En av dem var <b>Jacques Derrida</b>. Hans mest kända tanke: att en text kan <b>tolkas på nästan oändligt många sätt</b>, så det finns sällan bara en ”rätt” läsning.<br><br>Men han var <b>en av många</b>, inte ledaren för en rörelse. Det är värt att minnas när någon pekar ut en enda person som ”hjärnan bakom allt”.",children:[]}
+       answer:"Ingen enskild person kom på postmodernismen. Det var flera olika tänkare som ungefär samtidigt började ifrågasätta de stora, tvärsäkra idéerna.<br><br>En av dem var <b>Jacques Derrida</b>. Hans mest kända tanke: att en text kan tolkas på nästan oändligt många sätt. Det finns sällan bara en ”rätt” läsning.<br><br>Men han var <b>en av många</b>, inte ledaren för en rörelse. Det är värt att minnas när någon pekar ut en enda person som ”hjärnan bakom allt”.",children:[]}
     ]
   }
 ];
@@ -797,20 +797,20 @@ PORTRAITS.forEach(cfg=>{
 
   // dragging the ball moves it and redraws its own connector
   let down=false,moved=false,sX=0,sY=0,oX=0,oY=0;
-  el.addEventListener('pointerdown',e=>{ down=true;moved=false;sX=e.clientX;sY=e.clientY;oX=rec.x;oY=rec.y; });
+  el.addEventListener('pointerdown',e=>{ e.stopPropagation(); down=true;moved=false;sX=e.clientX;sY=e.clientY;oX=rec.x;oY=rec.y; });
   el.addEventListener('pointermove',e=>{
     if(!down)return;
     const dxs=e.clientX-sX,dys=e.clientY-sY;
     if(!moved && Math.hypot(dxs,dys)<4) return;
-    if(!moved){ moved=true; el.classList.add('dragging'); el.setPointerCapture(e.pointerId); }
+    if(!moved){ moved=true; el.classList.add('dragging'); try{el.setPointerCapture(e.pointerId);}catch(_){}}
     rec.x=oX+dxs/scale; rec.y=oY+dys/scale;
     rec.offX=rec.x-rec.parent.x; rec.offY=rec.y-rec.parent.y;
     el.style.left=rec.x+'px'; el.style.top=rec.y+'px';
     redrawSatLine();
   });
-  function end(){ if(!down)return; down=false; el.classList.remove('dragging'); }
-  el.addEventListener('pointerup',end);
-  el.addEventListener('pointercancel',end);
+  function end(){ if(!down)return; down=false; moved=false; el.classList.remove('dragging'); }
+  window.addEventListener('pointerup',end);
+  window.addEventListener('pointercancel',end);
 });
 
 /* show a satellite when its parent node becomes visible; hook into setChildrenVisible */
@@ -841,13 +841,13 @@ function makeDraggable(el, rec){
     if(!down) return;
     const dxs=e.clientX-startX, dys=e.clientY-startY;
     if(!moved && Math.hypot(dxs,dys) < 4) return;  // below threshold → still a click
-    if(!moved){ moved=true; el.classList.add('dragging'); el.setPointerCapture(e.pointerId); }
+    if(!moved){ moved=true; el.classList.add('dragging'); try{el.setPointerCapture(e.pointerId);}catch(_){}}
     rec.x = origX + dxs/scale;
     rec.y = origY + dys/scale;
     el.style.left=rec.x+'px'; el.style.top=rec.y+'px';
     redrawLinksFor(rec);
   });
-  function endDrag(e){
+  function endDrag(){
     if(!down) return;
     down=false;
     el.classList.remove('dragging');
@@ -855,9 +855,12 @@ function makeDraggable(el, rec){
       // swallow the click that would otherwise open the node right after a drag
       el.addEventListener('click',ev=>ev.stopPropagation(),{capture:true,once:true});
     }
+    moved=false;
   }
-  el.addEventListener('pointerup',endDrag);
-  el.addEventListener('pointercancel',endDrag);
+  // release on window so the drag can never get "stuck" if the pointer
+  // is let go over a different (overlapping) element
+  window.addEventListener('pointerup',endDrag);
+  window.addEventListener('pointercancel',endDrag);
 }
 
 let dragging=false,sx,sy;
@@ -877,44 +880,57 @@ stage.addEventListener('wheel',e=>{
   tx=e.clientX-nx*scale;ty=e.clientY-ny*scale;apply();
 },{passive:false});
 function resetAll(){
-  // restore every node to its original layout position
+  // 1. restore every node to its original layout position
   nodes.forEach(n=>{
     n.x=n.homeX; n.y=n.homeY;
     if(n.el){ n.el.style.left=n.x+'px'; n.el.style.top=n.y+'px'; }
   });
-  // redraw all connector lines
-  drawLinks();
-  // re-apply which links are visible (only for currently-open branches)
+  // 2. collapse every branch: close expanders, hide answers/panels
+  nodes.forEach(n=>{
+    if(!n.el || n.depth===0) return;
+    n.el.classList.remove('opened','showing','answered');
+    const exp=n.el.querySelector('.expander');
+    if(exp){ exp.querySelector('.plus').textContent='+'; exp.querySelector('.etxt').textContent='Vill du veta mer?'; }
+    const ta=n.el.querySelector('textarea'); if(ta){ ta.value=''; ta.style.height='auto'; }
+  });
+  // reset the core panels (source / logic / explain)
+  const core=coreRec.el;
+  if(core){ core.classList.remove('open','src-open','logic-open'); }
+  // 3. hide everything except the core's three main spokes
   svg.querySelectorAll('path').forEach(p=>p.style.display='none');
-  function showVisibleLinks(rec){
-    childrenOf(rec).forEach(c=>{
-      if(c.el && c.el.style.display!=='none'){
-        const path=svg.querySelector(`path[data-child="${c.data.id}"]`);
-        if(path) path.style.display='block';
-        showVisibleLinks(c);
-      }
-    });
-  }
-  showVisibleLinks(coreRec);
-  // bundle link if shown
-  if(bundleShown){ const bp=svg.querySelector('path[data-child="bundle"]'); if(bp) bp.style.display='block'; }
-  // satellites back to their default offsets
+  nodes.forEach(n=>{
+    if(n.depth===0) return;
+    const isMainSpoke = n.parent===coreRec && n.data.id!=='bundle';
+    n.el.style.display = isMainSpoke ? 'flex' : 'none';
+    if(isMainSpoke){
+      const path=svg.querySelector(`path[data-child="${n.data.id}"]`);
+      if(path) path.style.display='block';
+    }
+  });
+  // 4. reset gating state (bundle + tension hidden again)
+  openedMains.clear();
+  bundleShown=false;
+  const bnode=nodes.find(x=>x.data.id==='bundle');
+  if(bnode){ bnode.el.style.display='none'; bnode.el.classList.remove('reveal-pop'); }
+  tensionShown=false;
+  tLine.style.display='none';
+  tNode.style.display='none';
+  tNode.classList.remove('open','reveal-pop');
+  qMoved=false; updateTensionLine();
+  // 5. satellites back to hidden + default offsets
   if(typeof satellites!=='undefined'){
     satellites.forEach(s=>{
       s.offX=s.cfg.offX; s.offY=s.cfg.offY;
       s.x=s.parent.x+s.offX; s.y=s.parent.y+s.offY;
       s.el.style.left=s.x+'px'; s.el.style.top=s.y+'px';
+      s.el.style.display='none';
+      s.line.style.display='none';
       s.redraw();
     });
-    refreshSatellites();
   }
-  // tension ? back to auto-centre
-  if(typeof qMoved!=='undefined'){ qMoved=false; updateTensionLine(); }
-  // re-arm the hint
+  // 6. re-arm hint + reset view
   hintDismissed=false; updateHint();
-  // reset the view
   scale=0.8; centreOnCore();
-  if(typeof updateTensionLine==='function') updateTensionLine();
 }
 document.getElementById('zin').onclick=()=>{scale=Math.min(1.8,scale*1.15);apply();};
 document.getElementById('zout').onclick=()=>{scale=Math.max(0.3,scale*0.87);apply();};
