@@ -195,6 +195,14 @@ html, body {
   font-size: .82rem; line-height: 1.5; color: var(--text-dim);
 }
 .col-fact strong { color: var(--text); font-weight: 500; }
+/* Variant inuti loss/gain-paneler */
+.info-panel .col-fact {
+  margin-top: .8rem;
+  background: var(--surface-2);
+  font-size: .8rem; line-height: 1.5;
+}
+.info-panel.loss .col-fact { border-left-color: var(--loss); }
+.info-panel.gain .col-fact { border-left-color: var(--gain); }
 
 /* Intro-ruta för den röda tråden (era 0, första gången) */
 .thread-intro {
@@ -919,7 +927,7 @@ html, body {
     <div class="thread-intro" data-reveal-at="1">
       <span class="ti-label">◆ Följ med genom hela antiken — en fråga går som en röd tråd</span>
       <span class="ti-q">Vem får bestämma i samhället?</span>
-      <span class="ti-body">Genom alla epoker du nu ska gå igenom återkommer samma fråga: vem får vara med och styra, och vilka lämnas utanför? Svaret ändras hela tiden — och just den förändringen är historiens stora berättelse. Vi börjar i bronsåldern.</span>
+      <span class="ti-body">Genom alla epoker du nu ska gå igenom återkommer samma fråga: vem får vara med och styra, och vilka lämnas utanför? Svaret ändras hela tiden, och just den förändringen är historiens stora berättelse. Vi börjar i bronsåldern.</span>
     </div>
 
     <div class="thread-strip" data-reveal-at="1">
@@ -998,7 +1006,7 @@ html, body {
       </div>
       <div class="thread-cell forward">
         <span class="thread-role">Frågan framåt <span class="thread-arrow">▸</span></span>
-        <span class="thread-text">När allt ska byggas upp igen från början — vilka ska få vara med den här gången?</span>
+        <span class="thread-text">När allt ska byggas upp igen från början: vilka ska få vara med den här gången?</span>
       </div>
     </div>
 
@@ -1032,6 +1040,7 @@ html, body {
           <li>Befolkningstäthet minskade kraftigt <span class="item-date">1100–900 f.Kr.</span></li>
           <li>Det avancerade metallhantverket <span class="item-date">ca 1050 f.Kr.</span></li>
         </ul>
+        <p class="col-fact">När palatsen föll försvann de som organiserat allt: skrivarna, hantverksmästarna och handelsledarna. Kunskap som bara fanns i huvudet på specialister gick förlorad på en enda generation. Utan skrift kunde ingenting föras vidare, och utan handel stannade tillgången på metaller. Grekland föll tillbaka till enkla självförsörjande byar.</p>
       </div>
       <div class="info-panel gain" data-reveal-at="2">
         <h3>Vad återuppstod?</h3>
@@ -1043,6 +1052,7 @@ html, body {
           <li>De första polis-staterna formas <span class="item-date">ca 800 f.Kr.</span></li>
           <li>En ny, gemensam grekisk identitet <span class="item-date">ca 800 f.Kr.</span></li>
         </ul>
+        <p class="col-fact">Efter århundraden av mörker vände det. Handeln kom igång igen och kontakten med fenicierna gav grekerna ett nytt, enklare alfabet. Nu kunde berättelser som Homeros dikter äntligen skrivas ner efter att ha förts vidare muntligt i generationer. Ur denna återhämtning växte polis, den grekiska stadsstaten, och en känsla av att vara ett gemensamt folk.</p>
       </div>
     </div>
 
@@ -1086,11 +1096,11 @@ html, body {
       </div>
       <div class="thread-cell now">
         <span class="thread-role">Vem bestämmer nu?</span>
-        <span class="thread-text">Något nytt uppstår: stadsstaten (polis). Här blir "medborgare" en idé för första gången — fria män som tillsammans äger sin stad. Men kvinnor och slavar räknas inte.</span>
+        <span class="thread-text">Något nytt uppstår: stadsstaten (polis). Här blir "medborgare" en idé för första gången, fria män som tillsammans äger sin stad. Men kvinnor och slavar räknas inte.</span>
       </div>
       <div class="thread-cell forward">
         <span class="thread-role">Frågan framåt <span class="thread-arrow">▸</span></span>
-        <span class="thread-text">Om vanliga fria män kan äga staden ihop — hur långt kan makten delas?</span>
+        <span class="thread-text">Om vanliga fria män kan äga staden ihop: hur långt kan makten delas?</span>
       </div>
     </div>
 
@@ -1237,7 +1247,7 @@ html, body {
       </div>
       <div class="thread-cell now">
         <span class="thread-role">Vem bestämmer nu?</span>
-        <span class="thread-text">Aten går längst av alla: folket självt röstar och styr — det kallas demokrati. Men "folket" betyder fria vuxna män födda i Aten. Kvinnor, slavar och invandrare står helt utanför.</span>
+        <span class="thread-text">Aten går längst av alla: folket självt röstar och styr, det kallas demokrati. Men "folket" betyder fria vuxna män födda i Aten. Kvinnor, slavar och invandrare står helt utanför.</span>
       </div>
       <div class="thread-cell forward">
         <span class="thread-role">Frågan framåt <span class="thread-arrow">▸</span></span>
@@ -1506,7 +1516,7 @@ html, body {
       </div>
       <div class="thread-cell forward">
         <span class="thread-role">Frågan framåt <span class="thread-arrow">▸</span></span>
-        <span class="thread-text">Nu när politiken tystnat men idéerna finns överallt — vem tar vara på dem i framtiden?</span>
+        <span class="thread-text">Nu när politiken tystnat men idéerna finns överallt: vem tar vara på dem i framtiden?</span>
       </div>
     </div>
 
@@ -1611,7 +1621,7 @@ html, body {
       </div>
       <div class="thread-cell now">
         <span class="thread-role">Vad hände med frågan?</span>
-        <span class="thread-text">Frågan "vem får bestämma?" dör aldrig. De grekiska tankarna om folkstyre kopieras, glöms nästan bort — och väcks till liv igen tusen år senare. Till slut når de ända fram till oss.</span>
+        <span class="thread-text">Frågan "vem får bestämma?" dör aldrig. De grekiska tankarna om folkstyre kopieras, glöms nästan bort, och väcks till liv igen tusen år senare. Till slut når de ända fram till oss.</span>
       </div>
     </div>
 
