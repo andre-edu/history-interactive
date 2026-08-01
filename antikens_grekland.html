@@ -185,6 +185,49 @@ html, body {
   content: '◆'; position: absolute; left: 0;
   font-size: .42rem; top: .58em; color: var(--gold);
 }
+/* Faktaruta inuti en jämförelsekolumn (fyller white space) */
+.col-fact {
+  margin-top: auto;
+  background: var(--surface-2);
+  border-left: 3px solid var(--gold-dim);
+  border-radius: 0 4px 4px 0;
+  padding: .7rem .9rem;
+  font-size: .82rem; line-height: 1.5; color: var(--text-dim);
+}
+.col-fact strong { color: var(--text); font-weight: 500; }
+
+/* Intro-ruta för den röda tråden (era 0, första gången) */
+.thread-intro {
+  background: linear-gradient(90deg, rgba(201,160,82,.12), rgba(97,78,40,.06));
+  border: 1px solid var(--gold-dim);
+  border-radius: 5px;
+  padding: .75rem 1.1rem;
+  display: flex; flex-direction: column; gap: .25rem;
+  flex-shrink: 0;
+}
+.thread-intro .ti-label {
+  font-size: .62rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--gold); font-weight: 600;
+}
+.thread-intro .ti-q {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem; font-style: italic; color: var(--gold); font-weight: 600;
+}
+.thread-intro .ti-body {
+  font-size: .84rem; line-height: 1.5; color: var(--text);
+}
+
+/* Epok-sammanfattning (arkaisk tid, mellan kedja och alfabet) */
+.era-summary {
+  background: var(--surface);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 5px 5px 0;
+  padding: .7rem 1.1rem;
+  font-size: .84rem; line-height: 1.55; color: var(--text-dim);
+  flex-shrink: 0;
+}
+.era-summary strong { color: var(--text); font-weight: 500; }
+
 .geo-tag {
   font-family: 'DM Sans', sans-serif;
   font-size: .72rem; font-weight: 400;
@@ -324,9 +367,14 @@ html, body {
 }
 
 /* Era 2: vertikal stapel med begränsad konstellationshöjd */
-#cc-2 .constellation-bg { height: 230px; }
+#cc-2 .constellation-bg { height: 200px; }
 #cc-2 .constellation-bg svg { width: 100%; height: 100%; }
 #cc-2 .alph-card-grid { grid-template-columns: repeat(10, 1fr); }
+/* Alfabetet komprimerat så sammanfattningen får plats */
+#cc-2 .alph-compact { flex: 0 0 auto; padding: .7rem 1rem; gap: .5rem; }
+#cc-2 .alph-card-grid { flex: 0 0 auto; }
+#cc-2 .alph-card { padding: .35rem .2rem; }
+#cc-2 .alph-card-m { font-size: 1.3rem; }
 
 .alph-compact {
   flex: 2; background: var(--surface);
@@ -868,14 +916,16 @@ html, body {
   </div>
 
   <div class="content-container" id="cc-0">
+    <div class="thread-intro" data-reveal-at="1">
+      <span class="ti-label">◆ Följ med genom hela antiken — en fråga går som en röd tråd</span>
+      <span class="ti-q">Vem får bestämma i samhället?</span>
+      <span class="ti-body">Genom alla epoker du nu ska gå igenom återkommer samma fråga: vem får vara med och styra, och vilka lämnas utanför? Svaret ändras hela tiden — och just den förändringen är historiens stora berättelse. Vi börjar i bronsåldern.</span>
+    </div>
+
     <div class="thread-strip" data-reveal-at="1">
       <div class="thread-cell now">
-        <span class="thread-role">Den röda tråden börjar här</span>
-        <span class="thread-text">Vem hör till gemenskapen — och vem bestämmer?</span>
-      </div>
-      <div class="thread-cell forward">
-        <span class="thread-role">Bronsålderns svar <span class="thread-arrow">▸</span></span>
-        <span class="thread-text">En liten palatselit bestämmer. De flesta är namnlösa i lagerlistorna.</span>
+        <span class="thread-role">Bronsålderns svar</span>
+        <span class="thread-text">Nästan ingen får bestämma. En liten grupp vid palatset styr allt, och alla andra är namnlösa arbetare i skattelistorna.</span>
       </div>
     </div>
 
@@ -890,6 +940,7 @@ html, body {
           <li>Handelsfolk snarare än militärmakt</li>
           <li>Försvann plötsligt ca 1450 f.Kr., orsaken är okänd</li>
         </ul>
+        <p class="col-fact">Minoerna byggde <strong>Europas första högkultur</strong> — ett samhälle med städer, skrift, konst och organiserad handel. Deras palats hade rinnande vatten och avlopp, tusen år före resten av Europa. De verkar ha varit fredliga: palatsen saknade murar. Just därför är det en gåta hur de gick under — kanske genom vulkanutbrottet på Thera, kanske genom mykensk erövring.</p>
       </div>
       <div class="compare-col" data-reveal-at="2">
         <h3>Mykenerna <span class="geo-tag">fastlandet</span></h3>
@@ -900,6 +951,7 @@ html, body {
           <li>Trojakriget skildrat i Homeros epos</li>
           <li>Kollapsade ca 1100 f.Kr. i "bronsålderns kollaps"</li>
         </ul>
+        <p class="col-fact">Mykenerna var <strong>krigare där minoerna var handelsmän</strong>. De tog över Kretas handelsvägar och byggde tjocka försvarsmurar kring sina palats. Deras kungar styrde genom en sträng byråkrati som skrev ner allt — men bara varor och skatter, aldrig tankar eller berättelser. När deras värld rasade samman kring 1100 f.Kr. försvann både skriften och palatsen, och Grekland gick in i sin mörka tidsålder.</p>
       </div>
     </div>
     <div class="source-block" data-reveal-at="3">
@@ -937,16 +989,16 @@ html, body {
   <div class="content-container" id="cc-1">
     <div class="thread-strip" data-reveal-at="1">
       <div class="thread-cell inherit">
-        <span class="thread-role"><span class="thread-arrow">◂</span> Ärver</span>
-        <span class="thread-text">Palatseliten bestämde. De flesta stod utanför.</span>
+        <span class="thread-role"><span class="thread-arrow">◂</span> Innan</span>
+        <span class="thread-text">En liten elit vid palatset bestämde allt. Alla andra stod utanför.</span>
       </div>
       <div class="thread-cell now">
-        <span class="thread-role">Mörka tidsåldern</span>
-        <span class="thread-text">Kollapsen sveper bort eliten själv. Ingen bestämmer — och ingen skrift finns kvar.</span>
+        <span class="thread-role">Vem bestämmer nu?</span>
+        <span class="thread-text">Ingen. När samhället kollapsar försvinner både eliten och skriften. Människorna lever kvar, men i små byar utan någon central makt.</span>
       </div>
       <div class="thread-cell forward">
-        <span class="thread-role">Lämnar vidare <span class="thread-arrow">▸</span></span>
-        <span class="thread-text">När samhället byggs om från noll: vem ska få vara med den här gången?</span>
+        <span class="thread-role">Frågan framåt <span class="thread-arrow">▸</span></span>
+        <span class="thread-text">När allt ska byggas upp igen från början — vilka ska få vara med den här gången?</span>
       </div>
     </div>
 
@@ -1029,16 +1081,16 @@ html, body {
   <div class="content-container" id="cc-2">
     <div class="thread-strip" data-reveal-at="1">
       <div class="thread-cell inherit">
-        <span class="thread-role"><span class="thread-arrow">◂</span> Ärver</span>
-        <span class="thread-text">Samhället byggs om från noll. Ingen ärvd elit finns kvar.</span>
+        <span class="thread-role"><span class="thread-arrow">◂</span> Innan</span>
+        <span class="thread-text">Ingen central makt fanns kvar. Samhället byggdes upp från början.</span>
       </div>
       <div class="thread-cell now">
-        <span class="thread-role">Arkaisk tid</span>
-        <span class="thread-text">Polis-staten uppstår. För första gången blir "medborgare" en idé — men bara för vissa.</span>
+        <span class="thread-role">Vem bestämmer nu?</span>
+        <span class="thread-text">Något nytt uppstår: stadsstaten (polis). Här blir "medborgare" en idé för första gången — fria män som tillsammans äger sin stad. Men kvinnor och slavar räknas inte.</span>
       </div>
       <div class="thread-cell forward">
-        <span class="thread-role">Lämnar vidare <span class="thread-arrow">▸</span></span>
-        <span class="thread-text">Om fria män kan äga staden tillsammans — hur långt kan makten delas?</span>
+        <span class="thread-role">Frågan framåt <span class="thread-arrow">▸</span></span>
+        <span class="thread-text">Om vanliga fria män kan äga staden ihop — hur långt kan makten delas?</span>
       </div>
     </div>
 
@@ -1126,6 +1178,8 @@ html, body {
       </div>
     </div>
 
+    <p class="era-summary" data-reveal-at="6">Efter den mörka tidsåldern växte befolkningen, och snart fanns det för lite bra jordbruksmark hemma. Lösningen blev <strong>kolonisering</strong>: greker seglade ut och grundade nya städer runt hela Medelhavet. Kontakterna med andra folk gav dem <strong>det feniciska alfabetet</strong>, som de byggde om till sitt eget — nu kunde vem som helst lära sig läsa, inte bara utbildade skrivare. Med skriften kunde <strong>Homeros dikter</strong> äntligen tecknas ner efter århundraden av muntligt berättande. Ur allt detta växte <strong>polis</strong>, den grekiska stadsstaten — grunden för allt som kommer sedan.</p>
+
     <div class="alph-compact" data-reveal-at="6">
       <p class="alph-note">A var från början ett oxhuvud, vänt upp och ned. <strong>Varje bokstav var ursprungligen en bild.</strong></p>
       <div class="alph-card-grid">
@@ -1178,16 +1232,16 @@ html, body {
   <div class="content-container" id="cc-3">
     <div class="thread-strip" data-reveal-at="1">
       <div class="thread-cell inherit">
-        <span class="thread-role"><span class="thread-arrow">◂</span> Ärver</span>
-        <span class="thread-text">Fria män äger staden tillsammans. Hur långt kan makten delas?</span>
+        <span class="thread-role"><span class="thread-arrow">◂</span> Innan</span>
+        <span class="thread-text">Fria män äger staden ihop. Frågan var hur långt makten kunde delas.</span>
       </div>
       <div class="thread-cell now">
-        <span class="thread-role">Klassisk tid</span>
-        <span class="thread-text">Aten går längst: folkstyre. Men "folket" är fria vuxna män — inte alla.</span>
+        <span class="thread-role">Vem bestämmer nu?</span>
+        <span class="thread-text">Aten går längst av alla: folket självt röstar och styr — det kallas demokrati. Men "folket" betyder fria vuxna män födda i Aten. Kvinnor, slavar och invandrare står helt utanför.</span>
       </div>
       <div class="thread-cell forward">
-        <span class="thread-role">Lämnar vidare <span class="thread-arrow">▸</span></span>
-        <span class="thread-text">Kan idén om medborgaren överleva när en kung styr ett världsrike?</span>
+        <span class="thread-role">Frågan framåt <span class="thread-arrow">▸</span></span>
+        <span class="thread-text">Kan idén om medborgaren överleva när en enda kung tar makten över ett helt världsrike?</span>
       </div>
     </div>
 
@@ -1443,16 +1497,16 @@ html, body {
   <div class="content-container" id="cc-4">
     <div class="thread-strip" data-reveal-at="1">
       <div class="thread-cell inherit">
-        <span class="thread-role"><span class="thread-arrow">◂</span> Ärver</span>
-        <span class="thread-text">Medborgaren styr sin lilla stad. Kan idén överleva i ett världsrike?</span>
+        <span class="thread-role"><span class="thread-arrow">◂</span> Innan</span>
+        <span class="thread-text">I Aten styrde medborgarna sin lilla stad själva genom omröstning.</span>
       </div>
       <div class="thread-cell now">
-        <span class="thread-role">Hellenismen</span>
-        <span class="thread-text">En kung styr allt. Men det grekiska språket och tänkandet sprids till miljoner.</span>
+        <span class="thread-role">Vem bestämmer nu?</span>
+        <span class="thread-text">En enda man: kungen Alexander. Folkstyret är borta. Men samtidigt sprids det grekiska språket och tänkandet till miljoner människor från Egypten till Indien.</span>
       </div>
       <div class="thread-cell forward">
-        <span class="thread-role">Lämnar vidare <span class="thread-arrow">▸</span></span>
-        <span class="thread-text">Politiken tystnar — men idéerna är nu utspridda. Vem tar vara på dem?</span>
+        <span class="thread-role">Frågan framåt <span class="thread-arrow">▸</span></span>
+        <span class="thread-text">Nu när politiken tystnat men idéerna finns överallt — vem tar vara på dem i framtiden?</span>
       </div>
     </div>
 
@@ -1552,12 +1606,12 @@ html, body {
   <div class="content-container" id="cc-5">
     <div class="thread-strip" data-reveal-at="1">
       <div class="thread-cell inherit">
-        <span class="thread-role"><span class="thread-arrow">◂</span> Ärver</span>
-        <span class="thread-text">Politiken tystnade, men idéerna ligger utspridda i hela Medelhavsvärlden.</span>
+        <span class="thread-role"><span class="thread-arrow">◂</span> Innan</span>
+        <span class="thread-text">Politiken tystnade, men de grekiska idéerna låg utspridda i hela Medelhavsvärlden.</span>
       </div>
       <div class="thread-cell now">
-        <span class="thread-role">Det grekiska arvet</span>
-        <span class="thread-text">Frågan "vem hör till?" dör aldrig. Den kopieras, tappas nästan bort — och väcks igen.</span>
+        <span class="thread-role">Vad hände med frågan?</span>
+        <span class="thread-text">Frågan "vem får bestämma?" dör aldrig. De grekiska tankarna om folkstyre kopieras, glöms nästan bort — och väcks till liv igen tusen år senare. Till slut når de ända fram till oss.</span>
       </div>
     </div>
 
