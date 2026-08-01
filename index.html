@@ -88,7 +88,7 @@
             transition: box-shadow 0.2s;
         }
         .category.open {
-            box-shadow: 0 4px 20px rgba(26,45,69,0.10);
+            border-color: var(--navy2);
         }
         .category.empty {
             opacity: 0.65;
@@ -158,18 +158,13 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            padding: 0.75rem 1.25rem 0.75rem 1.5rem;
+            padding: 0.75rem 1.25rem;
             border-bottom: 1px solid #f0ede8;
             transition: background 0.12s;
         }
         .module-row:last-child { border-bottom: none; }
         .module-row:hover { background: var(--row-hover); }
 
-        .module-icon {
-            font-size: 1.3rem;
-            min-width: 2rem;
-            text-align: center;
-        }
         .module-info {
             flex: 1;
             min-width: 0;
@@ -220,19 +215,132 @@
             border-bottom: 1px solid var(--border);
             border-top: 1px solid var(--border);
             font-family: 'Spectral', serif;
-            font-size: 0.78rem;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--navy);
+            font-size: 0.98rem;
+            font-weight: 600;
+            color: var(--gold);
         }
         .subgroup-label:first-child {
             border-top: none;
         }
         .subgroup-label .sg-era {
-            color: var(--gold);
-            font-size: 0.72rem;
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 400;
         }
+
+        /* ── "Varför AI?" trigger + modal ── */
+        .why-ai-trigger {
+            display: inline-block;
+            margin-top: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gold2);
+            background: transparent;
+            border: 1.5px solid rgba(232,180,74,0.5);
+            border-radius: 5px;
+            padding: 0.35rem 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .why-ai-trigger:hover {
+            background: rgba(232,180,74,0.12);
+            border-color: var(--gold2);
+        }
+
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(26,45,69,0.55);
+            z-index: 100;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+        .modal-backdrop.open {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        .modal-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-top: 4px solid var(--gold);
+            border-radius: 8px;
+            max-width: 560px;
+            width: 100%;
+            margin: auto;
+            padding: 2rem 2.25rem 2.25rem;
+            position: relative;
+        }
+        .modal-card h2 {
+            font-family: 'Spectral', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+        .modal-card p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--ink);
+            margin-bottom: 0.9rem;
+        }
+        .modal-card p:last-of-type { margin-bottom: 0; }
+        .modal-card a {
+            color: var(--navy);
+            text-decoration: underline;
+            text-decoration-color: var(--gold);
+            text-underline-offset: 2px;
+        }
+        .modal-card a:hover { color: var(--gold); }
+        .modal-card .sig {
+            font-family: 'Spectral', serif;
+            font-style: italic;
+            color: var(--muted);
+            margin-top: 1.25rem;
+        }
+
+        .lang-toggle {
+            display: flex;
+            gap: 0.4rem;
+            margin-top: 1.75rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+        .lang-btn {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--muted);
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 0.3rem 0.8rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .lang-btn:hover { color: var(--navy); border-color: var(--navy2); }
+        .lang-btn.active {
+            color: var(--navy);
+            background: var(--paper);
+            border-color: var(--gold);
+            font-weight: 600;
+        }
+        .modal-close {
+            position: absolute;
+            top: 0.9rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            line-height: 1;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+        .modal-close:hover { color: var(--navy); background: var(--row-hover); }
 
         /* ── Footer ── */
         footer {
@@ -250,8 +358,41 @@
     <div class="header-inner">
         <h1>Interaktiv <span>Historia</span></h1>
         <p>Gymnasiematerial · André Lundberg · andre-history.github.io</p>
+        <button class="why-ai-trigger" id="whyAiBtn">Varför AI?</button>
     </div>
 </header>
+
+<!-- ── "Varför AI?" modal ── -->
+<div class="modal-backdrop" id="whyAiModal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="Varför AI?">
+        <button class="modal-close" id="whyAiClose" aria-label="Stäng">×</button>
+
+        <!-- Swedish version -->
+        <div class="lang-content" data-lang="sv">
+            <h2>Varför AI?</h2>
+            <p>Jag läste webbprogrammering med HTML och CSS i början av 2000-talet. Jag är varken särskilt kunnig eller duktig på det, och jag har inte använt det på över tjugo år.</p>
+            <p>Den här sidan är skapad som ett komplement till historieundervisningen på gymnasiet. Jag vill vara öppen med att jag använt AI, framför allt Claude och ibland Gemini, för själva bygget av sidan.</p>
+            <p>När det gäller innehållet: fakta bygger på böcker i kombination med Geminis NotebookLM. Allt som står på sidan är dubbelkollat och bör stämma. Med det sagt kan små felaktigheter naturligtvis ha slunkit med. Hör gärna av dig om du hittar något: <a class="mail-link" href="#"></a>.</p>
+            <p>Min princip för AI-användning bygger på <a href="https://falkai.org/skola/" target="_blank" rel="noopener">Johan Falks utmärkta stödlinjer för AI i skolan</a>. I korthet: aldrig till rättning, och testet "hade jag som lärare gjort det här utan AI?" Om svaret är nej, då är det okej att använda.</p>
+            <p class="sig">— André</p>
+        </div>
+
+        <!-- English version -->
+        <div class="lang-content" data-lang="en" hidden>
+            <h2>Why AI?</h2>
+            <p>I studied web programming with HTML and CSS back in the early 2000s. I am neither especially skilled nor knowledgeable at it, and I have not touched it in over twenty years.</p>
+            <p>This site was made as a complement to my history teaching at upper secondary school. I want to be open about the fact that I have used AI, mainly Claude and sometimes Gemini, for the work of building the site itself.</p>
+            <p>As for the content: the facts draw on books combined with Gemini's NotebookLM. Everything on the site has been double-checked and should be accurate. That said, small errors may of course have slipped through. Please get in touch if you find one: <a class="mail-link" href="#"></a>.</p>
+            <p>My principle for using AI is based on <a href="https://falkai.org/skola/" target="_blank" rel="noopener">Johan Falk's excellent guidelines for AI in schools</a>. In short: never for grading, and the test "would I, as a teacher, have done this without AI?" If the answer is no, then it is fine to use.</p>
+            <p class="sig">— André</p>
+        </div>
+
+        <div class="lang-toggle">
+            <button class="lang-btn active" data-set-lang="sv">Svenska</button>
+            <button class="lang-btn" data-set-lang="en">English</button>
+        </div>
+    </div>
+</div>
 
 <main>
     <div class="accordion" id="accordion">
@@ -266,7 +407,6 @@
             </div>
             <div class="module-list">
                 <div class="module-row">
-                    <span class="module-icon">🧭</span>
                     <div class="module-info">
                         <div class="module-name">Det vi inte vet</div>
                         <div class="module-desc">Historiens vita fläckar — lärarledd dragning med krympande tidslinje, civilisationsquiz och världskarta</div>
@@ -286,7 +426,6 @@
             </div>
             <div class="module-list">
                 <div class="module-row">
-                    <span class="module-icon">🪨</span>
                     <div class="module-info">
                         <div class="module-name">Förhistoria</div>
                         <div class="module-desc">Definition, periodisering och den neolitiska revolutionen — interaktiv genomgång med quiz</div>
@@ -306,7 +445,6 @@
             </div>
             <div class="module-list">
                 <div class="module-row">
-                    <span class="module-icon">🔺</span>
                     <div class="module-info">
                         <div class="module-name">Världens äldsta civilisationer</div>
                         <div class="module-desc">Mesopotamien, Egypten, Indusdalen, bronsålderskollapsen och järnålderns imperier — 3500–300 f.Kr.</div>
@@ -314,7 +452,6 @@
                     <a href="aldsta-civilisationerna.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">🏺</span>
                     <div class="module-info">
                         <div class="module-name">Folkvandringstiden</div>
                         <div class="module-desc">Rörelser, riken och omvandlingen av det romerska världssystemet</div>
@@ -322,7 +459,6 @@
                     <a href="folkvandringstiden.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">🏛️</span>
                     <div class="module-info">
                         <div class="module-name">Antikens Grekland</div>
                         <div class="module-desc">Bronsåldern till det hellenistiska arvet, med kausalkedjekonstellationer, Alexanders erövringskarta och primärkällor för diskussion.</div>
@@ -330,7 +466,6 @@
                     <a href="antikens_grekland.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">🦅</span>
                     <div class="module-info">
                         <div class="module-name">Antikens Rom</div>
                         <div class="module-desc">Från kungadöme till kejsardömets fall, med interaktiv tidslinje, persongalleri, fem paradoxer och ordlista. 753 f.Kr. till 476 e.Kr.</div>
@@ -350,7 +485,6 @@
             </div>
             <div class="module-list">
                 <div class="module-row">
-                    <span class="module-icon">⛓️</span>
                     <div class="module-info">
                         <div class="module-name">Medeltidens dominoeffekt</div>
                         <div class="module-desc">Interaktiv orsak-verkan visualisering — klimat, pest och makt 900–1523</div>
@@ -370,7 +504,6 @@
             </div>
             <div class="module-list">
                 <div class="module-row">
-                    <span class="module-icon">📜</span>
                     <div class="module-info">
                         <div class="module-name">Reformation och religionskrig 1517–1648</div>
                         <div class="module-desc">Från Luthers teser till Westfaliska freden — tre akter, klickbara orsakskedjor, fälttågskarta och Barton-frågor</div>
@@ -390,7 +523,6 @@
             </div>
             <div class="module-list">
                 <div class="module-row">
-                    <span class="module-icon">⚜️</span>
                     <div class="module-info">
                         <div class="module-name">Franska revolutionen 1789–1799</div>
                         <div class="module-desc">Orsaker, tidslinje, nyckelpersoner och konsekvenser — interaktiv med quiz och persongalleri</div>
@@ -410,7 +542,6 @@
             </div>
             <div class="module-list">
                 <div class="module-row">
-                    <span class="module-icon">🏭</span>
                     <div class="module-info">
                         <div class="module-name">Tysklands snabba industrialisering</div>
                         <div class="module-desc">Från splittrat rike till europeisk stormakt 1834–1914</div>
@@ -418,7 +549,6 @@
                     <a href="tysk-industrialisering-interaktiv.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">🌍</span>
                     <div class="module-info">
                         <div class="module-name">Imperialismen</div>
                         <div class="module-desc">Europeisk expansion, motiv och konsekvenser</div>
@@ -426,7 +556,6 @@
                     <a href="imperialismen-interaktiv.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">⛵</span>
                     <div class="module-info">
                         <div class="module-name">Kolonialismen</div>
                         <div class="module-desc">Hur kolonialvälden byggdes upp och föll</div>
@@ -434,7 +563,6 @@
                     <a href="kolonialismen.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">🌐</span>
                     <div class="module-info">
                         <div class="module-name">Utomeuropeiska perspektivet</div>
                         <div class="module-desc">Imperialismen sedd från de koloniserades sida</div>
@@ -454,7 +582,6 @@
             </div>
             <div class="module-list">
                 <div class="module-row">
-                    <span class="module-icon">🔍</span>
                     <div class="module-info">
                         <div class="module-name">Källkritik</div>
                         <div class="module-desc">Källkritiska principer och metoder för gymnasieeleven</div>
@@ -462,7 +589,6 @@
                     <a href="kallkritik.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">🧩</span>
                     <div class="module-info">
                         <div class="module-name">Plocka isär ett laddat ord</div>
                         <div class="module-desc">Interaktiv tankekarta som tränar eleven att ta isär laddade nätbegrepp, med Jordan Peterson-citat, tidsstämplade källor och begreppsanalys av marxism och postmodernism</div>
@@ -484,10 +610,9 @@
 
                 <!-- WW1 -->
                 <div class="subgroup-label">
-                    🪖 Första världskriget <span class="sg-era">1914–1918</span>
+                    Första världskriget <span class="sg-era">1914–1918</span>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">🤝</span>
                     <div class="module-info">
                         <div class="module-name">Allianskartan</div>
                         <div class="module-desc">Stormakternas allianser och motsättningar inför 1914</div>
@@ -495,7 +620,6 @@
                     <a href="allianskartan.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">💥</span>
                     <div class="module-info">
                         <div class="module-name">Svarta veckan</div>
                         <div class="module-desc">Diplomatisk kris dag för dag: 23 juli – 4 aug 1914</div>
@@ -503,7 +627,6 @@
                     <a href="svarta_veckan_tidslinje.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">⚔️</span>
                     <div class="module-info">
                         <div class="module-name">Första världskriget 1914–1919</div>
                         <div class="module-desc">Interaktiv tidslinje med 35+ händelser, karta och Barton-frågor</div>
@@ -511,7 +634,6 @@
                     <a href="wwi-tidslinje.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">☭</span>
                     <div class="module-info">
                         <div class="module-name">Den ryska revolutionen &amp; inbördeskriget</div>
                         <div class="module-desc">Från tsarens fall 1917 till bolsjevikernas seger — beslutssimulation, tidslinje, källcitat</div>
@@ -519,7 +641,6 @@
                     <a href="ryska-revolutionen.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">🗺️</span>
                     <div class="module-info">
                         <div class="module-name">Karta 1914–1921</div>
                         <div class="module-desc">Interaktiv periodkarta över Europa under och efter kriget</div>
@@ -529,10 +650,9 @@
 
                 <!-- Mellankrigstiden -->
                 <div class="subgroup-label">
-                    🕊️ Mellankrigstiden <span class="sg-era">1919–1939</span>
+                    Mellankrigstiden <span class="sg-era">1919–1939</span>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">📉</span>
                     <div class="module-info">
                         <div class="module-name">Nazistisk ekonomi</div>
                         <div class="module-desc">Mellankrigstid, depression och det tredje rikets ekonomiska modell</div>
@@ -540,7 +660,6 @@
                     <a href="nazistisk-ekonomi-interaktiv.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">🔬</span>
                     <div class="module-info">
                         <div class="module-name">Hitlers rashierarki</div>
                         <div class="module-desc">Nazistisk rasideologi, Nürnberglagarna och folkmordet — från pseudovetenskap till statlig terror</div>
@@ -550,10 +669,9 @@
 
                 <!-- WW2 -->
                 <div class="subgroup-label">
-                    💣 Andra världskriget <span class="sg-era">1939–1945</span>
+                    Andra världskriget <span class="sg-era">1939–1945</span>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">✈️</span>
                     <div class="module-info">
                         <div class="module-name">Andra världskriget 1939–1945</div>
                         <div class="module-desc">Interaktiv tidslinje över krigets händelser, aktörer och vändpunkter</div>
@@ -561,7 +679,6 @@
                     <a href="andra-varldskriget.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">⚡</span>
                     <div class="module-info">
                         <div class="module-name">Blixtkriget</div>
                         <div class="module-desc">Taktik, teknik och aktörer — framgång i väst, kollaps i öst</div>
@@ -592,10 +709,9 @@
             <div class="module-list">
 
                 <div class="subgroup-label">
-                    📊 Ekonomisk historia
+                    Ekonomisk historia
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">💰</span>
                     <div class="module-info">
                         <div class="module-name">Skattehistoria</div>
                         <div class="module-desc">Från antika tributer till global kapitalism — tematisk tvärsnittsmodul</div>
@@ -603,7 +719,6 @@
                     <a href="skattehistoria.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">⚖️</span>
                     <div class="module-info">
                         <div class="module-name">Ojämlikhet och ekonomin</div>
                         <div class="module-desc">Motor eller hinder? Friedman, Schumpeter, Stiglitz och Piketty om ekonomisk ojämlikhet</div>
@@ -611,7 +726,6 @@
                     <a href="ojamlikhet.html" class="module-link">Öppna</a>
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">🇺🇸</span>
                     <div class="module-info">
                         <div class="module-name">USA:s ekonomiska hälsa</div>
                         <div class="module-desc">Gini-koefficienter, inkomstfördelning och välståndsgapet — Wilson till Biden</div>
@@ -620,10 +734,9 @@
                 </div>
 
                 <div class="subgroup-label">
-                    🏔️ Minoritetshistoria
+                    Minoritetshistoria
                 </div>
                 <div class="module-row">
-                    <span class="module-icon">🔵</span>
                     <div class="module-info">
                         <div class="module-name">Samisk historia i Sverige</div>
                         <div class="module-desc">Urfolk, assimilering, markrättigheter och självstyre — interaktiv tidslinje, teman och quiz</div>
@@ -650,6 +763,47 @@
             document.querySelectorAll('.category.open').forEach(c => c.classList.remove('open'));
             // Toggle clicked
             if (!isOpen) cat.classList.add('open');
+        });
+    });
+
+    // ── "Varför AI?" modal ──
+    const whyModal = document.getElementById('whyAiModal');
+    const whyBtn   = document.getElementById('whyAiBtn');
+    const whyClose = document.getElementById('whyAiClose');
+
+    const openWhy  = () => whyModal.classList.add('open');
+    const closeWhy = () => whyModal.classList.remove('open');
+
+    whyBtn.addEventListener('click', openWhy);
+    whyClose.addEventListener('click', closeWhy);
+    whyModal.addEventListener('click', (e) => {
+        if (e.target === whyModal) closeWhy();   // click backdrop to close
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeWhy();
+    });
+
+    // Bot-safe email: assembled at runtime, never a literal string in the HTML
+    (function () {
+        const user = 'andre.lundberg';
+        const domain = 'vellinge.se';
+        const addr = user + '@' + domain;
+        document.querySelectorAll('.mail-link').forEach(a => {
+            a.textContent = addr;
+            a.href = 'mailto:' + addr;
+        });
+    })();
+
+    // Language toggle
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const lang = btn.dataset.setLang;
+            document.querySelectorAll('.lang-content').forEach(c => {
+                c.hidden = (c.dataset.lang !== lang);
+            });
+            document.querySelectorAll('.lang-btn').forEach(b => {
+                b.classList.toggle('active', b === btn);
+            });
         });
     });
 </script>
