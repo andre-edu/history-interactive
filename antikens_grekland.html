@@ -138,7 +138,13 @@ html, body {
 .content-container {
   flex: 1; display: none; flex-direction: column; gap: 1.1rem;
   opacity: 0; transition: opacity .45s ease;
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: var(--gold-dim) transparent;
+  padding-right: .3rem;
 }
+.content-container::-webkit-scrollbar { width: 7px; }
+.content-container::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 4px; }
+.content-container::-webkit-scrollbar-track { background: transparent; }
 
 /* ══════════════════════════════════════════
    REVEAL / HIDE SYSTEM
@@ -517,6 +523,131 @@ html, body {
 .source-prompt::before { content: '⟶ '; }
 
 /* ══════════════════════════════════════════
+   IDÉ-TRÅD (genomgående fråga)
+   "Vem hör till gemenskapen — och vem bestämmer?"
+   ══════════════════════════════════════════ */
+.thread-strip {
+  display: flex; align-items: stretch;
+  gap: 0; flex-shrink: 0;
+  background: linear-gradient(90deg,
+    rgba(97,78,40,.10), rgba(201,160,82,.06) 50%, rgba(97,78,40,.10));
+  border: 1px solid var(--gold-dim);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.thread-cell {
+  flex: 1; padding: .5rem .95rem;
+  display: flex; flex-direction: column; gap: .12rem;
+  min-width: 0;
+}
+.thread-cell + .thread-cell {
+  border-left: 1px solid var(--gold-dim);
+}
+.thread-role {
+  font-size: .58rem; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--gold); font-weight: 500; opacity: .85;
+  display: flex; align-items: center; gap: .3rem;
+}
+.thread-text {
+  font-size: .84rem; line-height: 1.32; color: var(--text);
+}
+.thread-cell.now { background: rgba(201,160,82,.10); }
+.thread-cell.now .thread-role { opacity: 1; }
+.thread-cell.now .thread-text { color: var(--gold); font-weight: 500; }
+.thread-cell.inherit .thread-text,
+.thread-cell.forward .thread-text { color: var(--text-dim); }
+.thread-arrow {
+  font-size: .7rem; color: var(--gold-dim);
+}
+/* Kompaktläge där utrymmet är trängre */
+#cc-3 .thread-strip .thread-text,
+#cc-4 .thread-strip .thread-text { font-size: .8rem; }
+
+/* ══════════════════════════════════════════
+   NOD-FÖRKLARINGAR (kausalkedja: varför/hur)
+   ══════════════════════════════════════════ */
+.node-explain {
+  background: var(--surface);
+  border: 1px solid var(--surface-3);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 5px 5px 0;
+  padding: .75rem 1.1rem;
+  display: flex; flex-direction: column; gap: .3rem;
+}
+.node-explain .ne-step {
+  font-size: .62rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--gold); font-weight: 500;
+  display: flex; align-items: center; gap: .5rem;
+}
+.node-explain .ne-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 17px; height: 17px; border-radius: 50%;
+  background: var(--gold); color: var(--bg);
+  font-size: .68rem; font-weight: 700;
+}
+.node-explain .ne-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.02rem; color: var(--text); font-weight: 600;
+}
+.node-explain .ne-body {
+  font-size: .9rem; line-height: 1.5; color: var(--text-dim);
+}
+.node-explain .ne-body strong { color: var(--text); font-weight: 500; }
+.node-explain.risk { border-left-color: var(--loss); }
+.node-explain.risk .ne-step { color: var(--loss); }
+.node-explain.risk .ne-num  { background: var(--loss); color: #fff; }
+
+.explain-stack {
+  display: flex; flex-direction: column; gap: .6rem;
+}
+
+/* Lager-rubrik inuti ett block (ersätter de bytande content-labels) */
+.layer-label {
+  font-size: .7rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--gold); font-weight: 500;
+  display: block; margin-bottom: .1rem;
+}
+
+/* Konstellationen krymper när nästa lager läggs på — men försvinner aldrig */
+.constellation-wrap.shrinkable {
+  transition: max-height .5s ease;
+  overflow: hidden; flex-shrink: 0;
+}
+.constellation-wrap.shrinkable:not(.shrunk) { max-height: 480px; }
+.constellation-wrap.shrinkable.shrunk { max-height: 118px; }
+.constellation-wrap.shrinkable.shrunk .constellation-bg {
+  height: 118px;
+}
+.constellation-wrap.shrinkable.shrunk .constellation-bg svg {
+  height: 100%; object-fit: contain;
+}
+
+/* Medborgarskaps-panel (era 3) — vilka räknades? */
+.demos-panel {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;
+  background: var(--surface);
+  border: 1px solid var(--surface-3);
+  border-radius: 5px; padding: 1rem 1.3rem;
+}
+.demos-col h4 {
+  font-family: 'Playfair Display', serif; font-size: 1rem;
+  padding-bottom: .4rem; margin-bottom: .5rem;
+  border-bottom: 1px solid var(--gold-dim);
+}
+.demos-col.inside  h4 { color: var(--gain); }
+.demos-col.outside h4 { color: var(--loss); }
+.demos-col ul { list-style: none; display: flex; flex-direction: column; gap: .3rem; }
+.demos-col li { font-size: .88rem; padding-left: 1.1rem; position: relative; line-height: 1.4; color: var(--text); }
+.demos-col.inside  li::before { content: '✓'; position: absolute; left: 0; color: var(--gain); font-weight: 700; }
+.demos-col.outside li::before { content: '✕'; position: absolute; left: 0; color: var(--loss); font-weight: 700; }
+.demos-note {
+  grid-column: 1 / -1;
+  font-size: .82rem; font-style: italic; color: var(--text-dim);
+  line-height: 1.45; border-top: 1px solid var(--surface-3); padding-top: .6rem;
+}
+.demos-note strong { color: var(--gold); font-style: normal; }
+
+/* ══════════════════════════════════════════
    FOOTER TIMELINE
    ══════════════════════════════════════════ */
 #timeline {
@@ -737,6 +868,17 @@ html, body {
   </div>
 
   <div class="content-container" id="cc-0">
+    <div class="thread-strip" data-reveal-at="1">
+      <div class="thread-cell now">
+        <span class="thread-role">Den röda tråden börjar här</span>
+        <span class="thread-text">Vem hör till gemenskapen — och vem bestämmer?</span>
+      </div>
+      <div class="thread-cell forward">
+        <span class="thread-role">Bronsålderns svar <span class="thread-arrow">▸</span></span>
+        <span class="thread-text">En liten palatselit bestämmer. De flesta är namnlösa i lagerlistorna.</span>
+      </div>
+    </div>
+
     <span class="content-label" data-reveal-at="1">Minoer kontra Mykener</span>
     <div class="comparison-grid">
       <div class="compare-col" data-reveal-at="1">
@@ -793,6 +935,21 @@ html, body {
   </div>
 
   <div class="content-container" id="cc-1">
+    <div class="thread-strip" data-reveal-at="1">
+      <div class="thread-cell inherit">
+        <span class="thread-role"><span class="thread-arrow">◂</span> Ärver</span>
+        <span class="thread-text">Palatseliten bestämde. De flesta stod utanför.</span>
+      </div>
+      <div class="thread-cell now">
+        <span class="thread-role">Mörka tidsåldern</span>
+        <span class="thread-text">Kollapsen sveper bort eliten själv. Ingen bestämmer — och ingen skrift finns kvar.</span>
+      </div>
+      <div class="thread-cell forward">
+        <span class="thread-role">Lämnar vidare <span class="thread-arrow">▸</span></span>
+        <span class="thread-text">När samhället byggs om från noll: vem ska få vara med den här gången?</span>
+      </div>
+    </div>
+
     <span class="content-label" data-reveal-at="1">Kollaps och återhämtning</span>
 
     <p class="collapse-banner" data-reveal-at="1">Befolkningen levde kvar. Det var samhällets strukturer som bröt samman.</p>
@@ -870,6 +1027,21 @@ html, body {
   </div>
 
   <div class="content-container" id="cc-2">
+    <div class="thread-strip" data-reveal-at="1">
+      <div class="thread-cell inherit">
+        <span class="thread-role"><span class="thread-arrow">◂</span> Ärver</span>
+        <span class="thread-text">Samhället byggs om från noll. Ingen ärvd elit finns kvar.</span>
+      </div>
+      <div class="thread-cell now">
+        <span class="thread-role">Arkaisk tid</span>
+        <span class="thread-text">Polis-staten uppstår. För första gången blir "medborgare" en idé — men bara för vissa.</span>
+      </div>
+      <div class="thread-cell forward">
+        <span class="thread-role">Lämnar vidare <span class="thread-arrow">▸</span></span>
+        <span class="thread-text">Om fria män kan äga staden tillsammans — hur långt kan makten delas?</span>
+      </div>
+    </div>
+
     <span class="content-label" data-reveal-at="1">Kausalkedja: arkaisk blomstring</span>
 
     <div class="constellation-wrap" data-reveal-at="1">
@@ -1004,12 +1176,25 @@ html, body {
   </div>
 
   <div class="content-container" id="cc-3">
-    <!-- Label byter vid steg 6 -->
-    <span class="content-label" data-reveal-at="1" data-hide-at="6">Kausalkedja: klassikens drivkrafter</span>
-    <span class="content-label" data-reveal-at="6">Filosoferna och statsmännen</span>
+    <div class="thread-strip" data-reveal-at="1">
+      <div class="thread-cell inherit">
+        <span class="thread-role"><span class="thread-arrow">◂</span> Ärver</span>
+        <span class="thread-text">Fria män äger staden tillsammans. Hur långt kan makten delas?</span>
+      </div>
+      <div class="thread-cell now">
+        <span class="thread-role">Klassisk tid</span>
+        <span class="thread-text">Aten går längst: folkstyre. Men "folket" är fria vuxna män — inte alla.</span>
+      </div>
+      <div class="thread-cell forward">
+        <span class="thread-role">Lämnar vidare <span class="thread-arrow">▸</span></span>
+        <span class="thread-text">Kan idén om medborgaren överleva när en kung styr ett världsrike?</span>
+      </div>
+    </div>
 
-    <!-- Konstellation gömmer sig vid steg 6 -->
-    <div class="constellation-wrap" data-reveal-at="1" data-hide-at="6">
+    <span class="content-label" data-reveal-at="1">Hur ett krig födde folkstyre</span>
+
+    <!-- Konstellationen krymper vid steg 6 men försvinner inte -->
+    <div class="constellation-wrap shrinkable" data-reveal-at="1">
       <div class="constellation-bg">
         <svg viewBox="0 0 900 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
           <defs>
@@ -1076,15 +1261,15 @@ html, body {
             </g>
             <g class="star-group" data-node="1">
               <circle class="star-dot" cx="295" cy="175" r="8"/>
-              <text class="star-label" x="295" y="196" text-anchor="middle">Atens självförtroende</text>
+              <text class="star-label" x="295" y="196" text-anchor="middle">Folket vann kriget</text>
             </g>
             <g class="star-group" data-node="2">
               <circle class="star-dot" cx="445" cy="188" r="8"/>
-              <text class="star-label" x="445" y="208" text-anchor="middle">Demokratin under Perikles</text>
+              <text class="star-label" x="445" y="208" text-anchor="middle">Så folket kräver makt</text>
             </g>
             <g class="star-group" data-node="3">
               <circle class="star-dot" cx="598" cy="175" r="8"/>
-              <text class="star-label" x="598" y="196" text-anchor="middle">Filosofisk blomstring</text>
+              <text class="star-label" x="598" y="196" text-anchor="middle">Öppen debatt föder filosofi</text>
             </g>
             <g class="star-group" data-node="4">
               <circle class="star-dot" cx="755" cy="85" r="9"/>
@@ -1096,8 +1281,48 @@ html, body {
       </div>
     </div>
 
-    <!-- Porträttgrid — visas vid steg 6 -->
-    <div class="portrait-grid" data-reveal-at="6">
+    <!-- Steg 6: kausalkedjans mekanism (stannar kvar) -->
+    <div class="explain-stack" data-reveal-at="6">
+      <span class="layer-label">Varför hänger länkarna ihop?</span>
+      <div class="node-explain">
+        <span class="ne-step"><span class="ne-num">1</span>Perserkrigen → folket vann</span>
+        <span class="ne-body">Segern vid Salamis 480 f.Kr. vanns i <strong>rodda krigsfartyg</strong>. Rorsmännen var fattiga fria män utan mark. Plötsligt hängde stadens överlevnad på just de män som hade minst att säga till om.</span>
+      </div>
+      <div class="node-explain">
+        <span class="ne-step"><span class="ne-num">2</span>Folket vann → folket kräver makt</span>
+        <span class="ne-body">Ett rimligt krav följer: <strong>den som försvarar staden ska också få styra den</strong>. Under 400-talet öppnas ämbeten och folkförsamlingen för alla manliga medborgare — inte bara de rika.</span>
+      </div>
+      <div class="node-explain">
+        <span class="ne-step"><span class="ne-num">3</span>Folkstyre → filosofin blommar</span>
+        <span class="ne-body">När beslut fattas genom <strong>öppen debatt</strong> blir det livsviktigt att kunna argumentera, ifrågasätta och bevisa. Just den vanan är jordmånen där Sokrates, Platon och Aristoteles växer.</span>
+      </div>
+    </div>
+
+    <!-- Steg 7: vem räknades? (stannar kvar) -->
+    <div class="demos-panel" data-reveal-at="7">
+      <span class="layer-label" style="grid-column:1/-1">Vem räknades som "folket"?</span>
+      <div class="demos-col inside">
+        <h4>Räknades som "folket"</h4>
+        <ul>
+          <li>Fria vuxna män födda i Aten</li>
+          <li>Rätt att rösta i folkförsamlingen</li>
+          <li>Rätt att inneha ämbeten och sitta i domstol</li>
+        </ul>
+      </div>
+      <div class="demos-col outside">
+        <h4>Stod utanför</h4>
+        <ul>
+          <li>Kvinnor — oavsett börd</li>
+          <li>Slavar — kanske en tredjedel av befolkningen</li>
+          <li>Metoiker — fria invandrare, men aldrig medborgare</li>
+        </ul>
+      </div>
+      <p class="demos-note">Kanske bara <strong>1 av 6 vuxna</strong> i Aten fick delta. Demokratin var verklig — men gemenskapen den byggde på var snävt ritad. Samma spänning som frågan i era 0: vem hör till, och vem bestämmer?</p>
+    </div>
+
+    <!-- Porträttgrid — visas vid steg 8 -->
+    <div class="portrait-grid" data-reveal-at="8">
+      <span class="layer-label" style="width:100%;text-align:left">Filosoferna och statsmännen</span>
       <div class="portrait-card" data-person="sokrates">
         <div class="portrait-img-wrap">
           <img src="images/sokrates.webp" alt="Sokrates"
@@ -1183,7 +1408,7 @@ html, body {
       </div>
     </div>
 
-    <div class="source-block" data-reveal-at="7">
+    <div class="source-block" data-reveal-at="9">
       <div class="source-tag">Primärkälla</div>
       <p class="source-q">"Vår styrelseform kallas demokrati, ty makten är icke i händerna på ett fåtal utan på de många. Var och en av oss kan tjäna samhället. Vi ser inte på klass, utan på förmåga."</p>
       <p class="source-attr">Thukydides, Det peloponnesiska kriget II:37, Perikles' liktal, 430 f.Kr. (parafraserat)</p>
@@ -1216,6 +1441,21 @@ html, body {
   </div>
 
   <div class="content-container" id="cc-4">
+    <div class="thread-strip" data-reveal-at="1">
+      <div class="thread-cell inherit">
+        <span class="thread-role"><span class="thread-arrow">◂</span> Ärver</span>
+        <span class="thread-text">Medborgaren styr sin lilla stad. Kan idén överleva i ett världsrike?</span>
+      </div>
+      <div class="thread-cell now">
+        <span class="thread-role">Hellenismen</span>
+        <span class="thread-text">En kung styr allt. Men det grekiska språket och tänkandet sprids till miljoner.</span>
+      </div>
+      <div class="thread-cell forward">
+        <span class="thread-role">Lämnar vidare <span class="thread-arrow">▸</span></span>
+        <span class="thread-text">Politiken tystnar — men idéerna är nu utspridda. Vem tar vara på dem?</span>
+      </div>
+    </div>
+
     <span class="content-label" data-reveal-at="1">Alexanders erövringskampanjer 334–323 f.Kr.</span>
 
     <div class="conquest-map-wrap" data-reveal-at="1">
@@ -1310,8 +1550,19 @@ html, body {
   </div>
 
   <div class="content-container" id="cc-5">
-    <span class="content-label" data-reveal-at="1">Kausalkedja — idéernas resa</span>
-    <div class="constellation-wrap" data-reveal-at="1">
+    <div class="thread-strip" data-reveal-at="1">
+      <div class="thread-cell inherit">
+        <span class="thread-role"><span class="thread-arrow">◂</span> Ärver</span>
+        <span class="thread-text">Politiken tystnade, men idéerna ligger utspridda i hela Medelhavsvärlden.</span>
+      </div>
+      <div class="thread-cell now">
+        <span class="thread-role">Det grekiska arvet</span>
+        <span class="thread-text">Frågan "vem hör till?" dör aldrig. Den kopieras, tappas nästan bort — och väcks igen.</span>
+      </div>
+    </div>
+
+    <span class="content-label" data-reveal-at="1">Hur idéerna nästan gick förlorade</span>
+    <div class="constellation-wrap shrinkable" data-reveal-at="1">
       <div class="constellation-bg">
         <svg viewBox="0 0 900 270" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
           <defs>
@@ -1375,37 +1626,58 @@ html, body {
             <line class="star-line" data-line="close" x1="728" y1="152" x2="445" y2="62"/>
             <g class="star-group" data-node="0">
               <circle class="star-dot" cx="445" cy="62" r="10"/>
-              <text class="star-label" x="445" y="42" text-anchor="middle">Antikens Aten</text>
+              <text class="star-label" x="445" y="42" text-anchor="middle">Grekiska texter</text>
+              <text class="star-sub"   x="445" y="30" text-anchor="middle">skrivna på papyrus</text>
             </g>
             <g class="star-group" data-node="1">
               <circle class="star-dot" cx="268" cy="152" r="8"/>
-              <text class="star-label" x="268" y="172" text-anchor="middle">Romarriket</text>
-              <text class="star-sub"   x="268" y="185" text-anchor="middle">tar upp och sprider</text>
+              <text class="star-label" x="268" y="172" text-anchor="middle">Rom beundrar & kopierar</text>
+              <text class="star-sub"   x="268" y="185" text-anchor="middle">men väst faller 476</text>
             </g>
             <g class="star-group" data-node="2">
               <circle class="star-dot" cx="215" cy="218" r="8"/>
-              <text class="star-label" x="215" y="200" text-anchor="middle">Bysantinska riket</text>
-              <text class="star-sub"   x="215" y="212" text-anchor="middle">bevarar texterna</text>
+              <text class="star-label" x="215" y="200" text-anchor="middle">Bysans räddar dem</text>
+              <text class="star-sub"   x="215" y="212" text-anchor="middle">munkar kopierar för hand</text>
             </g>
             <g class="star-group" data-node="3">
               <circle class="star-dot" cx="680" cy="218" r="8"/>
-              <text class="star-label" x="680" y="200" text-anchor="middle">Renässansen</text>
-              <text class="star-sub"   x="680" y="212" text-anchor="middle">återupptäcker Aten</text>
+              <text class="star-label" x="680" y="200" text-anchor="middle">Renässansen läser dem</text>
+              <text class="star-sub"   x="680" y="212" text-anchor="middle">tryckpressen mångfaldigar</text>
             </g>
             <g class="star-group" data-node="4">
               <circle class="star-dot" cx="728" cy="152" r="8"/>
-              <text class="star-label" x="728" y="172" text-anchor="middle">Modern Europa</text>
+              <text class="star-label" x="728" y="172" text-anchor="middle">Idéerna når oss</text>
               <text class="star-sub"   x="728" y="185" text-anchor="middle">demokrati · vetenskap · humanism</text>
             </g>
           </g>
         </svg>
       </div>
     </div>
-    <div class="source-block" data-reveal-at="6">
+    <div class="explain-stack" data-reveal-at="6">
+      <span class="layer-label">Kedjan kunde ha brutits — så här höll den</span>
+      <div class="node-explain">
+        <span class="ne-step"><span class="ne-num">1</span>Rom tar upp — men väst faller</span>
+        <span class="ne-body">Romarna beundrade grekerna och kopierade deras texter. Men när <strong>Västroms rike föll 476 e.Kr.</strong> försvann skolorna och läskunnigheten i väst. De grekiska verken blev oläsbara — språket självt glömdes bort.</span>
+      </div>
+      <div class="node-explain risk">
+        <span class="ne-step"><span class="ne-num">2</span>Här kunde allt ha gått förlorat</span>
+        <span class="ne-body">Papyrus ruttnar på ett par sekler. En text överlever bara om någon <strong>aktivt kopierar den för hand</strong>, om och om igen. I väst fanns snart ingen kvar som kunde läsa grekiska. Utan nästa länk hade Platon och Aristoteles varit borta för alltid.</span>
+      </div>
+      <div class="node-explain">
+        <span class="ne-step"><span class="ne-num">3</span>Bysans räddar texterna</span>
+        <span class="ne-body">I öst levde det <strong>grekisktalande Bysantinska riket</strong> vidare i tusen år till. Där kopierade munkar tålmodigt de gamla verken. När arabiska lärde också översatte dem, fanns idéerna kvar på tre språk — men ännu inte i väst.</span>
+      </div>
+      <div class="node-explain">
+        <span class="ne-step"><span class="ne-num">4</span>Renässansen läser — pressen sprider</span>
+        <span class="ne-body">På 1400-talet börjar européer åter läsa grekiska. Flyktande bysantinska lärde tar med sig handskrifter till Italien. Nästan samtidigt gör <strong>tryckpressen</strong> att en text kan bli tusen exemplar. Nu kunde kedjan aldrig mer brytas.</span>
+      </div>
+    </div>
+
+    <div class="source-block" data-reveal-at="7">
       <div class="source-tag">Primärkälla</div>
       <p class="source-q">"Människan är av naturen ett politiskt djur. Den som kan leva utanför samhällets gemenskap är antingen ett odjur eller en gud."</p>
       <p class="source-attr">Aristoteles, Politiken 1253a (parafraserat), skriven ca 350 f.Kr.</p>
-      <p class="source-prompt">Aristoteles kallade den som lever utanför gemenskapen för ett odjur eller en gud. Vem passar in på det idag?</p>
+      <p class="source-prompt">Denna text överlevde bara för att någon kopierade den i 1800 år. Vilka idéer väljer vi att föra vidare idag?</p>
     </div>
   </div>
 </section>
@@ -1455,7 +1727,7 @@ html, body {
 /* ══════════════════════════════════════════
    KONFIGURATION
    ══════════════════════════════════════════ */
-const ERA_STEPS         = [3, 3, 7, 7, 7, 6]; // max steg per era
+const ERA_STEPS         = [3, 3, 7, 9, 7, 7]; // max steg per era
 const CONSTELLATION_ERAS = new Set([2, 3, 5]);
 const CONSTELLATION_NODES = 5;
 
@@ -1824,6 +2096,23 @@ function applyStep(e, s, animate) {
   }
   // Erövringskarta
   if (e === 4 && s >= 2 && s <= 4) revealConquestPhase(s - 1);
+
+  // Krymp konstellationen när nästa lager staplas på (den försvinner aldrig)
+  const shrinkable = el.querySelector('.constellation-wrap.shrinkable');
+  if (shrinkable && s > CONSTELLATION_NODES) shrinkable.classList.add('shrunk');
+
+  // Scrolla till nyaste lagret bara om det hamnar utanför vyn
+  if (animate) {
+    const newest = [...el.querySelectorAll(`[data-reveal-at="${s}"]`)].pop();
+    if (newest) setTimeout(() => {
+      const cont = el.querySelector('.content-container');
+      if (!cont) return;
+      const cr = cont.getBoundingClientRect();
+      const nr = newest.getBoundingClientRect();
+      const utanförVyn = nr.bottom > cr.bottom - 4 || nr.top < cr.top;
+      if (utanförVyn) newest.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 140);
+  }
 }
 
 function undoStep(e, s) {
@@ -1848,6 +2137,10 @@ function undoStep(e, s) {
   }
   // Erövringskarta
   if (e === 4 && s >= 2 && s <= 4) undoConquestPhase(s - 1);
+
+  // Återställ konstellationens storlek när vi backar tillbaka till dess steg
+  const shrinkable = el.querySelector('.constellation-wrap.shrinkable');
+  if (shrinkable && (s - 1) <= CONSTELLATION_NODES) shrinkable.classList.remove('shrunk');
 }
 
 /* ══════════════════════════════════════════
@@ -1957,6 +2250,7 @@ function fullReset(e) {
   });
   el.querySelectorAll('.star-group').forEach(n => n.classList.remove('visible'));
   el.querySelectorAll('.star-line').forEach(n => n.classList.remove('visible'));
+  el.querySelectorAll('.constellation-wrap.shrinkable').forEach(n => n.classList.remove('shrunk'));
   el.querySelectorAll('.portrait-card').forEach(n => n.classList.remove('active','dimmed'));
   if (era === 4) resetAlexanderMap();
 }
