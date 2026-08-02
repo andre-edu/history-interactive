@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vietnamkriget – Interaktiv lärresurs (Historia 1b)</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;900&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+
+<style>
+:root{
+  --primary:#1a1f3a;
+  --secondary:#2d3561;
+  --accent:#c9a84c;
+  --accent-light:#f0d080;
+  --text-primary:#f0ece0;
+  --text-secondary:#b8b0a0;
+  --bg-dark:#0f1220;
+  --surface:#1a1f3a;
+  --surface2:#252d4a;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:'Lora',serif;
+  color:var(--text-primary);
+  background-color:var(--bg-dark);
+  /* subtil noise-gradient på dark navy */
+  background-image:
+    radial-gradient(circle at 20% 15%, rgba(45,53,97,0.55) 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(37,45,74,0.5) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-attachment:fixed;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+h1,h2,h3{font-family:'Playfair Display',serif;line-height:1.2;}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+
+/* ============ HERO ============ */
+.hero{
+  position:relative;
+  min-height:92vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:80px 24px;
+  overflow:hidden;
+}
+/* Dekorativ CSS-bakgrundsgrafik: geometriskt guldmönster + gradient */
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(160deg, var(--bg-dark) 0%, var(--primary) 55%, var(--secondary) 100%);
+  z-index:-3;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  opacity:0.4;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(201,168,76,0.06) 0 2px, transparent 2px 26px),
+    repeating-linear-gradient(-45deg, rgba(201,168,76,0.05) 0 2px, transparent 2px 26px);
+  -webkit-mask-image:radial-gradient(circle at center, black 0%, transparent 78%);
+  mask-image:radial-gradient(circle at center, black 0%, transparent 78%);
+}
+.hero-star{
+  position:absolute;
+  width:520px;max-width:88vw;height:520px;
+  z-index:-1;opacity:0.10;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  animation:spin 90s linear infinite;
+}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+
+.hero .eyebrow{
+  font-family:system-ui,sans-serif;
+  letter-spacing:0.32em;
+  text-transform:uppercase;
+  font-size:0.8rem;
+  color:var(--accent);
+  margin-bottom:26px;
+  opacity:0;
+  animation:fadeUp 1s ease .1s forwards;
+}
+.hero h1{
+  font-size:clamp(2.8rem,8vw,6rem);
+  font-weight:900;
+  color:var(--text-primary);
+  text-shadow:0 4px 30px rgba(0,0,0,0.5);
+  opacity:0;
+  animation:fadeUp 1s ease .3s forwards;
+}
+.hero h1 .gold{color:var(--accent-light);}
+.hero .lead{
+  max-width:640px;
+  margin:30px auto 0;
+  font-size:clamp(1.05rem,2.4vw,1.35rem);
+  font-style:italic;
+  color:var(--text-secondary);
+  opacity:0;
+  animation:fadeUp 1s ease .55s forwards;
+}
+.hero .years{
+  margin-top:34px;
+  font-family:system-ui,sans-serif;
+  letter-spacing:0.15em;
+  color:var(--accent);
+  font-size:0.95rem;
+  opacity:0;
+  animation:fadeUp 1s ease .75s forwards;
+}
+.scroll-cue{
+  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+  color:var(--accent);font-size:1.6rem;
+  animation:bob 2s ease-in-out infinite;opacity:0.7;
+}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(10px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+
+/* ============ GENERIC SECTION ============ */
+section.block{padding:80px 0;}
+.section-label{
+  font-family:system-ui,sans-serif;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  font-size:0.75rem;
+  color:var(--accent);
+  margin-bottom:12px;
+}
+h2.section-title{
+  font-size:clamp(1.9rem,4.5vw,2.9rem);
+  font-weight:700;
+  color:var(--text-primary);
+  margin-bottom:8px;
+}
+.title-rule{
+  width:64px;height:3px;background:var(--accent);
+  border-radius:2px;margin:18px 0 34px;
+}
+
+/* Scroll reveal */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ============ INTRO ============ */
+.intro-text p{
+  font-size:1.12rem;
+  color:var(--text-primary);
+  margin-bottom:22px;
+  max-width:820px;
+}
+.intro-text p .drop{
+  font-family:'Playfair Display',serif;
+  font-size:3.2rem;
+  font-weight:700;
+  color:var(--accent);
+  float:left;
+  line-height:0.8;
+  margin:8px 14px 0 0;
+}
+
+/* ============ DIAGNOSTIC (Craig Barton) ============ */
+.q-card{
+  background:var(--surface);
+  border:1px solid rgba(201,168,76,0.2);
+  border-radius:14px;
+  padding:28px;
+  margin-bottom:26px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+.q-meta{
+  font-family:system-ui,sans-serif;
+  font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;
+}
+.q-diff{
+  font-size:0.68rem;padding:3px 10px;border-radius:20px;
+  border:1px solid rgba(201,168,76,0.4);color:var(--accent-light);
+}
+.q-text{font-family:'Playfair Display',serif;font-size:1.28rem;font-weight:600;margin-bottom:20px;color:var(--text-primary);}
+.opt{
+  display:block;width:100%;text-align:left;
+  font-family:'Lora',serif;font-size:1.02rem;
+  background:var(--surface2);
+  color:var(--text-primary);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:10px;
+  padding:14px 18px;margin-bottom:12px;
+  cursor:pointer;transition:all .2s ease;
+  position:relative;
+}
+.opt:hover{border-color:var(--accent);background:#2c355a;transform:translateX(3px);}
+.opt:focus-visible{outline:3px solid var(--accent-light);outline-offset:2px;}
+.opt.correct{border-color:#6fbf7f;background:rgba(111,191,127,0.15);}
+.opt.wrong{border-color:#d98b7a;background:rgba(217,139,122,0.13);}
+.opt:disabled{cursor:default;}
+.opt .mark{font-weight:700;margin-right:6px;}
+.feedback{
+  margin-top:8px;padding:16px 18px;border-radius:10px;
+  font-size:0.98rem;display:none;animation:fadeUp .4s ease;
+}
+.feedback.show{display:block;}
+.feedback.ok{background:rgba(111,191,127,0.12);border-left:4px solid #6fbf7f;}
+.feedback.miss{background:rgba(217,139,122,0.1);border-left:4px solid #d98b7a;}
+.feedback .misname{
+  font-family:system-ui,sans-serif;font-size:0.72rem;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--accent-light);display:block;margin-bottom:4px;
+}
+
+/* ============ TIMELINE ============ */
+.timeline{position:relative;margin-top:20px;padding-left:8px;}
+.timeline::before{
+  content:"";position:absolute;left:20px;top:6px;bottom:6px;width:2px;
+  background:linear-gradient(var(--accent),rgba(201,168,76,0.15));
+}
+.tl-item{position:relative;padding:0 0 34px 62px;}
+.tl-dot{
+  position:absolute;left:11px;top:4px;width:20px;height:20px;border-radius:50%;
+  background:var(--bg-dark);border:3px solid var(--accent);z-index:2;transition:all .3s ease;
+}
+.tl-item.visible .tl-dot{box-shadow:0 0 0 6px rgba(201,168,76,0.15);}
+.tl-year{
+  font-family:'Playfair Display',serif;font-weight:700;font-size:1.5rem;color:var(--accent-light);
+}
+.tl-head{
+  cursor:pointer;user-select:none;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  transition:color .2s ease;
+}
+.tl-head:hover .tl-title{color:var(--accent);}
+.tl-head:focus-visible{outline:3px solid var(--accent-light);outline-offset:4px;border-radius:6px;}
+.tl-title{font-size:1.12rem;font-weight:600;color:var(--text-primary);transition:color .2s;}
+.tl-toggle{margin-left:auto;color:var(--accent);font-size:1.3rem;transition:transform .3s ease;font-family:system-ui,sans-serif;}
+.tl-item.open .tl-toggle{transform:rotate(45deg);}
+.tl-body{
+  max-height:0;overflow:hidden;transition:max-height .45s ease,margin .45s ease,opacity .4s ease;
+  opacity:0;color:var(--text-secondary);font-size:1.02rem;
+}
+.tl-item.open .tl-body{max-height:320px;margin-top:12px;opacity:1;}
+
+/* ============ MAP ============ */
+#map{
+  height:480px;width:100%;border-radius:14px;margin-top:10px;
+  border:1px solid rgba(201,168,76,0.3);box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  z-index:1;
+}
+.leaflet-popup-content-wrapper{background:var(--surface);color:var(--text-primary);border-radius:10px;}
+.leaflet-popup-tip{background:var(--surface);}
+.leaflet-popup-content{font-family:'Lora',serif;line-height:1.55;}
+.map-pop-title{font-family:'Playfair Display',serif;font-weight:700;color:var(--accent-light);font-size:1.1rem;display:block;margin-bottom:2px;}
+.map-pop-date{font-family:system-ui,sans-serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:8px;}
+
+/* ============ CHARTS ============ */
+.chart-grid{display:grid;grid-template-columns:1fr;gap:34px;margin-top:10px;}
+.chart-card{
+  background:var(--surface);border:1px solid rgba(201,168,76,0.2);border-radius:14px;
+  padding:26px;box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+.chart-card h3{font-size:1.3rem;color:var(--text-primary);margin-bottom:4px;}
+.chart-src{font-family:system-ui,sans-serif;font-size:0.72rem;color:var(--text-secondary);margin-top:14px;font-style:italic;}
+.chart-holder{position:relative;height:340px;margin-top:16px;}
+
+/* ============ EXIT TICKET ============ */
+.exit-grid{display:grid;grid-template-columns:1fr;gap:26px;}
+.exit-card{
+  background:var(--surface);border:1px solid rgba(201,168,76,0.22);border-radius:14px;padding:28px;
+}
+.exit-card h3{font-size:1.35rem;color:var(--accent-light);margin-bottom:16px;}
+.exit-list{list-style:none;}
+.exit-list li{
+  padding:12px 0 12px 34px;position:relative;color:var(--text-primary);border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.exit-list li:last-child{border-bottom:none;}
+.exit-list li::before{
+  content:"?";position:absolute;left:0;top:11px;
+  font-family:'Playfair Display',serif;font-weight:700;color:var(--accent);
+  width:22px;height:22px;line-height:22px;text-align:center;
+  border:2px solid var(--accent);border-radius:50%;font-size:0.8rem;
+}
+.exit-list.discuss li::before{content:"\201C";top:14px;font-size:1.1rem;}
+.self-assess{
+  background:linear-gradient(135deg,var(--secondary),var(--primary));
+  border-radius:14px;padding:30px;margin-top:8px;text-align:center;
+  border:1px solid rgba(201,168,76,0.3);
+}
+.self-assess p{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--text-primary);font-style:italic;}
+
+/* ============ FOOTER ============ */
+footer{
+  text-align:center;padding:50px 24px;color:var(--text-secondary);
+  font-family:system-ui,sans-serif;font-size:0.82rem;border-top:1px solid rgba(201,168,76,0.15);
+}
+
+@media(min-width:760px){
+  .chart-grid{grid-template-columns:1fr 1fr;}
+  .exit-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- =========================================================
+     MODUL 1: HERO
+========================================================= -->
+<header class="hero">
+  <!-- dekorativ roterande stjärna i ren SVG, ingen extern bild -->
+  <svg class="hero-star" viewBox="0 0 100 100" aria-hidden="true">
+    <polygon points="50,3 61,38 98,38 68,60 79,95 50,73 21,95 32,60 2,38 39,38"
+      fill="none" stroke="#c9a84c" stroke-width="0.6"/>
+    <circle cx="50" cy="50" r="46" fill="none" stroke="#c9a84c" stroke-width="0.4"/>
+  </svg>
+  <div class="eyebrow">Historia 1b &middot; Fördjupning</div>
+  <h1>Vietnam<span class="gold">kriget</span></h1>
+  <p class="lead">"Mellan kalla krigets fronter och nationell frigörelse", en konflikt där ett folks kamp om självständighet vävdes samman med supermakternas globala uppgörelse.</p>
+  <div class="years">CA 1945&nbsp;&ndash;&nbsp;1975</div>
+  <div class="scroll-cue" aria-hidden="true">&#8964;</div>
+</header>
+
+<main>
+
+<!-- =========================================================
+     MODUL 2: INTRODUKTION
+========================================================= -->
+<section class="block">
+  <div class="wrap reveal">
+    <div class="section-label">Introduktion</div>
+    <h2 class="section-title">En konflikt med dubbla ansikten</h2>
+    <div class="title-rule"></div>
+    <div class="intro-text">
+      <p><span class="drop">V</span>ietnamkriget var en av 1900-talets mest definierande konflikter, och dess dubbelhet är nyckeln till att förstå den. Å ena sidan var det en nationell frigörelsekamp: ett folk som efter årtionden av fransk kolonialism ville styra sig självt. Å andra sidan blev landet en frontlinje i det kalla kriget, där USA och de kommunistiska stormakterna gjorde Vietnam till en prövosten för hela världsordningen. Beroende på vilket av dessa perspektiv man lyfter fram framträder helt olika berättelser om samma krig.</p>
+      <p>För omvärlden blev Vietnam något mer än ett avlägset krig i Sydostasien. Det blev det första "tv-kriget", där bilder av lidande nådde vardagsrummen och underblåste en global protestvåg. I Sverige gav det upphov till en ovanligt skarp kritik av USA och en "moralisk stormaktspolitik". Att studera Vietnamkriget är därför att öva sig i att se hur militär makt, ideologi, medier och moral samverkar, och hur historien kan användas och tolkas på vitt skilda sätt.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     MODUL 3: CRAIG BARTON DIAGNOSTISKA FRÅGOR
+========================================================= -->
+<section class="block">
+  <div class="wrap reveal">
+    <div class="section-label">Testa dig själv</div>
+    <h2 class="section-title">Diagnostiska frågor</h2>
+    <div class="title-rule"></div>
+    <p style="color:var(--text-secondary);margin-bottom:34px;max-width:760px;">
+      Varje felaktigt svar nedan bygger på en vanlig missuppfattning. Välj det du tror är rätt, så får du veta vilken tankefälla de andra alternativen döljer. Frågorna blir gradvis svårare.
+    </p>
+    <div id="quiz"></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     MODUL 4: TIDSLINJE
+========================================================= -->
+<section class="block">
+  <div class="wrap reveal">
+    <div class="section-label">Kronologi</div>
+    <h2 class="section-title">Sex vändpunkter</h2>
+    <div class="title-rule"></div>
+    <p style="color:var(--text-secondary);margin-bottom:20px;">Klicka på varje år för att fälla ut en beskrivning.</p>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     MODUL 5: KARTA
+========================================================= -->
+<section class="block">
+  <div class="wrap reveal">
+    <div class="section-label">Geografi</div>
+    <h2 class="section-title">Krigets platser</h2>
+    <div class="title-rule"></div>
+    <p style="color:var(--text-secondary);margin-bottom:8px;">Klicka på markörerna för att läsa om fem platser med avgörande betydelse.</p>
+    <div id="map"></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     MODUL 6: STATISTIK
+========================================================= -->
+<section class="block">
+  <div class="wrap reveal">
+    <div class="section-label">Statistik</div>
+    <h2 class="section-title">Krigets omfattning i siffror</h2>
+    <div class="title-rule"></div>
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Amerikansk trupp i Vietnam</h3>
+        <p style="color:var(--text-secondary);font-size:0.95rem;">Antal soldater (tusental) vid årets slut. Notera toppen 1968 och den snabba nedtrappningen därefter.</p>
+        <div class="chart-holder"><canvas id="chartTroops"></canvas></div>
+        <p class="chart-src">Källa: US Department of Defense, Selected Manpower Statistics (Statistical Abstract of the United States 1967 och 1973).</p>
+      </div>
+      <div class="chart-card">
+        <h3>USA:s krigsutgifter per år</h3>
+        <p style="color:var(--text-secondary);font-size:0.95rem;">Direkta militära kostnader i miljarder dollar (dåtidens penningvärde). Kriget var som dyrast 1968.</p>
+        <div class="chart-holder"><canvas id="chartCost"></canvas></div>
+        <p class="chart-src">Källa: Department of Defense, redovisat i Congressional Research Service, "Costs of Major U.S. Wars" (RS22926).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     MODUL 7: DIAGNOSTISK AVSLUTNING
+========================================================= -->
+<section class="block">
+  <div class="wrap reveal">
+    <div class="section-label">Avslutning</div>
+    <h2 class="section-title">Exitbiljett</h2>
+    <div class="title-rule"></div>
+    <div class="exit-grid">
+      <div class="exit-card">
+        <h3>Svara mentalt</h3>
+        <ul class="exit-list">
+          <li>Varför brukar man säga att USA vann de flesta slag men ändå förlorade kriget?</li>
+          <li>Vad menas med dominoteorin, och vilken roll spelade den för USA:s beslut?</li>
+          <li>På vilket sätt gjorde Olof Palme Sverige till en tydlig aktör i konflikten?</li>
+        </ul>
+      </div>
+      <div class="exit-card">
+        <h3>Öppna diskussionsfrågor</h3>
+        <ul class="exit-list discuss">
+          <li>Kan man lita på bilder och nyheter från ett pågående krig? Diskutera hur "tv-kriget" formade opinionen, och jämför med hur konflikter skildras i medier idag.</li>
+          <li>Var Vietnamkriget främst ett självständighetskrig eller ett proxykrig? Argumentera för båda tolkningarna innan ni tar ställning.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="self-assess reveal" style="margin-top:26px;">
+      <div class="section-label" style="text-align:center;">Självvärdering</div>
+      <p>"Vad förstår du nu som du inte förstod innan?"</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Interaktiv lärresurs &middot; Historia 1b &middot; Byggd som fördjupningsmaterial om Vietnamkriget.<br>
+  Statistik verifierad mot US Department of Defense och Congressional Research Service.
+</footer>
+
+<!-- Leaflet + Chart.js -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+/* =========================================================
+   HJÄLPFUNKTION: Fisher-Yates shuffle
+   Blandar en array in place och returnerar den.
+========================================================= */
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+/* =========================================================
+   MODUL 3: DIAGNOSTISKA FRÅGOR (Craig Barton)
+   Varje distraktor mappas till en namngiven missuppfattning.
+========================================================= */
+const questions=[
+  {
+    diff:"Nivå 1",
+    q:"Vilket land styrde Vietnam som koloni innan kriget mot USA?",
+    options:[
+      {text:"Frankrike, som del av Franska Indokina",correct:true,
+       explain:"Rätt. Vietnam var en del av Franska Indokina. Motståndet mot fransk överhöghet radikaliserades under andra världskriget under Ho Chi Minh, och det franska styret slutade med nederlaget vid Dien Bien Phu 1954."},
+      {text:"USA, som tidigare kolonialherre i regionen",correct:false,mis:"Sammanblandning av krigsskeden",
+       explain:"USA var aldrig kolonialmakt i Vietnam. USA trädde in först efter fransmännens nederlag 1954, som en del av kalla krigets logik, inte som gammal kolonialherre."},
+      {text:"Kina, som styrande grannmakt i norr",correct:false,mis:"Grannland likställs med kolonialmakt",
+       explain:"Kina var en viktig granne och senare stödmakt till Nordvietnam, men styrde inte Vietnam som koloni under denna period."},
+      {text:"Japan, med varaktigt kolonialstyre",correct:false,mis:"Ockupation förväxlas med kolonialstyre",
+       explain:"Japan ockuperade Indokina under andra världskriget, men det var Frankrike som var den koloniala överhögheten både före och strax efter kriget."}
+    ]
+  },
+  {
+    diff:"Nivå 2",
+    q:"Vad var kärnan i den amerikanska dominoteorin?",
+    options:[
+      {text:"Att kommunismens seger i ett land skulle sprida sig vidare",correct:true,
+       explain:"Rätt. Dominoteorin var föreställningen att kommunismens seger i ett land skulle sprida sig till grannländerna som fallande dominobrickor. Den motiverade USA:s stöd till Sydvietnam."},
+      {text:"Att USA formellt förklarade krig mot Nordvietnams regering",correct:false,mis:"Myten om formell krigsförklaring",
+       explain:"USA förklarade aldrig formellt krig. Eskaleringen skedde via Tonkinbuktsresolutionen 1964, en 'blankcheck' från kongressen, inte en krigsförklaring. Dominoteorin handlade om ideologisk spridning."},
+      {text:"Att flera länder turas om att skicka trupp till Sydvietnam",correct:false,mis:"Bokstavstolkning av 'domino'",
+       explain:"Teorin handlade inte om truppinsatser i tur och ordning, utan om en befarad kedjereaktion där kommunismen sprids från land till land."},
+      {text:"Att Vietnam skulle delas upp i flera mindre lydstater",correct:false,mis:"Förväxling med delningen av landet",
+       explain:"Vietnam delades vid 17:e breddgraden 1954, men det var inte dominoteorin. Teorin var ett argument för varför USA måste ingripa, inte en delningsplan."}
+    ]
+  },
+  {
+    diff:"Nivå 3",
+    q:"Varför beskrivs Tet-offensiven 1968 ofta som en amerikansk seger men ett amerikanskt nederlag på samma gång?",
+    options:[
+      {text:"Den slogs tillbaka militärt men vände opinionen hemma mot kriget",correct:true,
+       explain:"Rätt. Militärt misslyckades offensiven, men den visade att fienden kunde slå till överallt och att segern var långt borta. Den blev en politisk och opinionsmässig vändpunkt, ett exempel på att en militär förlust kan bli en politisk seger."},
+      {text:"USA vann slaget men förlorade sedan alla följande större strider",correct:false,mis:"Militär utgång styr allt",
+       explain:"Missuppfattningen antar att kriget avgjordes rent militärt. Poängen med Tet är just att den militära utgången och den politiska effekten pekade åt olika håll."},
+      {text:"Offensiven ledde direkt till att Saigon föll redan samma år",correct:false,mis:"Hopblandning av 1968 och 1975",
+       explain:"Saigon föll först 1975, sju år senare. Tet 1968 var en vändpunkt i opinionen, inte krigets slut."},
+      {text:"Nordvietnam gav upp helt kort efter den misslyckade offensiven",correct:false,mis:"Felaktig segrar-förlorare-logik",
+       explain:"Nordvietnam gav inte upp. Trots stora förluster fortsatte de, medan det amerikanska stödet hemma vittrade sönder."}
+    ]
+  },
+  {
+    diff:"Nivå 4",
+    q:"Vilken hållning intog Sverige, och särskilt Olof Palme, till Vietnamkriget?",
+    options:[
+      {text:"Sverige förde öppen och skarp offentlig kritik mot USA:s krigföring",correct:true,
+       explain:"Rätt. Palme demonstrerade 1968 tillsammans med Nordvietnams ambassadör och jämförde i sitt jultal 1972 bombningarna av Hanoi med nazistiska illdåd. Det ledde till en diplomatisk kris med USA och en svensk 'moralisk stormaktspolitik'."},
+      {text:"Sverige förhöll sig strikt neutralt och undvek att kritisera parterna",correct:false,mis:"Neutralitet likställs med tystnad",
+       explain:"Sverige var alliansfritt, men det innebar inte tystnad. Tvärtom var den öppna USA-kritiken ovanligt skarp för ett västland."},
+      {text:"Sverige sände militärt stöd till Sydvietnam på USA:s sida i kriget",correct:false,mis:"Förväxling med Natoländers linje",
+       explain:"Sverige skickade inte militärt stöd till USA-sidan. Den svenska linjen var politisk och moralisk kritik, inte militärt deltagande."},
+      {text:"Palme stödde USA:s krigföring men kritiserade den bara i hemlighet",correct:false,mis:"Privat kontra offentlig hållning",
+       explain:"Palmes kritik var uttalat offentlig och högljudd, inte dold. Det var själva öppenheten som skapade den diplomatiska krisen."}
+    ]
+  }
+];
+
+function buildQuiz(){
+  const root=document.getElementById('quiz');
+  questions.forEach((item,qi)=>{
+    // Blanda alternativen med Fisher-Yates vid varje sidladdning
+    const opts=shuffle(item.options.slice());
+    const card=document.createElement('div');
+    card.className='q-card';
+    card.innerHTML=`
+      <div class="q-meta"><span>Fråga ${qi+1} av ${questions.length}</span><span class="q-diff">${item.diff}</span></div>
+      <div class="q-text">${item.q}</div>
+    `;
+    const fb=document.createElement('div');
+    fb.className='feedback';
+
+    opts.forEach((opt,oi)=>{
+      const b=document.createElement('button');
+      b.className='opt';
+      b.innerHTML=`<span class="mark">${String.fromCharCode(65+oi)}.</span>${opt.text}`;
+      b.addEventListener('click',()=>{
+        // Lås alla knappar i kortet
+        card.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+        if(opt.correct){
+          b.classList.add('correct');
+          fb.className='feedback ok show';
+          fb.innerHTML=`<strong>Rätt svar.</strong> ${opt.explain}`;
+        }else{
+          b.classList.add('wrong');
+          // markera även det korrekta
+          card.querySelectorAll('.opt').forEach((x,ix)=>{
+            if(opts[ix].correct)x.classList.add('correct');
+          });
+          fb.className='feedback miss show';
+          fb.innerHTML=`<span class="misname">Missuppfattning: ${opt.mis}</span>${opt.explain}`;
+        }
+      });
+      card.appendChild(b);
+    });
+    card.appendChild(fb);
+    root.appendChild(card);
+  });
+}
+buildQuiz();
+
+/* =========================================================
+   MODUL 4: TIDSLINJE
+========================================================= */
+const events=[
+  {year:"1945",title:"Självständighetsförklaringen",
+   body:"Ho Chi Minh proklamerar den självständiga Demokratiska republiken Vietnam. Oavhängighetsförklaringen modellerades medvetet efter USA:s egen. Frankrike vägrade dock ge upp sin koloni, vilket inledde ett utdraget kolonialkrig."},
+  {year:"1954",title:"Nederlaget vid Dien Bien Phu",
+   body:"Frankrike besegras militärt vid Dien Bien Phu och tvingas lämna Indokina. Vietnam delas vid 17:e breddgraden. Kolonialkriget är slut, men USA träder successivt in för att hindra att hela Vietnam blir kommunistiskt."},
+  {year:"1964",title:"Tonkinbuktsintermezzot",
+   body:"En påstådd attack mot amerikanska fartyg ger president Lyndon Johnson en 'blankcheck' från kongressen att eskalera kriget, utan formell krigsförklaring. Detta öppnade för den stora amerikanska truppinsatsen åren därpå."},
+  {year:"1968",title:"Tet-offensiven och My Lai",
+   body:"Nordvietnams stora Tet-offensiv slås militärt tillbaka men blir en politisk katastrof för USA och vänder opinionen. Samma år äger massakern i My Lai rum, där amerikanska soldater dödar hundratals civila, en symbol för krigets moraliska sammanbrott."},
+  {year:"1972",title:"Palmes jultal",
+   body:"Olof Palme jämför i sitt radiotal julen 1972 de amerikanska bombningarna av Hanoi med nazistiska illdåd som Treblinka. Uttalandet leder till en djup diplomatisk kris mellan Sverige och USA och blir sinnebilden för svensk USA-kritik."},
+  {year:"1975",title:"Saigons fall",
+   body:"Sydvietnam faller och landet förenas under kommunistiskt styre. Kriget spreds till grannländerna och bidrog bland annat till de röda khmerernas maktövertagande i Kambodja. Hundratusentals 'boat people' flydde den nya regimen."}
+];
+
+function buildTimeline(){
+  const tl=document.getElementById('timeline');
+  events.forEach(ev=>{
+    const item=document.createElement('div');
+    item.className='tl-item';
+    item.innerHTML=`
+      <div class="tl-dot"></div>
+      <div class="tl-head" tabindex="0" role="button" aria-expanded="false">
+        <span class="tl-year">${ev.year}</span>
+        <span class="tl-title">${ev.title}</span>
+        <span class="tl-toggle" aria-hidden="true">+</span>
+      </div>
+      <div class="tl-body"><p>${ev.body}</p></div>
+    `;
+    const head=item.querySelector('.tl-head');
+    const toggle=()=>{
+      const open=item.classList.toggle('open');
+      head.setAttribute('aria-expanded',open?'true':'false');
+    };
+    head.addEventListener('click',toggle);
+    head.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}
+    });
+    tl.appendChild(item);
+  });
+}
+buildTimeline();
+
+/* =========================================================
+   MODUL 5: KARTA (Leaflet)
+========================================================= */
+const places=[
+  {name:"Dien Bien Phu",lat:21.387,lng:103.017,date:"1954",
+   info:"Platsen för det avgörande franska nederlaget som avslutade kolonialkriget och tvingade Frankrike att lämna Indokina. Efter delningen tog USA över rollen som Sydvietnams beskyddare."},
+  {name:"Hanoi",lat:21.028,lng:105.854,date:"Nordvietnams huvudstad",
+   info:"Nordvietnams politiska centrum och mål för omfattande amerikanska bombningar. Julbombningarna 1972 mot Hanoi utlöste Olof Palmes jämförelse med Treblinka och en diplomatisk kris med USA."},
+  {name:"Saigon",lat:10.823,lng:106.630,date:"Fall 1975",
+   info:"Sydvietnams huvudstad och sinnebild för krigets slut. När staden föll 1975 förenades landet under kommunistiskt styre och den sista amerikanska närvaron evakuerades under kaotiska former."},
+  {name:"My Lai",lat:15.179,lng:108.867,date:"1968",
+   info:"Byn där amerikanska soldater mördade hundratals civila. Massakern blev känd i efterhand och kom att stå som en symbol för krigets brutalitet och moraliska sammanbrott."},
+  {name:"Ho Chi Minh-leden",lat:16.500,lng:106.700,date:"Genom Laos och Kambodja",
+   info:"Ett vidsträckt nät av försörjningsvägar genom grannländerna som lät Nordvietnam förse gerillan i söder med förnödenheter. Leden visar hur kriget spreds bortom Vietnams gränser."}
+];
+
+let map=null;
+
+// Bygg kartan först när Leaflet (L) verkligen är laddat.
+function initMap(){
+  map=L.map('map',{scrollWheelZoom:false}).setView([16.5,106.5],5);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy; OpenStreetMap, &copy; CARTO',maxZoom:19
+  }).addTo(map);
+
+  // Guldfärgad markörikon i ren SVG
+  const goldIcon=L.divIcon({
+    className:'',
+    html:`<svg width="26" height="38" viewBox="0 0 26 38" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13 0C6 0 0 5.6 0 12.6 0 22 13 38 13 38s13-16 13-25.4C26 5.6 20 0 13 0z" fill="#c9a84c" stroke="#0f1220" stroke-width="1.5"/>
+            <circle cx="13" cy="13" r="5" fill="#1a1f3a"/>
+          </svg>`,
+    iconSize:[26,38],iconAnchor:[13,38],popupAnchor:[0,-34]
+  });
+
+  places.forEach(p=>{
+    L.marker([p.lat,p.lng],{icon:goldIcon}).addTo(map)
+      .bindPopup(`<span class="map-pop-title">${p.name}</span>
+                  <span class="map-pop-date">${p.date}</span>${p.info}`);
+  });
+
+  setTimeout(()=>map.invalidateSize(),400);
+}
+
+/* =========================================================
+   MODUL 6: CHART.JS-DIAGRAM
+========================================================= */
+// Bygg diagrammen först när Chart.js verkligen är laddat.
+function initCharts(){
+  Chart.defaults.color='#b8b0a0';
+  Chart.defaults.font.family="'Lora', serif";
+
+  // Diagram 1: Amerikansk trupp (tusental, årets slut)
+  new Chart(document.getElementById('chartTroops'),{
+    type:'bar',
+    data:{
+      labels:['1965','1966','1967','1968','1969','1970','1971','1972'],
+      datasets:[{
+        label:'Antal soldater (tusental)',
+        data:[184,385,486,536,475,335,157,24],
+        backgroundColor:'#c9a84c',
+        hoverBackgroundColor:'#f0d080',
+        borderRadius:4
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>c.parsed.y+' 000 soldater'}}},
+      scales:{
+        y:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.07)'},
+           title:{display:true,text:'Tusental soldater',color:'#b8b0a0'}},
+        x:{grid:{display:false}}
+      }
+    }
+  });
+
+  // Diagram 2: USA:s krigsutgifter per budgetår (miljarder dollar, dåtidens värde)
+  new Chart(document.getElementById('chartCost'),{
+    type:'bar',
+    data:{
+      labels:['1965','1966','1967','1968','1969','1970','1971','1972'],
+      datasets:[{
+        label:'Miljarder dollar',
+        data:[0.1,5.8,20.1,26.5,21.5,17.4,11.5,7.3],
+        backgroundColor:'#2d6f5f',
+        hoverBackgroundColor:'#3f9a84',
+        borderRadius:4
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>c.parsed.y+' mdr USD'}}},
+      scales:{
+        y:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.07)'},
+           title:{display:true,text:'Miljarder USD (dåtidens värde)',color:'#b8b0a0'}},
+        x:{grid:{display:false}}
+      }
+    }
+  });
+}
+
+/* =========================================================
+   SCROLL-REVEAL (Intersection Observer)
+   Gäller både .reveal-block och tidslinjens items.
+========================================================= */
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:0.12});
+
+document.querySelectorAll('.reveal, .tl-item').forEach(el=>io.observe(el));
+
+/* =========================================================
+   BIBLIOTEKSVAKT
+   CDN-skript kan i vissa förhandsvisningar laddas efter att
+   den inbäddade koden körts. Vänta tills L och Chart finns,
+   och visa ett tydligt meddelande om ett bibliotek blockeras.
+========================================================= */
+function whenReady(test,onReady,onFail,tries=40){
+  if(test()){onReady();return;}
+  if(tries<=0){onFail();return;}
+  setTimeout(()=>whenReady(test,onReady,onFail,tries-1),150);
+}
+
+function libFailMsg(id,namn){
+  const el=document.getElementById(id);
+  if(el){
+    el.innerHTML=`<div style="padding:24px;color:var(--text-secondary);font-family:system-ui,sans-serif;">`+
+      `Kunde inte ladda ${namn}. Kontrollera internetuppkopplingen och ladda om sidan.</div>`;
+  }
+}
+
+// Karta: kräver Leaflet (L)
+whenReady(()=>typeof L!=='undefined',initMap,()=>libFailMsg('map','kartbiblioteket (Leaflet)'));
+
+// Diagram: kräver Chart.js
+whenReady(()=>typeof Chart!=='undefined',initCharts,()=>{
+  libFailMsg('chartTroops','diagrambiblioteket (Chart.js)');
+});
+</script>
+</body>
+</html>
