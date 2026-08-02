@@ -350,6 +350,9 @@
             color: var(--muted);
             border-top: 1px solid var(--border);
         }
+        footer .footer-credit {
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -358,7 +361,6 @@
     <div class="header-inner">
         <h1>Interaktiv <span>Historia</span></h1>
         <p>Gymnasiematerial · André Lundberg · andre-history.github.io</p>
-        <button class="why-ai-trigger" id="whyAiBtn">Varför AI?</button>
     </div>
 </header>
 
@@ -690,11 +692,27 @@
         </div>
 
         <!-- 10. Efterkrigstiden -->
-        <div class="category empty" data-empty="true">
+        <div class="category">
             <div class="cat-header">
                 <span class="cat-num">10</span>
                 <span class="cat-title">Efterkrigstiden</span>
-                <span class="cat-count">0 moduler</span>
+                <span class="cat-count">1 modul</span>
+                <span class="cat-arrow">▼</span>
+            </div>
+            <div class="module-list">
+
+                <!-- Kalla kriget -->
+                <div class="subgroup-label">
+                    Kalla kriget <span class="sg-era">1945–1991</span>
+                </div>
+                <div class="module-row">
+                    <div class="module-info">
+                        <div class="module-name">Vietnamkriget 1945–1975</div>
+                        <div class="module-desc">Mellan kalla krigets fronter och nationell frigörelse — interaktiv tidslinje, karta, Barton-frågor och statistik</div>
+                    </div>
+                    <a href="vietnamkriget.html" class="module-link">Öppna</a>
+                </div>
+
             </div>
         </div>
 
@@ -751,7 +769,8 @@
 </main>
 
 <footer>
-    © 2026 André Lundberg · Gymnasielärare · Skapad med claude.ai
+    <button class="why-ai-trigger" id="whyAiBtn">Varför AI?</button>
+    <div class="footer-credit">© 2026 André Lundberg · Gymnasielärare · Skapad med claude.ai</div>
 </footer>
 
 <script>
