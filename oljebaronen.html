@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oljebaronen</title>
+<style>
+  :root{
+    /* Palett: råolja och gammalt pengavälde */
+    --crude:#0d1510;        /* nästan svart grönton, bakgrund */
+    --crude-2:#131f18;      /* panelbakgrund */
+    --crude-3:#1b2b21;      /* upphöjd panel */
+    --oil:#0a0f0c;          /* djupaste svart */
+    --brass:#c9a24b;        /* mässingsguld, accent */
+    --brass-dim:#8a7233;    /* dämpad mässing */
+    --parchment:#e8e0cc;    /* pergament, brödtext */
+    --parchment-dim:#a9a189;/* dämpad text */
+    --rust:#a8432a;         /* rost/rött, fara */
+    --rust-bright:#d0512f;
+    --moss:#5f7d54;         /* grön, positivt/lugn */
+    --steel:#5b7286;        /* stål, konkurrens */
+    --line:#2e4133;         /* hårlinjer */
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html,body{background:var(--crude);color:var(--parchment)}
+
+  body{
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    line-height:1.5;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:24px 16px 64px;
+    background-image:
+      radial-gradient(120% 90% at 50% -10%, rgba(201,162,75,0.06), transparent 60%),
+      repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,0.10) 3px 4px);
+  }
+
+  .frame{
+    width:100%;
+    max-width:820px;
+    position:relative;
+  }
+
+  /* Dekorativ mässingsram */
+  .stage{
+    border:2px solid var(--brass-dim);
+    background:linear-gradient(180deg,var(--crude-2),var(--crude));
+    box-shadow:0 0 0 1px rgba(0,0,0,0.6), 0 24px 60px rgba(0,0,0,0.55), inset 0 0 80px rgba(0,0,0,0.4);
+    position:relative;
+    overflow:hidden;
+  }
+  .stage::before{
+    content:"";
+    position:absolute;inset:6px;
+    border:1px solid var(--line);
+    pointer-events:none;
+    z-index:3;
+  }
+  /* Vinjettering + filmkorn: subtil sekelskiftesatmosfär */
+  .stage::after{
+    content:"";
+    position:absolute;inset:0;
+    pointer-events:none;
+    z-index:2;
+    /* vinjett: mörkare i hörnen, klar i mitten */
+    background:radial-gradient(120% 100% at 50% 45%, transparent 55%, rgba(0,0,0,0.28) 100%);
+    /* filmkorn: mycket diskret brus ovanpå */
+    background-blend-mode:multiply;
+  }
+  .grain{
+    position:absolute;inset:0;pointer-events:none;z-index:2;
+    opacity:0.04;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* HUD och innehåll måste ligga ovanför atmosfärslagren */
+  .hud, .content{position:relative;z-index:4}
+
+  .display-font{
+    font-family:"Playfair Display","Iowan Old Style",Georgia,serif;
+  }
+
+  /* ---------- Toppanel med mätare ---------- */
+  .hud{
+    border-bottom:1px solid var(--line);
+    padding:14px 22px 16px;
+    background:linear-gradient(180deg, rgba(0,0,0,0.35), transparent);
+    position:sticky;top:0;z-index:5;
+    backdrop-filter:blur(2px);
+    display:none;
+  }
+  .hud.active{display:block}
+  @media(max-width:560px){
+    .hud{position:static;backdrop-filter:none}
+  }
+
+  .hud-top{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-bottom:12px;gap:12px;flex-wrap:wrap;
+  }
+  .hud-title{
+    font-size:0.78rem;letter-spacing:0.28em;text-transform:uppercase;
+    color:var(--brass);font-weight:700;
+  }
+  .year-badge{
+    font-size:0.78rem;letter-spacing:0.15em;color:var(--parchment-dim);
+    border:1px solid var(--line);padding:3px 10px;
+  }
+  .year-badge b{color:var(--parchment)}
+
+  .meters{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+  }
+  @media(max-width:560px){.meters{grid-template-columns:1fr}}
+
+  .meter{
+    background:var(--oil);
+    border:1px solid var(--line);
+    padding:9px 11px 11px;
+    position:relative;
+  }
+  .meter-head{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:7px;
+  }
+  .meter-name{
+    font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--parchment-dim);
+    display:flex;align-items:center;gap:6px;
+  }
+  .meter-icon{font-size:0.95rem;filter:grayscale(0.2)}
+  .meter-val{font-size:0.72rem;color:var(--parchment-dim);font-variant-numeric:tabular-nums}
+
+  .bar{
+    height:10px;background:rgba(255,255,255,0.04);
+    border:1px solid rgba(0,0,0,0.5);position:relative;overflow:hidden;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,0.6);
+    /* skalstreck som på ett mässingsinstrument */
+    background-image:repeating-linear-gradient(90deg,
+      transparent 0, transparent 9%,
+      rgba(0,0,0,0.18) 9%, rgba(0,0,0,0.18) calc(9% + 1px));
+  }
+  .bar-fill{
+    position:absolute;top:0;left:0;bottom:0;width:0%;
+    transition:width 0.7s cubic-bezier(.2,.7,.2,1), background 0.4s;
+  }
+  /* glans ovanpå stapelfyllnaden */
+  .bar-fill::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0) 55%);
+    pointer-events:none;
+  }
+  .m-wealth .bar-fill{background:linear-gradient(90deg,var(--brass-dim),var(--brass))}
+  .m-rival  .bar-fill{background:linear-gradient(90deg,#3c4f5e,var(--steel))}
+
+  /* Ordbaserad vredestermometer — medvetet utan exakt siffra */
+  .mood{
+    font-size:0.94rem;line-height:1.25;color:var(--parchment);
+    font-style:italic;
+    min-height:2.3em;display:flex;align-items:center;
+    padding:1px 2px;
+    transition:color 0.5s;
+  }
+  .mood::before{
+    content:"“";color:var(--brass-dim);font-style:normal;
+    margin-right:1px;font-size:1.1em;line-height:0;
+  }
+  .mood::after{
+    content:"”";color:var(--brass-dim);font-style:normal;
+    margin-left:1px;font-size:1.1em;line-height:0;
+  }
+  .mood.lvl-3{color:#d9b78a}
+  .mood.lvl-4{color:#d99a6a}
+  .mood.lvl-5{color:var(--rust-bright);font-weight:600}
+  .mood.shift{animation:moodShift 0.6s ease-out}
+  @keyframes moodShift{
+    0%{opacity:0.3;transform:translateX(-3px)}
+    100%{opacity:1;transform:translateX(0)}
+  }
+
+  /* pulsvarning när fara-mätare är hög */
+  .bar-fill.warn{animation:pulse 1.1s ease-in-out infinite}
+  @keyframes pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.5)}}
+
+  .meter-flash{
+    position:absolute;inset:0;background:var(--parchment);
+    opacity:0;pointer-events:none;
+  }
+  .meter-flash.go{animation:flash 0.55s ease-out}
+  @keyframes flash{0%{opacity:0.5}100%{opacity:0}}
+
+  /* ---------- Innehållsyta ---------- */
+  .content{padding:30px 30px 34px}
+  @media(max-width:560px){.content{padding:22px 18px 26px}}
+
+  /* ---------- Splash ---------- */
+  .splash{text-align:center;padding:26px 8px 8px}
+  .splash .eyebrow{
+    font-size:0.74rem;letter-spacing:0.34em;text-transform:uppercase;
+    color:var(--brass);margin-bottom:20px;
+  }
+  .splash h1{
+    font-size:clamp(2.8rem,9vw,4.6rem);line-height:0.95;font-weight:800;
+    color:var(--parchment);letter-spacing:0.01em;margin-bottom:6px;
+    text-shadow:0 2px 0 rgba(0,0,0,0.5);
+  }
+  .splash .rule{
+    width:64px;height:2px;background:var(--brass);margin:20px auto 24px;
+    position:relative;
+  }
+  .splash .rule::before,.splash .rule::after{
+    content:"";position:absolute;top:50%;width:5px;height:5px;
+    background:var(--brass);transform:translateY(-50%) rotate(45deg);
+  }
+  .splash .rule::before{left:-12px}
+  .splash .rule::after{right:-12px}
+
+  .splash p{
+    max-width:56ch;margin:0 auto 16px;color:var(--parchment);
+    font-size:1.06rem;
+  }
+  .splash .flourish{color:var(--brass);font-style:italic;font-size:1.06rem;margin-top:4px}
+
+  .meter-legend{
+    display:flex;flex-direction:column;gap:8px;
+    max-width:44ch;margin:26px auto 30px;text-align:left;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:18px 4px;
+  }
+  .legend-row{display:flex;gap:12px;align-items:flex-start;font-size:0.95rem}
+  .legend-row .ic{font-size:1.15rem;line-height:1.3;width:1.4em;text-align:center;flex-shrink:0}
+  .legend-row .lg-name{color:var(--parchment);font-weight:700}
+  .legend-row .lg-desc{color:var(--parchment-dim);font-size:0.9rem}
+
+  /* ---------- Knappar ---------- */
+  .btn{
+    font-family:inherit;cursor:pointer;
+    background:var(--crude-3);
+    color:var(--parchment);
+    border:1px solid var(--brass-dim);
+    padding:15px 20px;
+    font-size:1rem;text-align:left;width:100%;
+    transition:transform 0.12s, border-color 0.2s, background 0.2s;
+    position:relative;
+    display:block;
+  }
+  .btn:hover{background:#22362a;border-color:var(--brass);transform:translateY(-1px)}
+  .btn:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+  .btn:active{transform:translateY(0)}
+
+  .btn-primary{
+    background:var(--brass);color:var(--oil);border-color:var(--brass);
+    font-weight:700;letter-spacing:0.14em;text-transform:uppercase;
+    text-align:center;font-size:0.92rem;padding:16px;
+    width:auto;min-width:220px;margin:0 auto;
+  }
+  .btn-primary:hover{background:#dcb85e;color:var(--oil)}
+
+  .btn-ghost{
+    background:transparent;color:var(--parchment-dim);
+    border:1px solid var(--line);
+    font-weight:600;letter-spacing:0.1em;text-transform:uppercase;
+    text-align:center;font-size:0.82rem;padding:16px;
+    width:auto;min-width:160px;
+  }
+  .btn-ghost:hover{background:rgba(255,255,255,0.03);border-color:var(--brass-dim);color:var(--parchment)}
+
+  .center{text-align:center}
+
+  /* ---------- Del 2: analys ---------- */
+  .analysis{max-width:640px;margin:0 auto}
+  .a-eyebrow{
+    font-size:0.7rem;letter-spacing:0.24em;text-transform:uppercase;
+    color:var(--brass);margin-bottom:14px;text-align:center;
+  }
+  .a-question{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:1.5rem;line-height:1.25;color:var(--parchment);
+    text-align:center;margin-bottom:24px;font-weight:700;
+  }
+
+  /* Flervalsfrågor */
+  .quiz-opts{display:flex;flex-direction:column;gap:11px}
+  .quiz-opt{
+    font-family:inherit;cursor:pointer;text-align:left;
+    background:var(--crude-3);color:var(--parchment);
+    border:1px solid var(--line);
+    padding:14px 16px;font-size:1rem;
+    display:flex;gap:12px;align-items:flex-start;
+    transition:border-color 0.2s, background 0.2s, transform 0.12s;
+  }
+  .quiz-opt:hover:not(:disabled){border-color:var(--brass);background:#22362a;transform:translateY(-1px)}
+  .quiz-opt:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+  .quiz-tag{
+    font-family:"Playfair Display",Georgia,serif;font-weight:800;
+    color:var(--brass);font-size:1.05rem;flex-shrink:0;line-height:1.35;
+  }
+  .quiz-otext{flex:1}
+  .quiz-opt.correct{
+    border-color:var(--moss);background:rgba(95,125,84,0.18);
+  }
+  .quiz-opt.correct .quiz-tag{color:var(--moss)}
+  .quiz-opt.wrong{
+    border-color:var(--rust);background:rgba(168,67,42,0.14);
+    animation:shake 0.35s ease;
+  }
+  .quiz-opt.wrong .quiz-tag{color:var(--rust-bright)}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+  .quiz-fb{
+    max-height:0;overflow:hidden;opacity:0;
+    transition:max-height 0.35s ease, opacity 0.35s ease, margin 0.35s ease;
+    font-size:0.98rem;line-height:1.5;
+    border-left:3px solid var(--line);
+    padding-left:0;margin-top:0;
+  }
+  .quiz-fb.show{
+    max-height:260px;opacity:1;margin-top:16px;
+    padding:12px 0 12px 15px;
+  }
+  .quiz-fb.ok{border-left-color:var(--moss);color:var(--parchment)}
+  .quiz-fb.no{border-left-color:var(--rust);color:var(--parchment)}
+
+  /* Jämförelsemaskin */
+  .cmp-theme{margin-bottom:20px}
+  .cmp-grid{
+    display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:stretch;
+  }
+  @media(max-width:560px){
+    .cmp-grid{grid-template-columns:1fr;gap:12px}
+    .cmp-vs{transform:rotate(90deg)}
+  }
+  .cmp-col{
+    background:var(--crude-2);border:1px solid var(--line);
+    padding:18px 18px 20px;position:relative;
+  }
+  .cmp-old{border-top:3px solid var(--brass-dim)}
+  .cmp-now{border-top:3px solid var(--steel)}
+  .cmp-era{
+    font-size:0.66rem;letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--parchment-dim);margin-bottom:10px;
+  }
+  .cmp-title{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:1.3rem;font-weight:800;margin-bottom:10px;
+  }
+  .cmp-old .cmp-title{color:var(--brass)}
+  .cmp-now .cmp-title{color:var(--steel)}
+  .cmp-body{font-size:0.98rem;line-height:1.5;color:var(--parchment)}
+  .cmp-vs{
+    display:flex;align-items:center;justify-content:center;
+    color:var(--brass-dim);font-size:1.6rem;
+  }
+  .cmp-dots{display:flex;gap:8px;justify-content:center;margin-top:20px}
+  .cmp-dot{
+    width:8px;height:8px;border:1px solid var(--brass-dim);
+    border-radius:50%;transition:background 0.3s;
+  }
+  .cmp-dot.active{background:var(--brass);border-color:var(--brass)}
+  .cmp-dot.done{background:var(--brass-dim)}
+
+  /* Avslutning del 2 */
+  .finish-title{
+    font-size:clamp(2.2rem,7vw,3.2rem);font-weight:800;
+    color:var(--brass);margin-bottom:20px;line-height:1;
+  }
+  .finish-body{max-width:56ch;margin:0 auto;text-align:left}
+  .finish-body p{margin-bottom:14px;font-size:1.05rem}
+
+  /* ---------- Beslutsvy ---------- */
+  .decision{}
+  .d-head{
+    display:flex;align-items:baseline;gap:14px;margin-bottom:16px;
+    border-bottom:1px solid var(--line);padding-bottom:12px;
+  }
+  .d-num{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:2.4rem;line-height:1;color:var(--brass-dim);font-weight:800;
+    flex-shrink:0;
+  }
+  .d-title{
+    font-size:1.5rem;font-weight:700;color:var(--parchment);line-height:1.15;
+  }
+  .d-eyebrow{
+    font-size:0.68rem;letter-spacing:0.28em;text-transform:uppercase;
+    color:var(--brass);margin-bottom:4px;
+  }
+
+  .info-box{
+    background:var(--crude-2);
+    border-left:3px solid var(--brass-dim);
+    padding:15px 17px;margin-bottom:14px;
+    font-size:1.02rem;
+  }
+  /* Anfang: stor inledande bokstav ger litterär sekelskifteskänsla */
+  .info-box::first-letter{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:2.9rem;
+    line-height:0.78;
+    float:left;
+    margin:4px 8px 0 0;
+    color:var(--brass);
+    font-weight:800;
+  }
+
+  .expand-btn{
+    background:none;border:none;color:var(--brass);cursor:pointer;
+    font-family:inherit;font-size:0.86rem;letter-spacing:0.04em;
+    padding:6px 0 2px;display:inline-flex;align-items:center;gap:7px;
+    border-bottom:1px dotted var(--brass-dim);
+  }
+  .expand-btn:hover{color:#dcb85e}
+  .expand-btn .chev{transition:transform 0.25s;display:inline-block}
+  .expand-btn.open .chev{transform:rotate(90deg)}
+
+  .risk-box{
+    max-height:0;overflow:hidden;
+    transition:max-height 0.35s ease;
+    background:rgba(168,67,42,0.07);
+    border-left:3px solid var(--rust);
+    margin-top:0;
+  }
+  .risk-box.open{max-height:320px;margin-top:12px}
+  .risk-inner{padding:14px 17px;font-size:0.96rem;color:var(--parchment)}
+  .risk-inner strong{color:var(--rust-bright)}
+
+  .choices{display:flex;flex-direction:column;gap:11px;margin-top:20px}
+
+  .choice-label{
+    display:flex;gap:12px;align-items:flex-start;
+  }
+  .choice-tag{
+    font-family:"Playfair Display",Georgia,serif;font-weight:800;
+    color:var(--brass);font-size:1.15rem;flex-shrink:0;line-height:1.3;
+  }
+  .choice-text{flex:1}
+  .choice-eff{
+    display:flex;gap:12px;margin-top:7px;font-size:0.82rem;flex-wrap:wrap;
+  }
+  .eff{display:inline-flex;align-items:center;gap:4px;color:var(--parchment-dim)}
+  .eff .up{color:var(--brass)}
+  .eff .up-bad{color:var(--rust-bright)}
+  .eff .up-rival{color:var(--steel)}
+  .eff .down{color:var(--moss)}
+
+  .glossary{
+    margin-top:16px;padding-top:12px;border-top:1px dotted var(--line);
+    font-size:0.85rem;color:var(--parchment-dim);
+  }
+  .glossary p{margin-bottom:5px}
+  .glossary .term{color:var(--brass);font-style:italic}
+
+  /* ---------- Utfall efter val (slumphändelse) ---------- */
+  .outcome{
+    background:var(--crude-3);
+    border:1px solid var(--brass-dim);
+    padding:18px 20px;margin-top:4px;
+    animation:rise 0.4s ease-out;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .outcome .oc-eyebrow{
+    font-size:0.68rem;letter-spacing:0.24em;text-transform:uppercase;
+    color:var(--brass);margin-bottom:8px;
+  }
+  .outcome.event .oc-eyebrow{color:var(--steel)}
+  .outcome p{font-size:1.02rem;margin-bottom:6px}
+  .outcome .deltas{
+    display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;
+    font-size:0.85rem;color:var(--parchment-dim);
+  }
+
+  /* ---------- Sluttavla ---------- */
+  .ending{
+    text-align:center;padding:28px 18px 8px;
+    margin:-30px -30px 0;
+    position:relative;
+    transition:background 0.8s ease;
+  }
+  /* svag färgatmosfär bakom respektive slut */
+  .ending.end-bust{background:radial-gradient(120% 80% at 50% 0%, rgba(168,67,42,0.16), transparent 60%)}
+  .ending.end-war{background:radial-gradient(120% 80% at 50% 0%, rgba(91,114,134,0.18), transparent 60%)}
+  .ending.end-win{background:radial-gradient(120% 80% at 50% 0%, rgba(201,162,75,0.15), transparent 60%)}
+  @media(max-width:560px){.ending{margin:-22px -18px 0;padding:22px 12px 8px}}
+  .blamo{
+    font-family:"Playfair Display",Georgia,serif;
+    font-size:clamp(3rem,12vw,5.5rem);font-weight:800;line-height:0.9;
+    letter-spacing:0.02em;margin:10px 0 6px;
+    animation:slam 0.5s cubic-bezier(.2,.9,.3,1.3);
+  }
+  .blamo.bust{color:var(--rust-bright);text-shadow:0 3px 0 rgba(0,0,0,0.4)}
+  .blamo.war{color:var(--steel);text-shadow:0 3px 0 rgba(0,0,0,0.4)}
+  .blamo.win{color:var(--brass);text-shadow:0 3px 0 rgba(0,0,0,0.4)}
+  @keyframes slam{0%{transform:scale(1.6);opacity:0}60%{transform:scale(0.94)}100%{transform:scale(1);opacity:1}}
+
+  .end-sub{
+    font-size:1.35rem;color:var(--parchment);font-weight:700;
+    margin-bottom:20px;
+  }
+  .end-body{max-width:56ch;margin:0 auto}
+  .end-body p{margin-bottom:14px;font-size:1.05rem;text-align:left}
+
+  /* Val-tidslinje */
+  .timeline{
+    margin:26px auto 24px;max-width:60ch;text-align:left;
+    border-top:1px solid var(--line);padding-top:20px;
+  }
+  .timeline-title{
+    font-size:0.72rem;letter-spacing:0.24em;text-transform:uppercase;
+    color:var(--brass);margin-bottom:16px;text-align:center;
+  }
+  .tl-item{
+    display:flex;gap:14px;padding:9px 0;
+    border-bottom:1px dotted var(--line);
+  }
+  .tl-year{
+    font-family:"Playfair Display",Georgia,serif;color:var(--brass-dim);
+    font-weight:700;font-size:0.95rem;width:3.4em;flex-shrink:0;
+    font-variant-numeric:tabular-nums;
+  }
+  .tl-choice{flex:1;font-size:0.95rem}
+  .tl-choice .tl-what{color:var(--parchment)}
+  .tl-choice .tl-tone{font-size:0.8rem;color:var(--parchment-dim);margin-top:2px}
+
+  .final-glossary{
+    max-width:56ch;margin:0 auto 24px;font-size:0.85rem;
+    color:var(--parchment-dim);text-align:left;
+    background:var(--crude-2);border-left:3px solid var(--brass-dim);
+    padding:14px 16px;
+  }
+  .final-glossary .term{color:var(--brass);font-style:italic}
+
+  .final-stats{
+    display:flex;justify-content:center;gap:26px;flex-wrap:wrap;
+    margin:8px auto 26px;
+  }
+  .fstat{text-align:center}
+  .fstat .fs-num{
+    font-family:"Playfair Display",Georgia,serif;font-size:2rem;
+    font-weight:800;color:var(--brass);line-height:1;
+  }
+  .fstat .fs-lbl{
+    font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;
+    color:var(--parchment-dim);margin-top:5px;
+  }
+
+  .fade-in{animation:fadeIn 0.5s ease-out}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .fade-out{animation:fadeOut 0.32s ease-in forwards}
+  @keyframes fadeOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-6px)}}
+
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="stage">
+    <div class="grain"></div>
+
+    <!-- HUD -->
+    <div class="hud" id="hud">
+      <div class="hud-top">
+        <div class="hud-title">Oljebaronen</div>
+        <div class="year-badge">Å R &nbsp; <b id="year">1865</b></div>
+      </div>
+      <div class="meters">
+        <div class="meter m-wealth">
+          <div class="meter-head">
+            <span class="meter-name"><span class="meter-icon">💰</span>Förmögenhet</span>
+            <span class="meter-val" id="val-wealth">0</span>
+          </div>
+          <div class="bar"><div class="bar-fill" id="fill-wealth"></div></div>
+          <div class="meter-flash" id="flash-wealth"></div>
+        </div>
+        <div class="meter m-anger">
+          <div class="meter-head">
+            <span class="meter-name"><span class="meter-icon">😠</span>Folkets vrede</span>
+          </div>
+          <div class="mood" id="mood-anger">Allmänheten är likgiltig</div>
+          <div class="meter-flash" id="flash-anger"></div>
+        </div>
+        <div class="meter m-rival">
+          <div class="meter-head">
+            <span class="meter-name"><span class="meter-icon">⚔️</span>Konkurrenternas kraft</span>
+            <span class="meter-val" id="val-rival">0</span>
+          </div>
+          <div class="bar"><div class="bar-fill" id="fill-rival"></div></div>
+          <div class="meter-flash" id="flash-rival"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content" id="content"><!-- fylls av JS --></div>
+
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   OLJEBARONEN — speldata och logik
+   ============================================================ */
+
+const START = { wealth:5, anger:8, rival:16 };
+const CAP = 100;            // tak för förmögenhet och konkurrens (har staplar)
+const DANGER_ANGER = 135;   // game over-tröskel för vrede (radikalisering kan driva högt)
+const DANGER_RIVAL = 100;   // game over-tröskel för konkurrens
+const ANGER_CAP = 150;      // vrede saknar stapel och tillåts gå över 100
+const RADICAL_STEP = 0.12;  // vreden trappas upp 12 % per tidigare hänsynslöst val
+
+/* Varje beslut: år, titel, info, fördjupning (risk), val.
+   Varje val: text, effekter {wealth,anger,rival}, en kort ton-etikett
+   till tidslinjen, samt ev. slumphändelse (event) som kan slå till
+   efter valet med viss chans. */
+
+const DECISIONS = [
+  {
+    year:1865, eyebrow:"Cleveland, Ohio", title:"Den första fördelen",
+    info:"Ditt raffinaderi ligger i Cleveland, en knutpunkt för järnvägar. Du inser att den som kontrollerar transporten kontrollerar hela branschen. Järnvägsbolagen tävlar om din last, och du kan pressa dem hårt.",
+    risk:"Att kräva hemliga rabatter gör dig oslagbar på kort sikt, men om det någonsin läcker ut att du betalar en bråkdel av vad andra betalar, kommer varenda liten oljeman i landet att se dig som en fuskare. <strong>Vreden byggs upp i det tysta.</strong>",
+    glossary:[["rebate","hemlig prisrabatt som bara du får, medan dina konkurrenter betalar fullt pris utan att veta om det."]],
+    choices:[
+      {tag:"A", text:"Kräv hemliga <em>rebates*</em> från järnvägen. Du betalar lägre fraktavgifter än alla andra.",
+       eff:{wealth:21,anger:18,rival:-8}, tone:"Hänsynslös",
+       event:{chance:0.5, type:"event", title:"Ryktet sprids",
+         text:"En järnvägstjänsteman skvallrade. Dina konkurrenter anar att du får specialpriser, och bitterheten växer fortare än du trodde.",
+         eff:{anger:6}}},
+      {tag:"B", text:"Förhandla fram ett vanligt rabattavtal. Blygsam fördel, ingen upprörs.",
+       eff:{wealth:8,anger:0,rival:4}, tone:"Måttfull"},
+      {tag:"C", text:"Betala samma pris som alla andra. Rättvist, men du växer långsamt.",
+       eff:{wealth:2,anger:-4,rival:13}, tone:"Återhållsam",
+       event:{chance:0.4, type:"event", title:"Rivalerna drar ifrån",
+         text:"Medan du spelar rättvist sluter två konkurrenter egna fraktavtal. De växer på din bekostnad.",
+         eff:{rival:6}}}
+    ]
+  },
+  {
+    year:1870, eyebrow:"Grannskapet", title:"Grannen till salu",
+    info:"Ett mindre raffinaderi i din stad kämpar ekonomiskt. Ägaren är villig att sälja, men bara om priset är rätt. Du kan svälja konkurrenten och växa.",
+    risk:"Att pressa ner en granne tills han tvingas sälja billigt är effektivt, men det skapar fiender som minns. Varje uppköpt bolag lämnar en förbittrad tidigare ägare som gärna berättar sin historia för journalister. <strong>Metoden bygger imperium och agg samtidigt.</strong>",
+    glossary:[],
+    choices:[
+      {tag:"A", text:"Tvinga fram en försäljning genom att pressa ner deras priser först. Du köper billigt när de är desperata.",
+       eff:{wealth:20,anger:12,rival:-16}, tone:"Hänsynslös"},
+      {tag:"B", text:"Köp bolaget till ett rimligt pris. Alla nöjda, men det kostar.",
+       eff:{wealth:-3,anger:-3,rival:-9}, tone:"Måttfull"}
+    ]
+  },
+  {
+    year:1873, eyebrow:"Finanskris", title:"Panik på marknaden",
+    info:"En finanspanik sveper över landet. Banker fallerar och kreditmarknaden fryser. Svaga bolag går under, men den som har kontanter kan göra fynd.",
+    risk:"Kriser är farliga men också en gåva för den som förberett sig. Om du sitter på kontanter medan andra svälter kan du köpa upp halva branschen till vrakpriser. Men att tjäna på andras olycka noteras av allmänheten. <strong>Den som förberett sig gör vinster, den som tvekar blir omkörd.</strong>",
+    glossary:[],
+    choices:[
+      {tag:"A", text:"Utnyttja krisen och köp upp fallerande rivaler billigt.",
+       eff:{wealth:22,anger:11,rival:-18}, tone:"Hänsynslös",
+       event:{chance:0.55, type:"event", title:"Paniken 1873 fördjupas",
+         text:"Krisen slog hårdare än väntat. Flera rivaler gick i konkurs innan de ens hann förhandla, och deras kunder vände sig till dig.",
+         eff:{wealth:8, rival:-6}}},
+      {tag:"B", text:"Håll dig försiktig och skydda det du har.",
+       eff:{wealth:1,anger:-2,rival:13}, tone:"Återhållsam"}
+    ]
+  },
+  {
+    year:1882, eyebrow:"Juridisk uppfinning", title:"Trusten föds",
+    info:"Dina jurister föreslår en helt ny konstruktion. Genom att samla alla dina bolag under en enda hemlig styrelse kan du kringgå delstatslagarna som förbjuder företag att äga varandra över gränserna.",
+    risk:"Trusten ger dig makt över en hel bransch utan att det syns utåt. Men hemligheten är det som skrämmer folk mest, en osynlig hand som styr priser i tjugo delstater. Om detta blir känt blir du ansiktet utåt för allt folk hatar med storföretagen. <strong>Detta är greppet som gav namn åt hela antitrust-lagstiftningen.</strong>",
+    glossary:[["trust","en juridisk konstruktion där många företag i hemlighet styrs av samma lilla grupp, så att de utåt ser fristående ut men i själva verket agerar som ett enda jättebolag."]],
+    choices:[
+      {tag:"A", text:"Bilda en <em>trust*</em> och centralisera all makt hos dig.",
+       eff:{wealth:23,anger:20,rival:-17}, tone:"Hänsynslös"},
+      {tag:"B", text:"Behåll den lösare, lagliga strukturen. Mindre makt, mindre risk.",
+       eff:{wealth:6,anger:0,rival:5}, tone:"Måttfull"}
+    ]
+  },
+  {
+    year:1885, eyebrow:"En envis rival", title:"Priskriget",
+    info:"En envis konkurrent vägrar sälja och tar marknadsandelar i en hel region. Du kan krossa honom, men det kräver hårda metoder.",
+    risk:"Att sälja med förlust bara för att svälta ut en rival är den mest hänsynslösa manövern i din verktygslåda. Den fungerar nästan alltid, eftersom du har råd att förlora pengar längre än han. Men när folk förstår vad du gjort, att du sänkte priset just för att förgöra en människa, blir avskyn stark. <strong>Effektivt och avslöjande på samma gång.</strong>",
+    glossary:[["under självkostnad","att sälja billigare än vad varan kostar att tillverka, med flit, för att din rival ska gå i konkurs. Du tar förlusten tillfälligt eftersom du har råd och det har inte han."]],
+    choices:[
+      {tag:"A", text:"Sänk priserna <em>under självkostnad*</em> i hans region tills han går under.",
+       eff:{wealth:-5,anger:21,rival:-18}, tone:"Hänsynslös"},
+      {tag:"B", text:"Konkurrera med bättre effektivitet och lägre kostnader. Långsammare men rent.",
+       eff:{wealth:9,anger:-4,rival:-9}, tone:"Måttfull"},
+      {tag:"C", text:"Lämna honom ifred och fokusera på egen tillväxt.",
+       eff:{wealth:3,anger:-5,rival:18}, tone:"Återhållsam",
+       event:{chance:0.45, type:"event", title:"Rivalen växer sig stark",
+         text:"Din obesegrade konkurrent använder regionen som språngbräda och lockar investerare. Hans kraft stiger snabbt.",
+         eff:{rival:7}}}
+    ]
+  },
+  {
+    year:1888, eyebrow:"Ett erbjudande", title:"Politikern knackar på",
+    info:"En delstatspolitiker erbjuder sig att blockera lagförslag som skulle skada dig, i utbyte mot ekonomiskt stöd till hans kampanj.",
+    risk:"Att köpa politiskt inflytande kan skydda dig från lagstiftning en tid. Men korruption är den gnista som kan förvandla vanligt missnöje till ren vrede, om den avslöjas. Du köper en sköld som kan bli en bomb. <strong>Makten över politiken är också en risk i sig.</strong>",
+    glossary:[],
+    choices:[
+      {tag:"A", text:"Finansiera honom generöst och köp politiskt inflytande.",
+       eff:{wealth:-4,anger:13,rival:0}, tone:"Hänsynslös", protect:true,
+       event:{chance:0.4, type:"event", title:"Mutan läcker",
+         text:"En reporter fick nys om betalningen. Bilden av dig som en man som köper lagar sprider sig.",
+         eff:{anger:8}}},
+      {tag:"B", text:"Håll dig borta från politiken. Rent samvete, men ingen sköld.",
+       eff:{wealth:-1,anger:-4,rival:0}, tone:"Återhållsam"}
+    ]
+  },
+  {
+    year:1894, eyebrow:"Pressen vaknar", title:"Journalisten gräver",
+    info:"En grävande journalist förbereder en artikelserie om dina affärsmetoder. Den kan blotta allt för allmänheten.",
+    risk:"En skicklig journalist kan göra mer skada än någon konkurrent. Att försöka tysta pressen är frestande men livsfarligt, för om det uppdagas att du tystade sanningen fördubblas vreden. Att i stället möta kritiken och ändra dig kostar makt men släcker bränder. <strong>Här avgörs hur historien kommer minnas dig.</strong>",
+    glossary:[],
+    choices:[
+      {tag:"A", text:"Försök tysta henne genom påtryckningar mot tidningen.",
+       eff:{wealth:-2,anger:15,rival:0}, tone:"Hänsynslös",
+       event:{chance:0.5, type:"event", title:"Tystandet slår tillbaka",
+         text:"Försöket att kväva artikeln blev i sig en nyhet. Nu skriver alla tidningar om oljebaronen som fruktar sanningen.",
+         eff:{anger:9}}},
+      {tag:"B", text:"Låt henne skriva och rid ut stormen.",
+       eff:{wealth:0,anger:8,rival:0}, tone:"Måttfull"},
+      {tag:"C", text:"Möt kritiken offentligt och justera dina värsta metoder.",
+       eff:{wealth:-6,anger:-14,rival:15}, tone:"Återhållsam"}
+    ]
+  },
+  {
+    year:1899, eyebrow:"Hela kedjan", title:"Vertikal expansion",
+    info:"Du kan ta kontroll över hela kedjan, från oljekällor och rörledningar till fat och försäljning, så att ingen konkurrent kan klara sig utan dig.",
+    risk:"Att äga varje länk i kedjan gör dig praktiskt taget omöjlig att konkurrera mot, ingen kan borra, frakta eller sälja utan att gå genom dig. Men total kontroll är också total synlighet. När du äger allt kan ingen längre låtsas att marknaden är fri. <strong>Detta grepp gav Standard Oil kontroll över nästan all raffinering i landet.</strong>",
+    glossary:[["hela kedjan","att äga varje steg i produktionen själv, från råvaran i marken till den färdiga produkten i kundens hand, så att konkurrenter inte kan köpa in sig någonstans. Detta kallas vertikal integration."]],
+    choices:[
+      {tag:"A", text:"Lägg beslag på <em>hela kedjan*</em>. Total kontroll.",
+       eff:{wealth:22,anger:17,rival:-19}, tone:"Hänsynslös"},
+      {tag:"B", text:"Kontrollera bara raffineringen. Mindre grepp, mindre uppmärksamhet.",
+       eff:{wealth:8,anger:0,rival:-7}, tone:"Måttfull"}
+    ]
+  },
+  {
+    year:1903, eyebrow:"Trycket underifrån", title:"Folkrörelsen växer",
+    info:"Missnöjda farmare, småföretagare och arbetare organiserar sig och kräver att kongressen ska agera mot trusterna. Trycket underifrån ökar.",
+    risk:"En folkrörelse är inte som en enskild rival, den går inte att köpa upp eller svälta ut. När farmare, arbetare och småföretagare drar åt samma håll kan de tvinga fram lagar som inget kapital kan stoppa. Att ignorera dem är att spela med elden. <strong>Det var detta tryck som till slut bar fram Sherman Act.</strong>",
+    glossary:[],
+    choices:[
+      {tag:"A", text:"Ignorera dem och fortsätt som vanligt.",
+       eff:{wealth:7,anger:20,rival:-6}, tone:"Hänsynslös"},
+      {tag:"B", text:"Gör symboliska eftergifter för att lugna opinionen.",
+       eff:{wealth:-5,anger:-12,rival:13}, tone:"Återhållsam"}
+    ]
+  },
+  {
+    year:1908, eyebrow:"Toppen", title:"Det sista greppet",
+    info:"Du står på toppen. Ett sista drag kan cementera din dominans för alltid, men du är redan under lupp. Hur långt vågar du gå?",
+    risk:"Detta är ditt sista val, och du är redan bevakad av regering, press och folk. Att gripa efter total monopolmakt nu kan vara droppen som får bägaren att rinna över. Men att frivilligt börja dela upp dig, innan staten gör det åt dig, är något ingen verklig baron mäktade med. <strong>Historien står och väger.</strong>",
+    glossary:[],
+    choices:[
+      {tag:"A", text:"Krossa de sista oberoende bolagen och nå total monopolställning.",
+       eff:{wealth:24,anger:22,rival:-20}, tone:"Hänsynslös"},
+      {tag:"B", text:"Nöj dig med din nuvarande dominans och konsolidera.",
+       eff:{wealth:7,anger:0,rival:-4}, tone:"Måttfull"},
+      {tag:"C", text:"Börja dela upp riskerna själv, innan staten gör det åt dig.",
+       eff:{wealth:-8,anger:-16,rival:16}, tone:"Återhållsam"}
+    ]
+  }
+];
+
+/* ---------- Speltillstånd ---------- */
+let state = { wealth:START.wealth, anger:START.anger, rival:START.rival };
+let step = 0;
+let history = [];   // {year, what, tone}
+let ended = false;
+let hardCount = 0;  // antal hänsynslösa val hittills — driver radikaliseringen
+let lastEnding = null;  // vilket slut eleven fick — styr bryggfrågan i del 2
+
+/* Skattat vredesvärde som ENDAST styr den visade termometern.
+   Det släpar efter det verkliga state.anger och har ett brus-påslag.
+   Det verkliga state.anger är det som avgör game over — detta rör
+   aldrig spelmekaniken, bara vad eleven ser. */
+let angerShown = START.anger;   // vad termometern "tror" just nu
+let lastMoodLevel = 0;
+
+/* Stämningslägen kopplade till dolt vredesvärde. */
+const MOODS = [
+  { max:15,  level:1, text:"Allmänheten är likgiltig" },
+  { max:35,  level:2, text:"Oro pyr i pressen" },
+  { max:55,  level:3, text:"Muller på landsbygden" },
+  { max:75,  level:4, text:"Tidningarna kräver svar" },
+  { max:90,  level:5, text:"Öppen vrede sprider sig" },
+  { max:Infinity, level:5, text:"Uppror. Kongressen kan inte blunda längre" }
+];
+
+function moodFor(value){
+  for(const m of MOODS){ if(value <= m.max) return m; }
+  return MOODS[MOODS.length-1];
+}
+
+/* Uppdaterar det skattade värdet: rör sig bara en bit mot det verkliga
+   (eftersläpning) och får ett litet slumpmässigt påslag/avdrag (brus). */
+function updateAngerEstimate(){
+  // eftersläpning: skattningen tar sig ~60 % av vägen mot verkligt värde
+  const lag = 0.6;
+  angerShown = angerShown + (state.anger - angerShown) * lag;
+  // brus: ±6 enheter, men skattningen underskattar oftare än överskattar
+  const noise = (Math.random() * 12) - 7; // -7 till +5, snittet svagt negativt
+  let display = angerShown + noise;
+  display = Math.max(0, Math.min(CAP, display));
+  return display;
+}
+
+/* ---------- DOM-hjälp ---------- */
+const $ = id => document.getElementById(id);
+const content = $('content');
+
+function clamp(v){ return Math.max(0, Math.min(CAP, v)); }
+
+function renderMeters(flashKey){
+  $('val-wealth').textContent = Math.round(state.wealth);
+  $('val-rival').textContent  = Math.round(state.rival);
+  $('fill-wealth').style.width = state.wealth + '%';
+  $('fill-rival').style.width  = state.rival + '%';
+  $('fill-rival').classList.toggle('warn', state.rival >= 72);
+
+  // Vredestermometern: ordbaserad, fördröjd och brusig
+  const displayVal = updateAngerEstimate();
+  const mood = moodFor(displayVal);
+  const moodEl = $('mood-anger');
+  if(moodEl){
+    moodEl.textContent = mood.text;
+    moodEl.className = 'mood lvl-' + mood.level;
+    if(mood.level !== lastMoodLevel){
+      void moodEl.offsetWidth;
+      moodEl.classList.add('shift');
+      lastMoodLevel = mood.level;
+    }
+  }
+
+  if(flashKey && flashKey !== 'anger'){
+    const f = $('flash-'+flashKey);
+    if(f){ f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
+  } else if(flashKey === 'anger'){
+    const f = $('flash-anger');
+    if(f){ f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
+  }
+}
+
+function setYear(y){ $('year').textContent = y; }
+
+/* ---------- Splash ---------- */
+function renderSplash(){
+  $('hud').classList.remove('active');
+  content.innerHTML = `
+    <div class="splash fade-in">
+      <div class="eyebrow">Ett spel om makt, olja och demokrati</div>
+      <h1 class="display-font">Oljebaronen</h1>
+      <div class="rule"></div>
+      <p>Året är 1865. Inbördeskriget är slut och Amerika står inför en industriell explosion. Du är en ung affärsman i Pennsylvania med ett litet oljeraffinaderi och en omättlig ambition. Ditt mål: bygg det mäktigaste oljeimperiet landet någonsin skådat.</p>
+      <p>Men varje beslut har ett pris. Ju hårdare du pressar konkurrenter, arbetare och politiker för att bygga din makt, desto mer växer folkets vrede. Ju mjukare du spelar, desto starkare blir dina rivaler. Kan du bygga ett imperium utan att det rasar samman, antingen genom statens ingripande eller genom ruinerande priskrig?</p>
+      <div class="meter-legend">
+        <div class="legend-row"><span class="ic">💰</span><span><span class="lg-name">Förmögenhet.</span> <span class="lg-desc">Din poäng. Hög är bra, men jagar du den blint faller du.</span></span></div>
+        <div class="legend-row"><span class="ic">😠</span><span><span class="lg-name">Folkets vrede.</span> <span class="lg-desc">Svår att mäta exakt, du får bara rykten och stämningar. Kokar den över ingriper staten och styckar ditt imperium, ibland utan förvarning.</span></span></div>
+        <div class="legend-row"><span class="ic">⚔️</span><span><span class="lg-name">Konkurrenternas kraft.</span> <span class="lg-desc">Når den taket bryter ett förödande priskrig ut och drar ner dig.</span></span></div>
+      </div>
+      <p class="flourish">Din bricka är lagd. Dags att spela.</p>
+      <div style="margin-top:26px">
+        <button class="btn btn-primary" id="startBtn">Bygg ditt imperium</button>
+      </div>
+    </div>`;
+  $('startBtn').onclick = startGame;
+}
+
+function startGame(){
+  state = { wealth:START.wealth, anger:START.anger, rival:START.rival };
+  angerShown = START.anger; lastMoodLevel = 0; hardCount = 0;
+  step = 0; history = []; ended = false;
+  $('hud').classList.add('active');
+  renderMeters();
+  renderDecision();
+}
+
+/* ---------- Beslutsvy ---------- */
+// Fisher-Yates: genuint jämn blandning av en lista.
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+const LETTERS = ['A','B','C','D'];
+
+function renderDecision(){
+  const d = DECISIONS[step];
+  setYear(d.year);
+
+  let glossaryHTML = '';
+  if(d.glossary && d.glossary.length){
+    glossaryHTML = `<div class="glossary">` +
+      d.glossary.map(g => `<p><span class="term">${g[0]}*</span> = ${g[1]}</p>`).join('') +
+      `</div>`;
+  }
+
+  // Blanda ordningen på alternativen. Bokstaven bestäms av POSITIONEN
+  // efter blandning, så A/B/C betecknar bara ordningen på skärmen,
+  // aldrig ett bestämt utfall. origIndex pekar tillbaka på rätt val i datan.
+  const order = shuffle(d.choices.map((_, i) => i));
+
+  const choicesHTML = order.map((origIndex, pos) => {
+    const c = d.choices[origIndex];
+    return `
+    <button class="btn" data-i="${origIndex}">
+      <span class="choice-label">
+        <span class="choice-tag">${LETTERS[pos]}</span>
+        <span class="choice-text">${c.text}</span>
+      </span>
+    </button>`;
+  }).join('');
+
+  content.innerHTML = `
+    <div class="decision fade-in">
+      <div class="d-head">
+        <div class="d-num display-font">${step+1}</div>
+        <div>
+          <div class="d-eyebrow">${d.eyebrow}</div>
+          <div class="d-title">${d.title}</div>
+        </div>
+      </div>
+      <div class="info-box">${d.info}</div>
+      <button class="expand-btn" id="riskToggle"><span class="chev">▸</span> Väg riskerna innan du bestämmer dig</button>
+      <div class="risk-box" id="riskBox"><div class="risk-inner">${d.risk}</div></div>
+      <div class="choices">${choicesHTML}</div>
+      ${glossaryHTML}
+    </div>`;
+
+  const toggle = $('riskToggle');
+  const box = $('riskBox');
+  toggle.onclick = () => {
+    toggle.classList.toggle('open');
+    box.classList.toggle('open');
+  };
+
+  content.querySelectorAll('.btn[data-i]').forEach(btn => {
+    btn.onclick = () => choose(parseInt(btn.dataset.i));
+  });
+}
+
+/* ---------- Hantera val ---------- */
+// Varje effekt multipliceras med en egen slumpfaktor 0,75–1,25,
+// så att samma val inte alltid ger exakt samma utslag. Returnerar
+// de faktiskt tillämpade (avrundade) värdena.
+function jitter(v){
+  if(!v) return 0;
+  const factor = 0.75 + Math.random() * 0.5; // 0,75 till 1,25
+  return Math.round(v * factor);
+}
+// Radikaliseringsmultiplikator: folkets tålamod tar slut ju fler
+// hänsynslösa val som redan gjorts. Gäller BARA ökningar av vrede.
+function radicalFactor(){
+  return 1 + RADICAL_STEP * hardCount;
+}
+function applyEff(eff){
+  let angerRaw = jitter(eff.anger||0);
+  if(angerRaw > 0) angerRaw = Math.round(angerRaw * radicalFactor());
+  const applied = {
+    wealth: jitter(eff.wealth||0),
+    anger:  angerRaw,
+    rival:  jitter(eff.rival||0)
+  };
+  state.wealth = clamp(state.wealth + applied.wealth);
+  state.anger  = Math.max(0, Math.min(ANGER_CAP, state.anger + applied.anger));
+  state.rival  = clamp(state.rival  + applied.rival);
+  return applied;
+}
+
+function choose(i){
+  const d = DECISIONS[step];
+  const c = d.choices[i];
+
+  // logga i tidslinjen
+  history.push({ year:d.year, what:d.title, tone:c.tone, choiceText:stripTags(c.text) });
+
+  applyEff(c.eff);
+  // radikaliseringen bygger på TIDIGARE hårda val, så räkna upp EFTER
+  // att detta vals effekt tillämpats
+  if(c.tone === 'Hänsynslös') hardCount++;
+  let flashKey = c.eff.anger>0 ? 'anger' : (c.eff.rival>0 ? 'rival' : 'wealth');
+  renderMeters(flashKey);
+
+  // avgör slumphändelse
+  let firedEvent = null;
+  if(c.event && Math.random() < c.event.chance){
+    firedEvent = c.event;
+  }
+
+  // kolla game over EFTER grundeffekt men vi visar utfall först
+  showOutcome(c, firedEvent);
+}
+
+function showOutcome(choice, event){
+  const d = DECISIONS[step];
+
+  // applicera ev. slumphändelse
+  let eventHTML = '';
+  if(event){
+    const applied = applyEff(event.eff);
+    let flashKey = event.eff.anger>0 ? 'anger' : (event.eff.rival>0 ? 'rival' : 'wealth');
+    setTimeout(()=>renderMeters(flashKey), 400);
+    eventHTML = `
+      <div class="outcome event">
+        <div class="oc-eyebrow">Oväntad vändning</div>
+        <p><strong>${event.title}.</strong> ${event.text}</p>
+        <div class="deltas">${deltaLabels(applied)}</div>
+      </div>`;
+  }
+
+  // kolla om spelet är slut (fara-mätare i tak) eller sista beslutet klarat
+  const dead = state.anger >= DANGER_ANGER || state.rival >= DANGER_RIVAL;
+  const lastStep = step >= DECISIONS.length - 1;
+
+  const btnLabel = dead ? "Se vad som hände" : (lastStep ? "Se ditt eftermäle" : "Nästa beslut");
+
+  content.querySelector('.decision').insertAdjacentHTML('beforeend', `
+    <div id="outcomeWrap">
+      ${eventHTML}
+      <div class="center" style="margin-top:22px">
+        <button class="btn btn-primary" id="nextBtn">${btnLabel}</button>
+      </div>
+    </div>`);
+
+  // dölj valknapparna så man inte klickar igen
+  content.querySelectorAll('.btn[data-i]').forEach(b => { b.disabled = true; b.style.opacity=0.4; b.style.pointerEvents='none'; });
+  const rt = $('riskToggle'); if(rt) rt.style.display='none';
+
+  $('nextBtn').scrollIntoView({behavior:'smooth', block:'nearest'});
+
+  $('nextBtn').onclick = () => {
+    if(dead){
+      const dec = content.querySelector('.decision');
+      const kind = state.anger >= DANGER_ANGER ? 'bust' : 'war';
+      if(dec){ dec.classList.add('fade-out'); setTimeout(()=>endGame(kind), 300); }
+      else endGame(kind);
+    } else if(lastStep){
+      // Full seger kräver att man faktiskt byggt ett imperium.
+      // Överlever man bara genom att knappt ha något företag kvar
+      // blir det en ärligare, blygsammare utgång.
+      const dec = content.querySelector('.decision');
+      const kind = state.wealth >= 45 ? 'win' : 'survive';
+      if(dec){ dec.classList.add('fade-out'); setTimeout(()=>endGame(kind), 300); }
+      else endGame(kind);
+    } else {
+      const dec = content.querySelector('.decision');
+      if(dec){
+        dec.classList.add('fade-out');
+        setTimeout(() => {
+          step++;
+          renderDecision();
+          window.scrollTo({top:0, behavior:'smooth'});
+        }, 300);
+      } else {
+        step++;
+        renderDecision();
+        window.scrollTo({top:0, behavior:'smooth'});
+      }
+    }
+  };
+}
+
+function deltaLabels(eff){
+  const out = [];
+  if(eff.wealth) out.push(`💰 ${eff.wealth>0?'+':''}${eff.wealth}`);
+  if(eff.anger)  out.push(`😠 ${eff.anger>0?'+':''}${eff.anger}`);
+  if(eff.rival)  out.push(`⚔️ ${eff.rival>0?'+':''}${eff.rival}`);
+  return out.map(t=>`<span>${t}</span>`).join('');
+}
+
+function stripTags(html){
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html.replace(/<[^>]+>/g,'');
+  return tmp.textContent.replace(/\*/g,'').trim();
+}
+
+/* ---------- Sluttavlor ---------- */
+const ENDINGS = {
+  bust:{
+    cls:'bust', word:'BLAMO',
+    sub:'Staten slår till',
+    body:[
+      "Ditt maktbygge har väckt en vrede som ingen längre kan stoppa. Tidningar, farmare, arbetare och småföretagare kräver handling, och till slut lyssnar kongressen. <em>Sherman Antitrust Act*</em> används för att dra dig inför rätta, och Högsta domstolen beordrar att ditt imperium ska styckas i bitar.",
+      "Din ekonomiska makt blev så stor att den utmanade själva demokratin, och demokratin slog tillbaka. Det var inte dina priser som fällde dig. Det var att ett fritt folk vägrade låta en enda man regera över en hel bransch."
+    ],
+    glossary:["Sherman Antitrust Act (1890)","USA:s första lag mot monopol, som förbjöd företag att skaffa sig total kontroll över en marknad."]
+  },
+  war:{
+    cls:'war', word:'BLAMO',
+    sub:'Förödande priskrig',
+    body:[
+      "Genom att spela för försiktigt lät du dina rivaler växa sig starka. Nu rasar ett totalt priskrig där alla sänker priserna under självkostnad för att överleva. Marknaden störtar ner i kaos, bolag efter bolag går i konkurs, och till slut dras även du med i fallet.",
+      "Detta kallades <em>ruinous competition*</em>, och det var kaos som detta som fick många att önska sig ordning, till och med i form av truster eller statlig reglering. Oreglerad monopolmakt ledde till statligt ingripande, oreglerad konkurrens till kaos. Båda visade att marknaden behövde regler."
+    ],
+    glossary:["ruinous competition","förödande konkurrens, när företag pressar priserna så lågt i kampen om kunderna att alla till slut förlorar och går under."]
+  },
+  win:{
+    cls:'win', word:'BALANS',
+    sub:'Den nästan omöjliga vägen',
+    body:[
+      "Du gjorde det nästan ingen verklig aktör lyckades med: du byggde ett stort och framgångsrikt företag utan att vare sig tända en folklig revolt eller störta marknaden i kaos. Du visste när du skulle pressa och när du skulle hålla igen.",
+      "Historiens verkliga oljebaroner valde nästan alltid den hänsynslösa vägen, och deras imperier bröts till slut upp av staten. Du bevisade att det åtminstone i teorin fanns ett annat sätt. Frågan historiker fortfarande brottas med är varför så få valde det."
+    ],
+    glossary:null
+  },
+  survive:{
+    cls:'win', word:'ÖVERLEVDE',
+    sub:'Ren väst, litet imperium',
+    body:[
+      "Du undvek både statens yxa och det ruinerande priskriget, och det är i sig en bedrift. Men priset var att ditt företag aldrig växte sig särskilt stort. Varje gång du kunde ha pressat hårdare valde du försiktigheten, och dina rivaler fick behålla sin del av marknaden.",
+      "Det är den verkliga svårigheten historien visar: den som spelar helt rent bygger sällan ett imperium, och den som bygger ett imperium spelar sällan rent. Du valde samvetet framför storleken. De verkliga baronerna valde tvärtom, och deras namn står i historieböckerna."
+    ],
+    glossary:null
+  }
+};
+
+function toneClassNote(tone){
+  return tone; // används i tidslinjen som text
+}
+
+function endGame(kind){
+  ended = true;
+  const e = ENDINGS[kind];
+  setYear((kind==='win'||kind==='survive') ? 1911 : DECISIONS[Math.min(step,DECISIONS.length-1)].year);
+
+  const timelineHTML = history.map(h => `
+    <div class="tl-item">
+      <div class="tl-year">${h.year}</div>
+      <div class="tl-choice">
+        <div class="tl-what">${h.what}</div>
+        <div class="tl-tone">${h.choiceText} <span style="color:var(--brass-dim)">· ${h.tone}</span></div>
+      </div>
+    </div>`).join('');
+
+  const glossaryHTML = e.glossary ? `
+    <div class="final-glossary">
+      <span class="term">${e.glossary[0]}</span> = ${e.glossary[1]}
+    </div>` : '';
+
+  const hardChoices = history.filter(h=>h.tone==='Hänsynslös').length;
+  const softChoices = history.filter(h=>h.tone==='Återhållsam').length;
+
+  content.innerHTML = `
+    <div class="ending fade-in end-${e.cls}">
+      <div class="blamo ${e.cls} display-font">${e.word}</div>
+      <div class="end-sub">${e.sub}</div>
+      <div class="end-body">${e.body.map(p=>`<p>${p}</p>`).join('')}</div>
+      ${glossaryHTML}
+      <div class="final-stats">
+        <div class="fstat"><div class="fs-num">${Math.round(state.wealth)}</div><div class="fs-lbl">Förmögenhet</div></div>
+        <div class="fstat"><div class="fs-num">${hardChoices}</div><div class="fs-lbl">Hänsynslösa val</div></div>
+        <div class="fstat"><div class="fs-num">${softChoices}</div><div class="fs-lbl">Återhållsamma val</div></div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-title">Din väg genom historien</div>
+        ${timelineHTML}
+      </div>
+      <div class="center" style="margin-top:30px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <button class="btn btn-primary" id="analysisBtn">Vad hände egentligen?</button>
+        <button class="btn btn-ghost" id="againBtn">Spela igen</button>
+      </div>
+    </div>`;
+
+  lastEnding = kind;
+  $('againBtn').onclick = renderSplash;
+  $('analysisBtn').onclick = () => {
+    const el = content.querySelector('.ending');
+    if(el){ el.classList.add('fade-out'); setTimeout(()=>renderBridge(), 300); }
+    else renderBridge();
+  };
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ============================================================
+   DEL 2 — Analys: bryggfråga, jämförelsemaskin, Barton-frågor
+   ============================================================ */
+
+/* Bryggfrågor, villkorade efter vilket slut eleven fick. */
+const BRIDGE = {
+  bust: {
+    q:"Varför bröts ditt imperium till slut upp?",
+    options:[
+      {text:"Din makt sågs som ett hot mot demokratin, och pressen tvingade fram statligt ingripande.",
+       correct:true,
+       fb:"Just det. Det var inte storleken i sig, utan att makten uppfattades hota det demokratiska systemet, som fällde dig."},
+      {text:"Monopol är i sig olagligt och måste därför alltid brytas upp av staten.",
+       fb:"Nej. Att vara stor eller till och med dominerande var inte olagligt. Det var metoderna och hotet mot konkurrensen som lagen riktade sig mot."},
+      {text:"Dina priser drevs upp så högt att konsumenterna till slut inte längre accepterade dem.",
+       fb:"Inte riktigt. Höga priser var en del av kritiken, men Standard Oil sänkte ofta priserna. Det var maktkoncentrationen i sig som väckte reaktionen."},
+      {text:"Staten motsätter sig av princip alla företag som växer sig stora och framgångsrika.",
+       fb:"Nej. Staten tillät och skyddade ofta storföretag. Ingripandet kom först när den ekonomiska makten uppfattades hota det politiska systemet."}
+    ]
+  },
+  war: {
+    q:"Varför kollapsade marknaden?",
+    options:[
+      {text:"Utan någon aktör stark nog att skapa ordning pressade obegränsad konkurrens ner priserna tills alla förlorade.",
+       correct:true,
+       fb:"Just det. Det var frånvaron av spelregler, inte otur, som gjorde den förödande konkurrensen möjlig."},
+      {text:"Du var alldeles för snäll och eftergiven mot dina konkurrenter genom hela spelet.",
+       fb:"Delvis, men poängen är djupare. Det var frånvaron av spelregler, inte din personliga mjukhet, som gjorde kaoset möjligt."},
+      {text:"Konkurrens är i grunden skadligt och leder nästan alltid till att marknader kollapsar.",
+       fb:"Nej. Konkurrens är oftast nyttigt. Problemet var den oreglerade, förödande formen som ingen kunde stoppa."},
+      {text:"Staten borde ha gripit in och räddat ditt bolag innan det drogs med i fallet.",
+       fb:"Det missar poängen. Kollapsen visade varför marknader behöver regler, inte räddningsaktioner för enskilda bolag."}
+    ]
+  },
+  win: {
+    q:"Vad krävdes för att undvika både statens ingripande och marknadens kollaps?",
+    options:[
+      {text:"En balans mellan att bygga makt och att inte pressa samhället eller konkurrenterna för hårt.",
+       correct:true,
+       fb:"Just det. Balansen var möjlig i teorin men extremt svår, vilket är själva poängen historien lämnar oss med."},
+      {text:"Att monopol i sig är olagligt och därför alltid till slut måste brytas upp av staten.",
+       fb:"Nej. Att vara stor var inte olagligt. Det var metoderna och hotet mot konkurrensen som lagen riktade sig mot."},
+      {text:"Att enbart fokusera på att hålla priserna så låga som möjligt för konsumenterna.",
+       fb:"Inte riktigt. Pris var en del av det, men det verkliga provet var maktbalansen mot både samhället och konkurrenterna."},
+      {text:"Att staten av princip motsätter sig alla företag som växer sig alltför stora.",
+       fb:"Nej. Staten ingrep först när makten uppfattades hota det politiska systemet, inte mot storlek i sig."}
+    ]
+  }
+};
+// survive delar bryggfråga med win
+BRIDGE.survive = BRIDGE.win;
+
+/* Jämförelsemaskinens teman. */
+const COMPARE = [
+  {
+    theme:"Hur de växte",
+    old:{ title:"Standard Oil", body:"Hemliga järnvägsrabatter gav Rockefeller lägre fraktkostnader än alla konkurrenter, en fördel som snöade sig till dominans." },
+    now:{ title:"Amazon", body:"Enorma nätverkseffekter och år av medvetna förluster för att vinna marknadsandelar byggde en plattform som blev svår att undvika för både köpare och säljare." }
+  },
+  {
+    theme:"Hur de slog ut konkurrenter",
+    old:{ title:"Standard Oil", body:"Lokala priskrig där priset sänktes under självkostnad tills rivalen gick under, sedan höjdes det igen." },
+    now:{ title:"Google & Meta", body:"Uppköp av framväxande hot innan de hann bli farliga, som Instagram och WhatsApp, eller att kopiera en konkurrents funktion in i sin egen dominerande produkt." }
+  },
+  {
+    theme:"Hur de kontrollerade marknaden",
+    old:{ title:"Standard Oil", body:"Vertikal integration: ägande av allt från oljekällor och rörledningar till fat och försäljning, så att ingen kunde konkurrera utan att gå genom bolaget." },
+    now:{ title:"Amazon & Apple", body:"Att äga själva marknadsplatsen och samtidigt konkurrera på den. Amazon säljer egna varor mot tredjepartssäljare på sin sajt, Apple kontrollerar App Store." }
+  },
+  {
+    theme:"Hur de försvarade sig",
+    old:{ title:"Standard Oil", body:"Hävdade att storleken gav effektivitet och lägre priser för konsumenten, alltså att monopolet var en \u201dgod trust\u201d." },
+    now:{ title:"Techjättarna", body:"Argumenterar likadant: att deras tjänster ofta är gratis eller billiga för användaren, vilket enligt consumer welfare-doktrinen borde göra dem oproblematiska." }
+  },
+  {
+    theme:"Hur samhället reagerade",
+    old:{ title:"Standard Oil", body:"Grävande journalistik av Ida Tarbell, folkligt tryck och till slut Sherman Act och uppdelningen 1911." },
+    now:{ title:"Neo-Brandeis", body:"En rörelse med Lina Khan på Federal Trade Commission utmanar consumer welfare-doktrinen och driver antitrustfall mot techjättarna. Debatten pågår just nu och är inte avgjord." }
+  }
+];
+
+/* Barton-frågor: jämförande, med distraktorspecifik återkoppling. */
+const BARTON = [
+  {
+    q:"I spelet kunde du sänka priset under självkostnad för att slå ut en rival. Vad var det verkliga syftet med den taktiken?",
+    options:[
+      {text:"Att ta en förlust du hade råd med, och sedan höja priset när rivalen var borta.",
+       correct:true, fb:"Just det. Den kortsiktiga förlusten var en investering i långsiktig dominans."},
+      {text:"Att erbjuda vanliga konsumenter så billiga varor som möjligt under en längre tidsperiod.",
+       fb:"Det var effekten på kort sikt, men syftet var det motsatta på lång sikt: mindre konkurrens och högre priser sedan."},
+      {text:"Att offentligt visa att du var en generös affärsman som brydde dig om vanligt folk.",
+       fb:"Nej. Det var en beräknande maktmetod, inte välgörenhet."},
+      {text:"Att så snabbt som möjligt tjäna ihop en stor kortsiktig vinst på din försäljning.",
+       fb:"Tvärtom, du förlorade pengar med flit under tiden. Vinsten kom först efteråt, genom dominans."}
+    ]
+  },
+  {
+    q:"Vad har Standard Oils järnvägsrabatter gemensamt med hur en modern plattform som Amazon behandlar sina säljare?",
+    options:[
+      {text:"Båda kontrollerar en infrastruktur som andra tvingas använda, och utnyttjar det övertaget.",
+       correct:true, fb:"Just det. Den som äger vägen alla andra måste gå kontrollerar spelet, oavsett om vägen är en järnväg eller en marknadsplats."},
+      {text:"Inget egentligt samband, eftersom olja och digital teknik fungerar helt olika.",
+       fb:"Det är ytan. Under den ligger samma mekanism: kontroll över den väg alla andra måste gå."},
+      {text:"Båda handlar i grunden om att pressa priserna nedåt till förmån för kunderna.",
+       fb:"Det är den synliga effekten, men den gemensamma nämnaren är kontrollen över infrastrukturen, inte priset."},
+      {text:"Båda bygger på metoder som är uttryckligen förbjudna enligt gällande lag.",
+       fb:"Inte nödvändigtvis. Mycket rör sig i en juridisk gråzon, och det är just därför debatten pågår."}
+    ]
+  },
+  {
+    q:"Historien om antitrust handlar enligt många om mer än priser. Vad är den djupare frågan?",
+    options:[
+      {text:"Om det är förenligt med demokrati att en privat aktör får så stor makt.",
+       correct:true, fb:"Just det. Det är spänningen mellan ekonomisk makt och demokratisk kontroll som är kärnan för många historiker."},
+      {text:"Om varor och tjänster på marknaden bör vara billiga eller om de bör vara dyra.",
+       fb:"Det är den snäva tolkningen, consumer welfare. Den bredare frågan handlar om makt, inte pris."},
+      {text:"Om stora företag i allmänhet är mer effektiva och produktiva än vad små företag är.",
+       fb:"Det är en ekonomisk delfråga, men inte kärnan. Kärnan är förhållandet mellan ekonomisk makt och politisk frihet."},
+      {text:"Om det är staten eller den fria marknaden som är bäst lämpad att styra ekonomin.",
+       fb:"Närmare, men fortfarande för brett. Den specifika frågan gäller koncentrerad makt och demokratisk kontroll."}
+    ]
+  }
+];
+
+/* ---------- Renderare för del 2 ---------- */
+
+// Gemensam renderare för en flervalsfråga med distraktorspecifik feedback.
+// onDone körs när eleven svarat rätt (eller valt att gå vidare).
+function renderQuestion(opts){
+  const { eyebrow, q, options, onNext, nextLabel } = opts;
+  const shuffled = shuffle(options.map((o,i)=>i));
+
+  const optionHTML = shuffled.map((origIdx, pos) => {
+    const o = options[origIdx];
+    return `<button class="quiz-opt" data-correct="${o.correct?1:0}" data-idx="${origIdx}">
+      <span class="quiz-tag">${LETTERS[pos]}</span>
+      <span class="quiz-otext">${o.text}</span>
+    </button>`;
+  }).join('');
+
+  content.innerHTML = `
+    <div class="analysis fade-in">
+      <div class="a-eyebrow">${eyebrow}</div>
+      <div class="a-question">${q}</div>
+      <div class="quiz-opts">${optionHTML}</div>
+      <div class="quiz-fb" id="quizFb"></div>
+      <div class="center" id="quizNextWrap" style="display:none;margin-top:22px">
+        <button class="btn btn-primary" id="quizNext">${nextLabel||'Vidare'}</button>
+      </div>
+    </div>`;
+
+  let answered = false;
+  content.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.onclick = () => {
+      const idx = parseInt(btn.dataset.idx);
+      const o = options[idx];
+      const isCorrect = !!o.correct;
+
+      // markera vald knapp
+      if(isCorrect){
+        btn.classList.add('correct');
+      } else {
+        btn.classList.add('wrong');
+      }
+
+      // visa distraktorns/rätta svarets förklaring
+      const fb = $('quizFb');
+      fb.className = 'quiz-fb show ' + (isCorrect ? 'ok' : 'no');
+      fb.innerHTML = o.fb;
+
+      if(isCorrect){
+        // lås alla knappar när rätt svar valts
+        content.querySelectorAll('.quiz-opt').forEach(b => {
+          b.disabled = true;
+          b.style.pointerEvents = 'none';
+          if(b.dataset.correct==='1' && !b.classList.contains('correct')) b.classList.add('correct');
+        });
+        $('quizNextWrap').style.display = 'block';
+        answered = true;
+      }
+      // fel svar: knappen förblir markerad men eleven kan försöka igen
+    };
+  });
+
+  $('quizNext').onclick = onNext;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// Komponent 1: bryggfrågan (villkorad efter slut)
+function renderBridge(){
+  const data = BRIDGE[lastEnding] || BRIDGE.win;
+  renderQuestion({
+    eyebrow:"Först en fråga om din genomspelning",
+    q:data.q,
+    options:data.options,
+    nextLabel:"Se hur historien upprepar sig",
+    onNext:()=>{
+      const el = content.querySelector('.analysis');
+      if(el){ el.classList.add('fade-out'); setTimeout(()=>renderCompare(0), 300); }
+      else renderCompare(0);
+    }
+  });
+}
+
+// Komponent 2: jämförelsemaskinen, ett tema i taget
+function renderCompare(idx){
+  const c = COMPARE[idx];
+  const dots = COMPARE.map((_,i)=>`<span class="cmp-dot ${i===idx?'active':''} ${i<idx?'done':''}"></span>`).join('');
+
+  content.innerHTML = `
+    <div class="analysis fade-in">
+      <div class="a-eyebrow">Samma mönster, olika sekel &nbsp;·&nbsp; ${idx+1}/${COMPARE.length}</div>
+      <div class="a-question cmp-theme">${c.theme}</div>
+      <div class="cmp-grid">
+        <div class="cmp-col cmp-old">
+          <div class="cmp-era">Då &nbsp;·&nbsp; 1900-talets början</div>
+          <div class="cmp-title">${c.old.title}</div>
+          <div class="cmp-body">${c.old.body}</div>
+        </div>
+        <div class="cmp-vs">⇄</div>
+        <div class="cmp-col cmp-now">
+          <div class="cmp-era">Nu &nbsp;·&nbsp; 2000-talet</div>
+          <div class="cmp-title">${c.now.title}</div>
+          <div class="cmp-body">${c.now.body}</div>
+        </div>
+      </div>
+      <div class="cmp-dots">${dots}</div>
+      <div class="center" style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        ${idx>0?`<button class="btn btn-ghost" id="cmpPrev">Föregående</button>`:''}
+        <button class="btn btn-primary" id="cmpNext">${idx < COMPARE.length-1 ? 'Nästa tema' : 'Testa din förståelse'}</button>
+      </div>
+    </div>`;
+
+  if(idx>0) $('cmpPrev').onclick = () => {
+    const el=content.querySelector('.analysis');
+    if(el){ el.classList.add('fade-out'); setTimeout(()=>renderCompare(idx-1),300); }
+    else renderCompare(idx-1);
+  };
+  $('cmpNext').onclick = () => {
+    const el=content.querySelector('.analysis');
+    const go = idx < COMPARE.length-1 ? ()=>renderCompare(idx+1) : ()=>renderBarton(0);
+    if(el){ el.classList.add('fade-out'); setTimeout(go,300); }
+    else go();
+  };
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// Komponent 3: de tre Barton-frågorna i sekvens
+function renderBarton(idx){
+  const b = BARTON[idx];
+  renderQuestion({
+    eyebrow:`Testa din förståelse &nbsp;·&nbsp; ${idx+1}/${BARTON.length}`,
+    q:b.q,
+    options:b.options,
+    nextLabel: idx < BARTON.length-1 ? 'Nästa fråga' : 'Avsluta',
+    onNext:()=>{
+      const el=content.querySelector('.analysis');
+      const go = idx < BARTON.length-1 ? ()=>renderBarton(idx+1) : ()=>renderFinish();
+      if(el){ el.classList.add('fade-out'); setTimeout(go,300); }
+      else go();
+    }
+  });
+}
+
+// Avslutningsskärm för del 2
+function renderFinish(){
+  content.innerHTML = `
+    <div class="analysis fade-in center">
+      <div class="a-eyebrow">Slutord</div>
+      <div class="finish-title display-font">Historien rimmar</div>
+      <div class="finish-body">
+        <p>Du har spelat som en oljebaron och sett hur samma frågor återkommer i vår egen tid. Namnen har bytts ut, olja mot data, järnväg mot marknadsplats, men spänningen är densamma: hur mycket makt kan samlas hos ett fåtal innan det blir ett problem för alla andra?</p>
+        <p>Det är ingen avgjord fråga. Den ställs på nytt i varje generation, och just nu ställs den om techjättarna. Hur den ska besvaras är något du och dina medmänniskor får avgöra.</p>
+      </div>
+      <div class="center" style="margin-top:28px">
+        <button class="btn btn-primary" id="finishAgain">Spela igen</button>
+      </div>
+    </div>`;
+  $('finishAgain').onclick = renderSplash;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ---------- Start ---------- */
+renderSplash();
+</script>
+</body>
+</html>
