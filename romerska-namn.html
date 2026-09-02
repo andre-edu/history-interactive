@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ditt romerska namn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0E162B;
+  --navy2:#1A2747;
+  --navy3:#243356;
+  --gold:#C19A3D;
+  --gold-br:#D9B85C;
+  --gold-dim:#8C6A2F;
+  --parch:#EDE5D3;
+  --ink:#2A211A;
+  --ink-soft:#4A3C2F;
+  --pompeii:#9C3A28;
+  --laurel:#6B7A4C;
+  --line:#2E3D5E;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:1.15rem;line-height:1.6;color:var(--parch);
+  background:var(--navy);
+  background-image:
+    radial-gradient(ellipse 70% 55% at 50% 0%, rgba(193,154,61,.10), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(26,39,71,.6), transparent 60%);
+  min-height:100vh;
+  padding:0 20px 60px;
+}
+.wrap{max-width:760px;margin:0 auto}
+
+/* ---------- header ---------- */
+header{text-align:center;padding:54px 0 30px}
+.eyebrow{
+  font-family:'Cinzel',serif;font-weight:600;font-size:.8rem;
+  letter-spacing:.42em;text-indent:.42em;color:var(--gold);margin-bottom:16px;
+}
+h1{
+  font-family:'Cinzel',serif;font-weight:900;
+  font-size:clamp(2.4rem,7vw,3.8rem);letter-spacing:.06em;color:#fff;line-height:1.05;
+  text-shadow:0 2px 12px rgba(0,0,0,.4);
+}
+.lede{
+  max-width:560px;margin:20px auto 0;color:#C7CEDA;font-size:1.18rem;font-style:italic;
+}
+.laurel{width:120px;margin:22px auto 0;display:block;opacity:.85}
+
+/* ---------- form card ---------- */
+.form-card{
+  background:linear-gradient(180deg, rgba(26,39,71,.7), rgba(14,22,43,.7));
+  border:1px solid var(--line);border-radius:4px;
+  padding:34px 34px 30px;margin-top:14px;
+  box-shadow:0 18px 50px rgba(0,0,0,.35);
+}
+.field{margin-bottom:22px}
+.field:last-of-type{margin-bottom:8px}
+.field > label{
+  display:block;font-family:'Cinzel',serif;font-weight:600;font-size:.78rem;
+  letter-spacing:.14em;color:var(--gold-br);margin-bottom:9px;
+}
+.field .hint{font-size:.98rem;color:#9AA6BC;font-style:italic;margin-left:6px;letter-spacing:0;text-transform:none;font-family:'Cormorant Garamond',serif;font-weight:400}
+input[type=text]{
+  width:100%;padding:12px 15px;font-family:'Cormorant Garamond',serif;font-size:1.15rem;
+  color:var(--ink);background:var(--parch);border:1px solid var(--gold-dim);border-radius:3px;
+}
+input[type=text]::placeholder{color:#9a8b72}
+input[type=text]:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
+
+/* segmented gender control */
+.seg{display:flex;gap:10px}
+.seg button{
+  flex:1;padding:12px 8px;font-family:'Cinzel',serif;font-weight:600;font-size:.9rem;
+  letter-spacing:.08em;color:#C7CEDA;background:rgba(36,51,86,.5);
+  border:1px solid var(--line);border-radius:3px;cursor:pointer;transition:all .18s;
+}
+.seg button:hover{border-color:var(--gold-dim);color:#fff}
+.seg button.on{background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:700}
+.seg button:focus-visible{outline:3px solid var(--gold-br);outline-offset:2px}
+
+.go{
+  width:100%;margin-top:20px;padding:15px;
+  font-family:'Cinzel',serif;font-weight:700;font-size:1rem;letter-spacing:.16em;
+  color:var(--navy);background:linear-gradient(180deg,var(--gold-br),var(--gold));
+  border:none;border-radius:3px;cursor:pointer;transition:filter .18s, transform .05s;
+}
+.go:hover{filter:brightness(1.08)}
+.go:active{transform:translateY(1px)}
+.go:focus-visible{outline:3px solid var(--gold-br);outline-offset:2px}
+
+/* ---------- result: the tablet ---------- */
+.result{margin-top:30px;display:none}
+.result.show{display:block;animation:rise .5s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.tablet{
+  background:linear-gradient(175deg,#F2EBDB 0%,#E6DCC4 55%,#DBCEB0 100%);
+  border:1px solid #C7B78F;border-radius:3px;
+  box-shadow:0 16px 44px rgba(0,0,0,.45), inset 0 0 0 8px rgba(255,255,255,.22), inset 0 0 46px rgba(140,106,47,.14);
+  padding:40px 34px 34px;text-align:center;position:relative;
+}
+.tablet::before,.tablet::after{
+  content:"";position:absolute;left:22px;right:22px;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);opacity:.5;
+}
+.tablet::before{top:16px}.tablet::after{bottom:16px}
+.tablet .rlabel{
+  font-family:'Cinzel',serif;font-weight:600;font-size:.72rem;letter-spacing:.3em;
+  text-indent:.3em;color:var(--pompeii);margin-bottom:14px;
+}
+.roman-name{
+  font-family:'Cinzel',serif;font-weight:700;color:var(--ink);
+  font-size:clamp(1.7rem,5.2vw,2.8rem);line-height:1.15;letter-spacing:.02em;
+}
+.filiation{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.2rem;
+  color:var(--ink-soft);margin-top:8px;
+}
+
+/* breakdown */
+.breakdown{margin-top:26px;text-align:left}
+.part{
+  display:flex;gap:14px;align-items:flex-start;padding:11px 0;
+  border-top:1px solid rgba(140,106,47,.28);
+}
+.part:first-child{border-top:none}
+.part .swatch{
+  flex-shrink:0;width:14px;height:14px;border-radius:3px;margin-top:5px;
+}
+.part .pword{font-family:'Cinzel',serif;font-weight:700;font-size:1.05rem;color:var(--ink);white-space:nowrap}
+.part .pexpl{font-size:1.05rem;color:var(--ink-soft);line-height:1.45}
+
+
+.footnote{
+  margin-top:18px;padding:12px 16px;background:rgba(140,106,47,.1);
+  border-left:3px solid var(--gold-dim);border-radius:2px;
+  font-size:.98rem;font-style:italic;color:var(--ink-soft);line-height:1.5;
+}
+
+/* sisters button + panel */
+.sisters-btn{
+  margin-top:22px;padding:11px 22px;
+  font-family:'Cinzel',serif;font-weight:600;font-size:.82rem;letter-spacing:.1em;
+  color:var(--gold-br);background:transparent;border:1px solid var(--gold-dim);border-radius:3px;
+  cursor:pointer;transition:all .18s;
+}
+.sisters-btn:hover{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.sisters-btn:focus-visible{outline:3px solid var(--gold-br);outline-offset:2px}
+.sisters{margin-top:16px;display:none}
+.sisters.show{display:block;animation:rise .4s ease both}
+.sisters-intro{font-size:1.05rem;color:#C7CEDA;font-style:italic;margin-bottom:12px;text-align:center}
+.sister-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  background:rgba(26,39,71,.55);border:1px solid var(--line);border-radius:3px;
+  padding:12px 18px;margin-bottom:8px;
+}
+.sister-name{font-family:'Cinzel',serif;font-weight:600;font-size:1.1rem;color:#fff}
+.sister-tag{font-size:1rem;color:var(--gold-br);font-style:italic}
+.sisters-note{font-size:1rem;color:#9AA6BC;font-style:italic;margin-top:10px;text-align:center;line-height:1.5}
+
+/* ---------- explainer ---------- */
+.explainer{
+  margin-top:40px;background:rgba(26,39,71,.4);border:1px solid var(--line);
+  border-radius:4px;padding:26px 30px;
+}
+.explainer h2{
+  font-family:'Cinzel',serif;font-weight:700;font-size:1.15rem;letter-spacing:.06em;
+  color:var(--gold-br);margin-bottom:14px;
+}
+.explainer p{color:#C7CEDA;font-size:1.08rem;margin-bottom:10px}
+.explainer p:last-child{margin-bottom:0}
+.explainer .tag{font-family:'Cinzel',serif;font-weight:600;color:var(--gold-br);font-size:.95rem;letter-spacing:.02em}
+
+footer{text-align:center;margin-top:40px;color:#6E7A92;font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.24em}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .result.show,.sisters.show{animation:none}
+}
+@media (max-width:560px){
+  .form-card,.tablet{padding-left:22px;padding-right:22px}
+  .part .pword{white-space:normal}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">NOMEN ROMANVM</div>
+  <h1>Ditt romerska namn</h1>
+  <p class="lede">Fyll i dina uppgifter, så bygger vi ett namn åt dig efter antikens romerska regler. Lägg märke till hur olika namnet blir beroende på om du är man eller kvinna.</p>
+  <svg class="laurel" viewBox="0 0 120 34" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g fill="none" stroke="#C19A3D" stroke-width="1.5"><path d="M10 28 Q40 6 58 4"/><path d="M110 28 Q80 6 62 4"/></g>
+    <g fill="#C19A3D">
+      <ellipse cx="18" cy="24" rx="6" ry="2.6" transform="rotate(-38 18 24)"/>
+      <ellipse cx="28" cy="17" rx="6" ry="2.6" transform="rotate(-32 28 17)"/>
+      <ellipse cx="39" cy="11" rx="6" ry="2.6" transform="rotate(-24 39 11)"/>
+      <ellipse cx="50" cy="7" rx="6" ry="2.6" transform="rotate(-14 50 7)"/>
+      <ellipse cx="102" cy="24" rx="6" ry="2.6" transform="rotate(38 102 24)"/>
+      <ellipse cx="92" cy="17" rx="6" ry="2.6" transform="rotate(32 92 17)"/>
+      <ellipse cx="81" cy="11" rx="6" ry="2.6" transform="rotate(24 81 11)"/>
+      <ellipse cx="70" cy="7" rx="6" ry="2.6" transform="rotate(14 70 7)"/>
+    </g>
+  </svg>
+</header>
+
+<div class="form-card">
+  <div class="field">
+    <label>Är du man eller kvinna i det romerska samhället?</label>
+    <div class="seg" id="gender" role="group" aria-label="Kön">
+      <button type="button" data-g="m" aria-pressed="false">Man</button>
+      <button type="button" data-g="f" aria-pressed="false">Kvinna</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="fornamn">Ditt förnamn</label>
+    <input type="text" id="fornamn" placeholder="ditt förnamn" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label for="efternamn">Ditt efternamn <span class="hint">blir din släkt, ditt nomen</span></label>
+    <input type="text" id="efternamn" placeholder="ditt efternamn" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label for="pappa">Din pappas förnamn <span class="hint">frivilligt, romarna angav vems barn man var</span></label>
+    <input type="text" id="pappa" placeholder="din pappas förnamn" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label for="drag">Ett ord som beskriver dig <span class="hint">frivilligt, kan bli ditt tillnamn</span></label>
+    <input type="text" id="drag" placeholder="t.ex. snabb, glad, lång, klok" autocomplete="off">
+  </div>
+
+  <button class="go" id="go">Skapa mitt romerska namn</button>
+</div>
+
+<section class="result" id="result" aria-live="polite">
+  <div class="tablet">
+    <div class="rlabel">DITT ROMERSKA NAMN</div>
+    <div class="roman-name" id="romanName"></div>
+    <div class="filiation" id="filiation"></div>
+
+    <div class="breakdown" id="breakdown"></div>
+    <div class="footnote" id="footnote" style="display:none"></div>
+
+    <button class="sisters-btn" id="sistersBtn"></button>
+    <div class="sisters" id="sisters"></div>
+  </div>
+</section>
+
+<section class="explainer">
+  <h2>Så fungerar ett romerskt namn</h2>
+  <p>En fri romersk man ur överklassen bar tre namn, <span class="tag">tria nomina</span>. Ett personligt förnamn (<span class="tag">praenomen</span>), ett släktnamn som visade vilken ätt han tillhörde (<span class="tag">nomen</span>), och ofta ett tillnamn som skilde ut hans gren av släkten (<span class="tag">cognomen</span>). Härstamningen angavs som "son till", till exempel <em>Marci filius</em>.</p>
+  <p>En kvinna hade i regel inget eget förnamn. Hon kallades med den kvinnliga formen av faderns släktnamn, så Julius dotter hette Julia. Alla systrar i en familj fick därför samma namn och skildes åt med tillägg som <em>Major</em> och <em>Minor</em>, den äldre och den yngre, eller med räkneord.</p>
+  <p>Namnen på den här sidan är lekfullt anpassade till latinet och är inte historiskt belagda. Själva uppbyggnaden följer däremot det romerska mönstret för republikens överklass. Under kejsartiden blev namnskicket friare och mer varierat.</p>
+</section>
+
+<footer>S · P · Q · R</footer>
+</div>
+<script>
+"use strict";
+
+/* =====================================================================
+   BETYDELSEORDBOK (väg C) — namn -> cognomen + kort svensk betydelse
+   Cirka de vanligaste svenska namnen med tolkbar betydelse.
+   Namn som saknar klar/latiniserbar betydelse står medvetet inte med;
+   de får då inget cognomen (helt historiskt rimligt).
+   ===================================================================== */
+const MEANING = {
+  // ---- mansnamn ----
+  "erik":["Rex","'ensam härskare'"], "eric":["Rex","'ensam härskare'"],
+  "karl":["Liber","'fri man'"], "carl":["Liber","'fri man'"],
+  "lars":["Laureatus","'lagerkrönt'"], "lauri":["Laureatus","'lagerkrönt'"],
+  "anders":["Andreas","'manlig, modig'"], "andreas":["Andreas","'manlig, modig'"], "andré":["Andreas","'manlig, modig'"],
+  "björn":["Ursinus","'björn'"], "bjorn":["Ursinus","'björn'"], "nalle":["Ursinus","'björn'"],
+  "sten":["Lapideus","'sten'"], "stig":["Viator","'vandrare, stig'"],
+  "ulf":["Lupus","'varg'"], "ulv":["Lupus","'varg'"],
+  "gunnar":["Bellicus","'krigare'"], "gunne":["Bellicus","'krigare'"],
+  "ivar":["Sagittarius","'bågkrigare'"],
+  "leif":["Heres","'arvinge, ättling'"],
+  "olof":["Avitus","'förfädernas ättling'"], "olov":["Avitus","'förfädernas ättling'"], "ole":["Avitus","'förfädernas ättling'"], "olle":["Avitus","'förfädernas ättling'"],
+  "sven":["Iuvenis","'ung man'"], "svein":["Iuvenis","'ung man'"],
+  "tor":["Tonans","'åskan, Tor'"], "tord":["Tonans","'Tors skydd'"],
+  "gustav":["Baculus","'gudarnas stav'"], "gustaf":["Baculus","'gudarnas stav'"], "gösta":["Baculus","'gudarnas stav'"],
+  "henrik":["Dominus","'hemmets herre'"], "henry":["Dominus","'hemmets herre'"],
+  "fredrik":["Pacificus","'fredlig härskare'"], "fred":["Pacificus","'fred'"],
+  "rickard":["Fortis","'stark härskare'"], "richard":["Fortis","'stark härskare'"],
+  "vilhelm":["Galeatus","'hjälmens vilja'"], "william":["Galeatus","'hjälmens vilja'"], "ville":["Galeatus","'hjälmens vilja'"],
+  "roger":["Hastatus","'ärans spjut'"],
+  "robert":["Clarus","'strålande ryktbar'"], "robin":["Clarus","'strålande'"],
+  "albert":["Nobilis","'ädel och lysande'"], "albin":["Candidus","'vit, ljus'"],
+  "alexander":["Defensor","'människornas försvarare'"], "alex":["Defensor","'försvarare'"],
+  "philip":["Eques","'hästvän, ryttare'"], "filip":["Eques","'hästvän, ryttare'"],
+  "george":["Agricola","'jordbrukare'"], "göran":["Agricola","'jordbrukare'"], "örjan":["Agricola","'jordbrukare'"], "jörgen":["Agricola","'jordbrukare'"],
+  "nils":["Victor","'folkets seger'"], "niklas":["Victor","'folkets seger'"], "nicklas":["Victor","'folkets seger'"], "nicolas":["Victor","'folkets seger'"],
+  "peter":["Petrus","'klippa'"], "per":["Petrus","'klippa'"], "pär":["Petrus","'klippa'"], "pelle":["Petrus","'klippa'"], "petter":["Petrus","'klippa'"],
+  "stefan":["Coronatus","'den krönte'"], "staffan":["Coronatus","'den krönte'"],
+  "martin":["Martius","'tillägnad Mars'"], "morten":["Martius","'tillägnad Mars'"], "mårten":["Martius","'tillägnad Mars'"],
+  "marcus":["Martius","'tillägnad Mars'"], "markus":["Martius","'tillägnad Mars'"], "max":["Maximus","'den störste'"], "maximilian":["Maximus","'den störste'"],
+  "victor":["Victor","'segrare'"], "viktor":["Victor","'segrare'"],
+  "leo":["Leoninus","'lejon'"], "leon":["Leoninus","'lejon'"],
+  "felix":["Felix","'lycklig'"],
+  "vincent":["Vincens","'den segrande'"],
+  "kristoffer":["Ferens","'Kristusbäraren'"], "christoffer":["Ferens","'Kristusbäraren'"],
+  "hjalmar":["Galeatus","'hjälmkrigare'"], "helge":["Sanctus","'helig'"], "helmer":["Galeatus","'hjälmkrigare'"],
+  "arvid":["Aquilinus","'örnen i trädet'"], "ragnar":["Consultus","'gudarnas råd'"],
+  "sixten":["Lapideus","'segersten'"], "torsten":["Lapideus","'Tors sten'"], "thorsten":["Lapideus","'Tors sten'"],
+  "vidar":["Silvanus","'skogskrigare'"],
+  // ---- kvinnonamn ----
+  "margareta":["Margarita","'pärla'"], "margaretha":["Margarita","'pärla'"], "greta":["Margarita","'pärla'"], "margit":["Margarita","'pärla'"], "marit":["Margarita","'pärla'"],
+  "stella":["Stella","'stjärna'"], "stellan":["Stella","'stjärna'"],
+  "sofia":["Sapiens","'vishet'"], "sofie":["Sapiens","'vishet'"], "sophie":["Sapiens","'vishet'"], "sonja":["Sapiens","'vishet'"],
+  "klara":["Clara","'klar och ljus'"], "clara":["Clara","'klar och ljus'"],
+  "linnea":["Flora","'blomma'"], "blenda":["Fulgens","'strålande'"],
+  "viktoria":["Victoria","'seger'"], "victoria":["Victoria","'seger'"],
+  "beatrice":["Beata","'hon som gör lycklig'"], "beata":["Beata","'lycksalig'"],
+  "felicia":["Felix","'lycklig'"], "lycke":["Felix","'lycka'"],
+  "vera":["Vera","'den sanna'"],
+  "stina":["Christiana","'kristen'"], "kristina":["Christiana","'kristen'"], "christina":["Christiana","'kristen'"], "kerstin":["Christiana","'kristen'"], "kristin":["Christiana","'kristen'"],
+  "katarina":["Casta","'den rena'"], "katrin":["Casta","'den rena'"], "karin":["Casta","'den rena'"], "carina":["Casta","'den rena'"], "kajsa":["Casta","'den rena'"], "cajsa":["Casta","'den rena'"],
+  "emilia":["Aemilia","'ivrig, tävlande'"], "emily":["Aemilia","'ivrig'"], "emmy":["Aemilia","'ivrig'"],
+  "amanda":["Amanda","'värd att älska'"], "amelia":["Aemilia","'ivrig'"],
+  "linda":["Pulchra","'den vackra'"], "belinda":["Pulchra","'den vackra'"],
+  "ros":["Rosa","'ros'"], "rosa":["Rosa","'ros'"], "rosanna":["Rosa","'ros'"],
+  "vivianne":["Viva","'levande'"], "viva":["Viva","'levande'"],
+  "agnes":["Casta","'den rena'"], "agneta":["Casta","'den rena'"], "aina":["Casta","'ren'"],
+  "cecilia":["Caeca","'himmelens'"], "sissela":["Caeca","'himmelens'"],
+  "helena":["Lucida","'den lysande'"], "elin":["Lucida","'den lysande'"], "elna":["Lucida","'lysande'"], "ellen":["Lucida","'lysande'"],
+  "lovisa":["Bellatrix","'ryktbar krigerska'"], "louise":["Bellatrix","'ryktbar krigerska'"],
+  "gunilla":["Bellica","'krigets strid'"], "gun":["Bellica","'strid'"],
+  "sigrid":["Pulchra","'den sköna segern'"], "siri":["Pulchra","'den sköna'"],
+  "astrid":["Divina","'gudomlig skönhet'"], "asta":["Divina","'gudomlig'"],
+  "ingrid":["Pulchra","'den sköna'"], "inger":["Bellica","'skyddad av Ing'"], "inga":["Bellica","'skyddad av Ing'"],
+  "sara":["Domina","'furstinna'"], "sarah":["Domina","'furstinna'"],
+  "hedvig":["Bellica","'strid'"], "hedda":["Bellica","'strid'"],
+  "alva":["Candida","'den vita, ljusa'"], "alba":["Candida","'vit'"],
+  "svea":["Sueva","'svearnas'"],
+  "solveig":["Solaris","'solens styrka'"], "sol":["Solaris","'sol'"],
+  "dagny":["Nova","'ny dag'"], "dagmar":["Aurora","'dagens mö'"],
+  "gerd":["Horta","'inhägnad, trädgård'"], "gertrud":["Hastata","'spjutets styrka'"]
+};
+
+/* =====================================================================
+   EGENSKAPSORDBOK — fritt beskrivande ord -> cognomen
+   Maskulin/feminin form väljs efter kön.
+   ===================================================================== */
+const TRAITS = {
+  "snabb":["Celer","Celeris"], "kvick":["Celer","Celeris"], "rapp":["Celer","Celeris"],
+  "glad":["Felix","Felix"], "lycklig":["Felix","Felix"], "munter":["Hilarus","Hilara"],
+  "lång":["Longus","Longa"], "kort":["Brevis","Brevis"], "liten":["Parvus","Parva"],
+  "stor":["Magnus","Magna"], "stark":["Fortis","Fortis"], "kraftig":["Robustus","Robusta"],
+  "klok":["Sapiens","Sapiens"], "vis":["Sapiens","Sapiens"], "smart":["Sapiens","Sapiens"], "listig":["Callidus","Callida"],
+  "modig":["Audax","Audax"], "tapper":["Fortis","Fortis"], "orädd":["Impavidus","Impavida"],
+  "lugn":["Placidus","Placida"], "stilla":["Placidus","Placida"], "tyst":["Tacitus","Tacita"],
+  "vacker":["Pulcher","Pulchra"], "snygg":["Pulcher","Pulchra"], "söt":["Bellus","Bella"],
+  "röd":["Rufus","Rufa"], "rödhårig":["Rufus","Rufa"], "blond":["Flavus","Flava"], "ljus":["Candidus","Candida"], "mörk":["Niger","Nigra"], "brun":["Fuscus","Fusca"],
+  "snäll":["Benignus","Benigna"], "vänlig":["Benignus","Benigna"], "god":["Bonus","Bona"],
+  "rik":["Dives","Dives"], "gammal":["Senex","Anus"], "ung":["Iuvenis","Iuvenis"],
+  "envis":["Pertinax","Pertinax"], "vild":["Ferox","Ferox"], "arg":["Iratus","Irata"],
+  "trogen":["Fidelis","Fidelis"], "ärlig":["Probus","Proba"], "flitig":["Sedulus","Sedula"],
+  "rolig":["Iocosus","Iocosa"], "busig":["Petulans","Petulans"], "nyfiken":["Curiosus","Curiosa"],
+  "hungrig":["Vorax","Vorax"], "sömnig":["Somniculosus","Somniculosa"], "lat":["Piger","Pigra"]
+};
+
+/* =====================================================================
+   LATINISERING (väg B) — regelbaserad, fungerar på alla strängar
+   ===================================================================== */
+
+// gör om icke-latinska tecken till latinska (fallback-omskrivning)
+function transliterate(raw){
+  let x = raw.toLowerCase().trim();
+  let changed = false;
+  const before = x;
+  x = x
+    .replace(/å/g,'a').replace(/ä/g,'a').replace(/ö/g,'o')
+    .replace(/ü/g,'u').replace(/é|è|ê/g,'e').replace(/á|à/g,'a')
+    .replace(/ø/g,'o').replace(/æ/g,'ae')
+    .replace(/sch/g,'sc').replace(/sh/g,'s').replace(/ch/g,'c')
+    .replace(/w/g,'v').replace(/k/g,'c').replace(/x/g,'x').replace(/z/g,'s')
+    .replace(/qu/g,'qu').replace(/y/g,'i');
+  // ta bort dubbelkonsonanter i slutet som latinet ogillar
+  if(x!==before) changed = true;
+  return { s:x, changed };
+}
+
+function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
+
+// latinisera ett förnamn till praenomen (man) eller kvinnligt grundnamn
+// returnerar {name, note}  note = fotnotstext om något gjordes, annars ''
+function latinizeGiven(raw, gender){
+  const orig = raw.trim();
+  const tl = transliterate(orig);
+  let base = tl.s;
+  let noteParts = [];
+  if(tl.changed) noteParts.push('ljudenligt');
+
+  // redan latinsk vokaländelse för rätt kön? rör då minimalt
+  const endsA = /a$/.test(base);
+  const endsUS = /us$/.test(base);
+  const endsVowel = /[aeiou]$/.test(base);
+
+  let out;
+  if(gender==='f'){
+    if(endsA){ out = base; }                 // Anna, Sara -> oförändrat
+    else if(/e$/.test(base)){ out = base.slice(0,-1)+'a'; } // Sofie->Sofia (grovt)
+    else if(endsVowel){ out = base+'a'; }    // vokalslut: undvik dubbel-a nedan
+    else { out = base+'a'; }                 // konsonant -> +a
+    // undvik dubbel-a
+    out = out.replace(/aa$/,'a');
+  } else {
+    if(endsUS){ out = base; }                 // Marcus -> oförändrat
+    else if(/(o|us)$/.test(base)){ out = base; }  // Leo, Hugo, Otto -> oförändrat
+    else if(endsVowel){ out = base+'s'; }    // Elia -> Elias-ish; sällsynt
+    else { out = base+'us'; }                // konsonant -> +us
+    out = out.replace(/uus$/,'us');
+  }
+  out = cap(out);
+  const note = noteParts.length ? { word:cap(orig), latin:out, why:'saknar känd betydelse' } : null;
+  return { name:out, note, base };
+}
+
+// latinisera efternamn -> nomen (gens). Feminin form om gender f.
+function latinizeSurname(raw, gender){
+  let orig = raw.trim();
+  let tl = transliterate(orig);
+  let s = tl.s;
+  let stem;
+  // -sson / -son
+  if(/ss?on$/.test(s)){
+    stem = s.replace(/ss?on$/,'');
+    stem = cap(stem);
+    return gender==='f' ? stem+'onia' : stem+'onius';
+  }
+  // -berg,-ström,-lund,-qvist,-gren,-dahl m.fl. -> +ius/-ia
+  if(/(berg|strom|lund|qvist|kvist|gren|dahl|dal|holm|mark|stedt|vall|sjo|blad|lof|ros|fors|borg|ling|man|stad)$/.test(s)){
+    stem = cap(s);
+    return gender==='f' ? stem+'ia' : stem+'ius';
+  }
+  // slutar på vokal
+  if(/[aeiou]$/.test(s)){
+    stem = cap(s.replace(/[aeiou]$/,''));
+    return gender==='f' ? stem+'ia' : stem+'ius';
+  }
+  // default konsonant
+  stem = cap(s);
+  return gender==='f' ? stem+'ia' : stem+'ius';
+}
+
+// vanliga svenska mansnamn i latinsk form, för snyggare patronymikon
+const FATHER_LATIN = {
+  "anders":"Andreas","andreas":"Andreas","andré":"Andreas",
+  "johan":"Iohannes","jan":"Iohannes","janne":"Iohannes","john":"Iohannes","jon":"Iohannes","jonas":"Ionas",
+  "lars":"Laurentius","lasse":"Laurentius",
+  "mikael":"Michael","micke":"Michael","michael":"Michael","mikke":"Michael",
+  "per":"Petrus","pär":"Petrus","peter":"Petrus","petter":"Petrus","pelle":"Petrus",
+  "erik":"Ericus","eric":"Ericus",
+  "karl":"Carolus","carl":"Carolus","kalle":"Carolus",
+  "nils":"Nicolaus","niklas":"Nicolaus","nicklas":"Nicolaus",
+  "sven":"Sueno","svante":"Sueno",
+  "gustav":"Gustavus","gustaf":"Gustavus","gösta":"Gustavus",
+  "olof":"Olaus","olov":"Olaus","olle":"Olaus","ola":"Olaus",
+  "fredrik":"Fridericus","fred":"Fridericus",
+  "henrik":"Henricus","henry":"Henricus",
+  "stefan":"Stephanus","staffan":"Stephanus",
+  "david":"David","daniel":"Daniel","gabriel":"Gabriel","samuel":"Samuel",
+  "tomas":"Thomas","thomas":"Thomas","tommy":"Thomas",
+  "bengt":"Benedictus","bengt":"Benedictus","ben":"Benedictus",
+  "magnus":"Magnus","måns":"Magnus",
+  "martin":"Martinus","mårten":"Martinus",
+  "bo":"Bogislaus","björn":"Björno","bjorn":"Björno",
+  "leif":"Leivo","roland":"Rolandus","ronald":"Rolandus",
+  "rickard":"Ricardus","richard":"Ricardus","robert":"Robertus","robin":"Robertus",
+  "hans":"Iohannes","hasse":"Iohannes","harald":"Haraldus",
+  "george":"Georgius","göran":"Georgius","jörgen":"Georgius","örjan":"Georgius",
+  "alexander":"Alexander","alex":"Alexander","william":"Vilhelmus","vilhelm":"Vilhelmus","ville":"Vilhelmus",
+  "anton":"Antonius","antonio":"Antonius","marcus":"Marcus","markus":"Marcus","max":"Maximus",
+  "victor":"Victor","viktor":"Victor","felix":"Felix","leo":"Leo","hugo":"Hugo","otto":"Otto"
+};
+
+// bygg patronymikon: faderns förnamn -> genitiv + filius/filia
+function buildFiliation(rawFather, gender){
+  if(!rawFather || !rawFather.trim()) return '';
+  const key = rawFather.toLowerCase().trim();
+  let f = FATHER_LATIN[key] || cap(transliterate(rawFather).s);
+  // genitivbildning
+  let gen;
+  if(/us$/.test(f)) gen = f.replace(/us$/,'i');        // Marcus -> Marci, Ericus -> Erici
+  else if(/eus$/.test(f)) gen = f.replace(/eus$/,'ei');
+  else if(/o$/.test(f)) gen = f.replace(/o$/,'onis');  // Sueno -> Suenonis, Leo -> Leonis
+  else if(/es$/.test(f)) gen = f.replace(/es$/,'is');  // Iohannes -> Iohannis, Andreas? no
+  else if(/as$/.test(f)) gen = f.replace(/as$/,'ae');  // Andreas -> Andreae, Thomas -> Thomae
+  else if(/a$/.test(f)) gen = f.replace(/a$/,'ae');    // Ionas? handled; Anna -> Annae
+  else if(/[aeiou]$/.test(f)) gen = f+'i';
+  else gen = f+'i';
+  return gen + (gender==='f' ? ' filia' : ' filius');
+}
+
+// slå upp cognomen via betydelse (väg C) eller egenskap (TRAITS)
+function findCognomen(givenRaw, traitRaw, gender){
+  // egenskap prioriteras (eget val)
+  const t = (traitRaw||'').toLowerCase().trim();
+  if(t && TRAITS[t]){
+    return { word:TRAITS[t][gender==='f'?1:0], src:'trait', from:t };
+  }
+  const g = (givenRaw||'').toLowerCase().trim();
+  if(g && MEANING[g]){
+    let cg = MEANING[g][0];
+    // feminisera enkla -us/-a former för kvinna
+    if(gender==='f'){
+      cg = cg.replace(/us$/,'a').replace(/or$/,'rix');
+    }
+    return { word:cg, src:'meaning', from:g, gloss:MEANING[g][1] };
+  }
+  return null;
+}
+
+/* =====================================================================
+   SAMMANSÄTTNING + RENDERING
+   ===================================================================== */
+const COL = { praenomen:'#8C6A2F', nomen:'#9C3A28', cognomen:'#6B7A4C', filiation:'#4A6A8C' };
+let currentGender = null;
+let lastBuild = null;
+
+function build(){
+  const gender = currentGender;
+  const given = document.getElementById('fornamn').value;
+  const sur   = document.getElementById('efternamn').value;
+  const father= document.getElementById('pappa').value;
+  const trait = document.getElementById('drag').value;
+
+  const parts = [];
+  const notes = [];
+
+  const nomen = latinizeSurname(sur || 'Roma', gender);
+  const cog = findCognomen(given, trait, gender);
+  const filiation = buildFiliation(father, gender);
+
+  let displayName = '';
+
+  if(gender==='m'){
+    const pre = latinizeGiven(given || 'Marcus', gender);
+    if(pre.note) notes.push(pre.note);
+    displayName = pre.name + ' ' + nomen + (cog ? ' ' + cog.word : '');
+    parts.push(['praenomen', pre.name, 'Ditt personliga förnamn. Romarna hade bara ett fåtal att välja på.']);
+    parts.push(['nomen', nomen, 'Din släkt, byggd av ditt efternamn. Detta visade vilken ätt du tillhörde.']);
+    if(cog) parts.push(['cognomen', cog.word, cognomenExpl(cog)]);
+  } else {
+    // kvinna: nomen i feminin form ÄR grundnamnet, inget praenomen
+    displayName = nomen + (cog ? ' ' + cog.word : '');
+    parts.push(['nomen', nomen, 'Ditt namn är den kvinnliga formen av din släkt. Du har inget eget förnamn, till skillnad från en man.']);
+    if(cog) parts.push(['cognomen', cog.word, cognomenExpl(cog)]);
+  }
+
+  lastBuild = { gender, nomen, cog, filiation, displayName };
+  render(displayName, filiation, parts, notes, gender, nomen);
+}
+
+function cognomenExpl(cog){
+  if(cog.src==='trait') return 'Ditt tillnamn, från ordet du valde ("'+cog.from+'").';
+  return 'Ditt tillnamn, från ditt förnamns betydelse ('+cog.gloss+').';
+}
+
+function render(name, filiation, parts, notes, gender, nomen){
+  document.getElementById('romanName').textContent = name;
+  document.getElementById('filiation').textContent = filiation || '';
+
+  const bd = document.getElementById('breakdown');
+  bd.innerHTML = '';
+  parts.forEach(p=>{
+    const row = document.createElement('div');
+    row.className = 'part';
+    row.innerHTML =
+      '<span class="swatch" style="background:'+COL[p[0]]+'"></span>'+
+      '<div><span class="pword">'+p[1]+'</span> '+
+      '<span class="pexpl">'+p[2]+'</span></div>';
+    bd.appendChild(row);
+  });
+  if(filiation){
+    const row = document.createElement('div');
+    row.className = 'part';
+    row.innerHTML =
+      '<span class="swatch" style="background:'+COL.filiation+'"></span>'+
+      '<div><span class="pword">'+filiation+'</span> '+
+      '<span class="pexpl">Din härstamning: vems '+(gender==='f'?'dotter':'son')+' du är. Romarna räknade släkt genom fadern.</span></div>';
+    bd.appendChild(row);
+  }
+
+  // fotnot
+  const fn = document.getElementById('footnote');
+  if(notes.length){
+    const n = notes[0];
+    fn.textContent = n.word+' latiniserades ljudenligt till '+n.latin+', eftersom namnet '+n.why+'.';
+    fn.style.display = 'block';
+  } else {
+    fn.style.display = 'none';
+  }
+
+  // systrar / bröder-knapp
+  const sb = document.getElementById('sistersBtn');
+  const sisters = document.getElementById('sisters');
+  sisters.classList.remove('show');
+  sisters.innerHTML = '';
+  if(gender==='f'){
+    sb.style.display = 'inline-block';
+    sb.textContent = 'Tänk om du hade systrar →';
+    sb.onclick = ()=>showSisters(nomen);
+  } else {
+    sb.style.display = 'none';
+  }
+
+  const res = document.getElementById('result');
+  res.classList.add('show');
+  res.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function showSisters(nomen){
+  const box = document.getElementById('sisters');
+  const rows = [
+    [nomen+' Maior','den äldsta'],
+    [nomen+' Secunda','den andra'],
+    [nomen+' Tertia','den tredje'],
+    [nomen+' Minor','den yngsta']
+  ];
+  let html = '<p class="sisters-intro">Om din far hade fyra döttrar skulle ni alla heta samma sak, och skiljas åt bara med tillägg:</p>';
+  rows.forEach(r=>{
+    html += '<div class="sister-row"><span class="sister-name">'+r[0]+'</span><span class="sister-tag">'+r[1]+'</span></div>';
+  });
+  html += '<p class="sisters-note">Det är själva poängen: en romersk kvinna namngavs efter sin släkt och sin plats i syskonskaran, inte som en egen individ med eget förnamn.</p>';
+  box.innerHTML = html;
+  box.classList.add('show');
+}
+
+/* =====================================================================
+   HÄNDELSER
+   ===================================================================== */
+document.querySelectorAll('#gender button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    currentGender = b.dataset.g;
+    document.querySelectorAll('#gender button').forEach(x=>{
+      const on = x===b;
+      x.classList.toggle('on', on);
+      x.setAttribute('aria-pressed', String(on));
+    });
+  });
+});
+
+document.getElementById('go').addEventListener('click', ()=>{
+  if(!currentGender){
+    // mjuk uppmaning: markera könsvalet
+    const g = document.getElementById('gender');
+    g.animate?.([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}], {duration:260});
+    document.getElementById('fornamn'); 
+    return;
+  }
+  build();
+});
+
+// Enter i valfritt fält bygger namnet
+document.querySelectorAll('input[type=text]').forEach(inp=>{
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter' && currentGender) build(); });
+});
+</script>
+</body>
+</html>
