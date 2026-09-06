@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diktatorns armé</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#CDD1C9;
+  --surface:#EDEFE9;
+  --surface-2:#DFE2DA;
+  --papper:#F1EEE1;
+  --ink:#1A1F20;
+  --ink-soft:#525A58;
+  --line:#AAB0A6;
+  --kost:#7E2E20;
+  --mork:#1B1815;
+  --guld:#C9A227;
+  --sans:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"Courier Prime","Courier New",monospace;
+  --korn:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--serif);font-size:18px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:800px;margin:0 auto;padding:0 26px 140px}
+p{max-width:none}
+h1,h2,h3,h4{font-family:var(--sans);font-weight:600;line-height:1.12;margin:0}
+h1{font-size:clamp(2.6rem,7.5vw,5rem);font-weight:700;letter-spacing:-.035em}
+h2{font-size:clamp(1.7rem,3.6vw,2.5rem);letter-spacing:-.02em}
+h3{font-size:1.14rem}
+h4{font-size:.98rem}
+
+.portratt{background:var(--mork);border:1px solid #0D0B09;margin:0}
+.portratt svg{display:block;width:100%;height:auto}
+.portratt figcaption{font-family:var(--mono);font-size:.8rem;color:#8C8579;
+  padding:.7rem .9rem;border-top:1px solid #332E27}
+.portratt figcaption b{color:#C9BFA8;font-weight:700}
+.portratt figcaption em{color:var(--guld);font-style:normal}
+.hero-portratt{margin:3rem 0 0}
+
+header{padding:13vh 0 7vh}
+.kicker{font-family:var(--mono);font-size:.86rem;color:var(--ink-soft);letter-spacing:.06em;margin-bottom:1.3rem}
+.lede{font-size:1.3rem;margin-top:2.2rem}
+
+section{border-top:1px solid var(--line);padding:5.5rem 0 1rem}
+section.locked{display:none}
+.sect-no{font-family:var(--mono);font-size:.82rem;color:var(--ink-soft);letter-spacing:.06em;margin-bottom:1rem}
+
+.mek{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);margin:2.6rem 0}
+.mek div{background:var(--surface);padding:1.1rem 1.2rem}
+.mek h4{margin-bottom:.3rem}
+.mek p{font-size:.95rem;margin:0;color:var(--ink-soft);max-width:none}
+
+/* ---------- reglage ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);padding:1.7rem;margin-top:1.6rem;
+  transition:opacity .4s ease}
+.panel.avslutad{opacity:.32;pointer-events:none;filter:grayscale(1)}
+.panel-not{font-family:var(--mono);font-size:.85rem;color:var(--ink-soft);margin:1rem 0 0;display:none}
+.panel-not.pa{display:block}
+.reglage{padding:1.6rem 0;border-bottom:1px solid var(--line)}
+.reglage:first-child{padding-top:0}
+.reglage:last-child{border-bottom:0;padding-bottom:0}
+.reglage h3{margin-bottom:1rem}
+.linje{max-width:560px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;background:transparent;
+  margin:0;padding:14px 0;cursor:grab;display:block}
+input[type=range]:active{cursor:grabbing}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--ink)}
+input[type=range]::-moz-range-track{height:2px;background:var(--ink)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+  width:22px;height:22px;border-radius:50%;background:var(--ink);border:3px solid var(--surface);
+  margin-top:-10px;box-shadow:0 0 0 1px var(--ink)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--ink);
+  border:3px solid var(--surface);box-shadow:0 0 0 1px var(--ink)}
+input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 3px #35566B}
+input[type=range]:focus-visible::-moz-range-thumb{box-shadow:0 0 0 3px #35566B}
+.andar{display:flex;justify-content:space-between;font-family:var(--sans);
+  font-size:.85rem;color:var(--ink-soft);margin-top:-.2rem}
+.konsekvens{font-size:.98rem;color:var(--ink-soft);margin:1rem 0 0;min-height:3.1em;max-width:60ch}
+
+.depescher{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+  border:1px solid var(--line);margin-top:1.6rem}
+.dep{background:var(--papper);padding:1.15rem 1.3rem;font-family:var(--mono);
+  font-size:.86rem;line-height:1.62;color:#20201C}
+.dep h4{font-family:var(--mono);font-size:.76rem;letter-spacing:.1em;color:#6B675E;
+  border-bottom:1px solid #C4C0B0;padding-bottom:.55rem;margin-bottom:.8rem;font-weight:700}
+.dep p{margin:0;max-width:none;min-height:4.4em}
+
+button.gå{font-family:var(--sans);font-size:1rem;font-weight:600;background:var(--ink);
+  color:var(--surface);border:0;padding:.85rem 1.7rem;cursor:pointer;margin-top:2.2rem}
+button.gå:hover{background:#0B0F10}
+button.gå:focus-visible{outline:3px solid #35566B;outline-offset:3px}
+button.gå[disabled]{background:var(--line);color:var(--ink-soft);cursor:not-allowed}
+button.sekundär{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+button.sekundär:hover{background:var(--surface)}
+button.ljus{background:#D8CFB8;color:#15140F}
+button.ljus:hover{background:#EFE7D2}
+
+#s3{border-top:5px solid var(--kost)}
+.hot{border-left:4px solid var(--kost);background:var(--surface);padding:1.3rem 1.5rem;margin:2rem 0}
+.larm{background:var(--papper);background-image:var(--korn);background-blend-mode:multiply;
+  border:1px solid var(--line);padding:1.4rem 1.6rem;margin:2.2rem 0 0;position:relative;
+  font-family:var(--mono);font-size:.86rem;line-height:1.62;color:#20201C;max-width:660px}
+.larm h4{font-family:var(--mono);font-size:.76rem;letter-spacing:.1em;color:#6B675E;
+  border-bottom:1px solid #BFB9A6;padding-bottom:.55rem;margin-bottom:.85rem}
+.larm p{margin:0;max-width:none}
+.stampel-rod{position:absolute;right:1.1rem;top:1.2rem;transform:rotate(-6deg);
+  border:2px solid var(--kost);color:var(--kost);font-size:.68rem;font-weight:700;
+  letter-spacing:.12em;padding:.28rem .55rem;opacity:.85;background:rgba(241,238,225,.6)}
+.jamfor{display:grid;gap:1.2rem;margin-top:2.2rem}
+.jamfor .portratt figcaption em{color:#9FB6C6;font-style:normal}
+.budget-not{font-family:var(--mono);font-size:.78rem;color:var(--ink-soft);margin:.6rem 0 0;max-width:60ch}
+.hot p{margin:.5rem 0 0}
+.budget{font-family:var(--mono);font-size:.9rem;margin-top:1.5rem;color:var(--ink-soft)}
+.budget-bar{height:6px;background:var(--surface-2);border:1px solid var(--line);max-width:300px;margin-top:.4rem}
+.budget-bar i{display:block;height:100%;background:var(--kost);width:100%;transition:width .25s ease}
+
+/* ---------- mörk sektion, rollbytet ---------- */
+#s4{background:var(--mork);color:#C4BCAA;border-top:1px solid #0D0B09;
+  box-shadow:0 0 0 100vmax var(--mork);clip-path:inset(0 -100vmax);
+  padding:0 0 5rem;font-family:var(--mono);font-size:.98rem;line-height:1.7}
+#s4 h2{color:#E4DCC6;font-family:var(--mono);font-weight:700;letter-spacing:0;
+  font-size:clamp(1.4rem,3vw,2rem)}
+#s4 .sect-no{color:#7C7466}
+#s4 p{max-width:60ch}
+#mellanakt{min-height:62vh;display:flex;flex-direction:column;justify-content:center}
+.mellanrad{font-size:clamp(1.3rem,3.4vw,2rem);color:#E4DCC6;line-height:1.35;max-width:22ch !important}
+.mellanrad span{display:block;color:#7C7466;font-size:.9rem;letter-spacing:.14em;margin-bottom:1.6rem}
+#scenen{padding-top:4rem}
+#s4 .portratt{border-color:#332E27}
+
+/* rapporten som föremål */
+.lapp{background:var(--papper);background-image:var(--korn);background-blend-mode:multiply;
+  color:#20201C;padding:1.5rem 1.6rem;margin:2.2rem 0 0;max-width:620px;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);transform:rotate(-.5deg);position:relative}
+.lapp-topp{font-size:.78rem;letter-spacing:.06em;color:#6B675E;border-bottom:1px solid #BFB9A6;
+  padding-bottom:.7rem;margin-bottom:1rem}
+.lapp-topp b{color:#20201C}
+.lapp p{margin:0;max-width:none;color:#20201C;line-height:1.65}
+.svartat{background:#15140F;color:transparent;user-select:none;
+  border-radius:1px;padding:0 .12em;box-decoration-break:clone}
+.lapp.efter{transform:rotate(.4deg);margin-top:1.6rem;box-shadow:0 6px 20px rgba(0,0,0,.45)}
+.lapp-etikett{font-size:.72rem;letter-spacing:.1em;color:#6B675E;margin:0 0 .9rem}
+.lapp-sammanfattning{border-top:1px solid #BFB9A6;margin-top:1rem;padding-top:.8rem;font-size:.82rem}
+#s4 .vandpunkt{font-size:clamp(1.2rem,2.8vw,1.6rem);line-height:1.38;color:#E9E1CB;
+  border-left:4px solid var(--kost);padding-left:1.2rem;margin:2.6rem 0 0;max-width:34ch}
+#s4 .fraga{font-family:var(--mono);font-size:.78rem;letter-spacing:.18em;color:#9A9184;
+  margin:2.2rem 0 .7rem;text-transform:uppercase}
+#s4 .fraga + .val-lista{margin-top:0}
+.varfor{border-top:1px solid #332E27;padding-top:1rem;margin-top:1.2rem;
+  color:#C4BCAA;font-size:.94rem}
+.stampel{position:absolute;right:1.1rem;top:1.1rem;transform:rotate(7deg);
+  border:2px solid #8A3626;color:#8A3626;font-size:.72rem;font-weight:700;
+  letter-spacing:.14em;padding:.25rem .5rem;opacity:.82}
+
+.val-lista{display:grid;gap:1px;background:#332E27;border:1px solid #332E27;margin-top:2rem;max-width:620px}
+.val-lista button{background:#241F1A;border:0;text-align:left;padding:1.05rem 1.2rem;
+  font-family:var(--mono);font-size:.96rem;color:#D8CFB8;cursor:pointer}
+.val-lista button:hover{background:#2F2922}
+.utfall{background:#241F1A;border:1px solid #332E27;padding:1.4rem 1.5rem;margin-top:2rem;max-width:660px}
+.utfall p{margin:0 0 .9rem;color:#C4BCAA}
+.utfall p:last-child{margin-bottom:0}
+.utfall .regel{border-top:1px solid #332E27;padding-top:.9rem;color:#8C8579;font-size:.92rem}
+
+.facit{background:var(--surface);border:1px solid var(--line);padding:1.9rem}
+.facit .namn{font-family:var(--sans);font-size:1.5rem;font-weight:700;letter-spacing:-.015em}
+.facit .spegel{font-size:1.12rem;margin:.7rem 0 1.4rem;padding-bottom:1.2rem;border-bottom:1px solid var(--line)}
+.facit .notis{font-family:var(--mono);font-size:.78rem;color:var(--ink-soft);
+  border-top:1px solid var(--line);padding-top:.8rem;margin-top:1.3rem}
+.kompass{background:var(--surface);border:1px solid var(--line);padding:1.7rem;margin-top:1.5rem}
+.kompass h3{margin-bottom:.5rem}
+.kompass .forklaring{font-size:.95rem;color:var(--ink-soft);margin:0 0 1.2rem;max-width:62ch}
+.kompass svg{display:block;width:100%;height:auto;margin:0 auto}
+.fp{margin-top:1.8rem;border-top:1px solid var(--line);padding-top:1.4rem}
+.fp h4{font-family:var(--mono);font-size:.8rem;letter-spacing:.08em;color:var(--ink-soft);margin-bottom:1rem}
+.fp-rad{display:grid;grid-template-columns:112px 1fr;gap:.9rem;align-items:center;
+  margin-bottom:.75rem;font-family:var(--mono);font-size:.78rem}
+.fp-spar{position:relative;height:18px;background:var(--surface-2);border:1px solid var(--line)}
+.fp-du{position:absolute;top:-3px;bottom:-3px;width:4px;background:var(--kost);transform:translateX(-2px)}
+.fp-hist{position:absolute;top:2px;bottom:2px;width:0;border-left:2px dashed var(--ink);opacity:.7}
+.fp-teckenlista{display:flex;gap:1.4rem;font-family:var(--mono);font-size:.76rem;
+  color:var(--ink-soft);margin-top:1rem;flex-wrap:wrap}
+.fp-teckenlista i{display:inline-block;width:14px;height:0;border-top:4px solid var(--kost);
+  vertical-align:middle;margin-right:.4rem}
+.fp-teckenlista i.streck{border-top:2px dashed var(--ink)}
+
+/* ---------- protokollflik ---------- */
+#protoFlik{position:fixed;right:0;top:22vh;z-index:40;display:flex;align-items:flex-start}
+#protoTab{background:var(--ink);color:var(--surface);border:0;cursor:pointer;
+  font-family:var(--mono);font-size:.82rem;letter-spacing:.14em;padding:1.1rem .55rem;
+  writing-mode:vertical-rl;text-orientation:mixed}
+#protoFlik.sparrad #protoTab{background:#5E2A1E}
+#protoTab:focus-visible{outline:3px solid #35566B;outline-offset:2px}
+#protoTab{transition:background .3s ease}
+#protoBlad{width:0;overflow:hidden;overflow-y:auto;max-height:64vh;
+  background:var(--papper);background-image:var(--korn);background-blend-mode:multiply;
+  box-shadow:0 0 0 rgba(0,0,0,0);
+  transition:width .44s cubic-bezier(.4,0,.2,1), box-shadow .44s ease}
+#protoFlik.open #protoBlad{width:min(380px,84vw);box-shadow:-7px 0 28px rgba(0,0,0,.32)}
+.blad-inre{width:min(380px,84vw);padding:1.5rem 1.6rem;font-family:var(--mono);
+  font-size:.83rem;line-height:1.62;color:#20201C;
+  opacity:0;transform:translateX(18px);
+  transition:opacity .24s ease, transform .44s cubic-bezier(.22,.61,.36,1)}
+#protoFlik.open .blad-inre{opacity:1;transform:none;
+  transition:opacity .3s ease .1s, transform .46s cubic-bezier(.22,.61,.36,1) .06s}
+.blad-inre h4{font-family:var(--mono);font-size:.82rem;letter-spacing:.1em;
+  border-bottom:1px solid #BFB9A6;padding-bottom:.6rem;margin-bottom:.5rem}
+.avskrift{font-size:.72rem;color:#6B675E;margin:0 0 1.2rem;line-height:1.5}
+.par{margin-bottom:1.1rem}
+.par b{display:block;font-weight:700}
+.par.struken{position:relative;color:transparent;background:#15140F;padding:.4rem .5rem;
+  border-radius:1px;user-select:none}
+.par.struken b{color:transparent}
+.par.struken::after{content:"EJ BEHÖRIG";position:absolute;left:.6rem;top:50%;
+  transform:translateY(-50%);color:#6E655A;font-size:.7rem;letter-spacing:.14em}
+.tom{color:#77736A;font-style:italic}
+
+/* ---------- kvitto ---------- */
+.kolumner{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+  border:1px solid var(--line);margin-top:2.4rem}
+.kol{background:var(--surface);padding:1.5rem 1.4rem}
+.kol h3{padding-bottom:.7rem;border-bottom:2px solid var(--kost);margin-bottom:1rem}
+.kol ul{margin:0;padding-left:1.1rem}
+.kol li{margin-bottom:.9rem;font-size:.97rem;line-height:1.55}
+.kol li:last-child{margin-bottom:0}
+
+.faltet{background:var(--mork);border:1px solid #0D0B09;padding:1.4rem 1.5rem;margin-top:2.4rem}
+.faltet h3{color:#D8CFB8;margin-bottom:1.1rem}
+.faltet svg{display:block;width:100%;height:auto}
+.falt-txt{font-family:var(--mono);font-size:.85rem;color:#9A9184;margin:.7rem 0 1.6rem;max-width:70ch}
+.falt-txt b{color:#C87D6C;font-weight:700}
+.overflod{font-family:var(--sans);font-size:1.06rem;color:#D8CFB8;border-top:1px solid #332E27;
+  padding-top:1.2rem;margin:1.6rem 0 0;max-width:62ch}
+
+.memoar{margin-top:1rem}
+.memoar .krav{font-style:italic;font-size:1.02rem;margin:0 0 .5rem}
+.dold{position:relative;background:#15140F;color:#15140F;border:0;width:100%;text-align:left;
+  padding:.85rem 1rem;font-family:var(--serif);font-size:.96rem;cursor:pointer;line-height:1.5}
+.dold::after{content:"SPÄRRAT / klicka";position:absolute;left:1rem;top:50%;transform:translateY(-50%);
+  font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;color:#6E655A}
+.dold.visad{background:var(--surface-2);color:var(--ink);cursor:default}
+.dold.visad::after{content:""}
+.memoar-block{border-bottom:1px solid var(--line);padding-bottom:1.3rem;margin-bottom:1.3rem}
+.memoar-block:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+
+.protokoll-jamforelse{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
+  border:1px solid var(--line);margin-top:2.4rem}
+.pj{background:var(--papper);background-image:var(--korn);background-blend-mode:multiply;
+  padding:1.4rem 1.5rem;font-family:var(--mono);font-size:.84rem;line-height:1.6}
+.pj h4{font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;border-bottom:1px solid #BFB9A6;
+  padding-bottom:.6rem;margin-bottom:1rem}
+
+.omtvistat{border:1px solid var(--ink);padding:1.4rem 1.6rem;margin-top:2.4rem}
+.omtvistat h3{margin-bottom:.6rem}
+.slutord{font-size:1.3rem;margin:3rem 0 0;max-width:56ch}
+.kallor{font-family:var(--sans);font-size:.84rem;color:var(--ink-soft);margin-top:3.5rem;
+  border-top:1px solid var(--line);padding-top:1.2rem;max-width:76ch}
+.kallor p{max-width:none;margin:.45rem 0}
+
+@media (max-width:880px){
+  .kolumner,.protokoll-jamforelse,.mek,.depescher{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  body{font-size:17px}
+  .wrap{padding:0 18px 90px}
+  header{padding:8vh 0 5vh}
+  #protoFlik{top:auto;bottom:0;align-items:flex-end}
+  .stampel,.stampel-rod{position:static;display:inline-block;transform:none;
+    margin:0 0 .9rem;background:none}
+  .lapp,.larm{padding-top:1.2rem}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<div id="protoFlik">
+  <button id="protoTab" aria-expanded="false">PROTOKOLL</button>
+  <div id="protoBlad">
+    <div class="blad-inre">
+      <h4 id="protoRubrik">FÖRFATTNINGSSAMLING</h4>
+      <p class="avskrift" id="protoAvskrift">Original. Förvaras hos kanslichefen.</p>
+      <div id="protoInnehall"><p class="tom">Inga beslut fattade.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<header>
+  <p class="kicker">HISTORIA 1B</p>
+  <h1>Diktatorns armé</h1>
+  <p class="lede">Diktaturer har byggt några av de skickligaste arméer som funnits. De har också byggt några av de sämsta. Skillnaden ligger inte i att de är diktaturer.</p>
+
+  <figure class="portratt hero-portratt">
+    <div id="heroSvg"></div>
+    <figcaption><em>Du</em>, längst fram. Bakom dig officerskåren, <b>100 av 100</b> på plats.</figcaption>
+  </figure>
+
+  <p>Enligt statsvetaren Caitlin Talmadge ligger skillnaden i vad ledaren är rädd för. En regim som fruktar en militärkupp bygger sin armé för att förhindra kuppen, och förstör därmed arméns förmåga att slåss mot någon annan. En regim som inte fruktar sin officerskår kan låta den bli duglig.</p>
+  <p>Talmadge pekar ut fyra ställen där ledaren gör sitt val.</p>
+
+  <div class="mek">
+    <div><h4>Befordran</h4><p>Befordras officerare efter militär skicklighet eller efter trohet mot ledaren?</p></div>
+    <div><h4>Övning</h4><p>Får förbanden öva stort och realistiskt tillsammans, eller hålls övningarna små och kontrollerade?</p></div>
+    <div><h4>Ledning</h4><p>Fattar befälhavare egna beslut i fält, eller går allt genom toppen och genom politiska övervakare?</p></div>
+    <div><h4>Information</h4><p>Rör sig information fritt uppåt och mellan förband, eller stryps den av en säkerhetstjänst?</p></div>
+  </div>
+
+  <p>Nu är det din tur. Du styr en stat, du har tagit makten, och du tänker behålla den. Allt du bestämmer skrivs in i protokollet i kanten.</p>
+  <p>Du får inga mätare och inga siffror. Det fick inte de verkliga ledarna heller. Du har officerskåren framför dig och två rapporter på skrivbordet.</p>
+  <button class="gå" data-open="s2">Börja</button>
+</header>
+
+<section id="s2" class="locked">
+  <p class="sect-no">STEG 1 AV 5</p>
+  <h2>Fyra beslut</h2>
+  <p>Dra kulan dit du vill längs varje linje. Det finns inga fasta lägen och inget rätt svar. Se vad som händer med officerskåren och vad rapporterna säger.</p>
+
+  <figure class="portratt">
+    <div id="spelSvg"></div>
+    <figcaption id="spelCap"></figcaption>
+  </figure>
+
+  <div class="depescher">
+    <div class="dep">
+      <h4>SÄKERHETSTJÄNSTENS VECKORAPPORT</h4>
+      <p id="depSak"></p>
+    </div>
+    <div class="dep">
+      <h4>GENERALSTABENS ÖVNINGSRAPPORT</h4>
+      <p id="depGen"></p>
+    </div>
+  </div>
+
+  <div class="panel" id="panel"></div>
+  <p class="panel-not" id="panelNot">Du ställer inte längre in någonting. Reglagen är kvar så att du kan se vad du valde.</p>
+  <button class="gå" id="lasIn">Lås in besluten</button>
+</section>
+
+<section id="s3" class="locked">
+  <p class="sect-no">STEG 2 AV 5</p>
+  <h2>Grannmakten mobiliserar</h2>
+  <div class="hot">
+    <p>Rapporterna är entydiga. Inom ett år står de vid gränsen.</p>
+    <p>Från och med nu är det bara generalstabens rapport som betyder något. Ingen fiende bryr sig om hur trygg du sitter.</p>
+  </div>
+  <div class="larm">
+    <div class="stampel-rod">MOBILISERING KONSTATERAD</div>
+    <h4>SPANINGSAVDELNINGEN</h4>
+    <p>Grannmakten har kallat in tre årsklasser. Järnvägstrafiken mot gränsen har fördubblats sedan förra månaden. Deras förband övar i armékårs storlek och rör sig samordnat utan order från högsta ort. Vi ser inga luckor i deras befälskedja.</p>
+  </div>
+
+  <div class="jamfor">
+    <figure class="portratt">
+      <div id="dinSvg"></div>
+      <figcaption id="dinCap"></figcaption>
+    </figure>
+    <figure class="portratt">
+      <div id="fiendeSvg"></div>
+      <figcaption><em>Grannmaktens officerskår.</em> <b>100 av 100</b> på plats. Inga luckor, inga saknade led.</figcaption>
+    </figure>
+  </div>
+
+  <p>Du får ändra dina beslut, men en armé byggs inte om på ett år. Du hinner bara ändra en begränsad mängd, och varje ändring kostar dig i det säkerhetstjänsten rapporterar. De officerare du redan har rensat ut kommer inte tillbaka.</p>
+  <p class="budget">Kvar att ändra: <b id="budgetSiffra">90</b> av 90</p>
+  <div class="budget-bar"><i id="budgetBar"></i></div>
+  <p class="budget-not">När siffran är nere på noll går reglagen inte att flytta mer. Armén du byggde under åren före mobiliseringen är i stort sett den armé du kommer att ha.</p>
+  <button class="gå" data-open="s4">Gå vidare</button>
+</section>
+
+<section id="s4" class="locked">
+  <div id="mellanakt">
+    <p class="mellanrad"><span>STEG 3 AV 5</span>Vi byter plats i övningen. Ledaren sitter kvar där han satt. Från och med nu är du en av de hundra.</p>
+    <button class="gå ljus" id="tillScen">Ta plats i ledet</button>
+  </div>
+
+  <div id="scenen" hidden>
+    <h2>Samma stat, sedd nerifrån</h2>
+
+    <figure class="portratt" style="margin-top:2rem">
+      <div id="scenSvg"></div>
+      <figcaption>Du står någonstans i ledet, upplyst. <b>Ledaren sitter kvar längst fram.</b></figcaption>
+    </figure>
+
+    <p style="margin-top:2rem">Du sitter i staben, långt ner i kedjan, och tar emot posten från gränsavsnittet. I morse kom det här.</p>
+
+    <div class="lapp">
+      <div class="stampel">BRÅDSKANDE</div>
+      <div class="lapp-topp">
+        FRÅN: <b>Spaningsavdelningen, gränsavsnitt syd</b><br>
+        TILL: <b>Generalstaben, andra sektionen</b><br>
+        ÄRENDE: <b>Iakttagelser vid gränsen</b>
+      </div>
+      <p>Fientliga förband grupperar i skogsområdet öster om floden. Broarbeten pågår. Trupptransporterna sker nattetid och har ökat i omfattning varje vecka sedan mars. Bedömningen är att angrepp kan ske inom kort.</p>
+    </div>
+
+    <p class="vandpunkt">Rapporten säger precis det din chef har låtit alla veta att han inte vill höra.</p>
+
+    <p class="fraga">Vad gör du med den?</p>
+    <div class="val-lista" id="valLista">
+      <button data-val="skicka">Skickar den vidare, oförändrad</button>
+      <button data-val="behall">Låter den stanna på ditt bord</button>
+    </div>
+    <div class="utfall" id="utfall" style="display:none"></div>
+    <div id="lappUtfall"></div>
+    <button class="gå ljus" id="tillFacit" style="display:none">Se facit</button>
+  </div>
+</section>
+
+<section id="s5" class="locked">
+  <p class="sect-no">STEG 4 AV 5</p>
+  <h2>Dina val speglar</h2>
+  <div class="facit" id="facit"></div>
+  <div class="kompass" id="kompass"></div>
+  <button class="gå" data-open="s6">Se kvittot</button>
+</section>
+
+<section id="s6" class="locked">
+  <p class="sect-no">STEG 5 AV 5</p>
+  <h2>Kvittot</h2>
+  <p>Det här avsnittet är detsamma oavsett vad du valde.</p>
+  <p>Du har byggt en apparat, och nu kommer räkningen. Den ser likadan ut vare sig apparaten fungerade bra eller dåligt.</p>
+  <p>Det är samma befälskedja i båda spalterna nedan. Samma officerare som ledde förbanden i fält skickade vidare order om att avrätta civila. En armé som fungerar bra är inte en snällare armé. Den hinner bara mer.</p>
+
+  <div class="faltet">
+    <h3>Vad ett sammanbrott ser ut som</h3>
+    <p class="falt-txt">Varje märke nedan är ett sovjetiskt flygplan förstört av Luftwaffe under det första dygnet efter den 22 juni 1941. <b>1 200 stycken.</b></p>
+    <div id="faltPlan"></div>
+    <p class="overflod">Inom tre månader hade Röda armén förlorat 14 000 stridsvagnar och 2,5 miljoner soldater i döda, sårade och tillfångatagna. För att rita ut soldaterna på samma sätt skulle rutan ovan behöva upprepas ungefär två tusen gånger.</p>
+  </div>
+
+  <div class="kolumner">
+    <div class="kol">
+      <h3>Vad apparaten gjorde mot sina egna</h3>
+      <ul>
+        <li id="kvittoRapport" style="display:none"></li>
+        <li>Den sovjetiska officerskåren och Röda arméns högsta ledning utrensades i slutet av 1930-talet. Kvar blev befälhavare som valts för att de var följsamma.</li>
+        <li>Den tyska militärdomstolsapparaten avrättade tiotusentals av sina egna soldater för feghet eller uppgivenhet.</li>
+        <li>Enligt Omer Bartov slogs de små kamratgrupper som normalt bär stridsviljan sönder av förlusterna på östfronten. Tomrummet fylldes av ideologi och av en hård disciplin med dödsstraff.</li>
+      </ul>
+    </div>
+    <div class="kol">
+      <h3>Vad apparaten gjorde mot andra</h3>
+      <ul>
+        <li>Kommissarieordern och jurisdiktionspåbudet gav soldater rätt att avrätta civila och politiska kommissarier utan att straffas för det.</li>
+        <li>Orderna utfärdades och vidarebefordrades av den reguljära officerskåren, inte enbart av SS.</li>
+        <li>De kom 1941, alltså under exakt den period då den tyska armén fungerade som allra bäst. Skickligheten och brotten var samma organisation.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="protokoll-jamforelse">
+    <div class="pj">
+      <h4>DITT PROTOKOLL</h4>
+      <div id="protoKvitto"></div>
+    </div>
+    <div class="pj">
+      <h4>UTFÄRDAT 1941</h4>
+      <div class="par"><b>Kommissarieordern</b>En order utfärdad före angreppet: tillfångatagna politiska kommissarier ska föras undan och avrättas. Den skickades ut genom den vanliga befälskedjan.</div>
+      <div class="par"><b>Jurisdiktionspåbudet</b>Ett beslut om att brott som tyska soldater begick mot civila i öst inte behövde tas till domstol. Samma befälskedja, samma år.</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top:3rem">Eftervärldens dom</h3>
+  <p>Efter kriget skrev de överlevande generalerna sina memoarer. Läs varje påstående och avgör själv innan du öppnar svaret.</p>
+
+  <div class="memoar">
+    <div class="memoar-block">
+      <p class="krav">”Armén var opolitisk och professionell. Soldaterna var oberörda av ideologin.”</p>
+      <button class="dold">Wehrmacht var djupt ideologiserat och fungerade som ett av regimens mest effektiva verktyg i utrotningskriget i öst.</button>
+    </div>
+    <div class="memoar-block">
+      <p class="krav">”Det var SS som begick brotten, inte armén.”</p>
+      <button class="dold">Det var den vanliga officerskåren som själv utfärdade och skickade vidare de kriminella orderna. Myten om den rena Wehrmacht är vederlagd.</button>
+    </div>
+    <div class="memoar-block">
+      <p class="krav">”Nederlagen berodde på Hitlers inblandning. Vi ville lyssna på professionen.”</p>
+      <button class="dold">Memoarerna skrevs för att rentvå den egna yrkeskåren och för att göra det lättare att ta in gamla officerare i kalla krigets försvarssamarbete. Bilden stod i stort sett oemotsagd i decennier.</button>
+    </div>
+  </div>
+
+  <div class="omtvistat">
+    <h3>Omtvistat: hur långt gick indoktrineringen?</h3>
+    <p>Bartovs tes är inte oemotsagd. Hans Mommsen har invänt att en hel värnpliktsarmé knappast kan ha varit nazistisk igenom och igenom, och lyfter i stället fram grupptryck och en vilja att inte sticka ut. En annan invändning är att lydnaden byggde på dödsfruktan inför den egna militärdomstolen snarare än på övertygelse. En äldre förklaring, från Shils och Janowitz 1948, är att soldaterna stred enbart för kamraterna i den lilla enheten. Frågan är öppen, och det är den du ska kunna redogöra för.</p>
+  </div>
+
+  <p class="slutord">Du byggde en organisation, och du bestämde vem som fick säga emot inuti den. Det första avgjorde vad den kunde göra. Det andra avgjorde vad som gick att berätta om den efteråt.</p>
+
+  <button class="gå sekundär" id="omstart">Börja om</button>
+
+  <div class="kallor">
+    <p><b>Källor</b></p>
+    <p>Caitlin Talmadge, <i>The Dictator's Army</i> (2015): hotbild och de fyra mekanismerna, jämförelsen Hitler och Saddam Hussein, den lägre stridseffektiviteten hos Waffen-SS, omsvängningen efter juli 1944.</p>
+    <p>Omer Bartov, <i>Hitler's Army</i> (1991): ideologisk genomsyring, primärgruppernas upplösning, de kriminella orderna, generalsmemoarerna, Mommsens invändning, Shils och Janowitz.</p>
+    <p>Antony Beevor, <i>The Second World War</i>, samt Lyons och Ulbrich, <i>World War II: A Global History</i>: utrensningarnas följder, den tyska felbedömningen av Röda armén, förlustsiffrorna sommaren 1941.</p>
+    <p>Nordvietnam är Talmadges eget motexempel. Röda armén 1943 till 1945, Italien under Mussolini samt Preussen och kejsartidens Tyskland ligger utanför lektionens källmaterial och är allmän kontext.</p>
+    <p>Officerskåren i bild är en schematisk framställning, inte en avbildning av verkliga personer. Avskedandet av Erich von Manstein i mars 1944 saknar underlag i det använda materialet och behandlas därför inte.</p>
+  </div>
+</section>
+
+</div>
+
+<script>
+/* ============ officerskåren ============ */
+const ANTAL=100;
+let COLS=20, LAY={};
+const ORDNING=(()=>{const a=[...Array(ANTAL).keys()];let s=7;
+  for(let i=a.length-1;i>0;i--){s=(s*1103515245+12345)%2147483648;const j=s%(i+1);[a[i],a[j]]=[a[j],a[i]];}
+  return a;})();
+const JITTER=ORDNING.map(v=>((v*37)%13)-6);
+
+function smalSkarm(){ return typeof window!=='undefined' && window.innerWidth<780; }
+function sattLayout(){
+  LAY = smalSkarm()
+    ? {cols:10, vbW:620, vbH:900, x0:48, dx:56, stag:26, y0:118, dy:58,
+       s0:0.62, ds:0.042, ledX:310, ledY:858, glY:812, glRx:150, glRy:64, ledS:1.5, nodY:24}
+    : {cols:20, vbW:1120, vbH:440, x0:54, dx:52.5, stag:24, y0:132, dy:44,
+       s0:0.70, ds:0.075, ledX:560, ledY:412, glY:372, glRx:168, glRy:70, ledS:1.55, nodY:26};
+  COLS=LAY.cols;
+}
+sattLayout();
+
+const FIGUR=`
+<path d="M-18,0 L-15,-36 C-15,-42.5 -9,-45 0,-45 C9,-45 15,-42.5 15,-36 L18,0 Z"/>
+<rect x="-4.5" y="-52" width="9" height="9"/>
+<ellipse cx="0" cy="-58" rx="8.4" ry="9.6"/>
+<path d="M-10,-64 Q0,-72 10,-64 L10,-61.5 L-10,-61.5 Z"/>
+<path d="M-12.5,-61.5 L12.5,-61.5 L13.5,-58.5 L-13.5,-58.5 Z"/>`;
+const REM=`<path d="M-11,-8 L8,-41" stroke-width="2.4" fill="none"/>
+<rect x="-18.5" y="-9" width="37" height="4.6"/>`;
+const SITTANDE=`
+<path d="M-27,0 L-23,-19 L23,-19 L27,0 Z"/>
+<path d="M-16,-19 L-13,-47 C-13,-53 -8,-56 0,-56 C8,-56 13,-53 13,-47 L16,-19 Z"/>
+<rect x="-4.5" y="-63" width="9" height="9"/>
+<ellipse cx="0" cy="-69" rx="8.6" ry="9.8"/>
+<path d="M-10.5,-75 Q0,-83 10.5,-75 L10.5,-72.5 L-10.5,-72.5 Z"/>
+<path d="M-13,-72.5 L13,-72.5 L14,-69.5 L-14,-69.5 Z"/>`;
+
+function pos(i){
+  const r=Math.floor(i/COLS), c=i%COLS;
+  return {x:LAY.x0+c*LAY.dx+(r%2)*LAY.stag, y:LAY.y0+r*LAY.dy, s:LAY.s0+r*LAY.ds, r, c};
+}
+
+function byggSvg(o){
+  const utr=o.utrensade||[], info=o.info??50, ledning=o.ledning??50, ovning=o.ovning??50;
+  const fokus=o.fokus??null, dampa=o.dampa?0.22:1, ledarLjus=o.ledarLjus??1;
+  let linjer='', figurer='';
+
+  if(ledning<80){
+    const styrka=(80-ledning)/80;
+    const tathet=ledning<30?1:(ledning<55?2:4);
+    for(let i=0;i<ANTAL;i++){
+      if(utr.includes(i)||i%tathet!==0) continue;
+      const p=pos(i);
+      linjer+=`<line x1="${LAY.ledX}" y1="${LAY.nodY}" x2="${p.x}" y2="${(p.y-58*p.s).toFixed(1)}" stroke="#6E5F3E" stroke-width="0.6" opacity="${(0.15+0.4*styrka)*dampa}"/>`;
+    }
+    linjer+=`<circle cx="${LAY.ledX}" cy="${LAY.nodY}" r="6" fill="#8C7842" opacity="${(0.3+0.7*styrka)*dampa}"/>`;
+  }
+  if(info>18){
+    const styrka=(info-18)/82;
+    const steg=info>75?1:(info>45?2:5);
+    for(let i=0;i<ANTAL;i++){
+      if((i%COLS)===COLS-1||utr.includes(i)||utr.includes(i+1)||i%steg!==0) continue;
+      const a=pos(i), b=pos(i+1);
+      linjer+=`<line x1="${a.x}" y1="${(a.y-30*a.s).toFixed(1)}" x2="${b.x}" y2="${(b.y-30*b.s).toFixed(1)}" stroke="#5C7E92" stroke-width="0.9" opacity="${(0.15+0.45*styrka)*dampa}"/>`;
+    }
+  }
+
+  const oordning=(100-ovning)/100;
+  let fokusRit='';
+  for(let i=0;i<ANTAL;i++){
+    const p=pos(i);
+    const jx=JITTER[i]*1.5*oordning, jy=JITTER[i]*0.7*oordning;
+    const tr=`translate(${(p.x+jx).toFixed(1)},${(p.y+jy).toFixed(1)}) scale(${p.s.toFixed(3)})`;
+    const dj=(0.55+p.r*(LAY.cols===10?0.045:0.09))*dampa;
+    if(utr.includes(i)){
+      figurer+=`<g transform="${tr}" fill="none" stroke="#4A4237" stroke-width="1.3" stroke-dasharray="3 3" opacity="${(0.55*dampa).toFixed(2)}">${FIGUR}</g>`;
+    } else if(i===fokus && o.fokusSlackt){
+      fokusRit=`<g transform="${tr}" fill="none" stroke="#6B5E4E" stroke-width="1.7" stroke-dasharray="3 3" opacity="0.8">${FIGUR}</g>`;
+    } else if(i===fokus){
+      fokusRit=`<ellipse cx="${(p.x+jx).toFixed(1)}" cy="${(p.y+jy-30*p.s).toFixed(1)}" rx="${(74*p.s).toFixed(1)}" ry="${(64*p.s).toFixed(1)}" fill="url(#ljus)"/>
+        <g transform="${tr}" fill="#F2ECDB">${FIGUR}</g>
+        <g transform="${tr}" fill="#A79E88" stroke="#A79E88">${REM}</g>`;
+    } else {
+      figurer+=`<g transform="${tr}" fill="#C9BFA8" opacity="${dj.toFixed(2)}">${FIGUR}</g>
+      <g transform="${tr}" fill="#8E8571" stroke="#8E8571" opacity="${(dj*0.8).toFixed(2)}">${REM}</g>`;
+    }
+  }
+
+  const lg=ledarLjus;
+  const ledare=`
+    <ellipse cx="${LAY.ledX}" cy="${LAY.glY}" rx="${LAY.glRx}" ry="${LAY.glRy}" fill="url(#gloria)" opacity="${lg}"/>
+    <g transform="translate(${LAY.ledX},${LAY.ledY}) scale(${LAY.ledS})" fill="#D8B23A" opacity="${0.35+0.65*lg}">${SITTANDE}</g>
+    <g transform="translate(${LAY.ledX},${LAY.ledY}) scale(${LAY.ledS})" fill="#8A6F1E" stroke="#8A6F1E" opacity="${0.3+0.5*lg}">
+      <rect x="-27" y="-22" width="54" height="4.4"/></g>`;
+
+  return `<svg viewBox="0 0 ${LAY.vbW} ${LAY.vbH}" xmlns="http://www.w3.org/2000/svg" role="img"
+    aria-label="Schematisk framställning av en ledare framför en officerskår.">
+    <defs>
+      <radialGradient id="vg" cx="50%" cy="42%" r="74%">
+        <stop offset="0%" stop-color="#2C2721"/><stop offset="100%" stop-color="#131110"/>
+      </radialGradient>
+      <radialGradient id="gloria" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#C9A227" stop-opacity="0.42"/>
+        <stop offset="100%" stop-color="#C9A227" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="ljus" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#EDE6D2" stop-opacity="0.30"/>
+        <stop offset="100%" stop-color="#EDE6D2" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="korn"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3"/>
+        <feColorMatrix type="saturate" values="0"/></filter>
+    </defs>
+    <rect width="${LAY.vbW}" height="${LAY.vbH}" fill="url(#vg)"/>
+    <g>${linjer}</g><g>${figurer}</g>${fokusRit}${ledare}
+    <rect width="${LAY.vbW}" height="${LAY.vbH}" filter="url(#korn)" opacity="0.13" style="mix-blend-mode:overlay"/>
+  </svg>`;
+}
+document.getElementById('heroSvg').innerHTML=byggSvg({});
+
+
+/* ============ grannmaktens kår ============ */
+const FIENDE=`
+<path d="M-20,0 L-17,-30 C-17,-40 -10,-45 0,-45 C10,-45 17,-40 17,-30 L20,0 Z"/>
+<rect x="-4.5" y="-52" width="9" height="9"/>
+<ellipse cx="0" cy="-58" rx="8.2" ry="9.4"/>
+<path d="M-11,-62 A11,11 0 0 1 11,-62 Z"/>
+<rect x="-14.5" y="-63.4" width="29" height="3.4" rx="1.7"/>`;
+const KORSREM=`
+<path d="M-11,-11 L9,-40" stroke-width="2.2" fill="none"/>
+<path d="M11,-11 L-9,-40" stroke-width="2.2" fill="none"/>
+<rect x="-20" y="-12" width="40" height="4.8"/>`;
+
+function byggFiendeSvg(){
+  let linjer='', figurer='';
+  for(let i=0;i<ANTAL;i++){
+    if((i%COLS)===COLS-1) continue;
+    const a=pos(i), b=pos(i+1);
+    linjer+=`<line x1="${a.x}" y1="${(a.y-30*a.s).toFixed(1)}" x2="${b.x}" y2="${(b.y-30*b.s).toFixed(1)}" stroke="#6E93AD" stroke-width="1" opacity="0.55"/>`;
+  }
+  for(let i=0;i<ANTAL-COLS;i++){
+    const a=pos(i), b=pos(i+COLS);
+    if(i%2) continue;
+    linjer+=`<line x1="${a.x}" y1="${(a.y-30*a.s).toFixed(1)}" x2="${b.x}" y2="${(b.y-30*b.s).toFixed(1)}" stroke="#6E93AD" stroke-width="0.7" opacity="0.3"/>`;
+  }
+  for(let i=0;i<ANTAL;i++){
+    const p=pos(i), tr=`translate(${p.x},${p.y}) scale(${p.s.toFixed(3)})`;
+    const dj=(0.6+p.r*(LAY.cols===10?0.04:0.085)).toFixed(2);
+    figurer+=`<g transform="${tr}" fill="#9FB6C6" opacity="${dj}">${FIENDE}</g>
+    <g transform="${tr}" fill="#5F7C90" stroke="#5F7C90" opacity="${(dj*0.85).toFixed(2)}">${KORSREM}</g>`;
+  }
+  return `<svg viewBox="0 0 ${LAY.vbW} ${LAY.vbH}" xmlns="http://www.w3.org/2000/svg" role="img"
+    aria-label="Grannmaktens officerskår, hundra figurer i raka led utan luckor.">
+    <defs>
+      <radialGradient id="vgF" cx="50%" cy="46%" r="74%">
+        <stop offset="0%" stop-color="#1E2A31"/><stop offset="100%" stop-color="#0E1418"/>
+      </radialGradient>
+      <filter id="kornF"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3"/>
+        <feColorMatrix type="saturate" values="0"/></filter>
+    </defs>
+    <rect width="${LAY.vbW}" height="${LAY.vbH}" fill="url(#vgF)"/>
+    <g>${linjer}</g><g>${figurer}</g>
+    <rect width="${LAY.vbW}" height="${LAY.vbH}" filter="url(#kornF)" opacity="0.12" style="mix-blend-mode:overlay"/>
+  </svg>`;
+}
+
+document.getElementById('fiendeSvg').innerHTML=byggFiendeSvg();
+
+/* ============ reglagen ============ */
+const REGLAGE=[
+ {namn:"Befordran", ordn:2, rubrik:"Befordringsförordning", w:{d:30,m:25},
+  vanster:"Efter trohet", hoger:"Efter skicklighet",
+  band:["Endast de mest hängivna stiger. Officerare vilkas lojalitet ifrågasatts avlägsnas ur kåren.",
+        "Trohet väger tyngst. Duglighet beaktas när den råkar finnas hos någon du litar på.",
+        "Du befordrar dugliga officerare, men helst sådana som redan är kända för dig.",
+        "Skickligheten avgör i de flesta fall. Politisk prövning sker fortfarande.",
+        "De skickligaste stiger. Du vet inte längre vem som är lojal mot vem."],
+  para:["Befäl tillsätts efter politisk pålitlighet. Officerare vilkas lojalitet ifrågasatts avlägsnas ur kåren.",
+        "Befäl tillsätts efter duglighet bland av regimen kända personer.",
+        "Befäl tillsätts efter militär skicklighet. Politisk prövning avskaffas."]},
+ {namn:"Övning", ordn:3, rubrik:"Övningsreglemente", w:{d:25,m:20},
+  vanster:"Minimal", hoger:"Storskalig",
+  band:["Förbanden övar var för sig. Ingen samlar trupp utan ditt tillstånd.",
+        "Övningar hålls små och under uppsikt.",
+        "Samövning förekommer, men sällan och med anmälningsplikt.",
+        "Förband övar tillsammans regelbundet. Anmälan sker i efterhand.",
+        "Hela armékårer övar tillsammans. De lär sig att röra sig som en enhet, också utan dig."],
+  para:["Samövning över förbandsgräns kräver tillstånd i varje enskilt fall.",
+        "Samövning tillåts två gånger per år under överinseende.",
+        "Årliga fältövningar i armékårs storlek åläggs samtliga förband."]},
+ {namn:"Ledning", ordn:1, rubrik:"Befälsordning", w:{d:20,m:30},
+  vanster:"Allt genom toppen", hoger:"Fritt i fält",
+  band:["Varje beslut passerar dig. Vid sidan av befälskedjan sitter politiska övervakare med vetorätt.",
+        "Order utgår uppifrån. Varje avvikelse kräver godkännande.",
+        "Befälhavare får handla på eget ansvar inom snäva ramar.",
+        "Befälhavare handlar självständigt. Övervakarna rapporterar men har inget veto.",
+        "Befälhavare fattar egna beslut i fält. Du får veta efteråt."],
+  para:["Order utgår från högsta ledningen. Politisk övervakare tilldelas varje förband med vetorätt.",
+        "Befälhavare får avvika från order inom fastställda ramar.",
+        "Befälhavare handlar självständigt utifrån uppdrag. Politiska övervakare avskaffas."]},
+ {namn:"Information", ordn:4, rubrik:"Rapportförordning", w:{d:25,m:25},
+  vanster:"Genom säkerhetstjänsten", hoger:"Fritt",
+  band:["Förbanden talar inte med varandra. Allt går genom din säkerhetstjänst.",
+        "Direkt kontakt mellan förband kräver tillstånd i varje enskilt fall.",
+        "Rapporter går uppåt, men granskas och sammanfattas på vägen.",
+        "Rapporter vidarebefordras i huvudsak oavkortade. Kontakt i sidled tillåts.",
+        "Information rör sig fritt uppåt och i sidled. Det gäller även information du inte vill ha."],
+  para:["All förbindelse mellan förband går genom säkerhetstjänsten. Direkt kontakt är förbjuden.",
+        "Rapporter granskas och sammanfattas i varje led före vidarebefordran.",
+        "Förband korresponderar fritt. Rapporter vidarebefordras oavkortade."]}
+];
+
+const DEP_SAK=[
+ "Vi kan inte längre följa vilka som talar med vem. Flera högre befäl rör sig utanför vår insyn. Begär omedelbara instruktioner.",
+ "Två regementschefer har vid upprepade tillfällen samtalat enskilt. Innehållet är okänt för oss. Vi begär tillstånd att ingripa.",
+ "Officerare i tredje armékåren har hållit sammankomster utan föregående anmälan. Ärendet bevakas.",
+ "Enstaka klagomål över befordringsgången har noterats. Inget av vikt.",
+ "Inget att rapportera. Officerskåren är tyst."
+];
+const DEP_GEN=[
+ "Höstövningen kunde inte genomföras. Det finns inte tillräckligt med befäl som kan leda ett förband i fält.",
+ "Övningen avbröts i förtid. Flera bataljonschefer saknade befogenhet att fatta beslut när läget ändrades.",
+ "Förbanden nådde målen först efter upprepade order från högre ort. Samverkan mellan enheter är svag.",
+ "Övningen genomfördes planenligt. Vissa brister kvarstår i samverkan mellan förbanden.",
+ "Gränsdivisionerna löste uppgiften samordnat och utan order från högsta ledningen. Anmärkningsvärt goda resultat."
+];
+
+const BUDGET=90;
+let val=[50,50,50,50], last=null, straff=0, fasHot=false, maxUtrensade=0, rollbyte=false;
+
+const panel=document.getElementById('panel');
+REGLAGE.forEach((r,i)=>{
+  const d=document.createElement('div');
+  d.className='reglage';
+  d.innerHTML=`<h3>${r.namn}</h3>
+    <div class="linje">
+      <input type="range" min="0" max="100" value="50" id="reg${i}" aria-label="${r.namn}, från ${r.vanster} till ${r.hoger}">
+      <div class="andar"><span>${r.vanster}</span><span>${r.hoger}</span></div>
+    </div>
+    <p class="konsekvens" id="k${i}"></p>`;
+  panel.appendChild(d);
+});
+
+function band(v){ return Math.min(4, Math.floor(v/20)); }
+function tredjedel(v){ return v<34?0:(v<67?1:2); }
+function utrensningFor(v){ return Math.round(45*Math.pow((100-v)/100,2)); }
+
+panel.addEventListener('input', e=>{
+  if(e.target.type!=='range') return;
+  const i=+e.target.id.slice(3);
+  let v=+e.target.value;
+  if(fasHot){
+    const ovrigt=val.reduce((s,x,k)=> k===i?s:s+Math.abs(x-last[k]), 0);
+    const kvar=Math.max(0, BUDGET-ovrigt);
+    if(Math.abs(v-last[i])>kvar){ v=last[i]+Math.sign(v-last[i])*kvar; e.target.value=v; }
+  }
+  val[i]=v;
+  rita();
+});
+
+function poang(){
+  let d=0,m=0;
+  REGLAGE.forEach((r,i)=>{ d+=r.w.d*val[i]/100; m+=r.w.m*(100-val[i])/100; });
+  const kvar=(ANTAL-maxUtrensade)/ANTAL;
+  return {d:Math.round(d*(0.55+0.45*kvar)), m:Math.max(0,Math.round(m)-straff)};
+}
+
+let ritKo=null;
+function ritaSvg(){
+  ritKo=null;
+  const svg=byggSvg({utrensade:ORDNING.slice(0,maxUtrensade), info:val[3], ledning:val[2], ovning:val[1]});
+  document.getElementById('spelSvg').innerHTML=svg;
+  const d=document.getElementById('dinSvg');
+  if(d) d.innerHTML=svg;
+}
+function rita(){
+  maxUtrensade=Math.max(maxUtrensade, utrensningFor(val[0]));
+  if(ritKo) cancelAnimationFrame(ritKo);
+  ritKo=requestAnimationFrame(ritaSvg);
+
+  const kvar=ANTAL-maxUtrensade;
+  const cap=`<em>Du</em>, längst fram. Officerskåren bakom dig, <b>${kvar} av 100</b> på plats.`+
+    (maxUtrensade?` ${maxUtrensade} har avlägsnats. De kommer inte tillbaka.`:``);
+  document.getElementById('spelCap').innerHTML=cap;
+  const dc=document.getElementById('dinCap');
+  if(dc) dc.innerHTML='<em>Din officerskår.</em> '+cap.replace('<em>Du</em>, längst fram. Officerskåren bakom dig, ','');
+
+  REGLAGE.forEach((r,i)=>{
+    document.getElementById('k'+i).textContent=r.band[band(val[i])];
+    const s=document.getElementById('reg'+i);
+    if(+s.value!==val[i]) s.value=val[i];
+    s.setAttribute('aria-valuetext', r.band[band(val[i])]);
+  });
+
+  const p=poang();
+  document.getElementById('depSak').textContent=DEP_SAK[band(p.m)];
+  document.getElementById('depGen').textContent=DEP_GEN[band(p.d)];
+
+  if(fasHot&&last){
+    const anv=val.reduce((s,v,k)=>s+Math.abs(v-last[k]),0);
+    straff=Math.round(anv*0.35);
+    const bb=document.getElementById('budgetBar');
+    if(bb) bb.style.width=(100*Math.max(0,BUDGET-anv)/BUDGET)+'%';
+    const bs=document.getElementById('budgetSiffra');
+    if(bs) bs.textContent=Math.max(0,Math.round(BUDGET-anv));
+  }
+  skrivProtokoll();
+}
+
+/* ============ protokollet ============ */
+function protokollHtml(sparra){
+  const rader=REGLAGE.map((r,i)=>({ordn:r.ordn, rub:r.rubrik, txt:r.para[tredjedel(val[i])]}))
+    .sort((a,b)=>a.ordn-b.ordn);
+  let h=rader.map((r,n)=>{
+    const dold = sparra && r.rub!=="Rapportförordning";
+    return `<div class="par${dold?' struken':''}"><b>§ ${n+1}. ${r.rub}</b>${r.txt}</div>`;
+  }).join('');
+  if(fasHot&&last&&val.some((v,k)=>v!==last[k])){
+    h+=`<div class="par${sparra?' struken':''}"><b>§ 5. Tillägg</b>Befälsordningen omarbetas under pågående mobilisering.</div>`;
+  }
+  if(maxUtrensade>0){
+    h+=`<div class="par${sparra?' struken':''}"><b>Anmärkning</b>${maxUtrensade} officerare har avlägsnats ur kåren. Beslutet är verkställt.</div>`;
+  }
+  return h;
+}
+function skrivProtokoll(){
+  document.getElementById('protoInnehall').innerHTML=protokollHtml(rollbyte);
+  document.getElementById('protoRubrik').textContent=
+    rollbyte ? 'FÖRFATTNINGSSAMLING, UTDRAG' : 'FÖRFATTNINGSSAMLING';
+  document.getElementById('protoAvskrift').textContent=
+    rollbyte
+      ? 'Avskrift av avskrift. Diarieförd i tre led. Original förvaras hos säkerhetstjänsten. Utlämnas i den omfattning mottagarens behörighet medger.'
+      : 'Original. Förvaras hos kanslichefen.';
+  document.getElementById('protoTab').textContent = rollbyte ? 'EJ BEHÖRIG' : 'PROTOKOLL';
+  document.getElementById('protoFlik').classList.toggle('sparrad', rollbyte);
+}
+
+const flik=document.getElementById('protoFlik'), tab=document.getElementById('protoTab');
+let flikTimer=null;
+function toggla(pa){ clearTimeout(flikTimer); flik.classList.toggle('open',pa); tab.setAttribute('aria-expanded',pa); }
+tab.addEventListener('click',()=>toggla(!flik.classList.contains('open')));
+if(window.matchMedia && window.matchMedia('(hover: hover)').matches){
+  flik.addEventListener('mouseenter',()=>toggla(true));
+  flik.addEventListener('mouseleave',()=>{ clearTimeout(flikTimer); flikTimer=setTimeout(()=>toggla(false),220); });
+}
+flik.addEventListener('focusin',()=>toggla(true));
+
+rita();
+
+/* ============ flöde ============ */
+function oppna(id){
+  const s=document.getElementById(id);
+  s.classList.remove('locked');
+  setTimeout(()=>s.scrollIntoView({behavior:'smooth',block:'start'}),60);
+}
+document.querySelectorAll('button[data-open]').forEach(b=>
+  b.addEventListener('click',()=>{
+    if(b.dataset.open==='s4') startaRollbyte();
+    if(b.dataset.open==='s6') fyllKvitto();
+    oppna(b.dataset.open);
+  }));
+
+document.getElementById('lasIn').addEventListener('click',()=>{
+  last=val.slice(); fasHot=true;
+  document.getElementById('lasIn').disabled=true;
+  rita(); oppna('s3');
+});
+
+function startaRollbyte(){
+  rollbyte=true;
+  panel.classList.add('avslutad');
+  panel.querySelectorAll('input').forEach(i=>i.disabled=true);
+  document.getElementById('panelNot').classList.add('pa');
+  toggla(false);
+  skrivProtokoll();
+}
+
+document.getElementById('tillScen').addEventListener('click',()=>{
+  document.getElementById('mellanakt').style.display='none';
+  const scen=document.getElementById('scenen');
+  scen.hidden=false;
+  const utr=ORDNING.slice(0,maxUtrensade);
+  let fokus=null;
+  for(const kand of [86,85,87,84,88,66,67,65,46,47]){
+    if(!utr.includes(kand)){ fokus=kand; break; }
+  }
+  scenFokus=fokus;
+  ritaScen(false);
+  setTimeout(()=>scen.scrollIntoView({behavior:'smooth',block:'start'}),60);
+});
+
+let scenFokus=null, scenUtfall=null;
+
+function ritaScen(slackt){
+  document.getElementById('scenSvg').innerHTML=byggSvg({
+    utrensade:ORDNING.slice(0,maxUtrensade), info:val[3], ledning:val[2], ovning:val[1],
+    fokus:scenFokus, dampa:true, ledarLjus:0.28, fokusSlackt:slackt});
+}
+
+const RAPPORT=[
+ "Fientliga förband grupperar i skogsområdet öster om floden.",
+ "Broarbeten pågår.",
+ "Trupptransporterna sker nattetid och har ökat i omfattning varje vecka sedan mars.",
+ "Bedömningen är att angrepp kan ske inom kort."
+];
+
+function renderLapp(niva, stampel, etikett, sammanfattning){
+  const kropp=RAPPORT.map((s,i)=>{
+    const dolj = niva==='helt' || (niva==='delvis' && i>0);
+    return dolj ? `<span class="svartat">${s}</span>` : s;
+  }).join(' ');
+  return `<div class="lapp efter">
+    <div class="stampel">${stampel}</div>
+    <p class="lapp-etikett">${etikett}</p>
+    <p>${kropp}</p>
+    ${sammanfattning?`<p class="lapp-sammanfattning">${sammanfattning}</p>`:''}
+  </div>`;
+}
+
+const SCEN={
+ 0:{ /* kontrollerat flöde */
+  skicka:{txt:"Rapporten går uppåt och stannar hos säkerhetstjänsten. Två veckor senare omplaceras du. Den som skötte posten före dig finns inte kvar i staben.",
+    niva:'helt', stampel:'ARKIVERAD', slack:true,
+    etikett:'SÅ HÄR SÅG DEN UT NÄR DEN NÅDDE LEDNINGEN',
+    sam:'Ledningen fick aldrig se den. Handlingen togs om hand på vägen.',
+    kvitto:'Din rapport nådde aldrig ledningen, och du blev omplacerad för att du skickade den.'},
+  behall:{txt:"Ingen frågar efter den. Papperet ligger kvar i din låda tills det inte spelar någon roll längre.",
+    niva:'helt', stampel:'EJ VIDAREBEFORDRAD', slack:false,
+    etikett:'SÅ HÄR SÅG DEN UT NÄR DEN NÅDDE LEDNINGEN',
+    sam:'Ledningen fick aldrig se den. Du behöll den själv.',
+    kvitto:'Din rapport lämnade aldrig ditt bord.'}},
+ 1:{ /* filtrerat flöde */
+  skicka:{txt:"Rapporten går uppåt och sammanfattas i varje led. Det som till slut når ledningen är en mening om viss oro vid gränsen.",
+    niva:'delvis', stampel:'SAMMANFATTAD', slack:false,
+    etikett:'SÅ HÄR SÅG DEN UT NÄR DEN NÅDDE LEDNINGEN',
+    sam:'Sammanfattning till ledningen: viss oro rapporteras vid gränsavsnitt syd.',
+    kvitto:'Din rapport nådde ledningen som en enda mening om viss oro vid gränsen.'},
+  behall:{txt:"Du gör som de flesta i din situation gör. Ingen märker det.",
+    niva:'helt', stampel:'EJ VIDAREBEFORDRAD', slack:false,
+    etikett:'SÅ HÄR SÅG DEN UT NÄR DEN NÅDDE LEDNINGEN',
+    sam:'Ledningen fick aldrig se den. Du behöll den själv.',
+    kvitto:'Din rapport lämnade aldrig ditt bord.'}},
+ 2:{ /* fritt flöde */
+  skicka:{txt:"Rapporten når ledningen i sin ursprungliga form. Den kan avfärdas, men den kan inte gömmas.",
+    niva:'intakt', stampel:'FÖREDRAGEN', slack:false,
+    etikett:'SÅ HÄR SÅG DEN UT NÄR DEN NÅDDE LEDNINGEN',
+    sam:'', kvitto:'Din rapport nådde ledningen oavkortad, eftersom du hade lämnat kanalen öppen.'},
+  behall:{txt:"Kanalen fanns. Du använde den inte.",
+    niva:'helt', stampel:'EJ VIDAREBEFORDRAD', slack:false,
+    etikett:'SÅ HÄR SÅG DEN UT NÄR DEN NÅDDE LEDNINGEN',
+    sam:'Ledningen fick aldrig se den. Du behöll den själv.',
+    kvitto:'Din rapport lämnade aldrig ditt bord, trots att kanalen fanns.'}}
+};
+
+const REGEL={
+ 0:"Med kontrollerat informationsflöde finns ingen väg där rapporten når fram och avsändaren står kvar. Det är inte otur. Det är så systemet är byggt, och det var du som byggde det.",
+ 1:"Filtrering behöver inga hot. Det räcker att varje led vet vad som är obekvämt att skicka vidare.",
+ 2:"Det fria informationsflödet är samma kanal som gör det möjligt för officerare att tala med varandra utan dig. Du kan inte ha det ena utan det andra."};
+
+const VARFOR="Du satt nyss på andra sidan av det här och bestämde hur kanalen skulle fungera. Nu vet du hur den känns för den som ska använda den.";
+
+document.getElementById('valLista').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  const info=tredjedel(val[3]);
+  const s=SCEN[info][b.dataset.val];
+  scenUtfall=s;
+  document.querySelectorAll('#valLista button').forEach(x=>x.disabled=true);
+  const u=document.getElementById('utfall');
+  u.innerHTML=`<p>${s.txt}</p><p class="regel">${REGEL[info]}</p><p class="varfor">${VARFOR}</p>`;
+  u.style.display='block';
+  document.getElementById('lappUtfall').innerHTML=renderLapp(s.niva,s.stampel,s.etikett,s.sam);
+  if(s.slack) ritaScen(true);
+  const t=document.getElementById('tillFacit');
+  t.style.display='inline-block';
+  t.onclick=()=>{ rollbyte=false; skrivProtokoll(); visaFacit(); oppna('s5'); };
+});
+
+const PROFILER={
+ irak:{namn:"Irak under Saddam Hussein", sig:[10,15,10,8],
+  spegel:"Du stängde kommunikationen mellan förbanden och drog besluten till dig. Det gjorde Saddam Hussein också.",
+  text:`<p>Saddam Hussein fruktade militärkupper och byggde sin armé för att förhindra dem. Kompetenta befälhavare avsattes och avrättades, och fri kommunikation mellan förbanden förbjöds.</p>
+  <p>Resultatet var en armé konstruerad för att inte kunna vändas mot honom. Den kunde därför inte heller samordnas mot någon annan. Talmadge använder honom som kontrast till Hitler: två diktatorer med lika hård politisk kontroll, helt olika resultat på slagfältet.</p>`},
+
+ roda37:{namn:"Röda armén 1937 till 1941", sig:[8,20,18,15],
+  spegel:"Du befordrade på trohet i stället för på skicklighet, och du lät avlägsna dem som inte passade. Det gjorde Stalin också.",
+  text:`<p>Under slutet av 1930-talet utrensades den sovjetiska officerskåren och Röda arméns högsta ledning. Erfarna befälhavare ersattes av politiskt följsamma och militärt osjälvständiga.</p>
+  <p>Svagheten syntes öppet i vinterkriget mot Finland. Både Hitler och den tyska militärledningen drog slutsatsen att Röda armén var en koloss på lerfötter som skulle kapitulera inom åtta till tio veckor.</p>
+  <p>Den 22 juni 1941 kollapsade försvaret.</p>`},
+
+ roda43:{namn:"Röda armén 1943 till 1945", sig:[65,60,55,30], osakert:true,
+  spegel:"Du rensade ut först, och lät sedan skickligheten avgöra igen. Det gjorde Stalin också, efter katastrofen.",
+  text:`<p>Efter sammanbrottet 1941 återgick Sovjetunionen till att befordra på duglighet. Befälhavare fick tillbaka rätten att fatta beslut i fält, och stora samövade operationer blev möjliga igen.</p>
+  <p>Det här är lektionens starkaste bevis, eftersom regimen hålls konstant. Samma diktator, samma parti, samma stat, och ändå helt olika resultat på slagfältet. Det var inte statsskicket som ändrades. Det var rädslan för den egna officerskåren.</p>
+  <p>Men de utrensade kom inte tillbaka, lika lite som i din armé. Priset för de tidigare besluten var redan betalt.</p>`},
+
+ nordvietnam:{namn:"Nordvietnam", sig:[78,72,35,25],
+  spegel:"Du lät skickligheten avgöra vem som blev befäl, men behöll kontrollen över vad de fick göra. Ungefär så byggde Nordvietnam sin armé.",
+  text:`<p>Nordvietnam var en auktoritär enpartistat med hård politisk kontroll, och samtidigt en stat som mötte ett mycket allvarligt yttre hot utan att frukta sin egen officerskår. Armén kunde därför byggas för att fungera.</p>
+  <p>Talmadge använder fallet just för att bryta den enkla kopplingen mellan demokrati och militär duglighet. Slutsatsen att en duglig diktatur måste se ut som Nazityskland är fel, och det är därför det här fallet finns med.</p>`},
+
+ italien:{namn:"Italien under Mussolini", sig:[58,38,24,20], osakert:true,
+  spegel:"Du rensade inte ut någon, men du band befälhavarna hårt och lät dem knappt öva. Det gjorde Mussolini också.",
+  text:`<p>Mussolini rensade aldrig ut sin officerskår. Kungens gamla yrkesofficerare satt kvar, och befordran gick i huvudsak sin vanliga gång. Ändå fungerade armén dåligt.</p>
+  <p>Förklaringen ligger i de tre andra reglagen. Mussolini samlade befälet hos sig själv och innehade flera ministerposter samtidigt, samverkan mellan försvarsgrenarna var svag, och förbanden hade sällan övat stort och realistiskt tillsammans. När kriget kom hade ingen tränat på att handla utan order uppifrån.</p>
+  <p>Fallet visar att utrensningar inte är den enda vägen till en oduglig armé. En ledare som vill bestämma allt själv räcker långt.</p>`},
+
+ ss:{namn:"Waffen-SS", sig:[20,60,80,65],
+  spegel:"Du valde befäl på trohet, men lät dem ändå handla fritt i fält. Det är en ovanlig ruta, och den har en egen logik.",
+  text:`<p>Den här kombinationen ser först ut som en motsägelse. Varför skulle en ledare som väljer sina befäl på trohet också ge dem fria händer?</p>
+  <p>Svaret är att kombinationen bara fungerar när troheten garanteras av något annat än övervakning. Bygger den på ideologi, släktband eller gemensam revolutionär identitet, behöver ledaren inte binda sina befälhavare. Han litar på dem av andra skäl.</p>
+  <p>Waffen-SS är exemplet. Ideologisk lojalitet vägde tungt vid befordran, och de som inte passade in kom aldrig in. Samtidigt stred förbanden med samma tyska uppdragstaktik som armén, alltså med stor självständighet i fält. Enligt Talmadge stred SS-förbanden ändå generellt mindre effektivt än de reguljära arméförbanden.</p>
+  <p>Det är den viktigaste lärdomen av den här rutan. Frihet i fält hjälper inte om urvalet är fel. Man kan inte kompensera ett dåligt urval med förtroende.</p>
+  <p>Rutan föder dessutom nästan alltid parallella arméer. Ledaren bygger en trogen styrka med fria händer vid sidan av den ordinarie, som samtidigt hålls hårt bunden. Republikanska gardet i Irak och Revolutionsgardet i Iran följer samma mönster. Priset blir dubblering, rivalitet och usel samverkan mellan de två. Och om troheten någon gång spricker är det här den farligaste styrkan att ha byggt, eftersom den redan har både vapen och rörelsefrihet.</p>`},
+
+ weh41:{namn:"Wehrmacht 1941", sig:[85,88,82,72],
+  spegel:"Du valde skicklighet nästan hela vägen, och du lät officerskåren vara i fred. Det gjorde Hitler också, och det är den obehagliga delen.",
+  text:`<p>Under krigets första år mötte Hitler inget omedelbart kupphot från den traditionellt lojala preussiska officerskåren. Han behövde därför inte kuppskydda sin armé. Wehrmacht fick behålla meritokratisk befordran, storskalig samövning och decentraliserat befäl, och blev utomordentligt dugligt.</p>
+  <p>Diktaturen var alltså inte problemet för dugligheten. Rädslan för den egna officerskåren var det. Där rädslan saknades byggde diktaturen en av de skickligaste arméer som funnits.</p>
+  <p>Jämför med Waffen-SS, där ideologisk lojalitet vägde tyngre vid befordran. Enligt Talmadge stred SS-förbanden generellt mindre effektivt än de reguljära arméförbanden.</p>`},
+
+ sen44:{namn:"Wehrmacht efter juli 1944", sig:[45,50,40,38],
+  spegel:"Dina val ligger mitt emellan, med tyngdpunkten på väg mot trohet. Så såg den tyska krigsmakten ut efter sommaren 1944.",
+  text:`<p>Fram till 1944 mötte Hitler inget allvarligt kupphot från sin officerskår, och behövde därför inte kuppskydda armén. Efter det misslyckade attentatet i juli 1944 förändrades det.</p>
+  <p>Kontrollen blev kuppskyddande, och lojalitet började väga tyngre än duglighet vid tillsättningar. Enligt Talmadge är det där den destruktiva delen av Hitlers befälsstil börjar, inte tidigare.</p>`},
+
+ preussen:{namn:"Preussen och Tyskland före 1914", sig:[88,90,92,78], osakert:true,
+  spegel:"Du lät officerskåren vara helt i fred. Ingen avlägsnades. Så byggdes den preussiska generalstaben, långt före 1933.",
+  text:`<p>Preussen och kejsartidens Tyskland var ingen demokrati, men regimen fruktade inte sin officerskår, eftersom ledningen och officerarna kom ur samma samhällsskikt. Generalstaben kunde därför bygga på meriter, stora fältövningar och långtgående självständighet för befälhavare i fält.</p>
+  <p>Poängen är att just den här armén gick att bygga i en icke-demokrati årtionden innan nazisterna kom till makten. Wehrmachts skicklighet 1941 var till stor del ärvd, inte skapad av regimen.</p>`}
+};
+
+function profilNyckel(){
+  const [bef,ovn,led,inf]=val;
+  if(maxUtrensade>=18 && bef>=58) return 'roda43';
+  if(bef<45 && led>=58 && inf>=52) return 'ss';
+  if(bef<20) return 'roda37';
+  if(bef>=60 && ovn>=60 && (led<50 || inf<50)) return 'nordvietnam';
+  if(inf<34 && led<34) return 'irak';
+  if(bef<34) return 'roda37';
+  if(bef>=70 && ovn>=70 && led>=70 && inf>=70 && maxUtrensade<=2) return 'preussen';
+  if(bef>=58 && ovn>=58 && led>=58 && inf>=52) return 'weh41';
+  if(bef>=45 && ovn<55 && led<50) return 'italien';
+  return 'sen44';
+}
+
+function axlar(s){ return {x:(s[0]+s[1])/2, y:(s[2]+s[3])/2}; }
+
+const ETIKETT={
+ irak:{ank:'start',dx:13,dy:4}, roda37:{ank:'start',dx:13,dy:4},
+ italien:{ank:'start',dx:13,dy:4}, nordvietnam:{ank:'end',dx:-13,dy:4},
+ sen44:{ank:'end',dx:-13,dy:4}, ss:{ank:'end',dx:-13,dy:4}, roda43:{ank:'start',dx:13,dy:4},
+ weh41:{ank:'end',dx:-13,dy:4}, preussen:{ank:'end',dx:-13,dy:4}
+};
+
+function byggKompass(traff){
+  const PX=x=>70+x*4.5, PY=y=>470-y*4.3;
+  const smal=smalSkarm();
+  const tsEtikett=smal?20:12.5, tsAxel=smal?18:12;
+  let m='';
+  for(const [k,pr] of Object.entries(PROFILER)){
+    const a=axlar(pr.sig), e=ETIKETT[k];
+    const cx=PX(a.x), cy=PY(a.y), hit=(k===traff);
+    m+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${hit?7:4.5}"
+      fill="${hit?'#1A1F20':'#8D948A'}"/>`;
+    m+=`<text x="${(cx+e.dx).toFixed(1)}" y="${(cy+e.dy).toFixed(1)}" text-anchor="${e.ank}"
+      font-family="Courier Prime, monospace" font-size="${tsEtikett}"
+      font-weight="${hit?'700':'400'}" fill="${hit?'#1A1F20':'#6B726A'}">${pr.namn}</text>`;
+  }
+  const du=axlar(val), dx=PX(du.x), dy=PY(du.y);
+  const duMark=`<g stroke="#7E2E20" stroke-width="2.5" fill="none">
+      <circle cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="11"/>
+      <line x1="${(dx-18).toFixed(1)}" y1="${dy.toFixed(1)}" x2="${(dx-4).toFixed(1)}" y2="${dy.toFixed(1)}"/>
+      <line x1="${(dx+4).toFixed(1)}" y1="${dy.toFixed(1)}" x2="${(dx+18).toFixed(1)}" y2="${dy.toFixed(1)}"/>
+      <line x1="${dx.toFixed(1)}" y1="${(dy-18).toFixed(1)}" x2="${dx.toFixed(1)}" y2="${(dy-4).toFixed(1)}"/>
+      <line x1="${dx.toFixed(1)}" y1="${(dy+4).toFixed(1)}" x2="${dx.toFixed(1)}" y2="${(dy+18).toFixed(1)}"/>
+    </g>
+    <text x="${dx.toFixed(1)}" y="${(dy+34).toFixed(1)}" text-anchor="middle"
+      font-family="Courier Prime, monospace" font-size="${tsEtikett}" font-weight="700" fill="#7E2E20">DU</text>`;
+
+  return `<svg viewBox="0 0 600 540" xmlns="http://www.w3.org/2000/svg" role="img"
+    aria-label="Kompass med två axlar. Din position jämförd med åtta historiska fall.">
+    <line x1="295" y1="30" x2="295" y2="470" stroke="#AAB0A6" stroke-dasharray="4 5"/>
+    <line x1="70" y1="255" x2="535" y2="255" stroke="#AAB0A6" stroke-dasharray="4 5"/>
+    <line x1="70" y1="470" x2="535" y2="470" stroke="#1A1F20" stroke-width="1.5"/>
+    <line x1="70" y1="30" x2="70" y2="470" stroke="#1A1F20" stroke-width="1.5"/>
+    ${m}${duMark}
+    <text x="70" y="500" font-family="Archivo, sans-serif" font-size="${tsAxel}" fill="#525A58">Trohet avgör vem som blir befäl</text>
+    <text x="535" y="500" text-anchor="end" font-family="Archivo, sans-serif" font-size="${tsAxel}" fill="#525A58">Skicklighet avgör</text>
+    <text x="52" y="470" transform="rotate(-90 52 470)" font-family="Archivo, sans-serif" font-size="${tsAxel}" fill="#525A58">Allt kontrolleras uppifrån</text>
+    <text x="52" y="30" transform="rotate(-90 52 30)" text-anchor="end" font-family="Archivo, sans-serif" font-size="${tsAxel}" fill="#525A58">Befälhavare handlar fritt</text>
+  </svg>`;
+}
+
+function byggFingeravtryck(traff){
+  const pr=PROFILER[traff];
+  let r='';
+  REGLAGE.forEach((reg,i)=>{
+    r+=`<div class="fp-rad"><span>${reg.namn}</span>
+      <div class="fp-spar">
+        <div class="fp-hist" style="left:${pr.sig[i]}%"></div>
+        <div class="fp-du" style="left:${val[i]}%"></div>
+      </div></div>`;
+  });
+  return `<div class="fp"><h4>REGLAGE FÖR REGLAGE</h4>${r}
+    <div class="fp-teckenlista">
+      <span><i></i>Dina val</span>
+      <span><i class="streck"></i>${pr.namn}</span>
+    </div></div>`;
+}
+
+function visaFacit(){
+  const n=profilNyckel(), f=PROFILER[n];
+  document.getElementById('facit').innerHTML=
+    `<p class="namn">${f.namn}</p><p class="spegel">${f.spegel}</p>${f.text}`+
+    (f.osakert?`<p class="notis">${OSAKRAT}</p>`:``);
+  document.getElementById('kompass').innerHTML=
+    `<h3>Var hamnade du?</h3>
+     <p class="forklaring">Vågrätt: vem befälhavare får vara. Lodrätt: hur mycket de får göra på egen hand. Åtta historiska fall, och ditt eget kryss.</p>`+
+    byggKompass(n)+byggFingeravtryck(n);
+}
+
+function fyllKvitto(){
+  document.getElementById('protoKvitto').innerHTML=protokollHtml(false);
+  const kr=document.getElementById('kvittoRapport');
+  if(kr && scenUtfall){ kr.textContent=scenUtfall.kvitto; kr.style.display='list-item'; }
+  const c=60, w=1120/c, h=9;
+  let m='';
+  for(let i=0;i<1200;i++){
+    const x=(i%c)*w+3, y=Math.floor(i/c)*(h+3)+3;
+    m+=`<rect x="${x.toFixed(1)}" y="${y}" width="${(w-5).toFixed(1)}" height="${h-3}" fill="#8E4433" opacity="${0.5+((i*37)%40)/100}"/>`;
+  }
+  document.getElementById('faltPlan').innerHTML=
+    `<svg viewBox="0 0 1120 250" xmlns="http://www.w3.org/2000/svg" role="img"
+      aria-label="Ett fält med 1200 märken, ett för varje förstört flygplan.">${m}</svg>`;
+}
+
+document.querySelectorAll('.dold').forEach(b=>b.addEventListener('click',()=>b.classList.add('visad')));
+document.getElementById('omstart').addEventListener('click',()=>location.reload());
+
+/* ============ rita om vid ändrad skärmbredd ============ */
+let sistSmal=smalSkarm(), storlekTimer=null;
+window.addEventListener('resize',()=>{
+  clearTimeout(storlekTimer);
+  storlekTimer=setTimeout(()=>{
+    if(smalSkarm()===sistSmal) return;
+    sistSmal=smalSkarm();
+    sattLayout();
+    document.getElementById('heroSvg').innerHTML=byggSvg({});
+    document.getElementById('fiendeSvg').innerHTML=byggFiendeSvg();
+    ritaSvg();
+    if(scenFokus!==null) ritaScen(!!(scenUtfall&&scenUtfall.slack));
+    const k=document.getElementById('kompass');
+    if(k && k.innerHTML) visaFacit();
+  },250);
+});
+</script>
+</body>
+</html>
