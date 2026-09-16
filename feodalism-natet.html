@@ -153,7 +153,9 @@ select {
   background-repeat: no-repeat;
   cursor: pointer;
 }
-.sigill { width: 64px; height: 64px; flex: none; }
+.vapen { display: flex; align-items: flex-end; gap: .4rem; flex: none; }
+.vapen svg { height: 58px; width: auto; display: block; }
+.vapen .kant { fill: none; stroke: var(--gräns); stroke-width: 1.2; }
 
 .ingress {
   max-width: 68ch;
@@ -471,7 +473,7 @@ button:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px
           <option value="frankrike1300">Frankrike ca 1300</option>
         </select>
       </div>
-      <svg class="sigill" id="sigill" viewBox="-34 -34 68 68" aria-hidden="true"></svg>
+      <div class="vapen" id="vapen"></div>
     </div>
   </header>
 
@@ -535,7 +537,7 @@ const bildkalla = nyckel => BILDER[nyckel] ? BILDMAPP + BILDER[nyckel] : "";
 const EXEMPEL = {
   frankrike1000: {
     namn: "Frankrike ca 1000",
-    sigill: { rad1: "FRANCIA", rad2: "ca 1000" },
+    vapen: [{ fana: "frankrike" }],
     lage: "Karl den stores rike har fallit sönder, och Frankrike är splittrat. Kungen styr bara området kring Paris. Den verkliga makten ligger hos hertigar, grevar och borgherrar, som styr från sina borgar med hjälp av riddare.",
     hojd: 700,
     centrum: "kung",
@@ -674,7 +676,7 @@ const EXEMPEL = {
   },
   frankrikeengland1170: {
     namn: "Frankrike och England ca 1170",
-    sigill: { rad1: "ANGLIA ET FRANCIA", rad2: "ca 1170" },
+    vapen: [{ fana: "england" }, { fana: "frankrike" }],
     lage: "Englands kung Henrik II styr ett välde från Skottland till Pyrenéerna. Genom arv och äktenskapet med Eleonora av Akvitanien äger han halva Frankrike och är mäktigare än den franske kungen Ludvig VII, fast han är dennes vasall. Samtidigt strider Henrik med ärkebiskop Thomas Becket, som mördas 1170.",
     hojd: 780,
     centrum: "englandskung",
@@ -879,7 +881,7 @@ const EXEMPEL = {
 ,
   england1086: {
     namn: "England ca 1086",
-    sigill: { rad1: "ANGLIA", rad2: "ca 1086" },
+    vapen: [{ fana: "england" }],
     lage: "Tjugo år efter slaget vid Hastings styr Vilhelm Erövraren England. Edvard Bekännaren dog barnlös 1066, och hans efterträdare Harold Godwinson stupade vid Hastings samma år. Vilhelm har delat ut landets jord till sina normanniska baroner och håller hårt i makten. År 1086 låter han kartlägga hela riket i Domesday Book.",
     hojd: 740,
     centrum: "englandskung",
@@ -1029,7 +1031,7 @@ const EXEMPEL = {
 ,
   tyskromerska1200: {
     namn: "Tysk-romerska riket ca 1200",
-    sigill: { rad1: "IMPERIUM", rad2: "ca 1200" },
+    vapen: [{ fana: "riket" }, { skold: "orn" }],
     lage: "Kejsar Henrik VI dog oväntat 1197, när hans son Fredrik var två år. År 1198 valdes två kungar som nu strider om tronen: Filip av Schwaben av den staufiska ätten och Otto IV av den welfiska. Påven Innocentius III vill avgöra striden. Under tiden stärker de tyska furstarna sin makt, och de norditalienska städerna styr i stort sett sig själva.",
     hojd: 860,
     centrum: "tronen",
@@ -1213,7 +1215,7 @@ const EXEMPEL = {
 ,
   sverige1280: {
     namn: "Sverige ca 1280",
-    sigill: { rad1: "SVECIA", rad2: "ca 1280" },
+    vapen: [{ fana: "sverige" }, { skold: "folkunga" }],
     lage: "Kung Magnus Ladulås stärker kungamakten i Sverige. Genom Alsnö stadga slipper den som tjänar med häst och rustning skatt, och ett världsligt frälse växer fram. Samtidigt förbjuds våldgästning hos bönderna. Kyrkan får stora skattefriheter 1281, och många bönder äger fortfarande sin jord.",
     hojd: 880,
     centrum: "sverigekung",
@@ -1384,7 +1386,7 @@ const EXEMPEL = {
 ,
   frankrike1300: {
     namn: "Frankrike ca 1300",
-    sigill: { rad1: "FRANCIA", rad2: "ca 1300" },
+    vapen: [{ fana: "frankrike" }, { skold: "liljor" }],
     lage: "Kungamakten i Frankrike har vuxit kraftigt under Filip IV den sköne. Avlönade ämbetsmän och kungens domstolar tar över allt mer av adelns makt. Filip beskattar kyrkan och hamnar i hård strid med påven Bonifatius VIII. Englands kung Edvard I är hans vasall för Gascogne, och striden om Gascogne har lett till krig.",
     hojd: 820,
     centrum: "kung",
@@ -1623,7 +1625,7 @@ function rita(nyckel) {
   svg.setAttribute("viewBox", `0 0 1000 ${ex.hojd}`);
   svg.setAttribute("aria-label", `Maktnät: ${ex.namn}`);
   document.getElementById("lage").textContent = ex.lage;
-  ritaSigill(ex.sigill);
+  ritaVapen(ex.vapen);
   ritaTank(ex.tank);
   ritaForklaring(ex);
 
@@ -1987,16 +1989,82 @@ document.addEventListener("keydown", e => {
   }
 });
 
-function ritaSigill(s) {
-  const sg = document.getElementById("sigill");
-  sg.innerHTML = `
-    <defs><path id="sigillbana" d="M-24,0 A24,24 0 1 1 24,0 A24,24 0 1 1 -24,0"/></defs>
-    <circle r="32" fill="var(--nod)" stroke="var(--guld)" stroke-width="2"/>
-    <circle r="17" fill="none" stroke="var(--guld)" stroke-width="1"/>
-    <text font-size="8.5" fill="var(--guld-ljus)" letter-spacing="2" font-family="Playfair Display, Georgia, serif">
-      <textPath href="#sigillbana" startOffset="25%" text-anchor="middle">${s.rad1}</textPath>
-    </text>
-    <text y="4" font-size="9" text-anchor="middle" fill="var(--nod-text)" font-family="Lora, Georgia, serif" font-style="italic">${s.rad2}</text>`;
+/* Färger och vapen vid menyn (ritade i koden, inga bilder) */
+const TINKTUR = { bla: "#2451a6", rod: "#b3261e", guld: "#e0b534", svart: "#1b1b1b", silver: "#f1f1ee" };
+const FANOR = {
+  frankrike: { falt: "bla", metall: "guld", text: "Frankrikes färger: blått och guld" },
+  england: { falt: "rod", metall: "guld", text: "Englands färger: rött och guld" },
+  riket: { falt: "guld", metall: "svart", text: "Tysk-romerska rikets färger: guld och svart" },
+  sverige: { falt: "bla", metall: "guld", text: "Sveriges färger: blått och guld" }
+};
+const SKOLDFORM = "M2,2 H42 V22 C42,38 32,46 22,50 C12,46 2,38 2,22 Z";
+const LILJA = '<path d="M0,-5 C1.6,-3 1.6,-1 0,1 C-1.6,-1 -1.6,-3 0,-5 Z M-0.6,0.6 C-2.2,-2 -5.2,-0.8 -3.6,1.6 C-3,2.4 -1.6,2.1 -0.8,1.7 Z M0.6,0.6 C2.2,-2 5.2,-0.8 3.6,1.6 C3,2.4 1.6,2.1 0.8,1.7 Z M-2.6,2 H2.6 V2.9 H-2.6 Z M-0.7,3 L0,5.2 L0.7,3 Z"/>';
+const SKOLDAR = {
+  orn: {
+    text: "Rikets vapen: svart örn på guld",
+    innehall: `<path d="${SKOLDFORM}" fill="${TINKTUR.guld}"/>
+      <g fill="${TINKTUR.svart}">
+        <path d="M20,19 C14,13 9,10 4.5,6.5 L5.5,11.5 L3.5,12.5 L6.5,15.5 L4.5,17.5 L8.5,19.5 L7,22.5 L11.5,23.5 L11,26.5 L19,25 Z"/>
+        <path d="M24,19 C30,13 35,10 39.5,6.5 L38.5,11.5 L40.5,12.5 L37.5,15.5 L39.5,17.5 L35.5,19.5 L37,22.5 L32.5,23.5 L33,26.5 L25,25 Z"/>
+        <path d="M19,17 C17,22 17,29 19,33 L25,33 C27,29 27,22 25,17 Z"/>
+        <circle cx="22" cy="13.5" r="3.6"/>
+        <path d="M18.8,12.6 L15.4,14 L18.8,15.2 Z"/>
+        <path d="M19,32 L15.5,40.5 L19.5,38.5 L22,43 L24.5,38.5 L28.5,40.5 L25,32 Z"/>
+      </g>
+      <path d="M19.5,31 L13.5,35 L12.5,38.5 M24.5,31 L30.5,35 L31.5,38.5" fill="none" stroke="${TINKTUR.svart}" stroke-width="1.7" stroke-linecap="round"/>`
+  },
+  folkunga: {
+    text: "Folkungaättens vapen: krönt guldlejon över silverbalkar på blått",
+    innehall: (() => {
+      const kropp = `<ellipse cx="23.5" cy="28" rx="5.2" ry="9.5" transform="rotate(28 23.5 28)"/>
+        <circle cx="17.5" cy="15.5" r="4.6"/>
+        <path d="M13.6,14.6 L10.4,16.4 L13.8,18.2 Z"/>
+        <path d="M13.4,11 L14.2,7.2 L15.9,9.4 L17.4,6.6 L18.9,9.4 L20.6,7.2 L21.4,11 Z"/>`;
+      const lemmar = `<path d="M20,21.5 L11.5,17.5 M21,25.5 L12.5,24.5 M25.5,35 L18.5,42.5 L14.5,43.5 M27.5,35 L28.5,43 L32.5,44.5"/>
+        <path d="M28.5,34 C36,33 34,23 36.5,18.5" stroke-width="1.8"/>`;
+      return `<path d="${SKOLDFORM}" fill="${TINKTUR.bla}"/>
+        <g clip-path="url(#skoldklipp-folkunga)" stroke="${TINKTUR.silver}" stroke-width="3.4">
+          <path d="M-14,10 L36,60 M-4,-2 L50,52 M8,-12 L62,42"/>
+        </g>
+        <g fill="#5a420c" stroke="#5a420c" stroke-width="1.2" stroke-linejoin="round">${kropp}</g>
+        <g fill="none" stroke="#5a420c" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round">${lemmar}</g>
+        <g fill="${TINKTUR.guld}">${kropp}</g>
+        <g fill="none" stroke="${TINKTUR.guld}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">${lemmar}</g>
+        <circle cx="36.5" cy="17.6" r="1.9" fill="${TINKTUR.guld}"/>`;
+    })()
+  },
+  liljor: {
+    text: "Frankrikes kungliga vapen: gyllene liljor på blått",
+    innehall: `<path d="${SKOLDFORM}" fill="${TINKTUR.bla}"/>
+      <g clip-path="url(#skoldklipp-liljor)" fill="${TINKTUR.guld}">
+        ${[[10,10],[22,10],[34,10],[16,21],[28,21],[10,32],[22,32],[34,32],[16,43],[28,43]]
+          .map(([x, y]) => `<g transform="translate(${x},${y}) scale(1.05)">${LILJA}</g>`).join("")}
+      </g>`
+  }
+};
+
+function ritaVapen(lista) {
+  const ruta = document.getElementById("vapen");
+  ruta.innerHTML = "";
+  lista.forEach(v => {
+    let svgText, text;
+    if (v.fana) {
+      const f = FANOR[v.fana];
+      text = f.text;
+      svgText = `<svg viewBox="0 0 32 56" role="img" aria-label="${text}"><title>${text}</title>
+        <path d="M1,1 H31 V55 L16,46 L1,55 Z" fill="${TINKTUR[f.falt]}"/>
+        <path d="M12,1 H20 V50.2 L16,46 L12,50.2 Z" fill="${TINKTUR[f.metall]}"/>
+        <path class="kant" d="M1,1 H31 V55 L16,46 L1,55 Z"/></svg>`;
+    } else {
+      const sk = SKOLDAR[v.skold];
+      text = sk.text;
+      svgText = `<svg viewBox="0 0 44 52" role="img" aria-label="${text}"><title>${text}</title>
+        <defs><clipPath id="skoldklipp-${v.skold}"><path d="${SKOLDFORM}"/></clipPath></defs>
+        ${sk.innehall}
+        <path class="kant" d="${SKOLDFORM}"/></svg>`;
+    }
+    ruta.insertAdjacentHTML("beforeend", svgText);
+  });
 }
 
 function ritaTank(t) {
