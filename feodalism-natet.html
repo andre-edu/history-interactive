@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Det feodala systemet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #eef1f5;
+  --yta: #ffffff;
+  --text: #16223a;
+  --dampad: #56617a;
+  --guld: #9a7424;
+  --guld-ljus: #b8913a;
+  --nod: #1b2c4a;
+  --nod-text: #f1ead6;
+  --tråd-vasall: #9a7424;
+  --tråd-gods: #7a5a3a;
+  --tråd-kyrka: #3d6a9a;
+  --tråd-familj: #9b4a6a;
+  --tråd-ambete: #5a6478;
+  --tråd-stad: #3f7a5a;
+  --tråd-konflikt: #b0413e;
+  --nät: #16223a;
+  --gräns: #8a93a6;
+  --band: #d9cfb6;
+  --band-rand: #c2b494;
+  --band-text: #3a2e18;
+  --skugga: 0 18px 50px rgba(10, 20, 40, .28);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1a2e;
+    --yta: #172540;
+    --text: #e9e3d2;
+    --dampad: #9aa5bd;
+    --guld: #d2ad58;
+    --guld-ljus: #e6c677;
+    --nod: #22375c;
+    --nod-text: #f1ead6;
+    --tråd-vasall: #d2ad58;
+    --tråd-gods: #b88c62;
+    --tråd-kyrka: #7fa7d4;
+    --tråd-familj: #d58aa6;
+    --tråd-ambete: #a7b0c4;
+    --tråd-stad: #7fbf98;
+    --tråd-konflikt: #e8847a;
+    --nät: #c9d3e6;
+    --gräns: #5d6b87;
+    --band: #2b3550;
+    --band-rand: #3d4a6a;
+    --band-text: #e9e3d2;
+    --skugga: 0 18px 50px rgba(0, 0, 0, .55);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1a2e;
+  --yta: #172540;
+  --text: #e9e3d2;
+  --dampad: #9aa5bd;
+  --guld: #d2ad58;
+  --guld-ljus: #e6c677;
+  --nod: #22375c;
+  --nod-text: #f1ead6;
+  --tråd-vasall: #d2ad58;
+  --tråd-gods: #b88c62;
+  --tråd-kyrka: #7fa7d4;
+  --tråd-familj: #d58aa6;
+  --tråd-ambete: #a7b0c4;
+  --tråd-stad: #7fbf98;
+  --tråd-konflikt: #e8847a;
+  --nät: #c9d3e6;
+  --gräns: #5d6b87;
+  --band: #2b3550;
+  --band-rand: #3d4a6a;
+  --band-text: #e9e3d2;
+  --skugga: 0 18px 50px rgba(0, 0, 0, .55);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Lora", Georgia, "Times New Roman", serif;
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+.sida {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 2.4rem 1.4rem 4rem;
+}
+
+/* Huvud */
+.huvud {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.2rem 2rem;
+  align-items: end;
+  margin-bottom: 1.4rem;
+}
+h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 800;
+  font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+  line-height: 1.05;
+  margin: 0;
+  letter-spacing: -.01em;
+}
+.val {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+}
+.val label {
+  font-size: .9rem;
+  color: var(--dampad);
+  display: block;
+  margin-bottom: .2rem;
+}
+select {
+  font: inherit;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--yta);
+  border: 1px solid var(--guld);
+  border-radius: 6px;
+  padding: .45rem 2.2rem .45rem .7rem;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--guld) 50%), linear-gradient(135deg, var(--guld) 50%, transparent 50%);
+  background-position: calc(100% - 16px) 55%, calc(100% - 11px) 55%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.sigill { width: 64px; height: 64px; flex: none; }
+
+.ingress {
+  max-width: 68ch;
+  margin: 0 0 .6rem;
+}
+.lage {
+  max-width: 68ch;
+  margin: 0 0 1.6rem;
+  color: var(--dampad);
+  font-style: italic;
+}
+
+/* Nätet */
+.natram {
+  overflow-x: auto;
+  border-radius: 10px;
+  background: var(--yta);
+  box-shadow: 0 1px 0 rgba(0,0,0,.04);
+}
+.natram svg {
+  display: block;
+  width: 100%;
+  min-width: 720px;
+  height: auto;
+}
+.nod { cursor: pointer; outline: none; }
+.nod .ring {
+  fill: var(--nod);
+  stroke: var(--guld);
+  stroke-width: 2.5;
+  transition: stroke-width .15s;
+}
+.nod:hover .ring, .nod:focus-visible .ring { stroke-width: 5; }
+.nod:focus-visible .fokusring { opacity: 1; }
+.fokusring { fill: none; stroke: var(--guld-ljus); stroke-width: 2; stroke-dasharray: 4 4; opacity: 0; }
+.nod .ikon { fill: none; stroke: var(--guld-ljus); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.nod .platshallare { fill: none; stroke: var(--nod-text); stroke-width: 2; opacity: .55; }
+.nod .platstext { fill: var(--nod-text); opacity: .7; font-size: 11px; font-family: "Lora", Georgia, serif; }
+.etikett, .underetikett { paint-order: stroke; stroke: var(--yta); stroke-width: 6px; stroke-linejoin: round; }
+.etikett { fill: var(--text); font-family: "Playfair Display", Georgia, serif; font-weight: 600; font-size: 17px; }
+.underetikett { fill: var(--dampad); font-size: 13px; font-style: italic; }
+.trad { fill: none; transition: opacity .2s; }
+.trad.vasall { stroke: var(--tråd-vasall); }
+.trad.gods { stroke: var(--tråd-gods); stroke-dasharray: 9 6; }
+.trad.kyrka { stroke: var(--tråd-kyrka); stroke-dasharray: 2 6; stroke-linecap: round; }
+.trad.familj { stroke: var(--tråd-familj); stroke-dasharray: 14 4 2 4; }
+.trad.ambete { stroke: var(--tråd-ambete); }
+.trad.stad { stroke: var(--tråd-stad); stroke-dasharray: 5 4; }
+.trad.ansprak { stroke: var(--guld-ljus); stroke-dasharray: 10 5; }
+.trad.krona { stroke: var(--tråd-ambete); stroke-dasharray: 3 4; }
+.trad.konflikt { stroke: var(--tråd-konflikt); stroke-dasharray: 2 4 10 4; }
+.trad.riksmote { stroke: var(--text); opacity: .6; stroke-dasharray: 8 3 1 3; }
+.trad.forbund { stroke: var(--tråd-stad); stroke-dasharray: 16 5; }
+.nod.tom .ring { fill: var(--yta); stroke-dasharray: 7 6; }
+.nod.tom .ikon { opacity: .45; }
+.flera { fill: var(--bg); stroke: var(--guld); stroke-width: 2; }
+.fleranod { cursor: pointer; outline: none; }
+.fleranod .traff { fill: transparent; }
+.fleratecken { fill: var(--guld); font-family: "Lora", Georgia, serif; font-weight: 600; font-size: 12px; pointer-events: none; }
+.fleranod:hover .fleratecken, .fleranod:focus-visible .fleratecken { fill: var(--bg); }
+.trad.andrad { animation: puls 1.2s ease-in-out 3; }
+@keyframes puls { 50% { opacity: .25; } }
+.citat { margin: 1rem 0 .3rem; padding: .8rem 1rem; border-left: 3px solid var(--guld); font-style: italic; font-size: 1.08rem; background: color-mix(in srgb, var(--guld) 8%, transparent); }
+.kallrad { margin: 0 0 1rem; font-size: .88rem; color: var(--dampad); }
+.repliker { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin: 1rem 0; }
+.replik { border: 1px solid var(--gräns); border-radius: 10px; padding: .7rem .9rem; }
+.replik strong { display: block; font-family: "Playfair Display", Georgia, serif; margin-bottom: .2rem; }
+.replik p { margin: 0; font-style: italic; }
+.ordningslista { list-style: none; padding: 0; margin: 1rem 0; display: grid; gap: .5rem; }
+.ordningslista li { display: flex; align-items: center; gap: .6rem; border: 1px solid var(--gräns); border-radius: 8px; padding: .5rem .6rem; }
+.ordningslista li.ratt { border-color: var(--tråd-stad); }
+.ordningslista li.fel { border-color: var(--tråd-konflikt); }
+.ordningslista .htext { flex: 1; }
+.ordningslista .ar { font-weight: 600; color: var(--guld); min-width: 4.5rem; }
+.flytt { font: inherit; width: 2rem; height: 2rem; border-radius: 6px; border: 1px solid var(--gräns); background: transparent; color: var(--text); cursor: pointer; }
+.flytt:hover:not(:disabled) { border-color: var(--guld); }
+.flytt:disabled { opacity: .3; cursor: default; }
+.kontroll { font: inherit; font-weight: 600; color: var(--bg); background: var(--guld); border: none; border-radius: 8px; padding: .55rem 1rem; cursor: pointer; }
+.nattips { font-size: .9rem; color: var(--dampad); margin-top: .5rem; }
+@media (max-width: 640px) { .repliker { grid-template-columns: 1fr; } }
+.fleranod:hover .flera, .fleranod:focus-visible .flera { fill: var(--guld); stroke-width: 3; }
+.val-lista { list-style: none; padding: 0; margin: .8rem 0 0; display: grid; gap: .5rem; }
+.valknapp {
+  width: 100%; text-align: left; font: inherit; color: var(--text);
+  background: transparent; border: 1px solid var(--gräns); border-radius: 8px;
+  padding: .6rem .8rem; cursor: pointer;
+}
+.valknapp:hover { border-color: var(--guld); }
+.valknapp[aria-pressed="true"] { border-color: var(--guld); background: color-mix(in srgb, var(--guld) 14%, transparent); }
+.utfall { margin: .9rem 0 0; padding: .7rem .9rem; border-left: 3px solid var(--guld); }
+.utfall:empty { display: none; }
+.natlinje { stroke: var(--nät); opacity: .07; fill: none; }
+.grans { fill: none; stroke: var(--gräns); stroke-width: 1.5; stroke-dasharray: 1 7; stroke-linecap: round; }
+.granstext { fill: var(--gräns); font-size: 13px; font-style: italic; }
+.bondeband rect.yta { fill: url(#bandmonster); stroke: var(--band-rand); stroke-width: 1.5; }
+.bondeband { cursor: pointer; outline: none; }
+.bondeband:hover rect.yta, .bondeband:focus-visible rect.yta { stroke: var(--guld); stroke-width: 3; }
+.bandtext { fill: var(--band-text); font-family: "Playfair Display", Georgia, serif; font-weight: 600; font-size: 19px; }
+.bandunder { fill: var(--band-text); font-size: 13px; font-style: italic; opacity: .8; }
+
+svg.fokus .nod:not(.aktiv), svg.fokus .bondeband:not(.aktiv) { opacity: .3; }
+svg.fokus .trad:not(.aktiv), svg.fokus .flera:not(.aktiv) { opacity: .08; }
+.nod, .bondeband { transition: opacity .2s; }
+
+/* Teckenförklaring */
+.forklaring {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem 1.8rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: .92rem;
+  color: var(--dampad);
+}
+.forklaring li { display: flex; align-items: center; gap: .5rem; }
+.forklaring svg { flex: none; }
+
+/* Tänk efter */
+.tank {
+  margin-top: 2.2rem;
+  max-width: 68ch;
+  border-left: 3px solid var(--guld);
+  padding: .2rem 0 .2rem 1.2rem;
+}
+.tank h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.45rem;
+  margin: 0 0 .4rem;
+}
+.tank p { margin: 0 0 .6rem; }
+details summary {
+  cursor: pointer;
+  color: var(--guld);
+  font-weight: 600;
+}
+details p { margin-top: .6rem; }
+
+/* Rutan */
+dialog {
+  border: none;
+  padding: 0;
+  width: min(620px, calc(100vw - 2rem));
+  max-height: calc(100vh - 3rem);
+  background: var(--yta);
+  color: var(--text);
+  border-radius: 12px;
+  box-shadow: var(--skugga);
+}
+dialog::backdrop { background: rgba(8, 14, 28, .6); }
+dialog[open] { animation: upp .22s ease-out; }
+@keyframes upp { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+.ruta { padding: 1.6rem 1.7rem 1.8rem; overflow-y: auto; max-height: calc(100vh - 3rem); }
+.rutahuvud {
+  display: flex;
+  gap: 1.1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-right: 2.4rem;
+}
+.portratt {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  flex: none;
+  object-fit: cover;
+  border: 3px solid var(--guld);
+}
+.portratt.tom {
+  display: grid;
+  place-items: center;
+  background: var(--nod);
+  color: var(--nod-text);
+  font-size: .78rem;
+  text-align: center;
+  line-height: 1.25;
+  padding: .6rem;
+  border-style: dashed;
+}
+.ruta h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.7rem;
+  line-height: 1.15;
+  margin: 0;
+}
+.roll { margin: .15rem 0 0; color: var(--dampad); font-style: italic; }
+.stang {
+  position: absolute;
+  top: .8rem; right: .8rem;
+  width: 2.4rem; height: 2.4rem;
+  border-radius: 50%;
+  border: 1px solid var(--gräns);
+  background: transparent;
+  color: var(--text);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.stang:hover, .stang:focus-visible { border-color: var(--guld); color: var(--guld); }
+.makt { display: flex; align-items: center; gap: .7rem; margin: 0 0 1.1rem; font-size: .92rem; }
+.makt[hidden] { display: none; }
+.pips { display: flex; gap: 3px; }
+.pips span { width: 14px; height: 10px; border-radius: 2px; background: var(--gräns); opacity: .35; }
+.pips span.pa { background: var(--guld); opacity: 1; }
+.ruta h3 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.15rem;
+  margin: 1.5rem 0 .6rem;
+}
+.bandlista { list-style: none; margin: 0; padding: 0; }
+.bandlista li {
+  padding: .7rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--gräns) 40%, transparent);
+  font-size: .95rem;
+}
+.bandlista .typ { color: var(--dampad); font-style: italic; margin-left: .6rem; }
+.bandlista p { margin: .25rem 0 0; }
+.lank {
+  font: inherit;
+  font-weight: 600;
+  color: var(--guld);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.flaggtext { color: var(--guld); font-size: .9rem; }
+button:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--guld); outline-offset: 3px; }
+
+.notis { margin-top: 2.4rem; font-size: .85rem; color: var(--dampad); max-width: 68ch; }
+
+@media (max-width: 640px) {
+  .huvud { grid-template-columns: 1fr; }
+  .sida { padding-top: 1.6rem; }
+  .ruta { padding: 1.3rem 1.2rem 1.5rem; }
+  .portratt { width: 72px; height: 72px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="sida">
+
+  <header class="huvud">
+    <h1>Det feodala systemet</h1>
+    <div class="val">
+      <div>
+        <label for="exempelval">Välj exempel</label>
+        <select id="exempelval">
+          <option value="frankrike1000" selected>Frankrike ca 1000</option>
+          <option value="frankrikeengland1170">Frankrike och England ca 1170</option>
+          <option value="england1086">England ca 1086</option>
+          <option value="tyskromerska1200">Tysk-romerska riket ca 1200</option>
+          <option value="sverige1280">Sverige ca 1280</option>
+          <option value="frankrike1300">Frankrike ca 1300</option>
+        </select>
+      </div>
+      <svg class="sigill" id="sigill" viewBox="-34 -34 68 68" aria-hidden="true"></svg>
+    </div>
+  </header>
+
+  <p class="ingress">Läroböcker visar ofta feodalismen som en pyramid med kungen överst. I verkligheten var makten ett nät av personliga band. En man kunde ha flera herrar, och kungen kunde vara svagare än sina egna vasaller. Cirkelns storlek visar ungefär hur mycket makt aktören hade. Klicka på en cirkel för att läsa mer.</p>
+  <p class="lage" id="lage"></p>
+
+  <div class="natram">
+    <svg id="nat" viewBox="0 0 1000 700" role="group" aria-label="Maktnät"></svg>
+  </div>
+
+  <ul class="forklaring" id="forklaring"></ul>
+
+  <section class="tank" id="tank"></section>
+
+  <p class="notis">Maktvärdena är uppskattningar som bygger på mark, soldater, inkomster och inflytande. De är till för att jämföra aktörerna med varandra, inte exakta mått.</p>
+</div>
+
+<dialog id="ruta" aria-labelledby="rutarubrik">
+  <button class="stang" id="stang" aria-label="Stäng">×</button>
+  <div class="ruta" id="rutainnehall"></div>
+</dialog>
+
+<script>
+/* =====================================================================
+   BILDER
+   Bilderna ligger i mappen images/ bredvid HTML-filen.
+   Kvadratiska JPG-filer, beskärs cirkulärt. Saknas en fil visas
+   en platshållare.
+   ===================================================================== */
+const BILDMAPP = "images/";
+const BILDER = {
+  "frankrike1000.kung": "feodalism-hugo-capet.jpg",
+  "frankrike1000.normandie": "feodalism-hertig-normandie.jpg",
+  "frankrikeengland1170.englandskung": "feodalism-henrik-ii.jpg",
+  "frankrikeengland1170.kung": "feodalism-ludvig-vii.jpg",
+  "england1086.englandskung": "feodalism-vilhelm-erovraren.jpg",
+  "tyskromerska1200.filip": "feodalism-filip-av-schwaben.jpg",
+  "tyskromerska1200.otto": "feodalism-otto-iv.jpg",
+  "sverige1280.sverigekung": "feodalism-magnus-ladulas.jpg",
+  "sverige1280.helvig": "feodalism-helvig-av-holstein.jpg",
+  "frankrike1300.kung": "feodalism-filip-iv.jpg",
+  "frankrike1300.paven": "feodalism-bonifatius-viii.jpg"
+};
+const bildkalla = nyckel => BILDER[nyckel] ? BILDMAPP + BILDER[nyckel] : "";
+
+/* =====================================================================
+   DATA
+   x och y är placeringen i nätet (bredd 1000, höjd enligt hojd).
+   makt är 1–10 och styr cirkelns storlek.
+   ===================================================================== */
+const EXEMPEL = {
+  frankrike1000: {
+    namn: "Frankrike ca 1000",
+    sigill: { rad1: "FRANCIA", rad2: "ca 1000" },
+    lage: "Efter att Karl den stores rike fallit sönder var Frankrike splittrat. Kungen styrde i praktiken bara området kring Paris. Den verkliga makten låg hos hertigar, grevar och borgherrar som styrde med hjälp av riddare från sina borgar.",
+    hojd: 700,
+    centrum: "kung",
+    granser: [
+      { d: "M70,48 C300,22 600,30 790,40 C812,150 798,205 822,240 C905,252 975,300 970,420 C966,540 950,660 900,672 L100,672 C58,560 40,300 70,48 Z",
+        namn: "Rikets gräns", x: 92, y: 76, ankare: "start" }
+    ],
+    bandY: 592,
+    aktorer: [
+      {
+        id: "kung", namn: "Hugo Capet", under: "kung", roll: "Kung av Frankrike, vald 987",
+        makt: 3, x: 500, y: 285, bild: true,
+        text: [
+          "Hugo Capet valdes till kung år 987, men hans makt var liten. I praktiken styrde han bara området kring Paris, Île-de-France.",
+          "Flera av hans vasaller hade mer mark, fler soldater och större inkomster än han. Kungatiteln gav anseende och en särskild helighet genom kröningen, men den gav inte kontroll över riket."
+        ]
+      },
+      {
+        id: "storvasaller", namn: "Hertigar och grevar", under: "Anjou, Flandern, Akvitanien m.fl.", roll: "Regionala furstar",
+        makt: 8, x: 190, y: 300, ikon: "skold",
+        text: [
+          "Hertigarna och grevarna styrde sina regioner som egna små riken, till exempel Anjou, Flandern, Akvitanien och Toulouse.",
+          "De präglade egna mynt, dömde i egna domstolar och förde krig utan att fråga kungen. Formellt var de kungens vasaller, men kungen kunde sällan tvinga dem att lyda."
+        ]
+      },
+      {
+        id: "normandie", namn: "Hertigen av Normandie", under: "Rikard II", roll: "Furste i nordvästra Frankrike",
+        makt: 8, x: 310, y: 100, bild: true,
+        text: [
+          "Normandie grundades när vikingahövdingen Rollo år 911 fick land av den franske kungen mot att han försvarade kusten mot andra vikingar.",
+          "Hans ättlingar byggde upp ett av rikets starkaste furstendömen. Omkring år 1000 styrdes det av hertig Rikard II. Drygt sextio år senare erövrade en av hans ättlingar, Vilhelm, England."
+        ]
+      },
+      {
+        id: "castellaner", namn: "Borgherrar", under: "castellaner", roll: "Lokala herrar med egna borgar",
+        makt: 6, x: 715, y: 205, ikon: "torn",
+        text: [
+          "Borgherrarna byggde borgar på landsbygden och kontrollerade området runt omkring. Från borgen tog de upp tullar, dömde i lokala mål och krävde avgifter av byarna.",
+          "Många höll mark av flera olika herrar och hade därför svurit trohet till fler än en. För att lösa sådana konflikter kunde de utse en huvudherre som gick före de andra."
+        ]
+      },
+      {
+        id: "riddare", namn: "Riddare", under: "", roll: "Krigare till häst",
+        makt: 4, x: 870, y: 370, ikon: "svard",
+        text: [
+          "Riddarna var tungt beväpnade krigare till häst. De tjänade en borgherre eller en greve och fick mat, husrum, utrustning eller ett litet län i gengäld.",
+          "Bilden av den ädla riddaren kom senare. Omkring år 1000 var riddaren först och främst en krigare i herrens tjänst."
+        ]
+      },
+      {
+        id: "kyrkan", namn: "Biskopar och präster", under: "kyrkan", roll: "Kyrkan i Frankrike",
+        makt: 7, x: 345, y: 440, ikon: "kors",
+        text: [
+          "Kyrkan skötte gudstjänster och själavård och var samtidigt en av Frankrikes största jordägare. Många biskopar tillsattes av lokala adelsfamiljer, som också tog del av kyrkans inkomster.",
+          "Biskop Adalbero av Laon skrev omkring år 1020 att samhället bestod av tre grupper: de som ber, de som strider och de som arbetar. Han menade att Gud hade skapat den ordningen."
+        ]
+      },
+      {
+        id: "cluny", namn: "Klostret i Cluny", under: "grundat 910", roll: "Reformkloster",
+        makt: 7, x: 630, y: 455, ikon: "kloster",
+        text: [
+          "Klostret i Cluny grundades år 910 och blev centrum för en reformrörelse inom kyrkan.",
+          "Cluny stod direkt under påvens beskydd och slapp därför lyda de lokala adelsherrarna. Klostret byggde upp ett stort nätverk av dotterkloster runt om i Europa."
+        ]
+      },
+      {
+        id: "paven", namn: "Påven", under: "i Rom, utanför riket", roll: "Kyrkans överhuvud",
+        makt: 4, x: 910, y: 100, ikon: "nycklar",
+        text: [
+          "Påven fanns utanför Frankrike och hade omkring år 1000 liten direkt makt över landet.",
+          "För klostret i Cluny var påvens beskydd ändå avgörande, eftersom det gjorde klostret fritt från de lokala herrarna. Påvarnas anspråk på makt över kungar växte först under slutet av 1000-talet."
+        ]
+      },
+      {
+        id: "bonder", namn: "Bönderna", under: "Den stora majoriteten av befolkningen", roll: "De som arbetar",
+        makt: 1, typ: "band",
+        text: [
+          "Bönderna var den stora majoriteten av befolkningen. De brukade jorden och försörjde både adeln och kyrkan.",
+          "Många var livegna. Det betydde att de inte fick lämna jorden utan herrens tillåtelse. De betalade avgifter i säd och boskap, betalade för att använda herrens kvarn och ugn och arbetade dagsverken på herrens jord.",
+          "Bönderna svor ingen vasalled. Deras band till herren var ett annat slags band än det som fanns inom adeln."
+        ]
+      }
+    ],
+    band: [
+      { fran: "storvasaller", till: "kung", typ: "vasall", styrka: 1,
+        franGer: "Lovade i teorin trohet och krigshjälp. I praktiken gjorde de oftast som de själva ville.",
+        tillGer: "Bekräftade deras titlar och lovade beskydd." },
+      { fran: "normandie", till: "kung", typ: "vasall", styrka: 1,
+        franGer: "Svor trohet till kungen men förde en egen politik.",
+        tillGer: "Erkände hertigen som furste över Normandie." },
+      { fran: "castellaner", till: "storvasaller", typ: "vasall", styrka: 2, flera: true, bojning: 0.14,
+        franGer: "Trohet, krigstjänst och råd.",
+        tillGer: "Beskydd och ett län: mark, en borg eller inkomster." },
+      { fran: "castellaner", till: "normandie", typ: "vasall", styrka: 2, flera: true,
+        franGer: "Trohet, krigstjänst och råd.",
+        tillGer: "Beskydd och ett län: mark, en borg eller inkomster." },
+      { fran: "riddare", till: "castellaner", typ: "vasall", styrka: 3, flera: true,
+        franGer: "Krigstjänst till häst, vakt och trohet.",
+        tillGer: "Utrustning, mat och husrum eller ett litet län, samt beskydd." },
+      { fran: "riddare", till: "storvasaller", typ: "vasall", styrka: 2, bojning: -0.13, flera: true,
+        franGer: "Krigstjänst och trohet.",
+        tillGer: "Underhåll och beskydd." },
+      { fran: "bonder", till: "castellaner", typ: "gods", styrka: 3, ankare: 740,
+        franGer: "Avgifter i säd och boskap, avgifter för kvarn och ugn, dagsverken och lydnad.",
+        tillGer: "Beskydd vid anfall, till exempel tillflykt i borgen, och rättskipning enligt lokal sedvana." },
+      { fran: "bonder", till: "storvasaller", typ: "gods", styrka: 3, ankare: 190,
+        franGer: "Avgifter i säd och boskap, dagsverken och lydnad.",
+        tillGer: "Beskydd och rättskipning enligt lokal sedvana." },
+      { fran: "bonder", till: "kyrkan", typ: "gods", styrka: 2, ankare: 360,
+        franGer: "Arbete och avgifter på kyrkans jord.",
+        tillGer: "Rättskipning på kyrkans gods, gudstjänster och själavård." },
+      { fran: "bonder", till: "cluny", typ: "gods", styrka: 2, ankare: 600,
+        franGer: "Arbete och avgifter på klostrets jord.",
+        tillGer: "Rättskipning på klostrets gods och förbön." },
+      { fran: "kyrkan", till: "storvasaller", typ: "kyrka", styrka: 3,
+        franGer: "Böner, andlig vägledning och ibland avgifter.",
+        tillGer: "Beskydd av kyrkans egendom, men också makt över vem som blev biskop." },
+      { fran: "kyrkan", till: "castellaner", typ: "kyrka", styrka: 1, bojning: 0.3,
+        franGer: "Böner och andlig vägledning.",
+        tillGer: "Beskydd av kyrkans egendom på orten." },
+      { fran: "kyrkan", till: "kung", typ: "kyrka", styrka: 2,
+        franGer: "Kröning, böner och stöd för kungens anseende.",
+        tillGer: "Beskydd av kyrkan." },
+      { fran: "cluny", till: "paven", typ: "kyrka", styrka: 3, bojning: 0,
+        franGer: "Lydnad direkt under påven.",
+        tillGer: "Beskydd som gjorde klostret fritt från de lokala herrarna." }
+    ],
+    flera: {
+      castellaner: {
+        typ: "dilemma",
+        titel: "En borgherre, två herrar",
+        text: "Borgherren har svurit trohet både till en greve och till hertigen av Normandie, men greven är hans huvudherre. Nu går herrarna i krig mot varandra, och båda kräver hans hjälp.",
+        fraga: "Vad gör du?",
+        val: [
+          { svar: "Följer greven, som jag svurit huvudtrohet till.",
+            utfall: "Så var det tänkt. Eden till huvudherren gick före alla andra. Hertigen kunde ändå se det som svek och försöka ta tillbaka länet.",
+            effekt: [{ fran: "castellaner", till: "normandie", typ: "konflikt" }] },
+          { svar: "Följer greven men skickar riddare till hertigen.",
+            utfall: "Det förekom. Borgherren red själv med huvudherren och skickade det antal riddare han var skyldig till den andre. Hans egna män kunde då strida på båda sidor.",
+            effekt: [{ fran: "castellaner", till: "normandie", styrka: 1 }, { fran: "castellaner", till: "storvasaller", styrka: 1 }] },
+          { svar: "Håller mig utanför kriget.",
+            utfall: "Säkrast på kort sikt, men båda herrarna kunde anklaga honom för att ha brutit sin ed och dra in hans län.",
+            effekt: [{ fran: "castellaner", till: "normandie", typ: "konflikt" }, { fran: "castellaner", till: "storvasaller", typ: "konflikt" }] }
+        ]
+      },
+      riddare: {
+        typ: "kalla",
+        titel: "De som ber, strider och arbetar",
+        kalla: "Biskop Adalbero av Laon, omkring 1020 (fritt översatt)",
+        citat: "Guds hus, som man tror är ett, är alltså tredelat: några ber, andra strider och andra arbetar.",
+        fraga: "Adalbero var biskop. Varför kan han ha beskrivit samhället så här?",
+        val: [
+          { svar: "För att visa att ordningen var Guds vilja och inte borde ändras.",
+            utfall: "Troligen. Genom att kalla ordningen gudagiven försvarade han kyrkans och adelns ställning. Texten visar hur samhället borde vara enligt honom, inte nödvändigtvis hur det var." },
+          { svar: "För att ge en exakt bild av hur alla människor levde.",
+            utfall: "Knappast. De tre grupperna säger inget om köpmän, om skillnader mellan bönder eller om riddare med flera herrar, som nätet visar." },
+          { svar: "För att kritisera riddarna.",
+            utfall: "Texten framställer indelningen i tre delar som något gott och nödvändigt, även för dem som strider." }
+        ]
+      }
+    },
+    tank: {
+      fraga: "Titta på nätet. Vilka cirklar är större än kungens? Hur kunde Hugo Capet ändå vara kung?",
+      svar: "Hertigarna, grevarna, kyrkan och klostret i Cluny hade alla mer verklig makt än kungen. Hugo Capet var ändå kung eftersom titeln byggde på val, kröning och kyrkans välsignelse. Titeln gav honom anseende och en plats i mitten av nätet, men inte kontroll över riket. Lägg också märke till att borgherrarna och riddarna hade band åt flera håll, och att inga trådar går från bönderna till kungen."
+    }
+  },
+  frankrikeengland1170: {
+    namn: "Frankrike och England ca 1170",
+    sigill: { rad1: "ANGLIA ET FRANCIA", rad2: "ca 1170" },
+    lage: "Omkring 1170 styr Englands kung Henrik II ett välde från Skottland till Pyrenéerna. Genom arv och äktenskapet med Eleonora av Akvitanien äger han halva Frankrike och är mäktigare än den franske kungen Ludvig VII, som han formellt är vasall till. Samtidigt pågår en hård strid mellan Henrik och ärkebiskop Thomas Becket, som mördas 1170.",
+    hojd: 780,
+    centrum: "englandskung",
+    granser: [
+      { d: "M50,192 C150,172 300,176 372,196 C386,330 380,480 372,560 C380,650 376,700 372,752 L62,752 C40,600 30,350 50,192 Z",
+        namn: "England", x: 70, y: 222, ankare: "start" },
+      { d: "M428,192 C560,176 800,168 960,186 C975,350 970,600 958,752 L428,752 C420,600 426,350 428,192 Z",
+        namn: "Frankrike", x: 942, y: 216, ankare: "end" }
+    ],
+    bandY: 668,
+    aktorer: [
+      {
+        id: "englandskung", namn: "Henrik II", under: "kung av England", roll: "Kung av England, hertig av Normandie och Akvitanien, greve av Anjou",
+        makt: 10, x: 400, y: 300, bild: true,
+        text: [
+          "Henrik II var kung av England, hertig av Normandie och Akvitanien och greve av Anjou. Genom arv och äktenskap styrde han ett välde som sträckte sig från Skottland till Pyrenéerna.",
+          "För sina franska län var han vasall till den franske kungen, trots att han var betydligt mäktigare än honom. England styrde han hårt, med egna ämbetsmän och kungliga domstolar."
+        ]
+      },
+      {
+        id: "kung", namn: "Ludvig VII", under: "kung av Frankrike", roll: "Kung av Frankrike",
+        makt: 5, x: 700, y: 240, bild: true,
+        text: [
+          "Ludvig VII var Frankrikes kung och formellt överherre över alla franska län, även Henrik II:s.",
+          "Hans eget område kring Paris var litet. När Eleonora av Akvitanien skilde sig från honom 1152 och gifte om sig med Henrik förlorade han det rika Akvitanien."
+        ]
+      },
+      {
+        id: "eleonora", namn: "Eleonora av Akvitanien", under: "hertiginna", roll: "Hertiginna av Akvitanien och drottning av England",
+        makt: 8, x: 620, y: 420, ikon: "krona",
+        text: [
+          "Eleonora ärvde det stora och rika hertigdömet Akvitanien i södra Frankrike och styrde det i egen rätt. Hon var först gift med Ludvig VII och sedan med Henrik II.",
+          "Genom hennes andra äktenskap flyttades Akvitanien från den franske kungens familj till den engelske kungens. Hon räknas som en av medeltidens mäktigaste kvinnor."
+        ]
+      },
+      {
+        id: "rikard", namn: "Rikard", under: "son, omkring 13 år", roll: "Son till Henrik II och Eleonora",
+        makt: 3, x: 790, y: 470, ikon: "hjalm",
+        text: [
+          "Rikard var son till Henrik II och Eleonora och skulle ärva Akvitanien efter sin mor. Omkring 1170 var han bara tretton år gammal.",
+          "År 1169 svor han trohet till Ludvig VII för Akvitanien. Den engelske kungens son blev alltså vasall till den franske kungen. Några år senare gjorde Rikard uppror mot sin far, och till slut blev han själv kung av England, känd som Rikard Lejonhjärta."
+        ]
+      },
+      {
+        id: "storvasaller", namn: "Franska storvasaller", under: "Toulouse, Bretagne, Flandern m.fl.", roll: "Hertigar och grevar i Frankrike",
+        makt: 7, x: 880, y: 300, ikon: "skold",
+        text: [
+          "De franska storvasallerna styrde sina grevskap och hertigdömen nästan utan inblandning från kungen. De tog in egna skatter, hade egna arméer och byggde egna borgar i sten.",
+          "Flera av dem hamnade i kläm mellan Ludvig VII och Henrik II, som båda ville vara deras herre."
+        ]
+      },
+      {
+        id: "becket", namn: "Thomas Becket", under: "ärkebiskop av Canterbury", roll: "Englands högste kyrkoledare",
+        makt: 7, x: 170, y: 245, ikon: "mitra",
+        text: [
+          "Thomas Becket var först Henrik II:s nära vän och kansler. När han blev ärkebiskop av Canterbury 1162 ställde han sig i stället på kyrkans sida.",
+          "Striden gällde bland annat om präster som begått brott skulle dömas i kungens domstolar eller i kyrkans. Becket mördades i sin katedral i december 1170 av fyra av kungens riddare."
+        ]
+      },
+      {
+        id: "kyrkan", namn: "Biskopar och präster", under: "i båda rikena", roll: "Kyrkan",
+        makt: 8, x: 130, y: 450, ikon: "kors",
+        text: [
+          "Kyrkan var Europas största jordägare och hade egna domstolar och egen lag. Bannlysning var ett vapen som kunde användas även mot kungar.",
+          "Biskoparna var både präster och godsherrar. För sina gods var de skyldiga kungen trohet, i andliga frågor lydde de påven."
+        ]
+      },
+      {
+        id: "paven", namn: "Påven Alexander III", under: "i Rom, utanför rikena", roll: "Kyrkans överhuvud 1159–1181",
+        makt: 6, x: 500, y: 72, ikon: "nycklar",
+        text: [
+          "Alexander III var påve från 1159 till 1181. I striden mellan Henrik II och Becket stödde han Becket, men försökte samtidigt undvika ett öppet brott med den engelske kungen.",
+          "Efter mordet helgonförklarades Becket redan 1173, och Henrik tvingades göra offentlig bot."
+        ]
+      },
+      {
+        id: "baroner", namn: "Engelska baroner", under: "kronvasaller", roll: "Högadeln i England",
+        makt: 6, x: 290, y: 420, ikon: "torn",
+        text: [
+          "Baronerna höll stora län direkt av den engelske kungen och skulle i gengäld ställa upp med riddare i krig.",
+          "Till skillnad från i Frankrike höll kungen hård kontroll över dem, bland annat genom sheriffer och kungliga domstolar. Kungamakten i England var betydligt starkare än i Frankrike."
+        ]
+      },
+      {
+        id: "sheriffer", namn: "Sheriffer", under: "kungens ämbetsmän", roll: "Kungens förvaltare i grevskapen",
+        makt: 5, x: 305, y: 575, ikon: "rulle",
+        text: [
+          "Sherifferna var kungens förvaltare i de engelska grevskapen. De drev in skatter, höll ordning och bevakade att baronerna inte blev för mäktiga.",
+          "Genom dem kunde kungen styra landet med egna tjänstemän i stället för att helt lita på adeln."
+        ]
+      },
+      {
+        id: "riddare", namn: "Riddare", under: "i båda rikena", roll: "Krigare till häst",
+        makt: 4, x: 565, y: 562, ikon: "svard",
+        text: [
+          "Riddarna var tungt beväpnade krigare till häst. De fick ett län av en baron eller en greve och svor att strida för honom.",
+          "Utrustningen var så dyr att det krävdes flera bondefamiljers arbete för att försörja en enda riddare."
+        ]
+      },
+      {
+        id: "stader", namn: "Borgare", under: "", roll: "Köpmän och hantverkare i städerna",
+        makt: 3, x: 470, y: 480, ikon: "stad",
+        text: [
+          "Borgarna levde av handel och hantverk i de växande städerna. De kunde köpa sig rätten att styra staden själva mot att de betalade skatt direkt till kungen.",
+          "Deras makt byggde på pengar i stället för jord. Det var något nytt som passade dåligt in i den gamla ordningen."
+        ]
+      },
+      {
+        id: "bonder", namn: "Bönderna", under: "Den stora majoriteten av befolkningen i båda rikena", roll: "De som arbetar",
+        makt: 1, typ: "band",
+        text: [
+          "Bönderna var den stora majoriteten av befolkningen både i England och i Frankrike. De odlade maten som hela samhället levde av.",
+          "Många var livegna. De arbetade dagsverken på herrens jord och betalade avgifter för att få bruka sin egen. Utan deras arbete hade varken riddare eller kungar kunnat finnas."
+        ]
+      }
+    ],
+    band: [
+      { fran: "englandskung", till: "kung", typ: "vasall", styrka: 2, flera: true, bojning: 0.04,
+        fleraText: "Henrik II var kung i England men vasall i Frankrike.",
+        franGer: "Trohet för sina franska län: Normandie, Anjou och Akvitanien.",
+        tillGer: "Erkände Henrik som laglig innehavare av länen." },
+      { fran: "eleonora", till: "englandskung", typ: "familj", styrka: 3, bojning: -0.08,
+        franGer: "Förde med sig Akvitanien in i äktenskapet.",
+        tillGer: "Försvar av hertigdömet och respekt för hennes styre där." },
+      { fran: "eleonora", till: "kung", typ: "vasall", styrka: 1, bojning: 0.08,
+        franGer: "Akvitanien låg formellt under den franske kungen. Eleonora hade tidigare varit hans drottning.",
+        tillGer: "Formellt beskydd av hertigdömet." },
+      { fran: "rikard", till: "kung", typ: "vasall", styrka: 1, bojning: -0.08,
+        franGer: "Svor 1169 trohet till Ludvig för Akvitanien.",
+        tillGer: "Erkände Rikard som blivande hertig av Akvitanien." },
+      { fran: "rikard", till: "englandskung", typ: "familj", styrka: 2, bojning: 0.3,
+        franGer: "Lydnad mot sin far och kung.",
+        tillGer: "Arvsrätt till en del av väldet." },
+      { fran: "rikard", till: "eleonora", typ: "familj", styrka: 2, bojning: 0.1,
+        franGer: "Skulle ta över hennes hertigdöme.",
+        tillGer: "Arvet efter Akvitanien." },
+      { fran: "storvasaller", till: "kung", typ: "vasall", styrka: 2, flera: true, bojning: -0.1,
+        fleraText: "Storvasallerna kunde tvingas välja mellan två kungar.",
+        franGer: "Krigstjänst, råd vid hovet och avgifter.",
+        tillGer: "Beskydd och erkännande av länet." },
+      { fran: "storvasaller", till: "englandskung", typ: "vasall", styrka: 1, flera: "markera", bojning: -0.19,
+        franGer: "Trohet till Henrik, när han var den starkare.",
+        tillGer: "Beskydd, men också hårdare krav." },
+      { fran: "baroner", till: "englandskung", typ: "vasall", styrka: 3, bojning: 0.05,
+        franGer: "Krigstjänst med ett bestämt antal riddare, närvaro i kungens domstol och avgifter.",
+        tillGer: "Län och beskydd." },
+      { fran: "sheriffer", till: "englandskung", typ: "ambete", styrka: 3, bojning: 0.12,
+        franGer: "Drev in skatter och övervakade grevskapen åt kungen.",
+        tillGer: "Ämbetet, lön och kungens stöd." },
+      { fran: "sheriffer", till: "baroner", typ: "ambete", styrka: 1, bojning: 0.1,
+        franGer: "Bevakade baronerna och drev in kungens krav.",
+        tillGer: "Lydnad mot kungens tjänstemän." },
+      { fran: "riddare", till: "baroner", typ: "vasall", styrka: 3, bojning: -0.25,
+        franGer: "Krigstjänst till häst, lydnad och närvaro i herrens domstol.",
+        tillGer: "Ett län med bönder som försörjde riddaren, samt beskydd." },
+      { fran: "riddare", till: "storvasaller", typ: "vasall", styrka: 2, bojning: 0.08,
+        franGer: "Krigstjänst till häst och trohet.",
+        tillGer: "Ett län och beskydd." },
+      { fran: "bonder", till: "riddare", typ: "gods", styrka: 3, ankare: 560,
+        franGer: "Dagsverken på riddarens jord och avgifter i säd och pengar.",
+        tillGer: "Rätten att bruka jorden samt beskydd och rättskipning." },
+      { fran: "bonder", till: "baroner", typ: "gods", styrka: 2, ankare: 440,
+        franGer: "Dagsverken och avgifter.",
+        tillGer: "Rätten att bruka jorden och beskydd." },
+      { fran: "bonder", till: "kyrkan", typ: "gods", styrka: 2, ankare: 130,
+        franGer: "Arbete och avgifter på kyrkans jord.",
+        tillGer: "Rätten att bruka jorden, gudstjänster och själavård." },
+      { fran: "bonder", till: "storvasaller", typ: "gods", styrka: 2, ankare: 900,
+        franGer: "Dagsverken och avgifter.",
+        tillGer: "Rätten att bruka jorden och beskydd." },
+      { fran: "stader", till: "englandskung", typ: "stad", styrka: 2, bojning: 0.1,
+        franGer: "Skatter, tullar och lån i kontanter.",
+        tillGer: "Handelsfred och rätt att styra staden. Den som bott i en stad ett år och en dag blev fri." },
+      { fran: "stader", till: "kung", typ: "stad", styrka: 1, bojning: 0.06,
+        franGer: "Avgifter för rätten att styra sin stad.",
+        tillGer: "Frihetsbrev och skydd." },
+      { fran: "kyrkan", till: "englandskung", typ: "vasall", styrka: 2, bojning: -0.1,
+        franGer: "Trohet och tjänst för kyrkans gods.",
+        tillGer: "Beskydd av kyrkan." },
+      { fran: "kyrkan", till: "paven", typ: "kyrka", styrka: 2, bojning: 0,
+        franGer: "Lydnad i andliga frågor.",
+        tillGer: "Kyrkans lag och andliga ledning." },
+      { fran: "becket", till: "englandskung", typ: "vasall", styrka: 3, flera: true, bojning: 0.1,
+        fleraText: "Becket var bunden både till kungen och till påven.",
+        franGer: "Trohet för kyrkans gods. Däremot vägrade Becket låta kungen döma präster.",
+        tillGer: "Utnämnde honom och skulle skydda kyrkan." },
+      { fran: "becket", till: "paven", typ: "kyrka", styrka: 3, flera: "markera", bojning: 0.08,
+        franGer: "Lydnad och vädjan om stöd.",
+        tillGer: "Stöd i striden mot kungen." },
+      { fran: "becket", till: "kyrkan", typ: "kyrka", styrka: 2, bojning: 0.12,
+        franGer: "Ledde den engelska kyrkan.",
+        tillGer: "Stöd, men flera biskopar tog kungens parti." },
+      { fran: "becket", till: "kung", typ: "kyrka", styrka: 1, bojning: -0.2,
+        franGer: "Sökte skydd i Frankrike under sin landsflykt.",
+        tillGer: "Tog emot Becket 1164–1170, bland annat för att försvaga Henrik." }
+    ],
+    flera: {
+      englandskung: {
+        typ: "ordning",
+        titel: "Hur Henrik II blev vasall och fick problem",
+        text: "Henrik II var kung i England men vasall till den franske kungen för sina franska län. Ordna händelserna.",
+        handelser: [
+          { ar: "1152", text: "Henrik gifter sig med Eleonora av Akvitanien." },
+          { ar: "1154", text: "Henrik blir kung av England." },
+          { ar: "1169", text: "Henriks söner svär trohet till Ludvig VII i Montmirail." },
+          { ar: "1173", text: "Sönerna gör uppror mot sin far med Ludvigs stöd." }
+        ],
+        avslut: "Trohetseden till den franske kungen gav sönerna egna anspråk, och det kunde Ludvig utnyttja mot Henrik."
+      },
+      storvasaller: {
+        typ: "samtal",
+        titel: "Mellan två kungar",
+        text: "Storvasallerna låg i Frankrike, där Ludvig VII var kung. Men Henrik II var starkare och ville också vara deras herre.",
+        repliker: [
+          { vem: "Ludvig VII", text: "Jag är din kung. Ditt län ligger i mitt rike, och din ed gäller mig först." },
+          { vem: "Henrik II", text: "Jag är din granne och den starkaste herren här. Jag kan skydda dig, och jag kan ta ditt land." }
+        ],
+        fraga: "Vems krav vägde tyngst enligt sedvanan?",
+        val: [
+          { svar: "Ludvigs.",
+            utfall: "Rätt. Kungen var den högste länsherren i Frankrike. Men sedvanan hjälpte inte mycket när Henriks soldater stod vid gränsen." },
+          { svar: "Henriks.",
+            utfall: "I praktiken kanske, men inte enligt sedvanan. Henrik var själv Ludvigs vasall för sina franska län." },
+          { svar: "Ingens. Eden var bara ord.",
+            utfall: "Eden var mer än ord. Den som bröt den gav motståndaren ett lagligt skäl att ta länet." }
+        ]
+      },
+      becket: {
+        typ: "kalla",
+        titel: "Mordet i katedralen",
+        kalla: "Edvard Grim, munk och ögonvittne, skrivet kort efter 1170 (fritt översatt)",
+        citat: "Den ogudaktige riddaren högg plötsligt mot honom och skar av toppen av hans krona, som den heliga smörjelsen hade helgat åt Gud. Med samma hugg sårades den som skriver detta i armen.",
+        fraga: "Grim var på plats. Hur bör man använda hans berättelse?",
+        val: [
+          { svar: "Han var där, så allt han skriver stämmer.",
+            utfall: "Att han var där stärker källan, men han skrev för att visa Becket som martyr. Det påverkar hur han beskriver händelsen." },
+          { svar: "Han är trovärdig om vad som hände, men vill framställa Becket som martyr.",
+            utfall: "Precis. Närhet i tid och rum ger trovärdighet, men tendensen drar åt kyrkans håll. Lägg märke till att han betonar att det var ett helgat huvud som träffades." },
+          { svar: "Källan går inte att använda, eftersom han var partisk.",
+            utfall: "En partisk källa kan ändå berätta mycket, både om vad som hände och om hur kyrkan ville att mordet skulle förstås." }
+        ]
+      }
+    },
+    tank: {
+      fraga: "Titta på Henrik II och Ludvig VII. Vem är vasall till vem, och vem har störst cirkel? Hur skulle det se ut i en pyramid?",
+      svar: "Henrik II var Ludvigs vasall för sina franska län men hade mycket mer land och makt. I en pyramid skulle Henrik stå under Ludvig. I nätet syns att den formella ordningen och den verkliga makten pekade åt olika håll. Lägg också märke till Becket, som var bunden både till kungen och till påven, och till Rikard, som var den engelske kungens son men svor trohet till den franske kungen."
+    }
+  }
+,
+  england1086: {
+    namn: "England ca 1086",
+    sigill: { rad1: "ANGLIA", rad2: "ca 1086" },
+    lage: "Tjugo år efter slaget vid Hastings styr Vilhelm Erövraren England. Edvard Bekännaren dog barnlös 1066, och hans efterträdare Harold Godwinson stupade vid Hastings samma år. Vilhelm har delat ut landets jord till sina normanniska baroner och håller hårt i makten. År 1086 låter han kartlägga hela riket i Domesday Book.",
+    hojd: 740,
+    centrum: "englandskung",
+    granser: [
+      { d: "M60,60 C300,40 560,44 760,62 C778,250 772,450 760,712 L70,712 C44,500 36,260 60,60 Z",
+        namn: "England", x: 82, y: 90, ankare: "start" }
+    ],
+    bandY: 632,
+    bandX: [90, 650],
+    aktorer: [
+      {
+        id: "englandskung", namn: "Vilhelm Erövraren", under: "kung av England", roll: "Kung av England och hertig av Normandie",
+        makt: 10, x: 420, y: 320, bild: true,
+        text: [
+          "Vilhelm var hertig av Normandie och erövrade England 1066 efter segern vid Hastings. Han delade ut jorden till sina normanniska följeslagare mot att de ställde upp med riddare.",
+          "Vilhelm höll hårt i makten. År 1086 lät han kartlägga rikets jord och tillgångar i Domesday Book, och samma år svor jordägare från hela England trohet direkt till honom i Salisbury.",
+          "För Normandie var han ändå vasall till den franske kungen."
+        ]
+      },
+      {
+        id: "baroner", namn: "Normanniska baroner", under: "kronvasaller", roll: "Högadeln i England",
+        makt: 7, x: 200, y: 230, ikon: "torn",
+        text: [
+          "Baronerna hade följt Vilhelm vid erövringen och fick stora län direkt av kungen. I gengäld skulle de ställa upp med ett bestämt antal riddare.",
+          "De byggde borgar och var mäktiga på sina orter, men deras gods låg ofta utspridda över landet. Det gjorde det svårare för en enskild baron att utmana kungen. Många ägde också jord i Normandie."
+        ]
+      },
+      {
+        id: "sheriffer", namn: "Sheriffer", under: "kungens ämbetsmän", roll: "Kungens förvaltare i grevskapen",
+        makt: 6, x: 600, y: 150, ikon: "rulle",
+        text: [
+          "Sherifferna var kungens förvaltare i grevskapen. De drev in skatter, höll ordning och såg till att kungens lag gällde.",
+          "De var också med och samlade in uppgifterna till Domesday Book 1086, där rikets jord, människor och djur skrevs upp."
+        ]
+      },
+      {
+        id: "kyrkan", namn: "Biskopar och präster", under: "under normannisk ledning", roll: "Kyrkan i England",
+        makt: 7, x: 220, y: 470, ikon: "kors",
+        text: [
+          "Efter erövringen ersattes de flesta engelska biskopar av normander. Den viktigaste var Lanfranc, som blev ärkebiskop av Canterbury 1070.",
+          "Kyrkan ägde mycket jord och skulle ställa upp med riddare för den, precis som baronerna. Kungen bestämde vem som blev biskop, och de skrivkunniga prästerna hjälpte till att förvalta riket."
+        ]
+      },
+      {
+        id: "riddare", namn: "Riddare", under: "undervasaller", roll: "Krigare till häst",
+        makt: 5, x: 430, y: 520, ikon: "svard",
+        text: [
+          "Riddarna fick mindre län av baronerna mot att de stred till häst. De var den styrka som höll det erövrade landet under kontroll.",
+          "Även om de fått sin jord av en baron skulle de vara mest trogna mot kungen."
+        ]
+      },
+      {
+        id: "thegns", namn: "Anglosaxisk adel", under: "thegns", roll: "Englands gamla överklass",
+        makt: 1, x: 95, y: 400, ikon: "hjalm",
+        text: [
+          "Före 1066 ägde den anglosaxiska adeln, thegns, en stor del av Englands jord.",
+          "Efter erövringen förlorade de flesta sin jord och sina ämbeten till normanderna. År 1086 var de bara en liten rest av den gamla överklassen."
+        ]
+      },
+      {
+        id: "stader", namn: "Borgare", under: "", roll: "Köpmän och hantverkare i städerna",
+        makt: 3, x: 640, y: 430, ikon: "stad",
+        text: [
+          "I städerna bodde köpmän och hantverkare. De betalade skatt och tullar till kungen i kontanter.",
+          "Pengarna gjorde kungen mindre beroende av adeln. Städernas tillgångar skrevs noga upp i Domesday Book."
+        ]
+      },
+      {
+        id: "kung", namn: "Filip I", under: "kung av Frankrike", roll: "Kung av Frankrike 1060–1108",
+        makt: 3, x: 890, y: 120, ikon: "krona",
+        text: [
+          "Filip I var kung av Frankrike och formellt Vilhelms herre för Normandie.",
+          "Han var betydligt svagare än sin vasall och stödde gärna Vilhelms fiender, bland annat Vilhelms egen son Robert när denne gjorde uppror mot sin far."
+        ]
+      },
+      {
+        id: "paven", namn: "Påven", under: "i Rom, utanför riket", roll: "Kyrkans överhuvud",
+        makt: 4, x: 890, y: 380, ikon: "nycklar",
+        text: [
+          "Påvedömet hade stött Vilhelms erövring 1066.",
+          "Påven Gregorius VII krävde senare att Vilhelm skulle svära honom trohet, men Vilhelm vägrade. Han fortsatte betala den gamla årliga avgiften till Rom men behöll själv makten över den engelska kyrkan."
+        ]
+      },
+      {
+        id: "bonder", namn: "Bönderna", under: "Den stora majoriteten av befolkningen", roll: "De som arbetar",
+        makt: 2, typ: "band",
+        text: [
+          "Bönderna var den stora majoriteten av befolkningen och odlade maten som hela riket levde av.",
+          "Många var bundna till godsherrens gods och skulle betala avgifter och arbeta dagsverken. I Domesday Book räknades de upp tillsammans med djur och plogar, som tillgångar kungen kunde beskatta."
+        ]
+      }
+    ],
+    band: [
+      { fran: "baroner", till: "englandskung", typ: "vasall", styrka: 3, bojning: 0.06,
+        franGer: "Trohet och ett bestämt antal riddare i krig.",
+        tillGer: "Stora län och beskydd." },
+      { fran: "riddare", till: "baroner", typ: "vasall", styrka: 3, flera: true, bojning: -0.08,
+        fleraText: "Riddarna var skyldiga både sin baron och kungen trohet.",
+        franGer: "Krigstjänst till häst och trohet.",
+        tillGer: "Ett län och beskydd." },
+      { fran: "riddare", till: "englandskung", typ: "vasall", styrka: 2, flera: "markera", bojning: 0.08,
+        franGer: "Svor 1086 i Salisbury trohet direkt till kungen.",
+        tillGer: "Beskydd och kungens lag." },
+      { fran: "thegns", till: "baroner", typ: "vasall", styrka: 1, flera: true, bojning: 0.1,
+        fleraText: "Den gamla adeln fick välja mellan att underkasta sig nya herrar och att förlora allt.",
+        franGer: "Trohet och tjänst, för de få som fick behålla lite jord.",
+        tillGer: "En liten del av den jord de tidigare ägt." },
+      { fran: "sheriffer", till: "englandskung", typ: "ambete", styrka: 3, bojning: 0.06,
+        franGer: "Drev in skatter, höll ordning och samlade uppgifter till Domesday Book.",
+        tillGer: "Ämbetet, inkomster och kungens stöd." },
+      { fran: "sheriffer", till: "baroner", typ: "ambete", styrka: 1, bojning: -0.06,
+        franGer: "Drev in kungens skatter och skrev upp baronernas gods.",
+        tillGer: "Lydnad mot kungens tjänstemän." },
+      { fran: "kyrkan", till: "englandskung", typ: "vasall", styrka: 2, bojning: -0.06,
+        franGer: "Riddare för kyrkans gods, lojalitet och skrivkunniga tjänstemän.",
+        tillGer: "Beskydd av kyrkans jord. Kungen bestämde vem som blev biskop." },
+      { fran: "kyrkan", till: "paven", typ: "kyrka", styrka: 1, bojning: -0.06,
+        franGer: "Lydnad i andliga frågor, men under kungens kontroll.",
+        tillGer: "Andlig ledning." },
+      { fran: "englandskung", till: "paven", typ: "kyrka", styrka: 1, bojning: -0.05,
+        franGer: "Betalade en årlig avgift till Rom men vägrade svära påven trohet.",
+        tillGer: "Påvedömet hade stött erövringen 1066." },
+      { fran: "englandskung", till: "kung", typ: "vasall", styrka: 1, bojning: 0.15,
+        franGer: "Formell trohet för Normandie.",
+        tillGer: "Erkände Vilhelm som hertig av Normandie." },
+      { fran: "stader", till: "englandskung", typ: "stad", styrka: 2, bojning: 0.08,
+        franGer: "Skatt och tullar i kontanter.",
+        tillGer: "Skydd och kungens fred." },
+      { fran: "bonder", till: "baroner", typ: "gods", styrka: 3, ankare: 330,
+        franGer: "Avgifter, dagsverken och lydnad.",
+        tillGer: "Rätten att bruka jorden och beskydd." },
+      { fran: "bonder", till: "riddare", typ: "gods", styrka: 3, ankare: 470,
+        franGer: "Avgifter och dagsverken på riddarens jord.",
+        tillGer: "Rätten att bruka jorden och beskydd." },
+      { fran: "bonder", till: "kyrkan", typ: "gods", styrka: 2, ankare: 200,
+        franGer: "Arbete och avgifter på kyrkans jord.",
+        tillGer: "Rätten att bruka jorden, gudstjänster och själavård." },
+      { fran: "bonder", till: "englandskung", typ: "gods", styrka: 1, ankare: 560,
+        franGer: "Arbete och avgifter på kungens egna gods.",
+        tillGer: "Rätten att bruka jorden." }
+    ],
+    flera: {
+      riddare: {
+        typ: "dilemma",
+        titel: "Baronen eller kungen?",
+        text: "Riddaren har fått sitt län av en baron och har svurit honom trohet. År 1086 lät Vilhelm jordägare från hela England svära trohet direkt till kungen i Salisbury.",
+        fraga: "Din baron gör uppror mot kungen och kallar in dig. Vad gör du?",
+        val: [
+          { svar: "Följer min baron. Det är han som gett mig min jord.",
+            utfall: "I Frankrike hade det varit vanligt. I England räknades det som förräderi mot kungen, och kungen kunde ta både baronens och ditt län.",
+            effekt: [{ fran: "riddare", till: "englandskung", typ: "konflikt" }] },
+          { svar: "Stannar hos kungen.",
+            utfall: "Så ville Vilhelm att det skulle vara. Eden i Salisbury skulle visa att trohet mot kungen gick före trohet mot baronen.",
+            effekt: [{ fran: "riddare", till: "baroner", typ: "konflikt" }, { fran: "riddare", till: "englandskung", styrka: 3 }] },
+          { svar: "Håller mig undan och väntar.",
+            utfall: "Det kunde fungera en tid, men både baronen och kungen kunde se dig som opålitlig. Den som vann bestämde vem som fick behålla sin jord.",
+            effekt: [{ fran: "riddare", till: "baroner", styrka: 1 }, { fran: "riddare", till: "englandskung", styrka: 1 }] }
+        ]
+      },
+      thegns: {
+        typ: "kalla",
+        titel: "En engelsk röst om Domesday Book",
+        kalla: "Anglosaxiska krönikan, år 1085 (fritt översatt)",
+        citat: "Så noggrant lät han undersöka landet att inte en enda bit jord, ja, inte ens en oxe, en ko eller ett svin, lämnades utan att skrivas upp. Det är en skam att berätta, men han tyckte inte att det var någon skam att göra det.",
+        fraga: "Krönikan skrevs av engelska munkar. Vad visar citatet om deras syn på Vilhelm?",
+        val: [
+          { svar: "De tyckte att kartläggningen var förnedrande.",
+            utfall: "Ja. Orden om skam visar de besegrade engelsmännens syn på erövraren. Samtidigt bekräftar citatet hur noggrann kartläggningen var." },
+          { svar: "De var neutrala och beskrev bara vad som hände.",
+            utfall: "Titta på orden om skam. Krönikören tar tydligt ställning." },
+          { svar: "De beundrade kungens ordning.",
+            utfall: "Noggrannheten kan ha imponerat, men krönikören beskriver den som skamlig." }
+        ]
+      }
+    },
+    tank: {
+      fraga: "Jämför med Frankrike ca 1000. Var finns den största cirkeln nu, och vart leder trådarna?",
+      svar: "I England 1086 är kungen den största cirkeln, och nästan alla trådar leder till honom, även från riddarna. Här liknar nätet mer en pyramid än i Frankrike. Men det berodde på en erövring och en ovanligt stark kung, inte på att feodalismen alltid såg ut så. Lägg också märke till att Vilhelm själv var vasall till den franske kungen."
+    }
+  }
+,
+  tyskromerska1200: {
+    namn: "Tysk-romerska riket ca 1200",
+    sigill: { rad1: "IMPERIUM", rad2: "ca 1200" },
+    lage: "Kejsar Henrik VI dog oväntat 1197, och hans son Fredrik var bara två år gammal. År 1198 valdes två rivaliserande kungar: Filip av Schwaben av den staufiska ätten och Otto IV av den welfiska. Påven Innocentius III gör anspråk på att avgöra striden. Samtidigt stärker de tyska furstarna sin makt, och de norditalienska städerna styr i stort sett sig själva.",
+    hojd: 860,
+    centrum: "tronen",
+    granser: [
+      { d: "M190,205 C400,190 640,192 830,210 C846,400 842,600 830,835 L200,835 C182,600 176,400 190,205 Z",
+        namn: "Tysk-romerska riket", x: 210, y: 236, ankare: "start" }
+    ],
+    bandY: 760,
+    bandX: [210, 600],
+    aktorer: [
+      {
+        id: "tronen", namn: "Kejsartronen", under: "omstridd sedan 1197", roll: "Tysk kung och blivande kejsare",
+        typ: "tom", r: 40, x: 500, y: 330, ikon: "krona",
+        text: [
+          "Kejsar Henrik VI dog oväntat 1197. Hans son Fredrik var då bara två år gammal.",
+          "År 1198 valde olika grupper av furstar två kungar: Filip av Schwaben och Otto IV. Ingen av dem kunde besegra den andre, och striden om tronen pågick i över tio år. Den som blev tysk kung kunde senare krönas till kejsare av påven."
+        ]
+      },
+      {
+        id: "filip", namn: "Filip av Schwaben", under: "staufisk kung", roll: "Tysk kung, vald 1198",
+        makt: 6, x: 340, y: 320, bild: true,
+        text: [
+          "Filip var bror till den döde kejsaren Henrik VI och tillhörde den staufiska ätten. De flesta tyska furstar valde honom till kung 1198.",
+          "Han hade fler anhängare än Otto, men påven stödde honom inte. Filip mördades 1208, innan striden hade avgjorts."
+        ]
+      },
+      {
+        id: "otto", namn: "Otto IV", under: "welfisk kung", roll: "Tysk kung, vald 1198",
+        makt: 6, x: 660, y: 320, bild: true,
+        text: [
+          "Otto tillhörde den welfiska ätten och var systerson till de engelska kungarna Rikard Lejonhjärta och Johan. En mindre grupp furstar valde honom till kung 1198.",
+          "Han hade påvens stöd men färre anhängare i Tyskland än Filip. Efter Filips död blev han ensam kung och kröntes till kejsare 1209."
+        ]
+      },
+      {
+        id: "paven", namn: "Innocentius III", under: "påve 1198–1216", roll: "Kyrkans överhuvud",
+        makt: 10, x: 500, y: 85, ikon: "nycklar",
+        text: [
+          "Innocentius III var en av medeltidens mäktigaste påvar. Han menade att påven stod under Gud men över alla människor, och att han hade rätt att döma kungar.",
+          "Eftersom påven krönte kejsaren ansåg han sig ha rätt att avgöra striden om den tyska tronen. År 1201 förklarade han Otto IV som rätt kung."
+        ]
+      },
+      {
+        id: "fredrik", namn: "Fredrik", under: "5 år, på Sicilien", roll: "Kung av Sicilien, son till Henrik VI",
+        makt: 2, x: 915, y: 330, ikon: "krona",
+        text: [
+          "Fredrik var son till kejsar Henrik VI och kröntes som litet barn till kung av Sicilien. Han hade valts till tysk kung redan 1196, men efter faderns död tog andra över.",
+          "Efter moderns död 1198 blev påven hans förmyndare. Som vuxen blev han kejsare Fredrik II, en av medeltidens mest omtalade härskare."
+        ]
+      },
+      {
+        id: "storvasaller", namn: "Tyska furstar", under: "hertigar, grevar, lantgrevar", roll: "Rikets världsliga stormän",
+        makt: 8, x: 285, y: 520, ikon: "skold",
+        text: [
+          "Furstarna styrde stora områden i Tyskland och valde kungen. Under striden om tronen kunde kungarna bara lita på de furstar som de betalat med mark, rättigheter och titlar.",
+          "Varje sådan affär stärkte furstarna och försvagade kungamakten. Tyskland blev under medeltiden ett rike av många självstyrande furstendömen, inte ett enat land som England."
+        ]
+      },
+      {
+        id: "kyrkan", namn: "Biskopar och furstbiskopar", under: "Köln, Mainz m.fl.", roll: "Kyrkliga furstar",
+        makt: 8, x: 545, y: 520, ikon: "mitra",
+        text: [
+          "De tyska biskoparna var både präster och furstar. De styrde egna områden, hade egna riddare och var med och valde kungen.",
+          "Ärkebiskopen av Köln ledde valet av Otto 1198. I striden hamnade biskoparna i kläm mellan påven och de tyska kungarna."
+        ]
+      },
+      {
+        id: "riddare", namn: "Riddare och ministerialer", under: "", roll: "Krigare och förvaltare",
+        makt: 4, x: 420, y: 665, ikon: "svard",
+        text: [
+          "Riddarna stred till häst för furstar, biskopar och kungen och fick län i gengäld.",
+          "Ministerialerna var något särskilt för Tyskland. De var ofria i lagens mening men kunde bli rika och mäktiga som krigare och förvaltare åt kungen och furstarna. När kungamakten var svag förde riddare ofta fejder mot varandra om mark och byte."
+        ]
+      },
+      {
+        id: "stader", namn: "Norditalienska städer", under: "Milano m.fl.", roll: "Självstyrande handelsstäder",
+        makt: 8, x: 755, y: 585, ikon: "stad",
+        text: [
+          "Städerna i norra Italien var rika på handel och hade egna murar och arméer. Tillsammans i det lombardiska förbundet besegrade de kejsar Fredrik Barbarossa vid Legnano 1176.",
+          "Genom freden i Konstanz 1183 erkände de kejsaren som herre men fick styra sig själva. De samarbetade ofta med påven mot kejsarmakten."
+        ]
+      },
+      {
+        id: "kung", namn: "Filip II August", under: "kung av Frankrike", roll: "Kung av Frankrike 1180–1223",
+        makt: 6, x: 92, y: 420, ikon: "krona",
+        text: [
+          "Filip II August var kung av Frankrike och Englands fiende. Han stödde Filip av Schwaben, eftersom Otto var släkt och allierad med de engelska kungarna.",
+          "Kungamakten i Frankrike växte under hans tid. År 1204 erövrade han Normandie från den engelske kungen Johan."
+        ]
+      },
+      {
+        id: "englandskung", namn: "Johan", under: "kung av England", roll: "Kung av England 1199–1216",
+        makt: 5, x: 92, y: 135, ikon: "krona",
+        text: [
+          "Johan blev kung av England 1199 efter sin bror Rikard Lejonhjärta. Han var morbror till Otto IV.",
+          "England stödde Otto mot Frankrikes allierade Filip av Schwaben. Några år efter 1200 förlorade Johan det mesta av sina franska län till Filip II August."
+        ]
+      },
+      {
+        id: "bonder", namn: "Bönderna", under: "Den stora majoriteten av befolkningen", roll: "De som arbetar",
+        makt: 1, typ: "band",
+        text: [
+          "Bönderna var den stora majoriteten av befolkningen. De flesta arbetade på godsherrarnas jord och betalade avgifter och dagsverken.",
+          "Under striden om tronen och adelns fejder var det ofta bönderna som drabbades hårdast, när fält brändes och byar plundrades."
+        ]
+      }
+    ],
+    band: [
+      { fran: "filip", till: "tronen", typ: "ansprak", styrka: 3, bojning: 0,
+        franGer: "Valdes till kung 1198 av de flesta furstar. Han hade riksregalierna, men kröningen skedde på fel plats.",
+        tillGer: "Kungatiteln, men inget slutligt erkännande." },
+      { fran: "otto", till: "tronen", typ: "ansprak", styrka: 2, bojning: 0,
+        franGer: "Valdes till kung 1198 av en mindre grupp furstar och kröntes på rätt plats, i Aachen.",
+        tillGer: "Kungatiteln, men utan riksregalierna." },
+      { fran: "fredrik", till: "tronen", typ: "ansprak", styrka: 1, bojning: 0.4,
+        franGer: "Hade valts till tysk kung redan som spädbarn 1196.",
+        tillGer: "Ingenting i praktiken, eftersom han var för ung." },
+      { fran: "fredrik", till: "paven", typ: "vasall", styrka: 2, bojning: 0.05,
+        franGer: "Kungen av Sicilien var påvens vasall. Fredrik var dessutom påvens myndling.",
+        tillGer: "Förmynderskap och beskydd efter moderns död 1198." },
+      { fran: "otto", till: "paven", typ: "kyrka", styrka: 3, bojning: 0.08,
+        franGer: "Lovade att respektera kyrkans rättigheter och påvens landområden i Italien.",
+        tillGer: "Erkände Otto som kung 1201." },
+      { fran: "filip", till: "paven", typ: "kyrka", styrka: 1, bojning: -0.08,
+        franGer: "Sökte påvens erkännande men fick det inte.",
+        tillGer: "Bannlysning." },
+      { fran: "storvasaller", till: "filip", typ: "vasall", styrka: 3, flera: "markera", bojning: 0.1,
+        franGer: "Trohet och krigstjänst, så länge det lönade sig.",
+        tillGer: "Mark, rättigheter och titlar." },
+      { fran: "storvasaller", till: "otto", typ: "vasall", styrka: 1, flera: true, bojning: 0.15,
+        fleraText: "Furstarna kunde byta kung när det lönade sig.",
+        franGer: "Trohet och krigstjänst från de furstar som valt honom.",
+        tillGer: "Mark, rättigheter och titlar." },
+      { fran: "kyrkan", till: "paven", typ: "kyrka", styrka: 2, flera: true, bojning: 0.24,
+        fleraText: "Biskoparna lydde både påven och kungen.",
+        franGer: "Lydnad i andliga frågor.",
+        tillGer: "Andlig ledning, men också hot om bannlysning." },
+      { fran: "kyrkan", till: "filip", typ: "vasall", styrka: 2, flera: "markera", bojning: -0.1,
+        franGer: "Trohet och krigstjänst från de biskopar som stödde honom.",
+        tillGer: "Bekräftelse av biskoparnas gods och rättigheter." },
+      { fran: "kyrkan", till: "otto", typ: "vasall", styrka: 2, flera: "markera", bojning: 0.08,
+        franGer: "Stöd från bland andra ärkebiskopen av Köln.",
+        tillGer: "Bekräftelse av biskoparnas gods och rättigheter." },
+      { fran: "stader", till: "tronen", typ: "vasall", styrka: 1, flera: true, bojning: -0.08,
+        fleraText: "Städerna erkände kejsaren men höll ihop med påven.",
+        franGer: "Formell trohet och vissa avgifter, enligt freden i Konstanz.",
+        tillGer: "Rätten att styra sig själva." },
+      { fran: "stader", till: "paven", typ: "forbund", styrka: 2, flera: "markera", bojning: 0.42,
+        franGer: "Stöd mot kejsarmakten.",
+        tillGer: "Stöd för städernas frihet." },
+      { fran: "riddare", till: "storvasaller", typ: "vasall", styrka: 3, bojning: -0.08,
+        franGer: "Krigstjänst till häst och trohet.",
+        tillGer: "Län och beskydd." },
+      { fran: "riddare", till: "kyrkan", typ: "vasall", styrka: 2, bojning: 0.08,
+        franGer: "Krigstjänst och förvaltning av biskoparnas gods.",
+        tillGer: "Län och underhåll." },
+      { fran: "riddare", till: "filip", typ: "vasall", styrka: 2, bojning: 0.1,
+        franGer: "Rikets ministerialer var ett viktigt stöd för den staufiska ätten, i krig och i förvaltningen av kungens gods.",
+        tillGer: "Underhåll och län." },
+      { fran: "bonder", till: "storvasaller", typ: "gods", styrka: 3, ankare: 290,
+        franGer: "Avgifter, dagsverken och lydnad.",
+        tillGer: "Rätten att bruka jorden och beskydd." },
+      { fran: "bonder", till: "kyrkan", typ: "gods", styrka: 3, ankare: 570,
+        franGer: "Arbete och avgifter på kyrkans jord.",
+        tillGer: "Rätten att bruka jorden, gudstjänster och själavård." },
+      { fran: "bonder", till: "riddare", typ: "gods", styrka: 2, ankare: 430,
+        franGer: "Avgifter och dagsverken på riddarens jord.",
+        tillGer: "Rätten att bruka jorden och beskydd." },
+      { fran: "kung", till: "filip", typ: "forbund", styrka: 2, bojning: 0.05,
+        franGer: "Förbund med Filip av Schwaben från 1198.",
+        tillGer: "Stöd mot Otto och hans engelska släktingar." },
+      { fran: "englandskung", till: "otto", typ: "familj", styrka: 2, bojning: -0.12,
+        franGer: "Stöd åt sin systerson Otto.",
+        tillGer: "En allierad mot Frankrike." }
+    ],
+    flera: {
+      storvasaller: {
+        typ: "dilemma",
+        titel: "Två kungar att välja mellan",
+        text: "År 1198 finns två valda kungar. Båda behöver furstarnas stöd, och båda är beredda att betala för det.",
+        fraga: "Du är en tysk furste. Vem stöder du?",
+        val: [
+          { svar: "Filip, som har flest anhängare.",
+            utfall: "De flesta furstar valde Filip. Men stödet kostade honom mark, rättigheter och titlar. Hertig Ottokar av Böhmen fick till exempel kunglig titel av honom 1198.",
+            effekt: [{ fran: "storvasaller", till: "otto", typ: "konflikt" }] },
+          { svar: "Otto, som har påvens stöd.",
+            utfall: "Påven erkände Otto 1201. Men Ottos anhängare i Tyskland var färre, och påvens stöd räckte inte långt i krig.",
+            effekt: [{ fran: "storvasaller", till: "filip", typ: "konflikt" }, { fran: "storvasaller", till: "otto", styrka: 3 }] },
+          { svar: "Byter sida när det lönar sig.",
+            utfall: "Många furstar gjorde så. Lantgreven Hermann av Thüringen bytte sida flera gånger. Varje byte gav nya privilegier, och kungamakten blev svagare.",
+            effekt: [{ fran: "storvasaller", till: "filip", styrka: 1 }, { fran: "storvasaller", till: "otto", styrka: 1 }] }
+        ]
+      },
+      kyrkan: {
+        typ: "ordning",
+        titel: "Biskoparna och den tomma tronen",
+        text: "För de tyska biskoparna ändrades det säkra valet flera gånger. Ordna händelserna.",
+        handelser: [
+          { ar: "1197", text: "Kejsar Henrik VI dör oväntat." },
+          { ar: "1198", text: "Två kungar väljs: Filip av Schwaben och Otto IV." },
+          { ar: "1201", text: "Påven erkänner Otto och bannlyser Filips anhängare." },
+          { ar: "1208", text: "Filip mördas." }
+        ],
+        avslut: "En biskop som valde Filip 1198 hade majoriteten bakom sig, men riskerade bannlysning 1201 och stod utan kung 1208."
+      },
+      stader: {
+        typ: "samtal",
+        titel: "Kejsaren eller friheten?",
+        text: "Genom freden i Konstanz 1183 erkände de norditalienska städerna kejsaren som herre men fick styra sig själva.",
+        repliker: [
+          { vem: "Kejsarmakten", text: "Italien hör till riket. Ni är skyldiga kejsaren trohet och skatt." },
+          { vem: "Städerna", text: "Vi har betalat för vår frihet i Konstanz. Vi erkänner kejsaren, men vi styr oss själva." }
+        ],
+        fraga: "Vems krav vägde tyngst omkring 1200?",
+        val: [
+          { svar: "Kejsarens, eftersom han var städernas herre.",
+            utfall: "Formellt ja. Men freden gav städerna rätt att styra sig själva, och med två kungar som slogs om tronen fanns ingen som kunde tvinga dem." },
+          { svar: "Städernas, eftersom de hade ett avtal.",
+            utfall: "Ja. Avtalet gav dem en laglig grund, och under striden om tronen kunde ingen kejsare hävda sin rätt i Italien." },
+          { svar: "Påvens, som stod bakom städerna.",
+            utfall: "Påven var en viktig allierad, men frågan gällde förhållandet mellan städerna och kejsaren." }
+        ]
+      }
+    },
+    tank: {
+      fraga: "Vad finns i mitten av nätet den här gången? Vem har störst cirkel, och var står han?",
+      svar: "Mitten är en tom tron som två kungar slåss om. Den största cirkeln är påven, som står utanför riket men ändå försöker avgöra vem som ska bli kung. Furstarna och städerna blir starkare för varje år striden pågår. Jämför med England 1086, där kungen var den självklara mittpunkten."
+    }
+  }
+,
+  sverige1280: {
+    namn: "Sverige ca 1280",
+    sigill: { rad1: "SVECIA", rad2: "ca 1280" },
+    lage: "Omkring 1280 stärker kung Magnus Ladulås kungamakten i Sverige. Genom Alsnö stadga får den som tjänar med häst och rustning skattefrihet, och ett världsligt frälse växer fram. Samtidigt förbjuds våldgästning hos bönderna. Kyrkan får stora skattefriheter 1281, och en stor del av bönderna äger fortfarande sin egen jord.",
+    hojd: 880,
+    centrum: "sverigekung",
+    granser: [
+      { d: "M60,185 C300,168 600,170 820,188 C838,400 834,650 820,860 L72,860 C48,650 40,400 60,185 Z",
+        namn: "Sverige", x: 82, y: 214, ankare: "start" }
+    ],
+    bandY: 780,
+    aktorer: [
+      {
+        id: "sverigekung", namn: "Magnus Ladulås", under: "kung 1275–1290", roll: "Kung av Sverige",
+        makt: 9, x: 440, y: 370, bild: true,
+        text: [
+          "Magnus tog makten 1275 efter att ha besegrat sin äldre bror Valdemar. Genom Alsnö stadga knöt han stormännen till sig: den som tjänade med häst och rustning slapp skatt.",
+          "Enligt traditionen fick han namnet Ladulås för att han satte lås för böndernas lador, alltså skyddade dem mot våldgästning. Hans son Birger, född 1280, hyllades som tronföljare 1284."
+        ]
+      },
+      {
+        id: "riddare", namn: "Frälsemän", under: "riddare och svenner", roll: "Det världsliga frälset",
+        makt: 8, x: 440, y: 580, ikon: "svard",
+        text: [
+          "Frälsemännen var stormän och krigare som tjänade med häst och rustning. I gengäld slapp de den vanliga skatten till kronan.",
+          "Frälset byggde från början på en tjänst i krig, inte på börd. Med tiden blev det ändå ett ärftligt adelsstånd."
+        ]
+      },
+      {
+        id: "kyrkan", namn: "Biskopar och präster", under: "kyrkan i Sverige", roll: "Kyrkan",
+        makt: 8, x: 190, y: 470, ikon: "kors",
+        text: [
+          "Kyrkan ägde mycket jord och var en av rikets starkaste makter. Biskoparna satt i kungens råd.",
+          "År 1281, i samband med drottning Helvigs kröning, fick kyrkan skattefrihet för sin jord. I gengäld stödde den kungamakten."
+        ]
+      },
+      {
+        id: "bengt", namn: "Bengt Birgersson", under: "kungens bror", roll: "Kungens bror, hertig av Finland och biskop",
+        makt: 6, x: 220, y: 240, ikon: "mitra",
+        text: [
+          "Bengt var yngre bror till Magnus och en av hans närmaste rådgivare.",
+          "Han gjorde karriär inom kyrkan och blev biskop i Linköping. Han var också hertig av Finland. Hans dubbla roll visar hur kungafamiljen placerade sina egna på viktiga poster både i kyrkan och i riket."
+        ]
+      },
+      {
+        id: "helvig", namn: "Helvig av Holstein", under: "drottning", roll: "Sveriges drottning",
+        makt: 6, x: 660, y: 250, bild: true,
+        text: [
+          "Helvig kom från en tysk grevesläkt och gifte sig med Magnus 1276. Äktenskapet knöt Sverige närmare de mäktiga grevarna av Holstein.",
+          "Hon kröntes i Söderköping 1281, samtidigt som kyrkan fick sina skattefriheter."
+        ]
+      },
+      {
+        id: "valdemar", namn: "Valdemar Birgersson", under: "avsatt kung", roll: "Kung 1250–1275",
+        makt: 3, x: 765, y: 370, ikon: "krona",
+        text: [
+          "Valdemar var Magnus äldre bror och kung från 1250. Han förlorade kronan till Magnus 1275.",
+          "Han försökte flera gånger ta tillbaka makten, bland annat med dansk hjälp, men misslyckades. Från 1288 satt han fängslad resten av livet."
+        ]
+      },
+      {
+        id: "torgils", namn: "Torgils Knutsson", under: "storman", roll: "Storman och rådsherre",
+        makt: 6, x: 250, y: 660, ikon: "skold",
+        text: [
+          "Torgils var en av rikets mäktigaste stormän och en skicklig krigsledare. Han satt i kungens råd.",
+          "Efter Magnus död 1290 blev han den ledande mannen i förmyndarregeringen för den unge kungen Birger. Det visar hur en storman kunde bli rikets verklige ledare när kungen var omyndig."
+        ]
+      },
+      {
+        id: "stader", namn: "Tyska köpmän", under: "Visby och Stockholm", roll: "Köpmän och borgare i städerna",
+        makt: 5, x: 700, y: 540, ikon: "stad",
+        text: [
+          "Tyska köpmän och borgare dominerade handeln i städer som Visby och Stockholm. De stod för en stor del av rikets utrikeshandel och penningekonomi.",
+          "Kungen gav dem handelsrättigheter och skydd. I gengäld fick han tullar, avgifter och lån i kontanter, som gjorde honom mindre beroende av jordbrukets inkomster."
+        ]
+      },
+      {
+        id: "lubeck", namn: "Lübeck", under: "köpmännens hemstäder", roll: "Nordtyska handelsstäder",
+        makt: 5, x: 912, y: 470, ikon: "stad",
+        text: [
+          "Många av köpmännen i Sverige kom från Lübeck och andra nordtyska städer. Städerna samarbetade i det som senare kallades Hansan.",
+          "Köpmännen hade alltså band både till den svenske kungen och till sina hemstäder."
+        ]
+      },
+      {
+        id: "paven", namn: "Påven", under: "i Rom, utanför riket", roll: "Kyrkans överhuvud",
+        makt: 4, x: 440, y: 72, ikon: "nycklar",
+        text: [
+          "Påven var den svenska kyrkans andlige ledare, och biskoparna lydde honom i andliga frågor.",
+          "Sverige låg långt från Rom. I praktiken var kyrkans förhållande till kungen viktigare för svensk politik."
+        ]
+      },
+      {
+        id: "landbor", namn: "Landbor", under: "brukar frälsets och kyrkans jord", roll: "Bönder som arrenderar jord",
+        makt: 2, typ: "band", bandX: [80, 350],
+        text: [
+          "Landborna brukade jord som ägdes av en frälseman, kyrkan eller kronan och betalade landgille till jordägaren.",
+          "Till skillnad från de livegna bönderna i Frankrike var de personligt fria och kunde flytta när arrendet löpte ut. Om jordägaren var frälse betalade de sina avgifter till honom i stället för skatt till kronan."
+        ]
+      },
+      {
+        id: "skattebonder", namn: "Skattebönder", under: "äger sin jord, betalar skatt till kronan", roll: "Självägande bönder",
+        makt: 4, typ: "band", bandX: [450, 360],
+        text: [
+          "Skattebönderna ägde själva sin jord och betalade skatt till kronan. En stor del av de svenska bönderna levde så.",
+          "De var personligt fria och deltog i tingen där lagen skipades. Alsnö stadga skyddade dem mot våldgästning: den som krävde mat och husrum skulle betala."
+        ]
+      }
+    ],
+    band: [
+      { fran: "riddare", till: "sverigekung", typ: "vasall", styrka: 3, flera: "markera", bojning: 0.2,
+        franGer: "Rusttjänst: att ställa upp med häst och rustning i kungens krig.",
+        tillGer: "Skattefrihet och beskydd." },
+      { fran: "riddare", till: "kyrkan", typ: "vasall", styrka: 1, flera: true, bojning: -0.08,
+        fleraText: "Frälsemän kunde tjäna kungen, en biskop eller en annan storman.",
+        franGer: "Rusttjänst åt en biskop.",
+        tillGer: "Underhåll och skattefrihet genom tjänsten." },
+      { fran: "torgils", till: "sverigekung", typ: "vasall", styrka: 3, bojning: 0.06,
+        franGer: "Krigstjänst och råd i kungens råd.",
+        tillGer: "Förtroende, län och en plats nära kungen." },
+      { fran: "kyrkan", till: "sverigekung", typ: "kyrka", styrka: 3, bojning: -0.08,
+        franGer: "Stöd för kungamakten, plats i kungens råd och medverkan vid kröningen 1281.",
+        tillGer: "Skattefrihet för kyrkans jord och egen domsrätt." },
+      { fran: "kyrkan", till: "paven", typ: "kyrka", styrka: 2, flera: true, bojning: 0,
+        fleraText: "Biskoparna lydde både påven och kungen.",
+        franGer: "Lydnad i andliga frågor.",
+        tillGer: "Andlig ledning." },
+      { fran: "bengt", till: "sverigekung", typ: "familj", styrka: 3, bojning: 0.06,
+        franGer: "Råd och stöd åt sin bror.",
+        tillGer: "Hertigdömet Finland och stöd för en kyrklig karriär." },
+      { fran: "bengt", till: "kyrkan", typ: "kyrka", styrka: 2, bojning: 0.1,
+        franGer: "Tjänst i kyrkan, senare som biskop i Linköping.",
+        tillGer: "Ett av rikets viktigaste ämbeten." },
+      { fran: "helvig", till: "sverigekung", typ: "familj", styrka: 3, bojning: -0.06,
+        franGer: "Förbindelser med de mäktiga grevarna av Holstein.",
+        tillGer: "Drottningvärdigheten och kröningen i Söderköping 1281." },
+      { fran: "valdemar", till: "sverigekung", typ: "ansprak", styrka: 1, bojning: 0.06,
+        franGer: "Förlorade kronan 1275 men gav inte upp sina anspråk.",
+        tillGer: "Besegrade honom och behöll kronan." },
+      { fran: "stader", till: "sverigekung", typ: "stad", styrka: 2, bojning: 0.06,
+        franGer: "Tullar, avgifter och lån i kontanter.",
+        tillGer: "Handelsrättigheter, handelsfred och skydd." },
+      { fran: "stader", till: "lubeck", typ: "forbund", styrka: 2, bojning: 0.08,
+        franGer: "Handelsförbindelser och lojalitet mot hemstaden.",
+        tillGer: "Stöd och skydd för köpmännen utomlands." },
+      { fran: "landbor", till: "riddare", typ: "gods", styrka: 3, ankare: 400, flera: true,
+        fleraText: "Landbon betalade landgille till frälsemannen men lydde kungens lag.",
+        franGer: "Landgille och vissa dagsverken.",
+        tillGer: "Rätten att bruka jorden." },
+      { fran: "landbor", till: "torgils", typ: "gods", styrka: 2, ankare: 250,
+        franGer: "Landgille på stormannens gods.",
+        tillGer: "Rätten att bruka jorden." },
+      { fran: "landbor", till: "kyrkan", typ: "gods", styrka: 2, ankare: 150,
+        franGer: "Landgille på kyrkans jord.",
+        tillGer: "Rätten att bruka jorden." },
+      { fran: "landbor", till: "sverigekung", typ: "krona", styrka: 1, ankare: 300, flera: "markera",
+        franGer: "Lydnad under kungens fredslagar.",
+        tillGer: "Skydd mot våldgästning." },
+      { fran: "skattebonder", till: "sverigekung", typ: "krona", styrka: 3, ankare: 560,
+        franGer: "Skatt till kronan och gästning mot betalning.",
+        tillGer: "Kungens fred och skydd mot våldgästning." },
+      { fran: "skattebonder", till: "kyrkan", typ: "kyrka", styrka: 2, ankare: 490,
+        franGer: "Tionde till kyrkan.",
+        tillGer: "Gudstjänster och själavård." }
+    ],
+    flera: {
+      riddare: {
+        typ: "dilemma",
+        titel: "Bli frälseman?",
+        text: "Alsnö stadga lovar skattefrihet för den som tjänar med häst och rustning, vem han än tjänar: kungen, en biskop eller en annan storman.",
+        fraga: "Du är en förmögen bonde. Vad gör du?",
+        val: [
+          { svar: "Skaffar häst och rustning och tjänar kungen.",
+            utfall: "Du slipper den vanliga skatten. I gengäld måste du ställa upp i kungens krig, och utrustningen är dyr. Så växte det svenska frälset fram.",
+            effekt: [{ fran: "riddare", till: "sverigekung", styrka: 3 }, { fran: "riddare", till: "kyrkan", styrka: 1 }] },
+          { svar: "Förblir skattebonde.",
+            utfall: "Du behåller din jord och din frihet men betalar skatt till kronan. En stor del av de svenska bönderna levde så." },
+          { svar: "Tjänar en biskop i stället för kungen.",
+            utfall: "Det var tillåtet. Stadgan gällde den som tjänade med häst, vem han än tjänade. Frälsemän kunde alltså ha olika herrar.",
+            effekt: [{ fran: "riddare", till: "kyrkan", styrka: 3 }, { fran: "riddare", till: "sverigekung", styrka: 1 }] }
+        ]
+      },
+      kyrkan: {
+        typ: "samtal",
+        titel: "Mellan Rom och kungen",
+        text: "Biskoparna lydde påven i andliga frågor men satt också i kungens råd.",
+        repliker: [
+          { vem: "Påven", text: "Kyrkans män lyder Guds lag och Rom, inte världsliga kungar." },
+          { vem: "Magnus Ladulås", text: "Jag skyddar er jord och ger er skattefrihet. I gengäld vill jag ha ert stöd och er plats i mitt råd." }
+        ],
+        fraga: "Vems krav vägde tyngst för de svenska biskoparna?",
+        val: [
+          { svar: "Påvens.",
+            utfall: "I andliga frågor, ja. Men i vardagen hade kungen mer att erbjuda, och kyrkan fick sina skattefriheter av honom 1281." },
+          { svar: "Kungens.",
+            utfall: "I praktiken ofta. Men i andliga frågor gällde påvens ord." },
+          { svar: "Båda, i olika frågor.",
+            utfall: "Just så. Biskoparna lydde påven i andliga frågor och kungen i världsliga. Det fungerade så länge de två inte krävde olika saker." }
+        ]
+      },
+      landbor: {
+        typ: "kalla",
+        titel: "Alsnö stadga",
+        kalla: "Alsnö stadga, vanligen daterad till 1280 (innehållet fritt återgivet)",
+        citat: "Kungen förbjuder alla att med våld gästa hos bönderna och ta mat och husrum utan att betala. Alla som tjänar med häst, vem de än tjänar, ska vara fria från skatt.",
+        fraga: "Stadgan utfärdades av kungen. Vad kan den säga oss?",
+        val: [
+          { svar: "Att kungen ville framstå som böndernas beskyddare.",
+            utfall: "Ja. Samtidigt knöt han stormännen till sig med skattefrihet. Stadgan gynnade både kungen och frälset." },
+          { svar: "Att våldgästningen upphörde.",
+            utfall: "En lag visar vad som förbjöds, inte att det upphörde. Att förbudet behövdes tyder snarare på att våldgästning var vanlig." },
+          { svar: "Att kungen ville försvaga stormännen.",
+            utfall: "Tvärtom fick de skattefrihet. Kungen band stormännen till sig i stället för att bekämpa dem." }
+        ]
+      }
+    },
+    tank: {
+      fraga: "Titta på bönderna. Hur skiljer sig bondebandet här från Frankrike ca 1000?",
+      svar: "I Sverige är bönderna delade i två grupper. Skattebönderna ägde sin jord, betalade skatt direkt till kungen och var personligt fria. Landborna arrenderade jord av frälset eller kyrkan men var inte livegna. I Frankrike ca 1000 gick böndernas trådar bara till godsherrarna, aldrig till kungen. Sverige fick ett frälse, men aldrig ett fullt utvecklat feodalt system."
+    }
+  }
+,
+  frankrike1300: {
+    namn: "Frankrike ca 1300",
+    sigill: { rad1: "FRANCIA", rad2: "ca 1300" },
+    lage: "Omkring 1300 styr Filip IV den sköne ett Frankrike där kungamakten har vuxit kraftigt. Avlönade ämbetsmän och kungliga domstolar tar över allt mer av adelns makt. Filip beskattar kyrkan och hamnar i en hård strid med påven Bonifatius VIII. Samtidigt är Englands kung Edvard I hans vasall för Gascogne, och striden om Gascogne har lett till krig mellan dem.",
+    hojd: 820,
+    centrum: "kung",
+    granser: [
+      { d: "M170,172 C380,154 650,156 850,174 C868,400 862,620 850,800 L180,800 C156,620 150,400 170,172 Z",
+        namn: "Frankrike", x: 190, y: 202, ankare: "start" }
+    ],
+    bandY: 720,
+    bandX: [190, 640],
+    aktorer: [
+      {
+        id: "kung", namn: "Filip IV den sköne", under: "kung 1285–1314", roll: "Kung av Frankrike",
+        makt: 9, x: 510, y: 330, bild: true,
+        text: [
+          "Filip IV stärkte kungamakten med hjälp av utbildade jurister och avlönade ämbetsmän. Kungens domstolar tog över allt fler mål från adeln.",
+          "Han behövde pengar till sina krig och började beskatta kyrkan. Det ledde till en hård strid med påven, som Filip vann."
+        ]
+      },
+      {
+        id: "paven", namn: "Bonifatius VIII", under: "påve 1294–1303", roll: "Kyrkans överhuvud",
+        makt: 8, x: 510, y: 72, bild: true,
+        text: [
+          "Bonifatius VIII hävdade att påven stod över alla kungar och att alla människor måste lyda honom.",
+          "Han förlorade striden mot Filip IV. År 1303 tillfångatogs han av kungens män i Anagni och dog kort därefter. Påvens makt över kungarna var på väg att minska."
+        ]
+      },
+      {
+        id: "englandskung", namn: "Edvard I", under: "kung av England", roll: "Kung av England och hertig av Gascogne",
+        makt: 7, x: 85, y: 300, ikon: "krona",
+        text: [
+          "Edvard I var kung av England men också hertig av Gascogne i sydvästra Frankrike. För Gascogne var han vasall till den franske kungen.",
+          "Striden om Gascogne ledde till krig mellan England och Frankrike från 1294. Konflikten om de engelska kungarnas franska län blev senare en av orsakerna till hundraårskriget."
+        ]
+      },
+      {
+        id: "flandern", namn: "Greven av Flandern", under: "Guido av Dampierre", roll: "Vasall till den franske kungen",
+        makt: 5, x: 330, y: 215, ikon: "torn",
+        text: [
+          "Flandern var ett rikt grevskap med stora textilstäder som Brygge och Gent. Greven var vasall till den franske kungen.",
+          "Städerna var beroende av engelsk ull, och greve Guido slöt förbund med Edvard I 1297. Filip svarade med att ockupera Flandern och fängsla greven."
+        ]
+      },
+      {
+        id: "stander", namn: "Generalständerna", under: "första mötet 1302", roll: "Riksmöte för de tre stånden",
+        makt: 5, x: 680, y: 215, ikon: "stander",
+        text: [
+          "Generalständerna var ett riksmöte med företrädare för prästerskapet, adeln och städerna. Filip IV kallade dem samman första gången 1302.",
+          "Syftet var att visa att hela riket stod bakom kungen i striden med påven. Mötet gav råd och stöd men styrde inte riket."
+        ]
+      },
+      {
+        id: "sheriffer", namn: "Jurister och ämbetsmän", under: "Guillaume de Nogaret m.fl.", roll: "Kungens avlönade tjänstemän",
+        makt: 6, x: 720, y: 420, ikon: "rulle",
+        text: [
+          "Kungens ämbetsmän, bland dem de kungliga fogdarna, fick lön av kungen. De drev in skatter, dömde i kungens domstolar och verkställde hans beslut i hela riket.",
+          "Juristen Guillaume de Nogaret var en av Filips viktigaste rådgivare. Det var han som ledde överfallet på påven i Anagni 1303."
+        ]
+      },
+      {
+        id: "kyrkan", namn: "Prästerskapet", under: "första ståndet", roll: "Kyrkan i Frankrike",
+        makt: 7, x: 300, y: 420, ikon: "kors",
+        text: [
+          "Präster och biskopar utgjorde det första ståndet och ägde stora rikedomar och mycket jord.",
+          "Under Filip IV tvingades de betala skatt till kronan. I striden mellan kungen och påven ställde sig de flesta franska biskopar på kungens sida."
+        ]
+      },
+      {
+        id: "storvasaller", namn: "Adeln", under: "andra ståndet", roll: "Frankrikes världsliga stormän",
+        makt: 7, x: 420, y: 540, ikon: "skold",
+        text: [
+          "Adeln ägde stora delar av Frankrikes jord och borgar och tog ut avgifter av bönderna.",
+          "När kungens domstolar och ämbetsmän blev fler förlorade adeln mycket av sin politiska självständighet, men den behöll sina rikedomar och privilegier."
+        ]
+      },
+      {
+        id: "stader", namn: "Borgare", under: "tredje ståndet", roll: "Köpmän och hantverkare i städerna",
+        makt: 5, x: 650, y: 560, ikon: "stad",
+        text: [
+          "Borgarna i städerna levde av handel och hantverk. Deras skatter och lån i kontanter var viktiga för kungens ekonomi.",
+          "Därför fick de en plats i generalständerna. Det var första gången borgarna fick en röst i rikets politik på det sättet."
+        ]
+      },
+      {
+        id: "riddare", namn: "Riddare", under: "", roll: "Krigare till häst",
+        makt: 5, x: 260, y: 620, ikon: "svard",
+        text: [
+          "Riddarna var fortfarande krigarnas elit och stred för adeln och kungen.",
+          "Men kungen betalade allt oftare lön i stället för att kräva feodal krigstjänst. Vid Kortrijk 1302 besegrades de franska riddarna av flamländska stadsbor till fots."
+        ]
+      },
+      {
+        id: "bonder", namn: "Bönderna", under: "Den stora majoriteten av befolkningen", roll: "De som arbetar",
+        makt: 2, typ: "band",
+        text: [
+          "Bönderna var den stora majoriteten av befolkningen. Många var inte längre livegna, men de betalade fortfarande arrende och avgifter till godsherren, till exempel för att använda hans kvarn.",
+          "Dessutom krävde kungen allt mer skatt för sina krig och sina ämbetsmän."
+        ]
+      }
+    ],
+    band: [
+      { fran: "englandskung", till: "kung", typ: "vasall", styrka: 2, flera: true, bojning: 0.03,
+        fleraText: "Edvard I var kung i England men vasall i Frankrike för Gascogne.",
+        franGer: "Trohet för Gascogne, som han svor 1286.",
+        tillGer: "Erkände Edvard som hertig, men förklarade Gascogne förverkat 1294." },
+      { fran: "flandern", till: "kung", typ: "vasall", styrka: 2, flera: true, bojning: 0.08,
+        fleraText: "Greven av Flandern var Filips vasall men beroende av handeln med England.",
+        franGer: "Trohet och krigstjänst.",
+        tillGer: "Beskydd, men Filip ockuperade Flandern 1300." },
+      { fran: "flandern", till: "englandskung", typ: "forbund", styrka: 2, flera: "markera", bojning: -0.08,
+        franGer: "Förbund mot Filip 1297.",
+        tillGer: "Stöd och engelsk ull till de flamländska städerna." },
+      { fran: "kung", till: "paven", typ: "konflikt", styrka: 3, bojning: 0,
+        franGer: "Ingen lydnad. Filip vägrade låta påven stoppa beskattningen av kyrkan.",
+        tillGer: "Krav på lydnad och hot om bannlysning." },
+      { fran: "kyrkan", till: "kung", typ: "krona", styrka: 3, flera: true, bojning: -0.06,
+        fleraText: "Prästerskapet lydde påven i andliga frågor men kungen i skattefrågor.",
+        franGer: "Skatt till kronan och stöd i striden mot påven.",
+        tillGer: "Beskydd av kyrkans egendom." },
+      { fran: "kyrkan", till: "paven", typ: "kyrka", styrka: 1, flera: "markera", bojning: 0.06,
+        franGer: "Lydnad i andliga frågor.",
+        tillGer: "Förbud mot att betala skatt till kungen utan påvens tillstånd." },
+      { fran: "sheriffer", till: "kung", typ: "ambete", styrka: 3, bojning: 0.06,
+        franGer: "Drev in skatter, dömde i kungens domstolar och verkställde hans beslut.",
+        tillGer: "Fast lön och kungens fullmakt." },
+      { fran: "sheriffer", till: "storvasaller", typ: "ambete", styrka: 2, bojning: -0.06,
+        franGer: "Drog mål från adelns domstolar till kungens.",
+        tillGer: "Lydnad, ofta motvillig." },
+      { fran: "stander", till: "kung", typ: "riksmote", styrka: 3, bojning: 0.06,
+        franGer: "Stöd för kungen i striden mot påven.",
+        tillGer: "Rätt att höras i rikets stora frågor." },
+      { fran: "stader", till: "stander", typ: "riksmote", styrka: 2, bojning: -0.1,
+        franGer: "Företrädare till riksmötet.",
+        tillGer: "En plats vid mötet för första gången." },
+      { fran: "stader", till: "kung", typ: "stad", styrka: 2, bojning: 0.06,
+        franGer: "Skatter och lån i kontanter.",
+        tillGer: "Skydd för handeln och stadsfriheter." },
+      { fran: "storvasaller", till: "kung", typ: "vasall", styrka: 3, bojning: -0.06,
+        franGer: "Trohet, krigstjänst och lydnad under kungens domstolar.",
+        tillGer: "Beskydd och respekt för adelns privilegier." },
+      { fran: "riddare", till: "storvasaller", typ: "vasall", styrka: 2, bojning: 0.08,
+        franGer: "Krigstjänst till häst.",
+        tillGer: "Län, utrustning eller lön." },
+      { fran: "riddare", till: "kung", typ: "vasall", styrka: 2, bojning: 0.06,
+        franGer: "Krigstjänst, allt oftare mot lön.",
+        tillGer: "Lön och utrustning." },
+      { fran: "bonder", till: "storvasaller", typ: "gods", styrka: 3, ankare: 440,
+        franGer: "Arrende, dagsverken och avgifter för kvarn och ugn.",
+        tillGer: "Rätten att bruka jorden och lokalt beskydd." },
+      { fran: "bonder", till: "kyrkan", typ: "gods", styrka: 2, ankare: 330,
+        franGer: "Arrende och tionde.",
+        tillGer: "Rätten att bruka jorden, gudstjänster och själavård." },
+      { fran: "bonder", till: "kung", typ: "krona", styrka: 2, ankare: 560,
+        franGer: "Skatt till kungens krig och ämbetsmän.",
+        tillGer: "Kungens rättvisa, åtminstone i teorin." }
+    ],
+    flera: {
+      englandskung: {
+        typ: "dilemma",
+        titel: "Kung i England, vasall i Frankrike",
+        text: "Edvard I är vasall till Filip IV för Gascogne. År 1294 kallar Filip honom till Paris för att svara för strider mellan engelska och franska sjömän.",
+        fraga: "Vad gör du?",
+        val: [
+          { svar: "Reser till Paris och underkastar mig.",
+            utfall: "En kung som ställde sig inför en annan kungs domstol riskerade både sin värdighet och sitt län. Filip kunde döma honom att förlora Gascogne.",
+            effekt: [{ fran: "englandskung", till: "kung", styrka: 3 }] },
+          { svar: "Skickar förhandlare i stället.",
+            utfall: "Så gjorde Edvard. Hans bror Edmund förhandlade fram en uppgörelse, men Filip bröt den och förklarade Gascogne förverkat 1294.",
+            effekt: [{ fran: "englandskung", till: "kung", typ: "konflikt" }] },
+          { svar: "Säger upp min trohet och går i krig.",
+            utfall: "Det blev följden. Krig bröt ut, och Gascogne lämnades tillbaka först 1303. Striden om de franska länen blev en av orsakerna till hundraårskriget.",
+            effekt: [{ fran: "englandskung", till: "kung", typ: "konflikt", styrka: 3 }] }
+        ]
+      },
+      flandern: {
+        typ: "ordning",
+        titel: "Flandern mellan kungen och ullen",
+        text: "De flamländska städerna levde på engelsk ull, men greven var den franske kungens vasall. Ordna händelserna.",
+        handelser: [
+          { ar: "1297", text: "Greve Guido sluter förbund med Edvard I." },
+          { ar: "1300", text: "Filip IV ockuperar Flandern och fängslar greven." },
+          { ar: "maj 1302", text: "Stadsbor i Brygge gör uppror och dödar franska soldater." },
+          { ar: "juli 1302", text: "Flamländska stadsbor till fots besegrar de franska riddarna vid Kortrijk." }
+        ],
+        avslut: "Slaget vid Kortrijk kallas guldsporrarnas slag efter sporrarna som samlades in från de stupade riddarna. Stadsbor hade besegrat Frankrikes adel."
+      },
+      kyrkan: {
+        typ: "kalla",
+        titel: "Påvens svar till kungen",
+        kalla: "Påven Bonifatius VIII, 1302 (fritt översatt)",
+        citat: "Vi förklarar, säger och fastställer att det är helt nödvändigt för frälsningen att varje människa är underställd den romerske påven.",
+        fraga: "Påven skrev detta mitt i striden med Filip IV. Vad ville han uppnå?",
+        val: [
+          { svar: "Tvinga kungar och biskopar att välja påvens sida.",
+            utfall: "Ja. Genom att koppla lydnad till frälsning gjorde han striden till en fråga om själens räddning." },
+          { svar: "Beskriva hur kyrkan faktiskt fungerade.",
+            utfall: "Texten är ett anspråk, inte en beskrivning. De flesta franska biskopar ställde sig ändå på kungens sida." },
+          { svar: "Sluta fred med Filip.",
+            utfall: "Tvärtom skärpte texten striden. Året efter tillfångatogs påven av kungens män i Anagni." }
+        ]
+      }
+    },
+    tank: {
+      fraga: "Jämför med Frankrike ca 1000. Vad har hänt med kungens cirkel, och vilka nya aktörer har dykt upp?",
+      svar: "Kungens cirkel har vuxit från en av de minsta till den största. Nya aktörer är avlönade ämbetsmän, generalständerna och borgarna. Kungen styr nu mer genom lagar, skatter och tjänstemän än genom personliga eder. Lägg också märke till tråden till påven: år 1000 skyddade kungen kyrkan, år 1300 utmanar han den."
+    }
+  }
+
+};
+
+const TYPNAMN = { vasall: "Vasalled", gods: "Godsherre och bönder", kyrka: "Kyrkligt band", familj: "Familj och äktenskap", ambete: "Kungens ämbetsman", stad: "Stadsprivilegier", ansprak: "Anspråk på tronen", forbund: "Förbund", krona: "Skatt och lag under kronan", konflikt: "Konflikt", riksmote: "Riksmöte" };
+const NS = "http://www.w3.org/2000/svg";
+
+const IKONER = {
+  skold: '<path d="M-12 -13 H12 V-2 C12 8 5 13 0 16 C-5 13 -12 8 -12 -2 Z"/><path d="M0 -13 V16 M-12 -1 H12"/>',
+  torn: '<path d="M-12 14 V-12 H-7 V-7 H-2.5 V-12 H2.5 V-7 H7 V-12 H12 V14 Z"/><path d="M-3.5 14 V7 A3.5 3.5 0 0 1 3.5 7 V14"/>',
+  svard: '<path d="M0 -17 L3 -12 V5 H-3 V-12 Z"/><path d="M-8 5 H8 M0 5 V13"/><circle cy="15" r="2"/>',
+  kors: '<path d="M0 -16 V16 M-9 -6 H9"/>',
+  kloster: '<path d="M-13 15 V-1 L0 -11 L13 -1 V15 Z"/><path d="M0 -11 V-19 M-3.5 -16 H3.5"/><path d="M-3.5 15 V7 A3.5 3.5 0 0 1 3.5 7 V15"/>',
+  krona: '<path d="M-14 8 L-14 -9 L-7 -1 L0 -13 L7 -1 L14 -9 L14 8 Z"/><path d="M-14 14 H14"/>',
+  hjalm: '<path d="M-11 13 V-2 C-11 -12 11 -12 11 -2 V13 Z"/><path d="M-11 1 H11 M-3.5 1 V13 M3.5 1 V13"/>',
+  mitra: '<path d="M-10 15 V-2 C-10 -10 -4 -15 0 -18 C4 -15 10 -10 10 -2 V15 Z"/><path d="M0 -18 V15 M-10 3 H10"/>',
+  rulle: '<rect x="-11" y="-14" width="22" height="28" rx="2"/><path d="M-6 -7 H6 M-6 -1 H6 M-6 5 H3"/>',
+  stad: '<path d="M-15 14 V-2 L-8 -9 L-1 -2 V14 M-1 14 V-6 L6 -13 L13 -6 V14"/><path d="M-17 14 H15"/>',
+  stander: '<circle cx="-9" cy="-4" r="3.5"/><circle cx="0" cy="-8" r="3.5"/><circle cx="9" cy="-4" r="3.5"/><path d="M-16 11 C-16 3 -2 3 -2 11 M-7 7 C-7 -1 7 -1 7 7 M2 11 C2 3 16 3 16 11"/>',
+  nycklar: '<path d="M-9 -9 L10 10 M9 -9 L-10 10"/><circle cx="-12" cy="-12" r="4"/><circle cx="12" cy="-12" r="4"/><path d="M10 10 L13 7 M7 13 L10 10 M-10 10 L-13 7 M-7 13 L-10 10"/>'
+};
+
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+const radie = makt => Math.round(15 * Math.sqrt(makt) + 8);
+const rAv = a => a.r || radie(a.makt);
+
+let aktuellt = "frankrike1000";
+const svg = document.getElementById("nat");
+
+const FORMAT = {
+  dilemma: { namn: "Dilemma", tecken: "?" },
+  kalla: { namn: "Källa", tecken: "”" },
+  ordning: { namn: "Ordna händelserna", tecken: "→" },
+  samtal: { namn: "Två herrar talar", tecken: "⇄" }
+};
+const FORMATORDNING = ["dilemma", "kalla", "ordning", "samtal"];
+const TYPORDNING = ["vasall", "gods", "kyrka", "familj", "ambete", "stad", "krona", "riksmote", "ansprak", "forbund", "konflikt"];
+const reduceradRorelse = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let forraPositioner = null;
+
+function rita(nyckel) {
+  const ex = EXEMPEL[nyckel];
+  // Spara positioner så att gemensamma aktörer kan glida till sina nya platser
+  const nuvarande = svg.querySelectorAll(".nod");
+  forraPositioner = nuvarande.length ? Object.fromEntries([...nuvarande].map(n => [n.dataset.id, {
+    x: +n.dataset.x, y: +n.dataset.y, r: +n.dataset.r
+  }])) : null;
+
+  svg.innerHTML = "";
+  svg.classList.remove("fokus");
+  svg.setAttribute("viewBox", `0 0 1000 ${ex.hojd}`);
+  svg.setAttribute("aria-label", `Maktnät: ${ex.namn}`);
+  document.getElementById("lage").textContent = ex.lage;
+  ritaSigill(ex.sigill);
+  ritaTank(ex.tank);
+  ritaForklaring(ex);
+
+  const karta = Object.fromEntries(ex.aktorer.map(a => [a.id, a]));
+  const mitt = karta[ex.centrum];
+
+  const defs = el("defs", {}, svg);
+  const monster = el("pattern", { id: "bandmonster", width: 14, height: 14, patternUnits: "userSpaceOnUse", patternTransform: "rotate(35)" }, defs);
+  el("rect", { width: 14, height: 14, fill: "var(--band)" }, monster);
+  el("line", { x1: 0, y1: 0, x2: 0, y2: 14, stroke: "var(--band-rand)", "stroke-width": 3 }, monster);
+  const klipp = el("clipPath", { id: "gransklipp" }, defs);
+  ex.granser.forEach(g => el("path", { d: g.d }, klipp));
+
+  // Spindelnät i bakgrunden, runt mittaktören
+  const bakgrund = el("g", { class: "bakgrund" }, svg);
+  const nat = el("g", { "clip-path": "url(#gransklipp)" }, bakgrund);
+  const vinklar = 16;
+  for (let i = 0; i < vinklar; i++) {
+    const v = (i / vinklar) * Math.PI * 2 + 0.2;
+    el("line", { class: "natlinje", x1: mitt.x, y1: mitt.y, x2: mitt.x + Math.cos(v) * 1000, y2: mitt.y + Math.sin(v) * 1000, "stroke-width": 1.2 }, nat);
+  }
+  for (let ring = 1; ring <= 8; ring++) {
+    const pts = [];
+    for (let i = 0; i <= vinklar; i++) {
+      const v = (i / vinklar) * Math.PI * 2 + 0.2;
+      const r = ring * 78 * (1 + 0.14 * Math.sin(i * 1.7 + ring) + 0.08 * Math.cos(i * 0.9));
+      pts.push(`${(mitt.x + Math.cos(v) * r).toFixed(1)},${(mitt.y + Math.sin(v) * r).toFixed(1)}`);
+    }
+    el("polyline", { class: "natlinje", points: pts.join(" "), "stroke-width": 1.2 }, nat);
+  }
+  ex.granser.forEach(g => {
+    el("path", { class: "grans", d: g.d }, bakgrund);
+    const t = el("text", { class: "granstext", x: g.x, y: g.y, "text-anchor": g.ankare }, bakgrund);
+    t.textContent = g.namn;
+  });
+
+  // Trådar
+  const tradlager = el("g", { class: "tradlager" }, svg);
+  const fleralager = el("g", { class: "tradlager" }, svg);
+  ex.band.forEach((b, i) => {
+    const a = karta[b.fran], m = karta[b.till];
+    const p = tradpunkter(a, m, b, ex.bandY);
+    const bojning = b.bojning ?? (i % 2 ? 1 : -1) * 0.12;
+    const mx = (p.x1 + p.x2) / 2, my = (p.y1 + p.y2) / 2;
+    const dx = p.x2 - p.x1, dy = p.y2 - p.y1;
+    const cx = mx - dy * bojning, cy = my + dx * bojning;
+    const bredd = [0, 1.4, 2.6, 4][b.styrka];
+    el("path", {
+      class: `trad ${b.typ}`, d: `M${p.x1},${p.y1} Q${cx},${cy} ${p.x2},${p.y2}`,
+      "stroke-width": bredd, "data-a": b.fran, "data-b": b.till, "data-flera": b.flera ? 1 : 0
+    }, tradlager);
+    if (b.flera === true) {
+      const tx = 0.25 * p.x1 + 0.5 * cx + 0.25 * p.x2;
+      const ty = 0.25 * p.y1 + 0.5 * cy + 0.25 * p.y2;
+      const id = b.fran;
+      const fmt = FORMAT[ex.flera?.[id]?.typ || "dilemma"];
+      const fg = el("g", { class: "fleranod", tabindex: 0, role: "button",
+        "aria-label": `${a.namn} hade flera herrar. ${fmt.namn}` }, fleralager);
+      el("circle", { class: "traff", cx: tx, cy: ty, r: 18 }, fg);
+      el("rect", { class: "flera", x: tx - 10, y: ty - 10, width: 20, height: 20, rx: 2,
+        transform: `rotate(45 ${tx} ${ty})`, "data-a": b.fran, "data-b": b.till, "data-flera": 1 }, fg);
+      const tk = el("text", { class: "fleratecken", x: tx, y: ty + 4.5, "text-anchor": "middle" }, fg);
+      tk.textContent = fmt.tecken;
+      fg.addEventListener("pointerenter", () => fokus(id, true));
+      fg.addEventListener("pointerleave", () => fokus(null));
+      fg.addEventListener("focus", () => fokus(id, true));
+      fg.addEventListener("blur", () => fokus(null));
+      fg.addEventListener("click", () => oppnaFlera(id));
+      fg.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); oppnaFlera(id); }
+      });
+    }
+  });
+
+  // Bondeband (ett eller flera)
+  ex.aktorer.filter(a => a.typ === "band").forEach(bonder => {
+    const g = el("g", { class: "bondeband", tabindex: 0, role: "button", "data-id": bonder.id,
+      "aria-label": `${bonder.namn}. Visa mer` }, svg);
+    const [bx, bb] = bonder.bandX || ex.bandX || [80, 840];
+    el("rect", { class: "yta", x: bx, y: ex.bandY, width: bb, height: 58, rx: 8 }, g);
+    const t1 = el("text", { class: "bandtext", x: bx + bb / 2, y: ex.bandY + 26, "text-anchor": "middle" }, g);
+    t1.textContent = bonder.namn;
+    const t2 = el("text", { class: "bandunder", x: bx + bb / 2, y: ex.bandY + 46, "text-anchor": "middle" }, g);
+    t2.textContent = bonder.under;
+    koppla(g, bonder.id);
+  });
+
+  // Cirklar
+  const nya = [];
+  ex.aktorer.filter(a => a.typ !== "band").forEach(a => {
+    const r = rAv(a);
+    const g = el("g", { class: a.typ === "tom" ? "nod tom" : "nod", transform: `translate(${a.x},${a.y})`, tabindex: 0,
+      role: "button", "data-id": a.id, "data-x": a.x, "data-y": a.y, "data-r": r,
+      "aria-label": `${a.namn}. Visa mer` }, svg);
+    el("circle", { class: "fokusring", r: r + 7 }, g);
+    el("circle", { class: "ring", r }, g);
+
+    if (a.bild) {
+      const ritaPlatshallare = () => {
+        const s = r / 34;
+        const ph = el("g", { class: "platshallare", transform: `scale(${s})` }, g);
+        el("circle", { cy: -8, r: 8 }, ph);
+        el("path", { d: "M-15 12 C-15 0 15 0 15 12" }, ph);
+        const pt = el("text", { class: "platstext", y: 26 * s, "text-anchor": "middle" }, g);
+        pt.textContent = "bild";
+        g.insertBefore(ph, g.querySelector(".etikett"));
+        g.insertBefore(pt, g.querySelector(".etikett"));
+      };
+      const kalla = bildkalla(`${nyckel}.${a.id}`);
+      if (kalla) {
+        const cid = `klipp-${a.id}`;
+        const cp = el("clipPath", { id: cid }, defs);
+        el("circle", { r: r - 2 }, cp);
+        const bild = el("image", { href: kalla, x: -r, y: -r, width: r * 2, height: r * 2,
+          preserveAspectRatio: "xMidYMid slice", "clip-path": `url(#${cid})` }, g);
+        bild.addEventListener("error", () => { bild.remove(); ritaPlatshallare(); });
+        el("circle", { r, fill: "none", stroke: "var(--guld)", "stroke-width": 2.5 }, g);
+      } else {
+        ritaPlatshallare();
+      }
+    } else if (a.ikon) {
+      const ik = el("g", { class: "ikon", transform: `scale(${(r / 34).toFixed(2)})` }, g);
+      ik.innerHTML = IKONER[a.ikon];
+    }
+
+    const t = el("text", { class: "etikett", y: r + 22, "text-anchor": "middle" }, g);
+    t.textContent = a.namn;
+    if (a.under) {
+      const u = el("text", { class: "underetikett", y: r + 40, "text-anchor": "middle" }, g);
+      u.textContent = a.under;
+    }
+    koppla(g, a.id);
+    nya.push({ g, a, r });
+  });
+  svg.appendChild(fleralager);
+
+  // Övergång mellan exempel
+  if (forraPositioner && !reduceradRorelse) {
+    const tid = 750;
+    nya.forEach(({ g, a, r }) => {
+      const f = forraPositioner[a.id];
+      if (f) {
+        g.animate([
+          { transform: `translate(${f.x}px, ${f.y}px) scale(${f.r / r})` },
+          { transform: `translate(${a.x}px, ${a.y}px) scale(1)` }
+        ], { duration: tid, easing: "cubic-bezier(.45,0,.2,1)" });
+      } else {
+        g.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: tid * 0.5, fill: "backwards" });
+      }
+    });
+    svg.querySelectorAll(".tradlager, .bondeband, .bakgrund").forEach(n =>
+      n.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 450, delay: tid * 0.55, fill: "backwards" }));
+  }
+}
+
+function ritaForklaring(ex) {
+  const ul = document.getElementById("forklaring");
+  ul.innerHTML = "";
+  const typer = TYPORDNING.filter(t => ex.band.some(b => b.typ === t));
+  typer.forEach(t => {
+    const li = document.createElement("li");
+    li.innerHTML = `<svg width="44" height="12" aria-hidden="true"><path class="trad ${t}" d="M3 6 H42" stroke-width="3"/></svg>`;
+    li.append(TYPNAMN[t]);
+    ul.appendChild(li);
+  });
+  const format = FORMATORDNING.filter(f => Object.values(ex.flera || {}).some(d => (d.typ || "dilemma") === f));
+  format.forEach(f => {
+    const li = document.createElement("li");
+    li.innerHTML = `<svg width="22" height="22" viewBox="-11 -11 22 22" aria-hidden="true"><rect x="-7" y="-7" width="14" height="14" rx="1.5" transform="rotate(45)" fill="var(--bg)" stroke="var(--guld)" stroke-width="1.8"/><text y="3.8" font-size="10" text-anchor="middle" fill="var(--guld)" font-family="Lora, Georgia, serif" font-weight="600">${FORMAT[f].tecken}</text></svg>`;
+    li.append(`Flera herrar: ${FORMAT[f].namn.toLowerCase()}`);
+    ul.appendChild(li);
+  });
+  const li = document.createElement("li");
+  li.textContent = "Tjockare tråd betyder starkare band";
+  ul.appendChild(li);
+}
+
+function tradpunkter(a, m, b, bandY) {
+  // Bönderna är ett band: tråden börjar i bandets överkant
+  if (a.typ === "band" || m.typ === "band") {
+    const nod = a.typ === "band" ? m : a;
+    const r = rAv(nod);
+    const bx = b.ankare, by = bandY;
+    const d = Math.hypot(bx - nod.x, by - nod.y);
+    const sx = nod.x + (bx - nod.x) / d * r, sy = nod.y + (by - nod.y) / d * r;
+    return a.typ === "band" ? { x1: bx, y1: by, x2: sx, y2: sy } : { x1: sx, y1: sy, x2: bx, y2: by };
+  }
+  const ra = rAv(a), rm = rAv(m);
+  const d = Math.hypot(m.x - a.x, m.y - a.y);
+  const ux = (m.x - a.x) / d, uy = (m.y - a.y) / d;
+  return { x1: a.x + ux * ra, y1: a.y + uy * ra, x2: m.x - ux * rm, y2: m.y - uy * rm };
+}
+
+function koppla(g, id) {
+  g.addEventListener("pointerenter", () => fokus(id));
+  g.addEventListener("pointerleave", () => fokus(null));
+  g.addEventListener("focus", () => fokus(id));
+  g.addEventListener("blur", () => fokus(null));
+  g.addEventListener("click", () => oppna(id));
+  g.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); oppna(id); }
+  });
+}
+
+function fokus(id, baraFlera = false) {
+  if (dialog.open && !id) return;
+  svg.classList.toggle("fokus", !!id);
+  svg.querySelectorAll(".aktiv").forEach(n => n.classList.remove("aktiv"));
+  if (!id) return;
+  const grannar = new Set([id]);
+  svg.querySelectorAll("[data-a]").forEach(t => {
+    const traffar = baraFlera
+      ? t.dataset.a === id && t.dataset.flera === "1"
+      : t.dataset.a === id || t.dataset.b === id;
+    if (traffar) {
+      t.classList.add("aktiv");
+      grannar.add(t.dataset.a); grannar.add(t.dataset.b);
+    }
+  });
+  svg.querySelectorAll("[data-id]").forEach(n => {
+    if (grannar.has(n.dataset.id)) n.classList.add("aktiv");
+  });
+}
+
+function ritaSigill(s) {
+  const sg = document.getElementById("sigill");
+  sg.innerHTML = `
+    <defs><path id="sigillbana" d="M-24,0 A24,24 0 1 1 24,0 A24,24 0 1 1 -24,0"/></defs>
+    <circle r="32" fill="var(--nod)" stroke="var(--guld)" stroke-width="2"/>
+    <circle r="17" fill="none" stroke="var(--guld)" stroke-width="1"/>
+    <text font-size="8.5" fill="var(--guld-ljus)" letter-spacing="2" font-family="Playfair Display, Georgia, serif">
+      <textPath href="#sigillbana" startOffset="25%" text-anchor="middle">${s.rad1}</textPath>
+    </text>
+    <text y="4" font-size="9" text-anchor="middle" fill="var(--nod-text)" font-family="Lora, Georgia, serif" font-style="italic">${s.rad2}</text>`;
+}
+
+function ritaTank(t) {
+  const sek = document.getElementById("tank");
+  sek.innerHTML = "";
+  const h = document.createElement("h2"); h.textContent = "Tänk efter";
+  const p = document.createElement("p"); p.textContent = t.fraga;
+  const d = document.createElement("details");
+  const s = document.createElement("summary"); s.textContent = "Visa förklaring";
+  const sv = document.createElement("p"); sv.textContent = t.svar;
+  d.append(s, sv);
+  sek.append(h, p, d);
+}
+
+/* Rutan */
+const dialog = document.getElementById("ruta");
+const innehall = document.getElementById("rutainnehall");
+let senastFokus = null;
+
+function oppna(id) {
+  const ex = EXEMPEL[aktuellt];
+  const karta = Object.fromEntries(ex.aktorer.map(a => [a.id, a]));
+  const a = karta[id];
+  if (!dialog.open) senastFokus = document.activeElement;
+  innehall.innerHTML = "";
+
+  const huvud = document.createElement("div");
+  huvud.className = "rutahuvud";
+  if (a.bild) {
+    const tom = document.createElement("div");
+    tom.className = "portratt tom"; tom.textContent = "Bild saknas";
+    const kalla = bildkalla(`${aktuellt}.${a.id}`);
+    if (kalla) {
+      const img = document.createElement("img");
+      img.className = "portratt"; img.src = kalla; img.alt = `Porträtt: ${a.namn}`;
+      img.addEventListener("error", () => img.replaceWith(tom));
+      huvud.appendChild(img);
+    } else {
+      huvud.appendChild(tom);
+    }
+  }
+  const namnruta = document.createElement("div");
+  const h2 = document.createElement("h2"); h2.id = "rutarubrik"; h2.textContent = a.namn;
+  const roll = document.createElement("p"); roll.className = "roll"; roll.textContent = a.roll;
+  namnruta.append(h2, roll);
+  huvud.appendChild(namnruta);
+  innehall.appendChild(huvud);
+
+  const makt = document.createElement("div");
+  makt.className = "makt";
+  if (a.typ === "tom") makt.hidden = true;
+  const pips = document.createElement("div"); pips.className = "pips"; pips.setAttribute("aria-hidden", "true");
+  for (let i = 1; i <= 10; i++) {
+    const s = document.createElement("span");
+    if (i <= a.makt) s.className = "pa";
+    pips.appendChild(s);
+  }
+  const mt = document.createElement("span"); mt.textContent = `Makt: ${a.makt} av 10`;
+  makt.append(pips, mt);
+  innehall.appendChild(makt);
+
+  a.text.forEach(stycke => {
+    const p = document.createElement("p"); p.textContent = stycke;
+    innehall.appendChild(p);
+  });
+
+  const egna = ex.band.filter(b => b.fran === id || b.till === id);
+  if (egna.length) {
+    const h3 = document.createElement("h3"); h3.textContent = "Band";
+    const ul = document.createElement("ul"); ul.className = "bandlista";
+    egna.forEach(b => {
+      const annan = karta[b.fran === id ? b.till : b.fran];
+      const li = document.createElement("li");
+      const rad = document.createElement("div");
+      const lank = document.createElement("button");
+      lank.className = "lank"; lank.textContent = annan.namn;
+      lank.addEventListener("click", () => oppna(annan.id));
+      const typ = document.createElement("span");
+      typ.className = "typ"; typ.textContent = TYPNAMN[b.typ];
+      rad.append(lank, typ);
+      li.appendChild(rad);
+
+      const p1 = document.createElement("p");
+      p1.innerHTML = `<strong></strong> `;
+      p1.firstChild.textContent = `${karta[b.fran].namn} gav:`;
+      p1.append(b.franGer);
+      const p2 = document.createElement("p");
+      p2.innerHTML = `<strong></strong> `;
+      p2.firstChild.textContent = `${karta[b.till].namn} gav:`;
+      p2.append(b.tillGer);
+      li.append(p1, p2);
+
+      if (b.flera === true) {
+        const f = document.createElement("p");
+        f.className = "flaggtext";
+        f.textContent = `◆ ${b.fleraText || `${karta[b.fran].namn} kunde ha flera herrar samtidigt.`}`;
+        li.appendChild(f);
+      }
+      ul.appendChild(li);
+    });
+    innehall.append(h3, ul);
+  }
+
+  if (!dialog.open) dialog.showModal();
+  innehall.scrollTop = 0;
+  document.getElementById("stang").focus();
+}
+
+function skapa(tag, klass, text) {
+  const e = document.createElement(tag);
+  if (klass) e.className = klass;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+// Ändringar som ett dilemma gör i nätet
+function aterstall(id) {
+  svg.querySelectorAll(`.trad[data-andrad-av="${id}"]`).forEach(t => {
+    t.setAttribute("class", t.dataset.origKlass);
+    t.setAttribute("stroke-width", t.dataset.origBredd);
+    t.removeAttribute("data-andrad-av");
+  });
+}
+function tillampa(id, effekter) {
+  aterstall(id);
+  (effekter || []).forEach(e => {
+    const t = svg.querySelector(`.trad[data-a="${e.fran}"][data-b="${e.till}"]`);
+    if (!t) return;
+    if (!t.dataset.origKlass) {
+      t.dataset.origKlass = t.getAttribute("class");
+      t.dataset.origBredd = t.getAttribute("stroke-width");
+    }
+    const typ = e.typ || t.dataset.origKlass.replace("trad ", "");
+    t.setAttribute("class", `trad ${typ} andrad`);
+    if (e.styrka) t.setAttribute("stroke-width", [0, 1.4, 2.6, 4][e.styrka]);
+    t.dataset.andradAv = id;
+  });
+}
+
+function valLista(id, val, medEffekt) {
+  const ul = skapa("ul", "val-lista");
+  const utfall = skapa("p", "utfall");
+  utfall.setAttribute("aria-live", "polite");
+  val.forEach(v => {
+    const li = document.createElement("li");
+    const knapp = skapa("button", "valknapp", v.svar);
+    knapp.setAttribute("aria-pressed", "false");
+    knapp.addEventListener("click", () => {
+      ul.querySelectorAll(".valknapp").forEach(k => k.setAttribute("aria-pressed", "false"));
+      knapp.setAttribute("aria-pressed", "true");
+      utfall.textContent = v.utfall;
+      if (medEffekt) {
+        tillampa(id, v.effekt);
+        if (v.effekt) utfall.append(skapa("span", "nattips", " Stäng rutan och se hur nätet har ändrats."));
+      }
+    });
+    li.appendChild(knapp); ul.appendChild(li);
+  });
+  return [ul, utfall];
+}
+
+function ordningsUppgift(f) {
+  const blandad = [...f.handelser.keys()];
+  do {
+    for (let i = blandad.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [blandad[i], blandad[j]] = [blandad[j], blandad[i]];
+    }
+  } while (blandad.every((v, i) => v === i));
+  let ordning = blandad;
+  const ol = skapa("ol", "ordningslista");
+  const svar = skapa("p", "utfall");
+  svar.setAttribute("aria-live", "polite");
+  let klar = false;
+
+  function visa(fokusIndex) {
+    ol.innerHTML = "";
+    ordning.forEach((h, i) => {
+      const li = document.createElement("li");
+      if (klar) {
+        li.className = "ratt";
+        li.append(skapa("span", "ar", f.handelser[h].ar));
+      }
+      li.append(skapa("span", "htext", f.handelser[h].text));
+      if (!klar) {
+        const upp = skapa("button", "flytt", "↑");
+        upp.setAttribute("aria-label", `Flytta upp: ${f.handelser[h].text}`);
+        upp.disabled = i === 0;
+        upp.addEventListener("click", () => flytta(i, -1));
+        const ned = skapa("button", "flytt", "↓");
+        ned.setAttribute("aria-label", `Flytta ned: ${f.handelser[h].text}`);
+        ned.disabled = i === ordning.length - 1;
+        ned.addEventListener("click", () => flytta(i, 1));
+        li.append(upp, ned);
+      }
+      ol.appendChild(li);
+    });
+    if (fokusIndex !== undefined) {
+      const knappar = ol.children[fokusIndex]?.querySelectorAll(".flytt");
+      const k = knappar && ([...knappar].find(b => !b.disabled));
+      if (k) k.focus();
+    }
+  }
+  function flytta(i, steg) {
+    const j = i + steg;
+    [ordning[i], ordning[j]] = [ordning[j], ordning[i]];
+    svar.textContent = "";
+    visa(j);
+  }
+  const kontroll = skapa("button", "kontroll", "Kontrollera ordningen");
+  kontroll.addEventListener("click", () => {
+    const ratt = ordning.filter((h, i) => h === i).length;
+    if (ratt === ordning.length) {
+      klar = true;
+      visa();
+      kontroll.remove();
+      svar.textContent = f.avslut;
+    } else {
+      [...ol.children].forEach((li, i) => li.className = ordning[i] === i ? "ratt" : "fel");
+      svar.textContent = `${ratt} av ${ordning.length} står på rätt plats. Flytta och försök igen.`;
+    }
+  });
+  visa();
+  return [ol, kontroll, svar];
+}
+
+function oppnaFlera(id) {
+  const f = EXEMPEL[aktuellt].flera?.[id];
+  if (!f) return;
+  const typ = f.typ || "dilemma";
+  if (!dialog.open) senastFokus = document.activeElement;
+  innehall.innerHTML = "";
+  const hdr = skapa("div", "rutahuvud");
+  const nr = document.createElement("div");
+  const h2 = skapa("h2", "", f.titel); h2.id = "rutarubrik";
+  nr.append(h2, skapa("p", "roll", `Flera herrar: ${FORMAT[typ].namn.toLowerCase()}`));
+  hdr.appendChild(nr);
+  innehall.appendChild(hdr);
+
+  if (typ === "kalla") {
+    innehall.append(skapa("blockquote", "citat", f.citat), skapa("p", "kallrad", f.kalla));
+  } else if (f.text) {
+    innehall.append(skapa("p", "", f.text));
+  }
+  if (typ === "samtal") {
+    const rep = skapa("div", "repliker");
+    f.repliker.forEach(r => {
+      const d = skapa("div", "replik");
+      d.append(skapa("strong", "", r.vem), skapa("p", "", r.text));
+      rep.appendChild(d);
+    });
+    innehall.appendChild(rep);
+  }
+  if (typ === "ordning") {
+    innehall.append(...ordningsUppgift(f));
+  } else {
+    innehall.append(skapa("h3", "", f.fraga), ...valLista(id, f.val, typ === "dilemma"));
+  }
+
+  if (!dialog.open) dialog.showModal();
+  fokus(id, true);
+  document.getElementById("stang").focus();
+}
+
+function stang() { dialog.close(); }
+document.getElementById("stang").addEventListener("click", stang);
+dialog.addEventListener("click", e => { if (e.target === dialog) stang(); });
+dialog.addEventListener("close", () => {
+  svg.classList.remove("fokus");
+  svg.querySelectorAll(".aktiv").forEach(n => n.classList.remove("aktiv"));
+  if (senastFokus && senastFokus.focus) senastFokus.focus();
+});
+
+document.getElementById("exempelval").addEventListener("change", e => {
+  if (EXEMPEL[e.target.value]) { aktuellt = e.target.value; rita(aktuellt); }
+});
+
+rita(aktuellt);
+</script>
+</body>
+</html>
